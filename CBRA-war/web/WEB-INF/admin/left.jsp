@@ -1,5 +1,4 @@
 ﻿﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
 	response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -13,8 +12,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>无标题文档</title>
-		<link href="${pageContent.request.contextPath}/admin/css/style.css" rel="stylesheet" type="text/css" />
-		<script language="JavaScript" src="${pageContent.request.contextPath}/admin/js/jquery.js"></script>
+		<link href="${pageContent.request.contextPath}/background/css/style.css" rel="stylesheet" type="text/css" />
+		<script language="JavaScript" src="${pageContent.request.contextPath}/background/js/jquery.js"></script>
 		<script type="text/javascript">
 	$(function() {
 		//导航切换
@@ -153,24 +152,9 @@
 				</ul>
 			</dd>
 			 -->
-			<s:iterator value="menuList" id="menu">
-				<dd>
-					<div class="title">
-						<span><img src="${pageContent.request.contextPath}/admin/images/leftico01.png" /> </span>
-						<s:property value="menuName" />
-					</div>
-					<ul class="menuson">
-						<s:iterator value="#menu.subMenuList" id="subMenu">
-							<li>
-								<cite></cite><a href="<s:property value="url" />" target="rightFrame"><s:property value="#subMenu.menuName" /> </a><i></i>
-							</li>
-						</s:iterator>
-					</ul>
-				</dd>
-			</s:iterator>
 			<dd>
 				<div class="title">
-					<span><img src="${pageContent.request.contextPath}/admin/images/leftico02.png" /> </span>数据字典
+					<span><img src="${pageContent.request.contextPath}/background/images/leftico02.png" /> </span>数据字典
 				</div>
 				<ul class="menuson">
 					<li>

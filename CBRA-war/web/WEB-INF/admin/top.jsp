@@ -1,5 +1,4 @@
 ﻿<%@ page language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
 <%
 	response.addHeader( "Cache-Control", "no-store,no-cache,must-revalidate" );
 	response.addHeader( "Cache-Control", "post-check=0,pre-check=0" );
@@ -13,8 +12,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>无标题文档</title>
-<link href="<%=path %>/admin/css/style.css" rel="stylesheet" type="text/css" />
-<script language="JavaScript" src="<%=path %>/admin/js/jquery.js"></script>
+<link href="<%=path %>/background/css/style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript" src="<%=path %>/background/js/jquery.js"></script>
 <script type="text/javascript">
 $(function(){	
 	//顶部导航切换
@@ -28,9 +27,9 @@ $(function(){
 
 </head>
 
-<body style="background:url(<%=path %>/admin/images/topbg.gif) repeat-x;">
+<body style="background:url(<%=path %>/background/images/topbg.gif) repeat-x;">
     <div class="topleft">
-    	<a href="/" target="_parent"><img src="<%=path %>/admin/images/logo.png" title="系统首页"/></a>
+    	<a href="/" target="_parent"><img src="<%=path %>/background/images/logo.png" title="系统首页"/></a>
     </div>
     <!-- 
     <ul class="nav">
@@ -47,12 +46,12 @@ $(function(){
 	    	<!-- 
 		    <li><span><img src="<%=path %>/admin/images/help.png" title="帮助"  class="helpimg"/></span><a href="#">帮助</a></li>
 	    	 -->
-	    	 <li><a href="#">您的城市：<s:property value="#session.userSession.cityName"/></a></li>
+	    	 <li><a href="#">您的城市：</a></li>
 		    <li><a href="./logonRightAction.action" target="rightFrame">平台首页</a></li>
 		    <li><a href="./logoutAction.action" target="_parent">退出</a></li>
 	    </ul>
 	    <div class="user">
-		    <span>欢迎您，<s:property value="#session.userSession.userName"/></span>
+		    <span>欢迎您，</span>
 		    <!-- 
 		    <i>消息</i>
 		    <b>5</b>

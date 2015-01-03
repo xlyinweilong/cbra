@@ -37,8 +37,8 @@
         </script>
     </head>
     <body style="margin: 0 auto;">
-        <iframe id="topFrame" name="topFrame" class="ui-layout-north" src="${pageContext.request.contextPath}/logonTopAction.action" frameborder="0" scrolling="no"></iframe>
-        <iframe id="leftFrame" name="leftFrame" class="ui-layout-west" src="${pageContext.request.contextPath}/logonLeftAction.action" frameborder="0" scrolling="no"></iframe>
-        <iframe id="rightFrame" name="rightFrame" class="ui-layout-center" src="${pageContext.request.contextPath}/logonRightAction.action" frameborder="0" scrolling="auto"></iframe>
+        <iframe id="topFrame" name="topFrame" class="ui-layout-north" src="${pageContext.request.contextPath}/admin/top" frameborder="0" scrolling="no"></iframe>
+        <iframe id="leftFrame" name="leftFrame" class="ui-layout-west" src="${pageContext.request.contextPath}/admin/left" frameborder="0" scrolling="no"></iframe>
+        <iframe id="rightFrame" name="rightFrame" class="ui-layout-center" src="${pageContext.request.contextPath}/admin/right" frameborder="0" scrolling="auto"></iframe>
     </body>
 </html>

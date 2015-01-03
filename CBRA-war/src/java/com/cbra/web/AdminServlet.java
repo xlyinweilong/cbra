@@ -129,7 +129,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum PageEnum {
 
-        LOGIN, MAIN,DO_LOGIN
+        LOGIN, MAIN,TOP,LEFT,RIGHT
     }
 
     @Override
@@ -138,9 +138,12 @@ public class AdminServlet extends BaseServlet {
         switch (page) {
             case LOGIN:
             case MAIN:
+            case TOP:
                 return KEEP_GOING_WITH_ORIG_URL;
-            case DO_LOGIN:
-                return doLogin(request,response);
+            case LEFT:
+                return loadLeftPage(request,response);
+            case RIGHT:
+                return loadRightPage(request,response);
             default:
                 throw new BadPageException();
         }
@@ -165,6 +168,25 @@ public class AdminServlet extends BaseServlet {
         return REDIRECT_TO_ANOTHER_URL;
     }
 
+    // ************************************************************************
+    // *************** PAGE RANDER处理的相关函数，放在这下面
+    // ************************************************************************
+    //*********************************************************************
+    
+    private boolean loadLeftPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String passwd = getRequestString(request, "passwd");
+        setErrorResult("密码输入错误", request);
+        System.out.println("123123");
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    private boolean loadRightPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String passwd = getRequestString(request, "passwd");
+        setErrorResult("密码输入错误", request);
+        System.out.println("123123");
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+            
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
