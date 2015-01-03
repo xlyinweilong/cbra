@@ -1,0 +1,86 @@
+@charset "utf-8";
+
+#windownbg {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #000;/*body-bg*/
+	top: 0;
+	left: 0;
+}
+#windown-box {
+	position: fixed;
+	_position: absolute;/*For IE 6.0*/
+	border: 0px solid #E9F3FD;
+	background: #FFF;
+	text-align: left;
+}
+#windown-title {
+	position: relative;
+	height: 41px;
+	border: 0px solid #A6C9E1;
+	overflow: hidden;
+	background-color: Transparent;
+	background-repeat: repeat-x;
+	background-image:url(../images/tcbg.gif);
+}
+#windown-title h2 {
+	position: relative;
+	left: 10px;
+	top: 10px;
+	font-size: 14px;
+	font-weight:bold;
+	color: #ffffff;
+}
+#windown-close {
+	position: absolute;
+	right: 10px;
+	top: 8px;
+	width: 22px;
+	height: 22px;
+	text-indent: -10em;
+	overflow: hidden;
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	background-image:url(../images/close.png);
+}
+#windown-close:hover{
+	background:url(../images/close1.png) no-repeat;
+}
+#windown-max {
+	position: absolute;
+	right: 30px;
+	top: 8px;
+	width: 10px;
+	height: 10px;
+	text-indent: -10em;
+	overflow: hidden;
+	background-color: white;
+	background-position: -247px -765px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+#windown-content-border {
+	position: relative;
+	top: -1px;
+	border: 0px solid #A6C9E1;
+	padding: 0px;
+}
+#windown-content {
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+}
+#windown-content img,#windown-content iframe{
+	display: block;
+}
+#windown-content .iconloading {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -8px;
+	margin-top: -8px;
+	border:0px #ffffff solid;
+}

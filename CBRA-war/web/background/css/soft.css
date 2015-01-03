@@ -1,0 +1,283 @@
+/**********************************************
+
+	CSS DESIGN BY LEO.DESIGN 
+	Create 2005-01-06
+	For CBIT.CC Platform
+	
+**********************************************/
+
+/*body鏍峰紡*/
+body,div,span,h1,h2,h3,h4,ul,li,img,p,b,textarea,input,select,form,a,table,tr,td,th
+{
+    COLOR: #25437C;
+	margin:0;
+	list-style-type:none;
+	font-size:14px;
+	z-index:inherit;
+}
+.ui-layout-resizer{
+	background-color: #5faff8;
+}
+.ui-layout-toggler-closed {
+	background-image:url(../images/right.gif);
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	height: 28px;
+	width: 7px;
+	cursor: pointer;
+}
+
+.ui-layout-toggler-open {
+	background-image:url(../images/left.gif);
+	background-color: Transparent;
+	background-repeat: no-repeat;
+	height: 28px;
+	width: 7px;
+	cursor: pointer;
+}
+A:link {
+	COLOR: #25437C;
+	TEXT-DECORATION: none;
+}
+
+A:visited {
+	COLOR: #25437C;
+	TEXT-DECORATION: none;
+} 
+A:hover {
+	COLOR: #f00000;
+	TEXT-DECORATION: none;
+}
+
+.floatdiv{
+	float:left;
+}
+
+/**************************************************
+
+	鑷畾涔夋牱寮�
+
+**************************************************/
+.shadow {
+	COLOR: #25437C;
+	FILTER: dropshadow(color=#cccccc,offx=1,offy=1);
+	FONT-SIZE: 12px;
+}
+.code {
+	BACKGROUND-COLOR: #ddedfb;
+	BORDER-BOTTOM: #0099cc 1px solid;
+	BORDER-LEFT: #0099cc 1px solid;
+	BORDER-RIGHT: #0099cc 1px solid;
+	BORDER-TOP: #0099cc 1px solid;
+	COLOR: #25437C;
+	/*FONT-FAMILY: "Verdana" , "Courier New", "Courier", "mono";*/
+	FONT-SIZE: 9px;
+	LINE-HEIGHT: 15px;
+	MARGIN: 5px;
+	PADDING-BOTTOM: 5px;
+	PADDING-LEFT: 5px;
+	PADDING-RIGHT: 5px;
+	PADDING-TOP: 5px;
+	/*WIDTH: 480px;*/
+}
+.b {
+	BACKGROUND-COLOR: #ddedfb;
+	BORDER-BOTTOM: #0099cc 1px solid;
+	BORDER-LEFT: #0099cc 1px solid;
+	BORDER-RIGHT: #0099cc 1px solid;
+	BORDER-TOP: #0099cc 1px solid;
+	COLOR: #25437C;
+	FONT-SIZE: 12px;
+	HEIGHT:21;
+	PADDING-TOP:2pt;
+}
+.bb {
+	BACKGROUND-COLOR: #F5FAFE;
+	BORDER-BOTTOM: #0099cc 1px solid;
+	BORDER-LEFT: #0099cc 1px solid;
+	BORDER-RIGHT: #0099cc 1px solid;
+	BORDER-TOP: #0099cc 1px solid;
+	COLOR: #25437C;
+	FONT-SIZE: 12px;
+	PADDING-Left:2pt;
+	Line-Height:13pt;
+}
+
+.noBorderArea{
+	/*
+	琛ㄦ牸鏍峰紡TextArea
+	*/
+	border: 1 solid #0099cc;
+	font-size: 9pt;
+	background-color: #ddedfb;
+	overflow: auto;
+}
+.newArea{
+	background: transparent;
+	border: 0 solid #0099cc;
+	font-size: 9pt;
+	overflow: auto;
+	line-height:13pt;
+	COLOR: #25437C;
+}
+.noBorderArea2{
+	/*
+	琛ㄦ牸鏍峰紡TextArea
+	*/
+	border: 0 solid #0099cc;
+	font-size: 9pt;
+	COLOR: #25437C;
+	background-color: #FFFFFF;
+	overflow: auto;
+	line-height:15pt;
+}
+/* Fieldset 杈规鏍峰紡 */
+.fieldsetStyle {
+	BORDER-BOTTOM: #688BB4 1px solid;
+	BORDER-LEFT: #688BB4 1px solid;
+	BORDER-RIGHT: #688BB4 1px solid;
+	BORDER-TOP: #688BB4 1px solid;
+}
+.btn_2_3{
+	background-color: transparent;
+	BACKGROUND-IMAGE:  url(../images/ico51.gif);
+	BORDER-BOTTOM: 0px;
+	BORDER-LEFT: 0px;
+	BORDER-RIGHT: 0px;
+	BORDER-TOP: 0px;
+	FONT-SIZE: 12px;
+	HEIGHT: 21px;
+	text-align: center;
+	WIDTH: 66px;
+	padding-top: 4px;
+	background-repeat: no-repeat;
+}
+.btn_4{
+	background-color: transparent;
+	BACKGROUND-IMAGE:  url(../images/ico52.gif);
+	BORDER-BOTTOM: 0px;
+	BORDER-LEFT: 0px;
+	BORDER-RIGHT: 0px;
+	BORDER-TOP: 0px;
+	FONT-SIZE: 12px;
+	HEIGHT: 21px;
+	text-align: center;
+	WIDTH: 79px;
+	padding-top: 4px;
+	background-repeat: no-repeat;
+}
+.btn_5{
+	background-color: transparent;
+	BACKGROUND-IMAGE:  url(../images/ico54.gif);
+	BORDER-BOTTOM: 0px;
+	BORDER-LEFT: 0px;
+	BORDER-RIGHT: 0px;
+	BORDER-TOP: 0px;
+	FONT-SIZE: 12px;
+	HEIGHT: 21px;
+	text-align: center;
+	WIDTH: 103px;
+	padding-top: 4px;
+	background-repeat: no-repeat;
+}
+/*
+	鏁版嵁澶囦唤鍏冪礌鍩烘湰鏍峰紡
+*/
+.dateTable
+{
+	/*GridView鏁翠綋澶栬*/
+	width:98%;
+	margin:5px auto;
+	text-align:center;
+	background-color:#eae4db;
+}
+.dateTable td
+{
+	padding:5px;
+}
+
+.dateItem
+{
+	/*椤电湁鏁版嵁琛岀殑澶栬*/
+	background-position:0px -164px;
+	background-repeat:repeat-x;
+	font-weight:bold;
+	height:20px;
+	text-align:left;
+	padding-left:10px;
+}
+.dateContent
+{
+	background-color:#fff;
+}
+.dateFooter
+{
+	/*鏁版嵁琛ㄨ剼琛岀殑鏍峰紡*/
+	background-color:#f4f4f4;
+	padding:5px;
+}
+.dateNote{
+	color:#666;
+	font-size:12px;
+	line-height:150%;
+	padding:8px 8px 8px 48px;
+}
+
+#jmessagebox_container {
+	margin:0px auto; 
+	border:1px solid #D5D5D5;
+	background-color:#fff;	
+}
+#jmessagebox_title{
+	height:30px; 
+	background-color: Transparent;
+	background-position: -0px -800px;
+	background-repeat: repeat-x;
+	line-height:30px; 
+	color:#ffffff;
+	padding-left:10px;
+	font-weight:bold;
+}
+#jmessagebox_message{
+	font-size:12px;
+	color:#333;
+	padding: 10px;
+	line-height:150%;
+}
+#jmessagebox_buttons {
+    text-align:center;	
+	background-color:#fff;
+	padding-right: 5px;
+	padding-bottom: 5px;	
+	margin-bottom: 5px;
+	height: 20px; 
+}
+#jmessagebox_buttons button {
+	width: 65px;
+	height: 27px;
+    background-position: -290px -765px;
+	background-repeat: no-repeat;
+	background-color: Transparent;
+	line-height: 27px;
+	border:#ffffff 0px solid;
+	color:#ffffff;
+	font-weight:bold;
+	cursor:pointer;
+	margin-left: 5px;
+}
+
+#jmessagebox_bottom {
+    text-align:right;
+	clear: both;
+	background-color:#fff;
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+	cursor: pointer;
+	font-size: 12px;
+	color: #C2C2C2;
+}
+.blackBold {
+	color: #FFFFFF;
+	font-weight: bold;
+}

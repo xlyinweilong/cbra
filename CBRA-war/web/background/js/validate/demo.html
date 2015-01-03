@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jQuery validation plug-in - main demo</title>
+<link rel="stylesheet" href="tip-yellowsimple/tip-yellowsimple.css" type="text/css" />
+<script src="jquery-1.7.2.min.js"></script>
+<script src="jquery.validate.js"></script>
+<script type="text/javascript" src="jquery.poshytip.js"></script>
+<script>
+
+$().ready(function() {
+
+	$("#signupForm").validate({
+		submitHandler: function(form) {
+			form.submit();
+		},
+		onfocusout: function(element) {
+			if ( !this.checkable(element)) {
+				this.element(element);
+			}
+		},
+		rules: {
+			firstname3: {
+				required: true
+			}
+		},
+		errorPlacement: function(error, element) {
+		
+		if (!error.is(':empty')) {
+			element.poshytip('disable');
+            element.poshytip('destroy');
+			element.poshytip({
+				className: 'tip-yellowsimple',
+				content: error,
+				showOn: 'none',
+				alignTo: 'target',
+				alignX: 'right',
+				alignY: 'center',
+				offsetX: 5,
+				offsetY: 10
+			});
+		}else{
+			element.poshytip('disable');
+            element.poshytip('destroy');
+		}
+		
+		
+		element.poshytip('show');
+			
+		},
+		success: function(element) {
+			element.poshytip('disable');
+            element.poshytip('destroy');
+		}
+	});
+});
+</script>
+</head>
+<body>
+
+
+<form class="cmxform" id="signupForm" method="get" action="">
+	<input id="firstname2" name="firstname3" type="text" />
+	<input class="submit" type="submit" value="Submit"/>
+</form>
+
+</body>
+</html>
