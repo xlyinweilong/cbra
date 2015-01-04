@@ -258,45 +258,6 @@ public class Tools {
         return EmailValidator.getInstance().isValid(src);
     }
 
-    public static boolean isMobilePhoneNumber(String src, StringBuilder regularStr) {
-        if (Tools.isBlank(src)) {
-            return false;
-        }
-        src = src.trim();
-        Matcher m1 = MOBILE_PHONE_LOOSE_PATTERN.matcher(src);
-        if (!m1.matches()) {
-            return false;
-        } else {
-            String realPhoneNumber = src.replaceAll("^\\+86|^86|[\\D]*", "");
-            Matcher m2 = MOBILE_PHONE_PATTERN.matcher(realPhoneNumber);
-            if (!m2.matches()) {
-                return false;
-            } else {
-                regularStr.append(realPhoneNumber);
-                return true;
-            }
-        }
-    }
-
-    public static boolean isMobilePhoneNumber(String src) {
-        if (Tools.isBlank(src)) {
-            return false;
-        }
-        src = src.trim();
-        Matcher m1 = MOBILE_PHONE_LOOSE_PATTERN.matcher(src);
-        if (!m1.matches()) {
-            return false;
-        } else {
-            String realPhoneNumber = src.replaceAll("^\\+86|^86|[\\D]*", "");
-            Matcher m2 = MOBILE_PHONE_PATTERN.matcher(realPhoneNumber);
-            if (!m2.matches()) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    }
-
     public static String formatMobilePhoneNumber(String src) {
         if (Tools.isBlank(src)) {
             return null;
@@ -537,7 +498,7 @@ public class Tools {
 
     public static String md5(String s) {
         try {
-            s = s.toUpperCase().trim() + "yoopay";
+            s = s.toUpperCase().trim() + "CBRA";
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.update(s.getBytes(), 0, s.length());
             s = new BigInteger(1, m.digest()).toString(16);
@@ -626,18 +587,6 @@ public class Tools {
      */
     public static String shieldingEmailSuffix(String email) {
         return email.substring(0, email.indexOf("@")) + "@******";
-    }
-
-    /**
-     * 屏蔽手机号码，留下前3位和后3位
-     *
-     * @param mobilePhone
-     * @return
-     */
-    public static String shieldingMobilePhoneMiddle(String mobilePhone) throws NotVerifiedException {
-        StringBuilder sb = new StringBuilder();
-        Tools.isMobilePhoneNumber(mobilePhone, sb);
-        return sb.replace(3, 8, "*****").toString();
     }
 
     /**
@@ -935,8 +884,6 @@ public class Tools {
     }
 
     public static void main(String[] args) {
-        System.out.println(md5WithoutYoopay("YOOPAY"));
+        System.out.println(md5("admin"));
     }
-    private static Pattern MOBILE_PHONE_PATTERN = Pattern.compile("^(1[0-9][0-9])\\d{8}$");
-    private static Pattern MOBILE_PHONE_LOOSE_PATTERN = Pattern.compile("^.{11,}$");
 }

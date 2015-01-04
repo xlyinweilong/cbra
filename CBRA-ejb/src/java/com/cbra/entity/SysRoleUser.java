@@ -9,29 +9,24 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 用户账户
- * 
+ * 后台角色用户关联
+ *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "user_account")
+@Table(name = "sys_role_user")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u"),
-    @NamedQuery(name = "UserAccount.findById", query = "SELECT u FROM UserAccount u WHERE u.id = :id"),
-    @NamedQuery(name = "UserAccount.findByAccount", query = "SELECT u FROM UserAccount u WHERE u.account = :account")})
-public class UserAccount implements Serializable {
+public class SysRoleUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,26 +34,18 @@ public class UserAccount implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "account")
-    private String account;
-    @Basic(optional = false)
-    @Size(max = 255)
-    @Column(name = "language")
-    private String language;
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(optional = false)
+    private SysUser sysUser;
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(optional = false)
+    private SysRole sysRole;
 
-    public UserAccount() {
+    public SysRoleUser() {
     }
 
-    public UserAccount(Long id) {
+    public SysRoleUser(Long id) {
         this.id = id;
-    }
-
-    public UserAccount(Long id, String account) {
-        this.id = id;
-        this.account = account;
     }
 
     public Long getId() {
@@ -69,20 +56,20 @@ public class UserAccount implements Serializable {
         this.id = id;
     }
 
-    public String getAccount() {
-        return account;
+    public SysUser getSysUser() {
+        return sysUser;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setSysUser(SysUser sysUser) {
+        this.sysUser = sysUser;
     }
 
-    public String getLanguage() {
-        return language;
+    public SysRole getSysRole() {
+        return sysRole;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setSysRole(SysRole sysRole) {
+        this.sysRole = sysRole;
     }
 
     @Override
@@ -95,10 +82,10 @@ public class UserAccount implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UserAccount)) {
+        if (!(object instanceof SysRoleUser)) {
             return false;
         }
-        UserAccount other = (UserAccount) object;
+        SysRoleUser other = (SysRoleUser) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +94,7 @@ public class UserAccount implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.UserAccount[ id=" + id + " ]";
+        return "com.cbra.entity.SysRoleUser[ id=" + id + " ]";
     }
 
 }

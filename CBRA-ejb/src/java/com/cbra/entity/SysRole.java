@@ -6,32 +6,30 @@
 package com.cbra.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 用户账户
- * 
+ * 后台角色
+ *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "user_account")
+@Table(name = "sys_role")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u"),
-    @NamedQuery(name = "UserAccount.findById", query = "SELECT u FROM UserAccount u WHERE u.id = :id"),
-    @NamedQuery(name = "UserAccount.findByAccount", query = "SELECT u FROM UserAccount u WHERE u.account = :account")})
-public class UserAccount implements Serializable {
+public class SysRole implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -39,26 +37,26 @@ public class UserAccount implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
+    @Version
+    private Integer version;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "account")
-    private String account;
+    @Column(name = "create_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createDate = new Date();
     @Basic(optional = false)
     @Size(max = 255)
-    @Column(name = "language")
-    private String language;
+    @Column(name = "name")
+    private String name;
+    @Basic(optional = false)
+    @Column(name = "sort_index")
+    private Integer sortIndex = 0;
 
-    public UserAccount() {
+    public SysRole() {
     }
 
-    public UserAccount(Long id) {
+    public SysRole(Long id) {
         this.id = id;
-    }
-
-    public UserAccount(Long id, String account) {
-        this.id = id;
-        this.account = account;
     }
 
     public Long getId() {
@@ -69,20 +67,36 @@ public class UserAccount implements Serializable {
         this.id = id;
     }
 
-    public String getAccount() {
-        return account;
+    public String getName() {
+        return name;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getLanguage() {
-        return language;
+    public Integer getVersion() {
+        return version;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Integer getSortIndex() {
+        return sortIndex;
+    }
+
+    public void setSortIndex(Integer sortIndex) {
+        this.sortIndex = sortIndex;
     }
 
     @Override
@@ -95,10 +109,10 @@ public class UserAccount implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UserAccount)) {
+        if (!(object instanceof SysRole)) {
             return false;
         }
-        UserAccount other = (UserAccount) object;
+        SysRole other = (SysRole) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +121,7 @@ public class UserAccount implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.UserAccount[ id=" + id + " ]";
+        return "com.cbra.entity.SysRole[ id=" + id + " ]";
     }
 
 }
