@@ -1,4 +1,5 @@
-﻿<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -26,50 +27,16 @@
             }
         </style>
         <script language="javascript">
-            //手机号点击记数器
-            var usernameClickCount = 0;
-            if (self.window.location.href != top.window.location.href) {
-                //如果由于权限不足显示了登录页，则浏览器地址重置为登陆页
-                //top.window.location.href = "/logoutAction.action";
-            }
             $(function () {
                 $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});
                 $(window).resize(function () {
                     $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});
                 })
             });
-            function refreshCaptcha() {
-                document.getElementById("imageF").src = '/jcaptcha' + '?' + Math.floor(Math.random() * 100);
-            }
-        </script>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $("#username").focus();
-            });
-            function logon() {
-                if ($.trim($("#username").val()) == "") {
-                    alert("请输入用户名！");
-                    $("#username").focus();
-                    return false;
-                }
-                if ($("#password").val() == "") {
-                    alert("请输入密码！");
-                    $("#password").focus();
-                    return false;
-                }
-                form1.action = "/admin";
-                form1.submit();
-            }
-            function mykeypress() {
-                if (event.keyCode == 13) {
-                    logon();
-                }
-            }
         </script>
     </head>
-
     <body style="background-color: #1c77ac; background-image: url(<%=path%>/admin/images/light.png); background-repeat: no-repeat; background-position: center top; overflow: hidden;">
-        <form id="form1" name="form1" method="post">
+        <form id="form1" name="form1" method="post" autocomplete="off">
             <input type="hidden" name="a" value="login"/>
             <div id="mainBody">
                 <div id="cloud1" class="cloud"></div>
@@ -98,13 +65,10 @@
 
                     <ul>
                         <li>
-                            <input name="username" id="username" type="text" class="loginuser" value="" onclick="JavaScript:if (usernameClickCount == 0) {
-                                        this.value = '';
-                                        usernameClickCount = 1;
-                                    }" onkeypress="mykeypress();" />
+                            <input name="account" id="username" type="text" class="loginuser" value="${account}" onkeypress="mykeypress(event);"/>
                         </li>
                         <li>
-                            <input name="password" id="password" type="password" class="loginpwd" value=""  onkeypress="mykeypress();"/>
+                            <input name="passwd" id="password" type="password" class="loginpwd" value="${passwd}"  onkeypress="mykeypress(event);"/>
                         </li>
                         <li>
                             <input name="loginbtn" type="button" class="loginbtn" value="登录" onclick="logon();"/>
@@ -121,6 +85,34 @@
                 版权所有 2014 云端房产网 吉ICP备14002652号-1 技术支持 长春博岸信息科技有限责任公司
             </div>
         </form>
+         <script type="text/javascript">
+            $(document).ready(function () {
+                <c:if test="${postResult != null && postResult.success == false}">
+                 alert("${postResult.singleErrorMsg}");
+             </c:if>
+                $("#username").focus();
+            });
+            function logon() {
+                if ($.trim($("#username").val()) == "") {
+                    alert("请输入用户名！");
+                    $("#username").focus();
+                    return false;
+                }
+                if ($("#password").val() == "") {
+                    alert("请输入密码！");
+                    $("#password").focus();
+                    return false;
+                }
+                form1.action = "/admin";
+                form1.submit();
+            }
+            function mykeypress(event) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if(e && e.keyCode==13){
+                    logon();
+                }
+            }
+        </script>
+        <iframe width="1px" height="1px" id="ifram1" name="iframe1"></iframe>
     </body>
-    <iframe width="1px" height="1px" id="ifram1" name="iframe1"></iframe>
 </html>

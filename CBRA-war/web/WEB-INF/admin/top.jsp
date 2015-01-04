@@ -1,4 +1,4 @@
-﻿<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page language="java" pageEncoding="UTF-8"%>
 <%
 	response.addHeader( "Cache-Control", "no-store,no-cache,must-revalidate" );
 	response.addHeader( "Cache-Control", "post-check=0,pre-check=0" );
@@ -29,7 +29,7 @@ $(function(){
 
 <body style="background:url(<%=path %>/background/images/topbg.gif) repeat-x;">
     <div class="topleft">
-    	<a href="/" target="_parent"><img src="<%=path %>/background/images/logo.png" title="系统首页"/></a>
+    	<a href="javascript:void(0);" target="_parent"><img src="<%=path %>/background/images/logo.png" title="系统首页"/></a>
     </div>
     <!-- 
     <ul class="nav">
@@ -45,13 +45,13 @@ $(function(){
 	    <ul>
 	    	<!-- 
 		    <li><span><img src="<%=path %>/admin/images/help.png" title="帮助"  class="helpimg"/></span><a href="#">帮助</a></li>
+                    <li><a href="#">您的城市：</a></li>
 	    	 -->
-	    	 <li><a href="#">您的城市：</a></li>
-		    <li><a href="./logonRightAction.action" target="rightFrame">平台首页</a></li>
-		    <li><a href="./logoutAction.action" target="_parent">退出</a></li>
+		    <li><a href="/admin/right" target="rightFrame">平台首页</a></li>
+		    <li><a href="/admin/main?a=logout" target="_parent">退出</a></li>
 	    </ul>
 	    <div class="user">
-		    <span>欢迎您，</span>
+		    <span>欢迎您，${admin.name}</span>
 		    <!-- 
 		    <i>消息</i>
 		    <b>5</b>

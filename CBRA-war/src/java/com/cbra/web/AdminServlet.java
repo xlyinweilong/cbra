@@ -6,17 +6,20 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.SysUser;
+import com.cbra.service.AdminService;
+import com.cbra.support.exception.AccountNotExistException;
+import com.cbra.support.exception.EjbMessageException;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,6 +31,9 @@ import org.apache.commons.lang.StringUtils;
  */
 @WebServlet(name = "AdminServlet", urlPatterns = {"/admin/*"})
 public class AdminServlet extends BaseServlet {
+
+    @EJB
+    private AdminService adminService;
 
     /// <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
     @Override
@@ -85,7 +91,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum ActionEnum {
 
-        LOGIN,
+        LOGIN, LOGOUT
     }
 
     @Override
@@ -122,6 +128,8 @@ public class AdminServlet extends BaseServlet {
         switch (action) {
             case LOGIN:
                 return doLogin(request, response);
+            case LOGOUT:
+                return doLogout(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -129,7 +137,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum PageEnum {
 
-        LOGIN, MAIN,TOP,LEFT,RIGHT
+        LOGIN, MAIN, TOP, LEFT, RIGHT
     }
 
     @Override
@@ -138,12 +146,13 @@ public class AdminServlet extends BaseServlet {
         switch (page) {
             case LOGIN:
             case MAIN:
-            case TOP:
                 return KEEP_GOING_WITH_ORIG_URL;
+            case TOP:
+                return loadTopPage(request, response);
             case LEFT:
-                return loadLeftPage(request,response);
+                return loadLeftPage(request, response);
             case RIGHT:
-                return loadRightPage(request,response);
+                return loadRightPage(request, response);
             default:
                 throw new BadPageException();
         }
@@ -152,19 +161,44 @@ public class AdminServlet extends BaseServlet {
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
 
-    private boolean loadLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * 登出账户
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getSession().removeAttribute(SESSION_ATTRIBUTE_ADMIN);
-        forward("/admin/main", request, response);
-        return FORWARD_TO_ANOTHER_URL;
+        redirect("/admin", request, response);
+        return REDIRECT_TO_ANOTHER_URL;
     }
 
+    /**
+     * 登录
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");
-        request.getSession().setAttribute(SESSION_ATTRIBUTE_USER, "12312");
-        request.getSession().setAttribute("admin", "123");
-        setErrorResult("密码输入错误", request);
+        SysUser su = null;
+        try {
+            su = adminService.login(account, passwd);
+        } catch (AccountNotExistException | EjbMessageException ex) {
+            setErrorResult(ex.getMessage(), request);
+            request.setAttribute("account", account);
+            request.setAttribute("passwd", passwd);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        request.getSession().setAttribute(SESSION_ATTRIBUTE_ADMIN, su);
         redirect("/admin/main", request, response);
-        System.out.println("123123");
         return REDIRECT_TO_ANOTHER_URL;
     }
 
@@ -172,21 +206,48 @@ public class AdminServlet extends BaseServlet {
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
     //*********************************************************************
-    
+    /**
+     * 显示页面左侧
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadLeftPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String passwd = getRequestString(request, "passwd");
-        setErrorResult("密码输入错误", request);
-        System.out.println("123123");
+        SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
+        request.setAttribute("menuList", adminService.findSysMenuByUserId(sysUser.getId(), 1));
+        request.setAttribute("subMenuList", adminService.findSysMenuByUserId(sysUser.getId(), 2));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
+    /**
+     * 显示页面顶端
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadTopPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 显示页面右侧的首页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadRightPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String passwd = getRequestString(request, "passwd");
-        setErrorResult("密码输入错误", request);
-        System.out.println("123123");
         return KEEP_GOING_WITH_ORIG_URL;
     }
-            
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************

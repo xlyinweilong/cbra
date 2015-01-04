@@ -78,7 +78,6 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String REQUEST_ATTRIBUTE_LOGIN_ALLOWED = "pageViewLoginAllowed";
     public static final String REQUEST_ATTRIBUTE_LOGOUT_ALLOWED = "pageViewLogoutAllowed";
     public static final String REQUEST_ATTRIBUTE_FILEUPLOAD_ITEMS = "items";
-    public static final long UNKNOWN_USER_ID = -1L;
     
     @EJB
     private UserAccountService accountService;
