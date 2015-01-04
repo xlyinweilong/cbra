@@ -137,7 +137,7 @@ public class AdminService {
      * @param level
      * @return
      */
-    public List<SysMenu> findSysMenuListByLevel(String level) {
+    public List<SysMenu> findSysMenuListByLevel(Integer level) {
         TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.level = :level ORDER BY sm.sortIndex asc", SysMenu.class);
         query.setParameter("level", level);
         return query.getResultList();
@@ -156,7 +156,7 @@ public class AdminService {
      * @return
      */
     public List<SysMenu> findSysMenuListByParentId(String pid) {
-        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.parentMenu.id = :pid ORDER BY sm.sortIndex asc", SysMenu.class);
+        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.parentMenu is not null AND sm.parentMenu.id = :pid ORDER BY sm.sortIndex asc", SysMenu.class);
         query.setParameter("pid", pid);
         return query.getResultList();
     }

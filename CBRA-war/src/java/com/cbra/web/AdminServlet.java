@@ -26,10 +26,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 
 /**
- *
+ * 后台管理WEB层
+ * 
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/organization/*","/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -137,7 +138,9 @@ public class AdminServlet extends BaseServlet {
 
     public static enum PageEnum {
 
-        LOGIN, MAIN, TOP, LEFT, RIGHT
+        LOGIN, MAIN, TOP, LEFT, RIGHT,
+        USER_MANAGE,USER_LIST,
+        MENU_MANAGE,MENU_LIST,MENU_INFO,MENU_TREE
     }
 
     @Override
@@ -146,6 +149,10 @@ public class AdminServlet extends BaseServlet {
         switch (page) {
             case LOGIN:
             case MAIN:
+            case USER_MANAGE:
+            case USER_LIST:
+            case MENU_MANAGE:
+            case MENU_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
                 return loadTopPage(request, response);
@@ -153,6 +160,10 @@ public class AdminServlet extends BaseServlet {
                 return loadLeftPage(request, response);
             case RIGHT:
                 return loadRightPage(request, response);
+            case MENU_TREE:
+                return loadMenuTree(request, response);
+            case MENU_LIST:
+                return loadMenuList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -247,7 +258,27 @@ public class AdminServlet extends BaseServlet {
     private boolean loadRightPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
+    /**
+     * 菜单树
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean loadMenuTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("menuList", adminService.findSysMenuListByLevel(1));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    private boolean loadMenuList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println(super.getRequestString(request, "id"));
+        request.setAttribute("menuList", adminService.findSysMenuListByParentId(""+super.getRequestString(request, "id")));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
