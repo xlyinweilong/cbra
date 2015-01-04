@@ -96,7 +96,7 @@ public class AdminService {
      * @param adminType
      * @return
      */
-    public SysUser createUserAdmin(String account, String name, String passwd, SysUserTypeEnum adminType) {
+    public SysUser createSysUser(String account, String name, String passwd, SysUserTypeEnum adminType) {
         SysUser ua = new SysUser();
         em.persist(ua);
         em.flush();
@@ -108,12 +108,66 @@ public class AdminService {
      *
      * @param id
      */
-    public void deleteUserAdmin(Long id) {
-        SysUser ua = this.findById(id);
-        ua.setDeleted(Boolean.TRUE);
-        em.persist(ua);
+    public void deleteSysUser(Long... id) {
+//        SysUser ua = this.findById(id);
+//        ua.setDeleted(Boolean.TRUE);
+//        em.merge(ua);
+    }
+    
+    public SysMenu createSysMenu(){
+        SysMenu sm = new SysMenu();
+        em.persist(sm);
+        return sm;
+    }
+    
+    /**
+     * 根据ID删除菜单
+     *
+     * @param ids
+     */
+    public void deleteSysMenuById(Long... ids) {
+//        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.level = :level ORDER BY sm.sortIndex asc", SysMenu.class);
+//        query.setParameter("level", level);
+//        return query.getResultList();
     }
 
+    /**
+     * 根据层次获取菜单
+     *
+     * @param level
+     * @return
+     */
+    public List<SysMenu> findSysMenuListByLevel(String level) {
+        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.level = :level ORDER BY sm.sortIndex asc", SysMenu.class);
+        query.setParameter("level", level);
+        return query.getResultList();
+    }
+
+    public List<SysMenu> updateSysMenuList4Level(String level) {
+        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.level = :level ORDER BY sm.sortIndex asc", SysMenu.class);
+        query.setParameter("level", level);
+        return query.getResultList();
+    }
+
+    /**
+     * 获取子集的菜单
+     *
+     * @param pid
+     * @return
+     */
+    public List<SysMenu> findSysMenuListByParentId(String pid) {
+        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm WHERE sm.parentMenu.id = :pid ORDER BY sm.sortIndex asc", SysMenu.class);
+        query.setParameter("pid", pid);
+        return query.getResultList();
+    }
+
+    /**
+     * 根据用户ID获取菜单
+     *
+     * @param uid
+     * @param level
+     * @return
+     */
     public List<SysMenu> findSysMenuByUserId(Long uid, Integer level) {
         SysUser su = this.findById(uid);
         SysMenuPopedomEnum popedom = SysMenuPopedomEnum.COMMON;
