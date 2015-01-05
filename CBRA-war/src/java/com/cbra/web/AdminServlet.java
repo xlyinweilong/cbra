@@ -10,6 +10,7 @@ import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysUser;
 import com.cbra.service.AdminService;
 import com.cbra.support.Pagination;
+import com.cbra.support.ResultList;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
@@ -428,9 +429,8 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean loadUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> map = new HashMap<>();
-        Pagination<SysUser> pagination = adminService.findSysUserList(1, 15);
-        System.out.println(pagination.getData().size());
-        request.setAttribute("pagination", pagination);
+        ResultList<SysUser> resultList = adminService.findSysUserList(map, 1, 15, null, true);
+        request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

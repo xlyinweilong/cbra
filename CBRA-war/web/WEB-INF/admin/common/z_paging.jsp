@@ -28,13 +28,13 @@
 <div class="pagin">
     <div class="paginList">
         <span class="page">
-            共[ 3 ]条记录    
-            <a onclick="turnOverPage(<%=first%>)">首　页</a>&nbsp;
-            <a onclick="turnOverPage(<%=first%>)">上一页</a>&nbsp;
-            <a onclick="turnOverPage(<%=previous%>)">下一页</a>&nbsp;
-            <a onclick="turnOverPage(<%=last%>)">尾　页</a>&nbsp;
+            共[ <%=totalCount%> ]条记录    
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=first%>)">首　页</a>&nbsp;
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=first%>)">上一页</a>&nbsp;
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=previous%>)">下一页</a>&nbsp;
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=last%>)">尾　页</a>&nbsp;
             <input id="gopage" type="text" maxlength="8" autoComplete="off" value="1" style="width:40px;height:18px;ime-mode:disabled;border:1px #CECABC solid;">
-            <input type="button" onclick="gomypage();" value="跳 转" style="width:50px;height:20px;box-shadow: 1 #CECABC solid;">
+            <input type="button" onclick="gomypage();" value="跳 转" style="cursor: pointer;width:50px;height:20px;box-shadow: 1 #CECABC solid;">
             当前[<%=pageIndex%>/<%=totalPageCount%>]页
             <input id="currentPage" type="hidden" value="1" name="pagination.currentPage">
             <script language="javascript">
@@ -62,7 +62,6 @@
                     if (no < 1) {
                         no = 1;
                     }
-                    document.forms[0].target = '';
                     document.getElementById("currentPage").value = no;
                     document.forms[0].submit();
                 }

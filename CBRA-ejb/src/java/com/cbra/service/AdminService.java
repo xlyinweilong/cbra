@@ -8,14 +8,13 @@ package com.cbra.service;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRoleUser;
 import com.cbra.entity.SysUser;
-import com.cbra.support.Pagination;
+import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -78,12 +77,13 @@ public class AdminService {
      * @param page
      * @return
      */
-    public Pagination<SysUser> findSysUserList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
-        Pagination<SysUser> resultList = new Pagination<>();
+    public ResultList<SysUser> findSysUserList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<SysUser> resultList = new ResultList<>();
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<SysUser> query = builder.createQuery(SysUser.class);
         Root root = query.from(SysUser.class);
         List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("adminType"), SysUserTypeEnum.ORDINARY));
         if (map.containsKey("name")) {
             criteria.add(builder.like(root.get("name"), map.get("name").toString()));
         }
@@ -99,7 +99,7 @@ public class AdminService {
                     countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
                 Long totalCount = em.createQuery(countQuery).getSingleResult();
-                resultList.setTotalRows(totalCount.intValue());
+                resultList.setTotalCount(totalCount.intValue());
             }
             if (list == null || list) {
                 query = query.select(root);
@@ -116,11 +116,12 @@ public class AdminService {
                     int startIndex = (pageIndex - 1) * maxPerPage;
                     typeQuery.setFirstResult(startIndex);
                     typeQuery.setMaxResults(maxPerPage);
-                    resultList.setPageSize(maxPerPage);
-                    resultList.setCurrentPage(pageIndex);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
                 }
                 List<SysUser> dataList = typeQuery.getResultList();
-                resultList.setData(dataList);
+                resultList.addAll(dataList);
             }
         } catch (NoResultException ex) {
         }
@@ -134,18 +135,19 @@ public class AdminService {
      * @param maxPerPage
      * @return
      */
-    public Pagination<SysUser> findSysUserList(int pageIndex, int maxPerPage) {
-        Pagination<SysUser> resultList = new Pagination<>();
+    public ResultList<SysUser> findSysUserList(int pageIndex, int maxPerPage) {
+        ResultList<SysUser> resultList = new ResultList<>();
         TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(ua) FROM SysUser ua WHERE ua.deleted = false ORDER BY ua.createDate DESC", Long.class);
         Long totalCount = countQuery.getSingleResult();
-        resultList.setTotalRows(totalCount.intValue());
+        resultList.setTotalCount(totalCount.intValue());
         TypedQuery<SysUser> query = em.createQuery("SELECT ua FROM SysUser ua WHERE ua.deleted = false ORDER BY ua.createDate DESC", SysUser.class);
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
-        resultList.setCurrentPage(pageIndex);
-        resultList.setPageSize(maxPerPage);
-        resultList.setData(query.getResultList());
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        resultList.addAll(query.getResultList());
         return resultList;
     }
 

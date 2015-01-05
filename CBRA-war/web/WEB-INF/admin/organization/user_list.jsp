@@ -24,11 +24,11 @@
                 $.fn.UnCheckAll("ids", "cbk_all");
                 //显示添加界面
                 $("#addBtn").click(function () {
-                    window.location.href = "./userAction!showUser.action?user.id=&deptId=" + $("#deptId").val();
+                    window.location.href = "/admin/organization/user_info";
                 });
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
-                    $.fn.delete_items("ids", "./userAction!delete.action");
+                    $.fn.delete_items("ids", "/admin/organization/menu_list?a=USER_DELETE");
                 });
                 $(".tiptop a").click(function () {
                     $(".tip").fadeOut(200);
@@ -36,11 +36,11 @@
             });
             //显示修改界面
             $.fn.edit = function (sid) {
-                window.location.href = "./userAction!showUser.action?user.id=" + sid + "&deptId=" + $("#deptId").val();
+                window.location.href = "/admin/organization/user_info?id=" + sid";
             };
             //删除单个设备信息
             $.fn.deleteItem = function (sid) {
-                var url = "./userAction!delete.action?ids=" + sid;
+                var url = "/admin/organization/menu_list?a=MENU_DELETE&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
@@ -50,7 +50,7 @@
         </script>
     </head>
     <body>
-        <form id="form1" name="form1" method="post">
+        <form id="form1" name="form1" method="post" action="/admin/organization/user_list">
             <div class="rightinfo">
                 <div class="tools">
                     <ul class="toolbar">
@@ -73,25 +73,10 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="1" />
                             </th>
                             <th>
-                                用户名
+                                姓名
                             </th>
                             <th>
-                                中文姓名
-                            </th>
-                            <th>
-                                角色
-                            </th>
-                            <th>
-                                手机
-                            </th>
-                            <th>
-                                办公电话
-                            </th>
-                            <th>
-                                QQ
-                            </th>
-                            <th>
-                                生日
+                                帐号
                             </th>
                             <th>
                                 操作
@@ -99,37 +84,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="user" items="${pagination.data}">
+                        <c:forEach var="user" items="${resultList}">
                             <tr>
                                 <td align="center" width="30px">
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
+                                    <input name="ids" type="checkbox" value="${user.id}" />
                                 </td>
                                 <td>
                                     ${user.name}
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('id');"
+                                    ${user.account}
+                                </td>
+                                <td>
+                                    <a href="javascript:$.fn.edit('${user.id}');"
                                        class="tablelink">修改</a>
                                     <a
-                                        href="javascript:$.fn.deleteItem('id');"
+                                        href="javascript:$.fn.deleteItem('${user.id}');"
                                         class="tablelink">删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
-                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true"></jsp:include>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
             </div>
         </form>
     </body>
