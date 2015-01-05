@@ -9,6 +9,7 @@ import com.cbra.support.enums.SysMenuPopedomEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -62,7 +63,7 @@ public class SysMenu implements Serializable {
     @Column(name = "url")
     private String url;
     @JoinColumn(name = "parent_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     private SysMenu parentMenu = null;
     @Basic(optional = false)
     @Column(name = "sort_index")
@@ -148,6 +149,20 @@ public class SysMenu implements Serializable {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    /**
+     * 获取文字性的菜单权限
+     *
+     * @return
+     */
+    public String getPopedomStr() {
+        switch (popedom) {
+            case SUPER:
+                return "超级管理员菜单";
+            default:
+                return "普通菜单";
+        }
     }
 
     @Override

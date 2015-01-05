@@ -18,45 +18,51 @@
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
         <script type="text/javascript">
-                    $(function(){
-                        $('.tablelist tbody tr:odd').addClass('odd');
-                        $.fn.CheckAllClick("cbk_all");
-                        $.fn.UnCheckAll("ids", "cbk_all");
-                        //显示添加界面
-                        $("#addBtn").click(function(){
-                            window.location.href = "/admin/menu_info";
-                        });
-                        //删除所选设备信息
-                        $("#deleteBtn").click(function(){
-                            $.fn.delete_items("ids", "./menuAction!deleteMenu.action");
-                        });
-                        //排序
-                        $("#sortBtn").click(function() {
-                            parent.parent.tipsWindown('菜单排序', 'iframe:./menuAction!showSortMenuList.action?parentKey=', '350', '400', 'true', '', 'true', '', 'no');
-                            parent.parent.$("#windown-close").bind('click', function(){
-                            window.location.href = "menuAction!showMenuList.action?parentKey=";
-                        });
+            $(function () {
+                $('.tablelist tbody tr:odd').addClass('odd');
+                $.fn.CheckAllClick("cbk_all");
+                $.fn.UnCheckAll("ids", "cbk_all");
+                //显示添加界面
+                $("#addBtn").click(function () {
+                    window.location.href = "/admin/organization/menu_info?pid=${pid}";
+                });
+                //删除所选设备信息
+                $("#deleteBtn").click(function () {
+                    $.fn.delete_items("ids", "/admin/organization/menu_list?a=MENU_DELETE&id=${pid}");
+                    $.fn.refreshtree();
+                });
+                //排序
+                $("#sortBtn").click(function () {
+                    parent.parent.tipsWindown('菜单排序', 'iframe:/admin/organization/menu_sort_list?id=${pid}', '350', '400', 'true', '', 'true', '', 'no');
+                    parent.parent.$("#windown-close").bind('click', function () {
+                        window.location.href = "/admin/organization/menu_list?id=${pid}";
                     });
-                    $(".tiptop a").click(function(){
-                        $(".tip").fadeOut(200);
+                });
+                $(".tiptop a").click(function () {
+                    $(".tip").fadeOut(200);
+                });
+            });
+            //显示修改界面
+            $.fn.edit = function (sid) {
+                window.location.href = "/admin/organization/menu_info?id=" + sid + "&pid=${pid}";
+            };
+            //删除单个设备信息
+            $.fn.deleteItem = function (sid) {
+                var url = "/admin/organization/menu_list?a=MENU_DELETE&pid=${pid}&ids=" + sid;
+                if (confirm("您确定要删除这条信息吗？")) {
+                    $.post(url, "", function (data) {
+                        window.location.href = window.location.href;
                     });
-                    });
-                    //显示修改界面
-                    $.fn.edit = function(sid){
-                        window.location.href = "./menuAction!showMenuInfo.action?menu.id=" + sid + "&parentKey=";
-                    };
-                    //删除单个设备信息
-                    $.fn.deleteItem = function(sid){
-                        var url = "./menuAction!deleteMenu.action?ids=" + sid;
-                            if (confirm("您确定要删除这条信息吗？")){
-                                $.post(url, "", function(data){window.location.href = window.location.href; });
-                            }
-                    };
+                    $.fn.refreshtree();
+                }
+            };
+            $.fn.refreshtree = function () {
+                parent.treeFrame.location.href = "/admin/organization/menu_tree";
+            }
         </script>
     </head>
     <body>
         <form id="form1" name="form1" method="post">
-            <s:hidden name="parentKey" id="parentKey"></s:hidden>
             <div class="rightinfo">
                 <div class="tools">
                     <ul class="toolbar">
@@ -79,7 +85,7 @@
                     <thead>
                         <tr>
                             <th align="center" width="30px">
-                                <input name="cbk_all" id="cbk_all" type="checkbox" value="1" />
+                                <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
                                 菜单名称
@@ -99,11 +105,13 @@
                         <c:forEach var="menu" items="${menuList}">
                             <tr>
                                 <td>
+                                    <input name="ids" type="checkbox" value="${menu.id}" />
                                 </td>
                                 <td>
                                     ${menu.name}
                                 </td>
                                 <td>
+                                    ${menu.popedomStr}
                                 </td>
                                 <td>
                                     ${menu.url}
@@ -118,5 +126,8 @@
                 </table>
             </div>
         </form>
+        <script type="text/javascript">
+            <c:if test = "${reflashTreeFrameUrl != null}" >$.fn.refreshtree();</c:if>
+        </script>
     </body>
 </html>

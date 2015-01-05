@@ -11,10 +11,10 @@
 <html>
     <head>
         <title></title>
-        <link href="<%=path %>/background/css/style.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="<%=path %>/background/js/jquery.js"></script>
-        <script type="text/javascript" src="<%=path %>/background/js/validate/jquery.validate.js"></script>
-        <script type="text/javascript" src="<%=path %>/background/js/common/common.js"></script>
+        <link href="<%=path%>/background/css/style.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 $("#treeFrame").css("height", $("#rightFrame", parent.document).height() - $(".place").height());

@@ -6,8 +6,11 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysUser;
 import com.cbra.service.AdminService;
+import com.cbra.support.Pagination;
+import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
 import com.cbra.web.support.BadPageException;
@@ -16,7 +19,10 @@ import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,10 +33,10 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 后台管理WEB层
- * 
+ *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/organization/*","/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -92,7 +98,8 @@ public class AdminServlet extends BaseServlet {
 
     public static enum ActionEnum {
 
-        LOGIN, LOGOUT
+        LOGIN, LOGOUT,
+        MENU_DELETE, MENU_SORT, MENU_CREATE_OR_UPDATE
     }
 
     @Override
@@ -131,6 +138,12 @@ public class AdminServlet extends BaseServlet {
                 return doLogin(request, response);
             case LOGOUT:
                 return doLogout(request, response);
+            case MENU_DELETE:
+                return doDeleteMenu(request, response);
+            case MENU_SORT:
+                return doSortMenu(request, response);
+            case MENU_CREATE_OR_UPDATE:
+                return doCreateOrUpdateMenu(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -138,9 +151,10 @@ public class AdminServlet extends BaseServlet {
 
     public static enum PageEnum {
 
+        JUMPBACK, JUMPNOBACK,
         LOGIN, MAIN, TOP, LEFT, RIGHT,
-        USER_MANAGE,USER_LIST,
-        MENU_MANAGE,MENU_LIST,MENU_INFO,MENU_TREE
+        USER_MANAGE, USER_LIST,
+        MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
     }
 
     @Override
@@ -149,10 +163,10 @@ public class AdminServlet extends BaseServlet {
         switch (page) {
             case LOGIN:
             case MAIN:
+            case JUMPBACK:
+            case JUMPNOBACK:
             case USER_MANAGE:
-            case USER_LIST:
             case MENU_MANAGE:
-            case MENU_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
                 return loadTopPage(request, response);
@@ -164,6 +178,12 @@ public class AdminServlet extends BaseServlet {
                 return loadMenuTree(request, response);
             case MENU_LIST:
                 return loadMenuList(request, response);
+            case MENU_SORT_LIST:
+                return loadMenuSortList(request, response);
+            case MENU_INFO:
+                return loadMenuInfo(request, response);
+            case USER_LIST:
+                return loadUserList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -213,6 +233,77 @@ public class AdminServlet extends BaseServlet {
         return REDIRECT_TO_ANOTHER_URL;
     }
 
+    /**
+     * 删除菜单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteMenu(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteSysMenuById(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 菜单排序
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doSortMenu(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.sortSysMenuById(ids);
+        String id = super.getRequestString(request, "pid");
+        if (id != null) {
+            setSuccessResult("保存成功！", request);
+            forward("/admin/organization/menu_sort_list?id=" + id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建或者更新菜单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateMenu(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String menuName = super.getRequestString(request, "menuName");
+        String menuUrl = super.getRequestString(request, "menuUrl");
+        String menuPopedom = super.getRequestString(request, "menuPopedom");
+        Long pid = super.getRequestLong(request, "pid");
+        if (menuName == null) {
+            setErrorResult("保存失败！参数无效！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        SysMenuPopedomEnum popedom = null;
+        try {
+            popedom = SysMenuPopedomEnum.valueOf(menuPopedom);
+        } catch (Exception e) {
+            popedom = SysMenuPopedomEnum.COMMON;
+        }
+        SysMenu sm = adminService.createSysMenu(id, pid, menuName, menuUrl, popedom);
+        request.setAttribute("sysMenu", sm);
+        request.setAttribute("reflashTreeFrameUrl", "/admin/organization/menu_tree");
+        setSuccessResult("保存成功！", "/admin/organization/menu_list?id=" + pid, request);
+        forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -258,27 +349,91 @@ public class AdminServlet extends BaseServlet {
     private boolean loadRightPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 菜单树
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadMenuTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("menuList", adminService.findSysMenuListByLevel(1));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
+    /**
+     * 菜单列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadMenuList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println(super.getRequestString(request, "id"));
-        request.setAttribute("menuList", adminService.findSysMenuListByParentId(""+super.getRequestString(request, "id")));
+        request.setAttribute("menuList", adminService.findSysMenuListByParentId(super.getRequestLong(request, "id")));
+        request.setAttribute("pid", super.getRequestString(request, "id"));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
+    /**
+     * 菜单排序页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadMenuSortList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("menuList", adminService.findSysMenuListByParentId(super.getRequestLong(request, "id")));
+        request.setAttribute("pid", super.getRequestString(request, "id"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 菜单详细信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadMenuInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        SysMenu sysMenu = null;
+        if (super.getRequestLong(request, "id") != null) {
+            sysMenu = adminService.findSysMenuById(super.getRequestLong(request, "id"));
+            request.setAttribute("id", sysMenu.getId());
+        } else {
+            sysMenu = new SysMenu();
+        }
+        request.setAttribute("sysMenu", sysMenu);
+        request.setAttribute("menuPopedomList", Arrays.asList(SysMenuPopedomEnum.values()));
+        request.setAttribute("pid", super.getRequestString(request, "pid"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 用户列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map<String, Object> map = new HashMap<>();
+        Pagination<SysUser> pagination = adminService.findSysUserList(1, 15);
+        System.out.println(pagination.getData().size());
+        request.setAttribute("pagination", pagination);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************

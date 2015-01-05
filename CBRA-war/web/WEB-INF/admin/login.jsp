@@ -28,6 +28,10 @@
         </style>
         <script language="javascript">
             $(function () {
+                if(self.window.location.href !=top.window.location.href ){
+			//如果由于权限不足显示了登录页，则浏览器地址重置为登陆页
+			top.window.location.href = "/admin";
+		}
                 $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});
                 $(window).resize(function () {
                     $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});

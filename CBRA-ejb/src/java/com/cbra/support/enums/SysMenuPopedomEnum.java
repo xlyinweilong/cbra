@@ -12,5 +12,20 @@ package com.cbra.support.enums;
  */
 public enum SysMenuPopedomEnum {
 
-    COMMON, SUPER
+    COMMON, SUPER;
+
+    /**
+     * 获取中文意思
+     *
+     * @param popedom
+     * @return
+     */
+    public String getMean(SysMenuPopedomEnum popedom) {
+        switch (popedom) {
+            case SUPER:
+                return "超级管理员菜单";
+            default:
+                return "普通菜单";
+        }
+    }
 }

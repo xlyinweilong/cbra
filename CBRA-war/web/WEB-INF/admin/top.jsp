@@ -23,10 +23,7 @@ $(function(){
 	})	
 })	
 </script>
-
-
 </head>
-
 <body style="background:url(<%=path %>/background/images/topbg.gif) repeat-x;">
     <div class="topleft">
     	<a href="javascript:void(0);" target="_parent"><img src="<%=path %>/background/images/logo.png" title="系统首页"/></a>

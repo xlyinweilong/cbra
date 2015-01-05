@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -12,10 +13,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>无标题文档</title>
-        <link href="<%=path %>/background/css/style.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="<%=path %>/background/js/jquery.js"></script>
-        <script type="text/javascript" src="<%=path %>/background/js/validate/jquery.validate.js"></script>
-        <script type="text/javascript" src="<%=path %>/background/js/common/common.js"></script>
+        <link href="<%=path%>/background/css/style.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
         <script type="text/javascript">
             $(function () {
                 $('.tablelist tbody tr:odd').addClass('odd');
@@ -50,17 +51,15 @@
     </head>
     <body>
         <form id="form1" name="form1" method="post">
-            <s:hidden name="companyId" id="companyId"/>
-            <s:hidden name="deptId" id="deptId"/>
             <div class="rightinfo">
                 <div class="tools">
                     <ul class="toolbar">
                         <li class="click" id="addBtn">
-                            <span><img src="<%=path %>/background/images/t01.png" />
+                            <span><img src="<%=path%>/background/images/t01.png" />
                             </span>添加
                         </li>
                         <li class="click" id="deleteBtn">
-                            <span><img src="<%=path %>/background/images/t03.png" />
+                            <span><img src="<%=path%>/background/images/t03.png" />
                             </span>删除
                         </li>
                     </ul>
@@ -100,48 +99,37 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <%--
-                        <s:iterator value="pagination.data" status="obj">
+                        <c:forEach var="user" items="${pagination.data}">
                             <tr>
                                 <td align="center" width="30px">
-                                    <s:checkbox id="%{#obj.id}" name="ids" fieldValue="%{id}"
-                                                value="false" theme="simple"/>
                                 </td>
                                 <td>
-                                    <s:property value="username" />
                                 </td>
                                 <td>
-                                    <s:property value="userName" />
                                 </td>
                                 <td>
-                                    <s:property value="roleName" />
                                 </td>
                                 <td>
-                                    <s:property value="phone" />
                                 </td>
                                 <td>
-                                    <s:property value="officePhone" />
                                 </td>
                                 <td>
-                                    <s:property value="qq" />
                                 </td>
                                 <td>
-                                    <s:property value="birthday" />
+                                    ${user.name}
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('<s:property value="id"/>');"
+                                    <a href="javascript:$.fn.edit('id');"
                                        class="tablelink">修改</a>
                                     <a
-                                        href="javascript:$.fn.deleteItem('<s:property value="id"/>');"
+                                        href="javascript:$.fn.deleteItem('id');"
                                         class="tablelink">删除</a>
                                 </td>
                             </tr>
-                        </s:iterator>--%>
+                        </c:forEach>
                     </tbody>
                 </table>
-                <div class="pagin">
-                    </div>
-                </div>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true"></jsp:include>
             </div>
         </form>
     </body>
