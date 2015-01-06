@@ -1,5 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -10,89 +10,68 @@
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>无标题文档</title>
-<link href="${pageContent.request.contextPath}/admin/css/style.css" rel="stylesheet" type="text/css" />
-		<link href="${pageContent.request.contextPath}/admin/css/select.css" rel="stylesheet" type="text/css" />
-		<link rel="stylesheet" href="${pageContent.request.contextPath}/admin/js/validate/tip-yellowsimple/tip-yellowsimple.css" type="text/css" />
-		<link rel="stylesheet" href="${pageContent.request.contextPath}/admin/js/validate/tip-green/tip-green.css" type="text/css" />
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/jquery.js"></script>
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/validate/jquery.poshytip.js"></script>
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/validate/jquery.validate.js"></script>
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/common/common.js"></script>
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/tipswindown/js/tipswindown.js"></script>
-		<link type="text/css"  href="${pageContent.request.contextPath}/admin/js/tipswindown/css/tipswindown.css" rel="stylesheet" />
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/select-ui.min.js"></script>
-		<script type="text/javascript" src="${pageContent.request.contextPath}/admin/js/My97DatePicker/WdatePicker.js"></script>
-
-</head>
-<script type="text/javascript">
-	$(function() {
-  		$(".select2").uedSelect({
-		   width : 200
-	   }); 
-  		$("#saveBtn").click(function() {
-			var rules={
-				"role.roleName": {required: true}
-			};
-			var messages={
-				"role.roleName": {required: "角色名称必须填写！"}
-			};
-			//初始化验证框架
-			FormSave("form1",rules, messages);
-			$("#form1").attr("target", "iframe1");
-			$("#form1").attr("action", "saveOrUpdateRoleAction.action");
-            $("#form1").submit();
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>无标题文档</title>
+        <link rel="stylesheet" href="<%=path%>/background/css/style.css" type="text/css" />
+        <link rel="stylesheet" href="<%=path%>/background/js/validate/tip-yellowsimple/tip-yellowsimple.css" type="text/css" />
+        <link rel="stylesheet" href="<%=path%>/background/js/validate/tip-green/tip-green.css" type="text/css" />
+        <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.poshytip.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
+    </head>
+    <script type="text/javascript">
+        $(function () {
+            $("#saveBtn").click(function () {
+                var rules = {
+                    "roleName": {required: true}
+                };
+                var messages = {
+                    "roleName": {required: "角色名称必须填写！"}
+                };
+                //初始化验证框架
+                FormSave("form1", rules, messages);
+                $("#form1").attr("target", "iframe1");
+                $("#form1").attr("action", "/admin/organization/role_info");
+                $("#form1").submit();
+            });
+            $.fn.goback();
         });
-  		$.fn.goback();
-  	});
-	
-	/**
-	 * 返回
-	 */
- 	$.fn.goback = function(){
- 		$("#gobackBtn").click(function(){
-  			window.location.href="./openRoleAction.action";
-  		});
-	}
 
-	/**
-	 * 初始化页面
-	 */
-	$.fn.initpage = function(){
-		$("#txt_roleName").focus();
-	}
-</script>
-<body>
-	<div class="place">
-    <span>位置：</span>
-    <ul class="placeul">
-    <li><a href="#">首页</a></li>
-    <li><a href="#">组织机构</a></li>
-    <li><a href="#">公司信息</a></li>
-    </ul>
-    </div>
-    
-    <div class="formbody">
-    <div class="formtitle"><span>基本信息</span></div>
-	<s:form id="form1" name="form1" method="post" theme="simple">
-		<s:hidden id="roleId" name="role.id"></s:hidden>
-	    <ul class="forminfo">
-	    <li><label>角色名称<b>*</b></label><s:textfield id="txt_roleName" name="role.roleName" cssClass="dfinput" cssStyle="width: 200px;" maxlength="25"></s:textfield><i>角色名称不能超过25个汉字，必填项</i></li>
-	    <li><label>角色分类</label>
-			<div class="vocation">
-	    		<s:select list="roleKeyList" listValue="value" listKey="key" name="role.roleKey" id="id" headerKey="" headerValue="无" cssClass="select2" cssStyle="width:350px;"></s:select>
-	    	</div>
-	    	<i></i>
-	    </li>
-	    <li><label>&nbsp;</label>
-	    	<input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
-	    	<input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
-	    </li>
-	    </ul>
-	</s:form>
-	<iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
-    </div>
-</body>
+        /**
+         * 返回
+         */
+        $.fn.goback = function () {
+            $("#gobackBtn").click(function () {
+                window.location.href = "/admin/organization/role_list";
+            });
+        }
+    </script>
+    <body>
+        <div class="place">
+            <span>位置：</span>
+            <ul class="placeul">
+                <li><a href="#">首页</a></li>
+                <li><a href="#">组织机构</a></li>
+                <li><a href="#">角色信息</a></li>
+            </ul>
+        </div>
+
+        <div class="formbody">
+            <div class="formtitle"><span>基本信息</span></div>
+            <form id="form1" name="form1" method="post" theme="simple">
+                <input type="hidden" name="id" value="${sysRole.id}" />
+                <input type="hidden" name="a" value="ROLE_CREATE_OR_UPDATE" />
+                <ul class="forminfo">
+                    <li><label>角色名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${sysRole.name}" maxlength="25" /><i>角色名称不能超过25个汉字，必填项</i></li>
+                    <li><label>&nbsp;</label>
+                        <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
+                        <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
+                    </li>
+                </ul>
+            </form>
+            <iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
+        </div>
+    </body>
 </html>

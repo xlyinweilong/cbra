@@ -26,21 +26,17 @@
             $.fn.initpage();
             $("#saveBtn").click(function () {
                 var rules = {
-                    "user.username": {required: true},
-                    "user.userName": {required: true},
-                    "user.password": {required: true},
-                    "user.roleId": {required: true}
+                    "userAccount": {required: true},
+                    "userName": {required: true}
                 };
                 var messages = {
-                    "user.username": {required: "登录用户名必须填写！"},
-                    "user.userName": {required: "中文姓名必须填写！"},
-                    "user.password": {required: "登录密码必须填写！"},
-                    "user.roleId": {required: "角色必须选择！"}
+                    "userAccount": {required: "帐号必须填写！"},
+                    "userName": {required: "姓名必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
                 $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "saveOrUpdateUserAction.action");
+                $("#form1").attr("action", "/admin/organization/user_info");
                 $("#form1").submit();
             });
             $.fn.goback();
@@ -56,31 +52,34 @@
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "./userAction!showUserList.action?deptId=" + $("#deptId").val();
+                window.location.href = "/admin/organization/user_list";
             });
         }
         /**
          * 初始化页面
          */
         $.fn.initpage = function () {
-            $("#txt_username").focus();
         }
     </script>
     <body>
         <div class="formbody">
             <div class="formtitle"><span>基本信息</span></div>
             <form id="form1" name="form1" method="post">
-                <input type="hidden" name="id" value="${id}" />
+                <input type="hidden" name="id" value="${sysUser.id}" />
+                <input type="hidden" name="a" value="USER_CREATE_OR_UPDATE" />
                 <ul class="forminfo">
-                    <li><label>帐号<b>*</b></label><s:textfield id="txt_username" name="user.username" cssClass="dfinput" cssStyle="width: 350px;" maxlength="25"></s:textfield><i>用户名不能超过20个字符，必填项</i></li>
-                    <li><label>密码<s:if test='null==user.id||user.id == ""'>
-                                <b>*</b>
-                            </s:if></label>
-                        <s:textfield id="txt_password" name="user.password" cssClass="dfinput" 
-                                     value="" cssStyle="width: 350px;" maxlength="16"></s:textfield><i>如果密码为空，则不修改原密码</i>
-                        <a  href='#' onclick='javascript:$("#txt_password").val("<s:property value="defaultPassword"/>");'><font color='red'>[默认密码:111111]</font></a>
+                    <li><label>帐号<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount" value="${sysUser.account}" maxlength="20" /><i>用户名不能超过20个字符，必填项</i></li>
+                    <li><label>姓名<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userName" value="${sysUser.name}" maxlength="50" /><i>必填项</i></li>
+                    <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="userPasswd" value="" maxlength="50" /><i><c:if test="${sysUser.id != null}">如果密码为空，则不修改原密码</c:if><c:if test="${sysUser.id == null}">默认密码:111111</c:if></i></li>
+                    <li><label>菜单类型<b>*</b></label>
+                        <select name="userRoleId" class="dfinput" style="width: 354px;">
+                            <c:forEach var="role" items="${roleList}">
+                                <option value="${role.id}" <c:if test="${sysUser.sysRole != null && role.id == sysUser.sysRole.id}">selected="selected"</c:if>>
+                                    ${role.name}
+                                </option>
+                            </c:forEach>
+                        </select>
                     </li>
-                    <li><label>姓名<b>*</b></label><s:textfield name="user.userName" cssClass="dfinput" cssStyle="width: 350px;" maxlength="10"></s:textfield><i>中文姓名不能超过10个汉字，必填项</i></li>
                     <li><label>&nbsp;</label>
                         <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
                         <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

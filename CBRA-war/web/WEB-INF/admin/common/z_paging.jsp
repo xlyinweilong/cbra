@@ -30,13 +30,13 @@
         <span class="page">
             共[ <%=totalCount%> ]条记录    
             <a style="cursor: pointer;" onclick="turnOverPage(<%=first%>)">首　页</a>&nbsp;
-            <a style="cursor: pointer;" onclick="turnOverPage(<%=first%>)">上一页</a>&nbsp;
-            <a style="cursor: pointer;" onclick="turnOverPage(<%=previous%>)">下一页</a>&nbsp;
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=previous%>)">上一页</a>&nbsp;
+            <a style="cursor: pointer;" onclick="turnOverPage(<%=next%>)">下一页</a>&nbsp;
             <a style="cursor: pointer;" onclick="turnOverPage(<%=last%>)">尾　页</a>&nbsp;
-            <input id="gopage" type="text" maxlength="8" autoComplete="off" value="1" style="width:40px;height:18px;ime-mode:disabled;border:1px #CECABC solid;">
+            <input id="gopage" type="text" maxlength="8" autoComplete="off" value="<%=pageIndex%>" style="width:40px;height:18px;ime-mode:disabled;border:1px #CECABC solid;">
             <input type="button" onclick="gomypage();" value="跳 转" style="cursor: pointer;width:50px;height:20px;box-shadow: 1 #CECABC solid;">
             当前[<%=pageIndex%>/<%=totalPageCount%>]页
-            <input id="currentPage" type="hidden" value="1" name="pagination.currentPage">
+            <input id="currentPage" type="hidden" value="1" name="page">
             <script language="javascript">
                 $(document).ready(function () {
                     $("#gopage").keyup(function () {
@@ -56,7 +56,7 @@
                     return false;
                 }
                 function turnOverPage(no) {
-                    if (no > 1) {
+                    if (no > <%=totalPageCount%>) {
                         no = 1;
                     }
                     if (no < 1) {

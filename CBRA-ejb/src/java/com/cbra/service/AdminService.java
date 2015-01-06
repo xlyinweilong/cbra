@@ -6,12 +6,14 @@
 package com.cbra.service;
 
 import com.cbra.entity.SysMenu;
-import com.cbra.entity.SysRoleUser;
+import com.cbra.entity.SysRole;
+import com.cbra.entity.SysRoleMenu;
 import com.cbra.entity.SysUser;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
+import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 后台用户服务层
@@ -68,6 +71,16 @@ public class AdminService {
     }
 
     /**
+     * 通过ID获取角色
+     *
+     * @param id
+     * @return
+     */
+    public SysRole findSysRoleById(Long id) {
+        return em.find(SysRole.class, id);
+    }
+
+    /**
      * 获取用户列表
      *
      * @param map
@@ -84,6 +97,7 @@ public class AdminService {
         Root root = query.from(SysUser.class);
         List<Predicate> criteria = new ArrayList<>();
         criteria.add(builder.equal(root.get("adminType"), SysUserTypeEnum.ORDINARY));
+        criteria.add(builder.equal(root.get("deleted"), false));
         if (map.containsKey("name")) {
             criteria.add(builder.like(root.get("name"), map.get("name").toString()));
         }
@@ -197,22 +211,52 @@ public class AdminService {
      * @param adminType
      * @return
      */
-    public SysUser createSysUser(String account, String name, String passwd, SysUserTypeEnum adminType) {
+    public SysUser createOrUpdateSysUser(Long id, String account, String name, String passwd, SysUserTypeEnum adminType, Long roleId) throws AccountAlreadyExistException {
+        boolean isCreare = true;
         SysUser ua = new SysUser();
-        em.persist(ua);
-        em.flush();
+        SysUser findUser = this.findByAccount(account);
+        if (id != null) {
+            isCreare = false;
+            ua = this.findById(id);
+            if (findUser != null && !ua.getAccount().equals(account)) {
+                throw new AccountAlreadyExistException("账户已经存在");
+            }
+        } else {
+            if (findUser != null) {
+                throw new AccountAlreadyExistException("账户已经存在");
+            }
+        }
+        ua.setAccount(account);
+        ua.setName(name);
+        ua.setSysRole(this.findSysRoleById(roleId));
+        if (id == null && passwd == null) {
+            ua.setPasswd(Tools.md5("111111"));
+        } else if (id == null || passwd != null) {
+            ua.setPasswd(Tools.md5(passwd));
+        }
+        ua.setAdminType(adminType);
+        if (isCreare) {
+            em.persist(ua);
+        } else {
+            em.merge(ua);
+        }
         return ua;
     }
 
     /**
      * 通过ID删除后台用户
      *
-     * @param id
+     * @param ids
      */
-    public void deleteSysUser(Long... id) {
-//        SysUser ua = this.findById(id);
-//        ua.setDeleted(Boolean.TRUE);
-//        em.merge(ua);
+    public void deleteSysUser(String... ids) {
+        for (String id : ids) {
+            if (StringUtils.isBlank(id)) {
+                continue;
+            }
+            SysUser ua = this.findById(Long.parseLong(id));
+            ua.setDeleted(Boolean.TRUE);
+            em.merge(ua);
+        }
     }
 
     /**
@@ -225,7 +269,7 @@ public class AdminService {
      * @param popedom
      * @return
      */
-    public SysMenu createSysMenu(Long id, Long pid, String name, String url, SysMenuPopedomEnum popedom) {
+    public SysMenu createOrUpdateSysMenu(Long id, Long pid, String name, String url, SysMenuPopedomEnum popedom) {
         boolean isCreare = true;
         SysMenu sm = new SysMenu();
         if (id != null) {
@@ -257,7 +301,7 @@ public class AdminService {
      */
     public void deleteSysMenuById(String... ids) {
         for (String id : ids) {
-            if (id == null) {
+            if (StringUtils.isBlank(id)) {
                 continue;
             }
             SysMenu sm = em.find(SysMenu.class, Long.parseLong(id));
@@ -301,6 +345,18 @@ public class AdminService {
     }
 
     /**
+     * 根据类别获取菜单
+     * 
+     * @param popedom
+     * @return
+     */
+    public List<SysMenu> findSysMenuListByPopedom(SysMenuPopedomEnum popedom) {
+        TypedQuery<SysMenu> query = em.createQuery("SELECT sm FROM SysMenu sm  WHERE sm.popedom = :popedom ORDER BY sm.sortIndex asc", SysMenu.class);
+        query.setParameter("popedom", popedom);
+        return query.getResultList();
+    }
+
+    /**
      * 获取子集的菜单
      *
      * @param pid
@@ -333,15 +389,137 @@ public class AdminService {
             query.setParameter("level", level).setParameter("popedom", popedom);
             return query.getResultList();
         } else {
-            List<SysRoleUser> sysRoleUserList = su.getSysRoleUserList();
-            List<Long> sysRoleIds = new LinkedList<>();
-            sysRoleUserList.stream().forEach((sysRoleUser) -> {
-                sysRoleIds.add(sysRoleUser.getSysRole().getId());
-            });
+//            List<SysRoleUser> sysRoleUserList = su.getSysRoleUserList();
+//            List<Long> sysRoleIds = new LinkedList<>();
+//            sysRoleUserList.stream().forEach((sysRoleUser) -> {
+//                sysRoleIds.add(sysRoleUser.getSysRole().getId());
+//            });
             TypedQuery<SysMenu> query = em.createQuery("SELECT srm.sysMenu FROM SysRoleMenu srm WHERE srm.sysRole.id IN :sysRoleIds AND srm.sysMenu.level = :level AND srm.sysMenu.popedom = :popedom ORDER BY srm.sysMenu.sortIndex asc", SysMenu.class);
-            query.setParameter("sysRoleIds", sysRoleIds).setParameter("level", level).setParameter("popedom", popedom);
+//            query.setParameter("sysRoleIds", sysRoleIds).setParameter("level", level).setParameter("popedom", popedom);
             return query.getResultList();
         }
     }
 
+    /**
+     * 创建角色
+     *
+     * @param id
+     * @param name
+     * @return
+     */
+    public SysRole createOrUpdateSysRole(Long id, String name) {
+        boolean isCreare = true;
+        SysRole sr = new SysRole();
+        if (id != null) {
+            isCreare = false;
+            sr = this.findSysRoleById(id);
+        }
+        sr.setName(name);
+        if (isCreare) {
+            sr.setSortIndex(99);
+            em.persist(sr);
+        } else {
+            em.merge(sr);
+        }
+        return sr;
+    }
+
+    /**
+     * 根据ID删除角色
+     *
+     * @param ids
+     */
+    public void deleteSysRoleById(String... ids) {
+        for (String id : ids) {
+            if (StringUtils.isBlank(id)) {
+                continue;
+            }
+            SysRole sr = em.find(SysRole.class, Long.parseLong(id));
+            em.remove(sr);
+        }
+    }
+
+    /**
+     * 排序角色
+     *
+     * @param ids
+     */
+    public void sortSysRoleById(String... ids) {
+        int i = 0;
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            SysRole sr = em.find(SysRole.class, Long.parseLong(id));
+            sr.setSortIndex(i++);
+            em.merge(sr);
+        }
+    }
+
+    /**
+     * 获取角色列表
+     *
+     * @return
+     */
+    public List<SysRole> findSysRoleListAll() {
+        TypedQuery<SysRole> query = em.createQuery("SELECT sr FROM SysRole sr ORDER BY sr.sortIndex asc", SysRole.class);
+        return query.getResultList();
+    }
+
+    /**
+     * 创建角色菜单
+     *
+     * @param mid
+     * @param roleIds
+     */
+    public void createOrUpdateSysRoleMenu(Long mid, String... roleIds) {
+        //delete all
+        this.deleteSysRoleMenuByMenuId(mid);
+        SysMenu sm = this.findSysMenuById(mid);
+        for (String roleId : roleIds) {
+            if (StringUtils.isBlank(roleId)) {
+                continue;
+            }
+            SysRoleMenu srm = new SysRoleMenu();
+            srm.setSysMenu(sm);
+            srm.setSysRole(this.findSysRoleById(Long.parseLong(roleId)));
+            em.persist(srm);
+            em.flush();
+        }
+    }
+
+    /**
+     * 根据ID删除角色菜单
+     *
+     * @param menuId
+     * @param roleIds
+     */
+    public void deleteSysRoleMenu(Long menuId, List<Long> roleIds) {
+        String removeHql = "DELETE FROM SysRoleMenu srm WHERE srm.sysMenu.id = :menuId AND srm.sysRole.id IN :roleIds";
+        Query query = em.createQuery(removeHql).setParameter("menuId", menuId).setParameter("roleIds", roleIds);
+        query.executeUpdate();
+    }
+
+    /**
+     * 根据菜单删除角色菜单
+     *
+     * @param menuId
+     */
+    public void deleteSysRoleMenuByMenuId(Long menuId) {
+        String removeHql = "DELETE FROM SysRoleMenu srm WHERE srm.sysMenu.id = :menuId";
+        Query query = em.createQuery(removeHql).setParameter("menuId", menuId);
+        query.executeUpdate();
+    }
+
+    /**
+     * 根据菜单获取角色列表
+     *
+     * @param menuId
+     * @return
+     */
+    public List<SysRole> findSysRoleListByMenuId(Long menuId) {
+        TypedQuery<SysRole> query = em.createQuery("SELECT srm.sysRole FROM SysRoleMenu srm WHERE srm.sysMenu.id = :menuId ORDER BY srm.sysRole.sortIndex asc", SysRole.class);
+        query.setParameter("menuId", menuId);
+        return query.getResultList();
+    }
 }

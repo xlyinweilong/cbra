@@ -28,7 +28,7 @@
                 });
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
-                    $.fn.delete_items("ids", "/admin/organization/menu_list?a=USER_DELETE");
+                    $.fn.delete_items("ids", "/admin/organization/user_list?a=USER_DELETE");
                 });
                 $(".tiptop a").click(function () {
                     $(".tip").fadeOut(200);
@@ -36,11 +36,11 @@
             });
             //显示修改界面
             $.fn.edit = function (sid) {
-                window.location.href = "/admin/organization/user_info?id=" + sid";
+                window.location.href = "/admin/organization/user_info?id=" + sid;
             };
             //删除单个设备信息
             $.fn.deleteItem = function (sid) {
-                var url = "/admin/organization/menu_list?a=MENU_DELETE&ids=" + sid;
+                var url = "/admin/organization/user_list?a=USER_DELETE&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
@@ -79,6 +79,9 @@
                                 帐号
                             </th>
                             <th>
+                                角色
+                            </th>
+                            <th>
                                 操作
                             </th>
                         </tr>
@@ -94,6 +97,9 @@
                                 </td>
                                 <td>
                                     ${user.account}
+                                </td>
+                                <td>
+                                    ${user.sysRole.name}
                                 </td>
                                 <td>
                                     <a href="javascript:$.fn.edit('${user.id}');"

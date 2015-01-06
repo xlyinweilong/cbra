@@ -7,11 +7,14 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.SysMenu;
+import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
 import com.cbra.service.AdminService;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.enums.SysMenuPopedomEnum;
+import com.cbra.support.enums.SysUserTypeEnum;
+import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
 import com.cbra.web.support.BadPageException;
@@ -20,9 +23,11 @@ import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -100,7 +105,11 @@ public class AdminServlet extends BaseServlet {
     public static enum ActionEnum {
 
         LOGIN, LOGOUT,
-        MENU_DELETE, MENU_SORT, MENU_CREATE_OR_UPDATE
+        MENU_DELETE, MENU_SORT, MENU_CREATE_OR_UPDATE,
+        ROLE_DELETE, ROLE_SORT, ROLE_CREATE_OR_UPDATE,
+        USER_DELETE, USER_CREATE_OR_UPDATE,
+        POPEDOM_DELETE, CHOOSE_ROLE,
+
     }
 
     @Override
@@ -145,6 +154,20 @@ public class AdminServlet extends BaseServlet {
                 return doSortMenu(request, response);
             case MENU_CREATE_OR_UPDATE:
                 return doCreateOrUpdateMenu(request, response);
+            case ROLE_DELETE:
+                return doDeleteRole(request, response);
+            case ROLE_SORT:
+                return doSortRole(request, response);
+            case ROLE_CREATE_OR_UPDATE:
+                return doCreateOrUpdateRole(request, response);
+            case USER_DELETE:
+                return doDeleteUser(request, response);
+            case USER_CREATE_OR_UPDATE:
+                return doCreateOrUpdateUser(request, response);
+            case POPEDOM_DELETE:
+                return doDeletePopedom(request, response);
+            case CHOOSE_ROLE:
+                return doChooseRole(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -154,8 +177,10 @@ public class AdminServlet extends BaseServlet {
 
         JUMPBACK, JUMPNOBACK,
         LOGIN, MAIN, TOP, LEFT, RIGHT,
-        USER_MANAGE, USER_LIST,
+        USER_MANAGE, USER_LIST, USER_INFO,
         MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
+        ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
+        POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
     }
 
     @Override
@@ -168,6 +193,7 @@ public class AdminServlet extends BaseServlet {
             case JUMPNOBACK:
             case USER_MANAGE:
             case MENU_MANAGE:
+            case POPEDOM_MANAGE:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
                 return loadTopPage(request, response);
@@ -183,8 +209,22 @@ public class AdminServlet extends BaseServlet {
                 return loadMenuSortList(request, response);
             case MENU_INFO:
                 return loadMenuInfo(request, response);
+            case ROLE_LIST:
+                return loadRoleList(request, response);
+            case ROLE_SORT_LIST:
+                return loadRoleSortList(request, response);
+            case ROLE_INFO:
+                return loadRoleInfo(request, response);
             case USER_LIST:
                 return loadUserList(request, response);
+            case USER_INFO:
+                return loadUserInfo(request, response);
+            case POPEDOM_MENU:
+                return loadPopedomMenu(request, response);
+            case POPEDOM_LIST:
+                return loadPopedomList(request, response);
+            case POPEDOM_CHOOSE_ROLE:
+                return loadPopedomChooseRole(request, response);
             default:
                 throw new BadPageException();
         }
@@ -297,11 +337,154 @@ public class AdminServlet extends BaseServlet {
         } catch (Exception e) {
             popedom = SysMenuPopedomEnum.COMMON;
         }
-        SysMenu sm = adminService.createSysMenu(id, pid, menuName, menuUrl, popedom);
+        SysMenu sm = adminService.createOrUpdateSysMenu(id, pid, menuName, menuUrl, popedom);
         request.setAttribute("sysMenu", sm);
         request.setAttribute("reflashTreeFrameUrl", "/admin/organization/menu_tree");
         setSuccessResult("保存成功！", "/admin/organization/menu_list?id=" + pid, request);
         forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 删除角色
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteSysRoleById(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 角色排序
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doSortRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.sortSysMenuById(ids);
+        String id = super.getRequestString(request, "pid");
+        if (id != null) {
+            setSuccessResult("保存成功！", request);
+            forward("/admin/organization/menu_sort_list?id=" + id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建或者更新角色
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String roleName = super.getRequestString(request, "roleName");
+        SysRole sr = adminService.createOrUpdateSysRole(id, roleName);
+        request.setAttribute("sysRole", sr);
+        setSuccessResult("保存成功！", "/admin/organization/role_list", request);
+        forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteSysUser(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建用户
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String userName = super.getRequestString(request, "userName");
+        String userPasswd = super.getRequestString(request, "userPasswd");
+        String userAccount = super.getRequestString(request, "userAccount");
+        Long userRoleId = super.getRequestLong(request, "userRoleId");
+        if (userAccount == null || userName == null || userRoleId == null) {
+            setErrorResult("保存失败！参数无效！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        SysUser su = null;
+        try {
+            su = adminService.createOrUpdateSysUser(id, userAccount, userName, userPasswd, SysUserTypeEnum.ORDINARY, userRoleId);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(ex.getMessage(), request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("sysUser", su);
+        setSuccessResult("保存成功！", "/admin/organization/user_list", request);
+        forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 删除赋权限
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeletePopedom(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("roleIds");
+        Long mid = super.getRequestLong(request, "mid");
+        List<Long> roleIds = new ArrayList<>();
+        for (String id : ids) {
+            roleIds.add(Long.parseLong(id));
+        }
+        adminService.deleteSysRoleMenu(mid, roleIds);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 选择角色
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doChooseRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] roleIds = request.getParameterValues("roleIds");
+        Long mid = super.getRequestLong(request, "mid");
+        adminService.createOrUpdateSysRoleMenu(mid, roleIds);
+        setSuccessResult("保存成功！", request);
+        forward("/admin/organization/popedom_choose_role?mid=" + mid, request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
 
@@ -419,6 +602,55 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
+     * 角色列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadRoleList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("roleList", adminService.findSysRoleListAll());
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 角色排序页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadRoleSortList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("roleList", adminService.findSysRoleListAll());
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 角色详细信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadRoleInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        SysRole sysRole = null;
+        if (super.getRequestLong(request, "id") != null) {
+            sysRole = adminService.findSysRoleById(super.getRequestLong(request, "id"));
+            request.setAttribute("id", sysRole.getId());
+        } else {
+            sysRole = new SysRole();
+        }
+        request.setAttribute("sysRole", sysRole);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
      * 用户列表
      *
      * @param request
@@ -428,9 +660,82 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
         Map<String, Object> map = new HashMap<>();
-        ResultList<SysUser> resultList = adminService.findSysUserList(map, 1, 15, null, true);
+        ResultList<SysUser> resultList = adminService.findSysUserList(map, page, 10, null, true);
+
         request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 用户详细信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        SysUser sysUser = null;
+        if (super.getRequestLong(request, "id") != null) {
+            sysUser = adminService.findById(super.getRequestLong(request, "id"));
+            request.setAttribute("id", sysUser.getId());
+        } else {
+            sysUser = new SysUser();
+        }
+        request.setAttribute("sysUser", sysUser);
+        request.setAttribute("roleList", adminService.findSysRoleListAll());
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 赋权限菜单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPopedomMenu(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("menuList", adminService.findSysMenuListByPopedom(SysMenuPopedomEnum.COMMON));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 赋权限列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPopedomList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long menuId = super.getRequestLong(request, "mid");
+        request.setAttribute("roleList", adminService.findSysRoleListByMenuId(menuId));
+        request.setAttribute("mid", menuId);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 选择赋权限列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPopedomChooseRole(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long menuId = super.getRequestLong(request, "mid");
+        request.setAttribute("roleList", adminService.findSysRoleListAll());
+        request.setAttribute("mid", menuId);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

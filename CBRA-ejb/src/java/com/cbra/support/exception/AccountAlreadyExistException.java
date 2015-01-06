@@ -2,11 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cn.yoopay.support.exception;
+package com.cbra.support.exception;
 
 /**
+ * 账户已经存在异常
  *
- * @author HUXIAOFENG
+ * @author Yin.Weilong
  */
 public class AccountAlreadyExistException extends Exception {
 

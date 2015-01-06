@@ -69,8 +69,8 @@
                 <input type="hidden" name="id" value="${id}" />
                 <input type="hidden" name="pid" value="${pid}" />
                 <ul class="forminfo">
-                    <li><label>菜单名称<b>*</b></label><input type="text" class="dfinput" type="text" style="width: 350px;" name="menuName" value="${sysMenu.name}" maxlength="25" /><i>菜单名称不能超过25个汉字，必填项</i></li>
-                    <li><label>链接地址</label><input type="text" class="dfinput" type="text" style="width: 350px;" name="menuUrl" value="${sysMenu.url}" maxlength="200" /><i></i></li>
+                    <li><label>菜单名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="menuName" value="${sysMenu.name}" maxlength="25" /><i>菜单名称不能超过25个汉字，必填项</i></li>
+                    <li><label>链接地址</label><input type="text" class="dfinput" style="width: 350px;" name="menuUrl" value="${sysMenu.url}" maxlength="200" /><i></i></li>
                     <li><label>菜单类型</label>
                         <select name="menuPopedom" class="dfinput" style="width: 354px;">
                             <c:forEach var="menuPopedom" items="${menuPopedomList}">
@@ -78,7 +78,7 @@
                                     ${menuPopedom.getMean(menuPopedom)}
                                 </option>
                             </c:forEach>
-                        </select>
+                        </select></li>
                         <li><label>&nbsp;</label>
                             <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
                             <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

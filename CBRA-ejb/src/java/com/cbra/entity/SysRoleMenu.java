@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author yin.weilong
  */
 @Entity
-@Table(name = "sys_role_user")
+@Table(name = "sys_role_menu")
 @XmlRootElement
 public class SysRoleMenu implements Serializable {
 
