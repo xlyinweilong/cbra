@@ -26,14 +26,10 @@
             $.fn.initpage();
             $("#saveBtn").click(function () {
                 var rules = {
-                    "userAccount": {required: true},
-                    "userName": {required: true},
-                    "userRoleId": {required: true}
+                    "userName": {required: true}
                 };
                 var messages = {
-                    "userAccount": {required: "帐号必须填写！"},
-                    "userName": {required: "姓名必须填写！"},
-                    "userRoleId": {required: "角色必须填写！"}
+                    "userName": {required: "姓名必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
@@ -70,18 +66,8 @@
                 <input type="hidden" name="id" value="${sysUser.id}" />
                 <input type="hidden" name="a" value="USER_CREATE_OR_UPDATE" />
                 <ul class="forminfo">
-                    <li><label>帐号<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount" value="${sysUser.account}" maxlength="20" /><i>用户名不能超过20个字符，必填项</i></li>
                     <li><label>姓名<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userName" value="${sysUser.name}" maxlength="50" /><i>必填项</i></li>
                     <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="userPasswd" value="" maxlength="50" /><i><c:if test="${sysUser.id != null}">如果密码为空，则不修改原密码</c:if><c:if test="${sysUser.id == null}">默认密码:111111</c:if></i></li>
-                    <li><label>角色<b>*</b></label>
-                        <select name="userRoleId" class="dfinput" style="width: 354px;">
-                            <c:forEach var="role" items="${roleList}">
-                                <option value="${role.id}" <c:if test="${sysUser.sysRole != null && role.id == sysUser.sysRole.id}">selected="selected"</c:if>>
-                                    ${role.name}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </li>
                     <li><label>&nbsp;</label>
                         <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
                         <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

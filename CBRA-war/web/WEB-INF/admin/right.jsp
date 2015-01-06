@@ -26,12 +26,12 @@
         <div class="mainindex">
             <div class="welinfo">
                 <span><img src="<%=path%>/background/images/man.jpg" width="20" height="24"/></span>
-                <b>${user.name}，您好，欢迎登录云端房产网信息管理平台</b>
-                <a href="./showMyInfoAction.action">帐号设置</a>
+                <b>${admin.name}，您好，欢迎登录云端房产网信息管理平台</b>
+                <a href="/admin/organization/my_info">帐号设置</a>
             </div>
             <div class="welinfo">
                 <span><img src="<%=path%>/background/images/time.png" alt="时间" /></span>
-                <i><s:property value="#session.userSession.lastLoginDesc"/></i> （不是您登录的？<a href="./logoutAction.action" target="_parent">请点这里</a>）
+                <i></i> （不是您登录的？<a href="/admin/main?a=logout" target="_parent">请点这里</a>）
             </div>
             <!-- 
             <div class="xline"></div>
@@ -45,6 +45,7 @@
             <!-- 
             <div class="ibox"><a class="ibtn"><img src="<%=path%>/admin/images/iadd.png" />添加新的快捷功能</a></div>
             -->
+            <%--
             <div class="xline"></div>
             <div class="box"></div>
             <div class="welinfo">
@@ -64,7 +65,7 @@
                 <li><a href="#">如何管理广告</a></li>
                 <li><a href="#">后台用户设置(权限)</a></li>
                 <li><a href="#">系统设置</a></li>
-            </ul>
+            </ul>--%>
         </div>
     </body>
 </html>

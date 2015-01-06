@@ -389,13 +389,12 @@ public class AdminService {
             query.setParameter("level", level).setParameter("popedom", popedom);
             return query.getResultList();
         } else {
-//            List<SysRoleUser> sysRoleUserList = su.getSysRoleUserList();
-//            List<Long> sysRoleIds = new LinkedList<>();
-//            sysRoleUserList.stream().forEach((sysRoleUser) -> {
-//                sysRoleIds.add(sysRoleUser.getSysRole().getId());
-//            });
-            TypedQuery<SysMenu> query = em.createQuery("SELECT srm.sysMenu FROM SysRoleMenu srm WHERE srm.sysRole.id IN :sysRoleIds AND srm.sysMenu.level = :level AND srm.sysMenu.popedom = :popedom ORDER BY srm.sysMenu.sortIndex asc", SysMenu.class);
-//            query.setParameter("sysRoleIds", sysRoleIds).setParameter("level", level).setParameter("popedom", popedom);
+            SysRole sr = su.getSysRole();
+            if(sr == null){
+                return new ArrayList<>();
+            }
+            TypedQuery<SysMenu> query = em.createQuery("SELECT srm.sysMenu FROM SysRoleMenu srm WHERE srm.sysRole.id = :roleId AND srm.sysMenu.level = :level AND srm.sysMenu.popedom = :popedom ORDER BY srm.sysMenu.sortIndex asc", SysMenu.class);
+            query.setParameter("roleId", sr.getId()).setParameter("level", level).setParameter("popedom", popedom);
             return query.getResultList();
         }
     }
