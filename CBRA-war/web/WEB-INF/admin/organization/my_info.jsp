@@ -26,10 +26,16 @@
             $.fn.initpage();
             $("#saveBtn").click(function () {
                 var rules = {
-                    "userName": {required: true}
+                    "userName": {required: true},
+                    "oldPasswd": {required: true},
+                    "newPasswd": {required: true},
+                    "renewPasswd": {required: true}
                 };
                 var messages = {
-                    "userName": {required: "姓名必须填写！"}
+                    "userName": {required: "姓名必须填写！"},
+                    "oldPasswd": {required: "原密码必须填写！"},
+                    "newPasswd": {required: "新密码必须填写！"},
+                    "renewPasswd": {required: "确认密码必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
@@ -50,7 +56,7 @@
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "/admin/organization/user_list";
+                window.location.href = "/admin/right";
             });
         }
         /**
@@ -63,11 +69,12 @@
         <div class="formbody">
             <div class="formtitle"><span>基本信息</span></div>
             <form id="form1" name="form1" method="post">
-                <input type="hidden" name="id" value="${sysUser.id}" />
-                <input type="hidden" name="a" value="USER_CREATE_OR_UPDATE" />
+                <input type="hidden" name="a" value="REPASSWD" />
                 <ul class="forminfo">
-                    <li><label>姓名<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userName" value="${sysUser.name}" maxlength="50" /><i>必填项</i></li>
-                    <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="userPasswd" value="" maxlength="50" /><i><c:if test="${sysUser.id != null}">如果密码为空，则不修改原密码</c:if><c:if test="${sysUser.id == null}">默认密码:111111</c:if></i></li>
+                    <li><label>姓名<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userName" value="${admin.name}" maxlength="50" /><i>必填项</i></li>
+                    <li><label>原密码<b>*</b></label><input type="password" class="dfinput" style="width: 350px;" name="oldPasswd" value="" maxlength="50" /><i>必填项</i></li>
+                    <li><label>新密码<b>*</b></label><input type="password" class="dfinput" style="width: 350px;" name="newPasswd" value="" maxlength="50" /><i>必填项</i></li>
+                    <li><label>确认密码<b>*</b></label><input type="password" class="dfinput" style="width: 350px;" name="renewPasswd" value="" maxlength="50" /><i>必填项</i></li>
                     <li><label>&nbsp;</label>
                         <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
                         <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

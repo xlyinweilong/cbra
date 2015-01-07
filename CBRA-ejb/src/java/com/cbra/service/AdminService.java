@@ -203,13 +203,36 @@ public class AdminService {
     }
 
     /**
+     * 修改密码
+     *
+     * @param sysUser
+     * @param name
+     * @param oldpasswd
+     * @param newpasswd
+     * @return
+     * @throws EjbMessageException
+     */
+    public SysUser repasswd(SysUser sysUser, String name, String oldpasswd, String newpasswd) throws EjbMessageException {
+        sysUser.setName(name);
+        if (!(Tools.md5(oldpasswd).equals(sysUser.getPasswd()))) {
+            throw new EjbMessageException("原密码错误！");
+        }
+        sysUser.setPasswd(Tools.md5(newpasswd));
+        em.merge(sysUser);
+        return sysUser;
+    }
+
+    /**
      * 创建后台用户
      *
+     * @param id
      * @param account
      * @param name
      * @param passwd
      * @param adminType
+     * @param roleId
      * @return
+     * @throws AccountAlreadyExistException
      */
     public SysUser createOrUpdateSysUser(Long id, String account, String name, String passwd, SysUserTypeEnum adminType, Long roleId) throws AccountAlreadyExistException {
         boolean isCreare = true;
@@ -346,7 +369,7 @@ public class AdminService {
 
     /**
      * 根据类别获取菜单
-     * 
+     *
      * @param popedom
      * @return
      */
@@ -390,7 +413,7 @@ public class AdminService {
             return query.getResultList();
         } else {
             SysRole sr = su.getSysRole();
-            if(sr == null){
+            if (sr == null) {
                 return new ArrayList<>();
             }
             TypedQuery<SysMenu> query = em.createQuery("SELECT srm.sysMenu FROM SysRoleMenu srm WHERE srm.sysRole.id = :roleId AND srm.sysMenu.level = :level AND srm.sysMenu.popedom = :popedom ORDER BY srm.sysMenu.sortIndex asc", SysMenu.class);

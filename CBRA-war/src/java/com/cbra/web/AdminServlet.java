@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -104,7 +106,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum ActionEnum {
 
-        LOGIN, LOGOUT,
+        LOGIN, LOGOUT, REPASSWD,
         MENU_DELETE, MENU_SORT, MENU_CREATE_OR_UPDATE,
         ROLE_DELETE, ROLE_SORT, ROLE_CREATE_OR_UPDATE,
         USER_DELETE, USER_CREATE_OR_UPDATE,
@@ -164,6 +166,8 @@ public class AdminServlet extends BaseServlet {
                 return doDeleteUser(request, response);
             case USER_CREATE_OR_UPDATE:
                 return doCreateOrUpdateUser(request, response);
+            case REPASSWD:
+                return doRepasswd(request, response);
             case POPEDOM_DELETE:
                 return doDeletePopedom(request, response);
             case CHOOSE_ROLE:
@@ -177,7 +181,7 @@ public class AdminServlet extends BaseServlet {
 
         JUMPBACK, JUMPNOBACK,
         LOGIN, MAIN, TOP, LEFT, RIGHT,
-        USER_MANAGE, USER_LIST, USER_INFO,
+        USER_MANAGE, USER_LIST, USER_INFO, MY_INFO,
         MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
         ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
@@ -194,6 +198,7 @@ public class AdminServlet extends BaseServlet {
             case USER_MANAGE:
             case MENU_MANAGE:
             case POPEDOM_MANAGE:
+            case MY_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
                 return loadTopPage(request, response);
@@ -446,6 +451,49 @@ public class AdminServlet extends BaseServlet {
         }
         request.setAttribute("sysUser", su);
         setSuccessResult("保存成功！", "/admin/organization/user_list", request);
+        forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 修改密码
+     *
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doRepasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
+        String userName = super.getRequestString(request, "userName");
+        String oldPasswd = super.getRequestString(request, "oldPasswd");
+        String newPasswd = super.getRequestString(request, "newPasswd");
+        String renewPasswd = super.getRequestString(request, "renewPasswd");
+        if (userName == null || oldPasswd == null || newPasswd == null || renewPasswd == null) {
+            setErrorResult("保存失败！参数无效！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        if (newPasswd.length() < 6) {
+            setErrorResult("密码必须大于6位！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        if (!newPasswd.equals(renewPasswd)) {
+            setErrorResult("两次密码输入不一致！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        try {
+            adminService.repasswd(sysUser, userName, oldPasswd, newPasswd);
+        } catch (EjbMessageException ex) {
+            setErrorResult(ex.getMessage(), request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        setSuccessResult("保存成功！", "/admin/main?a=logout", request);
         forward("/admin/common/jumpback", request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
