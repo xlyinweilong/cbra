@@ -13,7 +13,6 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="cn.yoopay.*"%>
 <%@page import="java.util.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -29,65 +28,17 @@
                 </c:otherwise>
             </c:choose>
         </title> 
-
-
         <meta name="keywords" content="Yoopay Event China Management Registration Payment Eventbrite Amiando Paypal Wepay China UnionPay Alipay 活动 会议 发布 推广 票务 报名 收款 银联 支付宝 网银 国际 信用卡"/> 
         <meta name="description" content="友付 是会议及活动的线上报名、推广、票务、收款一站式平台。20,000多个会议及活动，在使用友付，包括大型国内及国际行业会议会展、企业内部培训、经销商、供应商会议，及各种社交、聚会、文体、培训、演出活动。Yoopay is China's first event online management platform for event publishing, promotion, registration, and ticketing. Event organizers can also collect payments online in advance easily with dual currencies (RMB/USD) and dual languages (Chinese/English) via China Union Pay, Alipay, Visa, Mastercard, and Paypal. More than 20,000 domestic and international events, including conferences, exihibitions, forums, corporate and social events are using Yoopay for their events in China."/> 
         <link rel="shortcut icon" href="/favicon.ico" /> 
-        <link rel="stylesheet" type="text/css" href="/css/jquery.cleditor.css" />
-        <link rel="stylesheet" type="text/css" href="/css/jquery.qtip.css" />
         <%-- 在正式DEPLOY时，所有CSS和JAVASCRIPT文件，都需要设置BROWSWER SIDE CACHE，并且在登录前各页面做预加载。 --%>
         <link href="/css/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>	
-        <link href="/css/style.css" rel="stylesheet" type="text/css" />
-        <c:choose>
-            <c:when test="${not empty eventPaymentPage || not empty apiPaymentPage}">
-                <c:choose>
-                    <c:when test="${empty fundCollection.eventStyle}"><link href="/css/white.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_WHITE'}"><link href="/css/white.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_BLACK'}"><link href="/css/black.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_BLUE'}"><link href="/css/blue.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_GREEN'}"><link href="/css/green.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_PURPLE'}"><link href="/css/purple.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_SILVER'}"><link href="/css/silver.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:when test="${fundCollection.eventStyle=='CLASSIC_ORANGE'}"><link href="/css/orange.css" rel="stylesheet" type="text/css" /></c:when>
-                    <c:otherwise><link href="${fundCollection.eventStyle}" rel="stylesheet" type="text/css" /></c:otherwise>
-                </c:choose>
-            </c:when>
-            <c:otherwise>
-            </c:otherwise>
-        </c:choose>
-
-
-        <fmt:message key='GLOBAL_LANGUAGE_SPECIFIC_CSS' bundle='${bundle}'/>
-        <%--<link href="/css/style.min.css" rel="stylesheet" type="text/css" />--%>
         <script type="text/javascript" src="/scripts/jquery-1.8.2.min.js"></script>
         <script type="text/javascript" src="/scripts/jquery-ui-1.9.1.custom.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery.bgiframe.js"></script>
-        <script type="text/javascript" src="/scripts/jquery.qtip.min.js"></script>
-        <script type="text/javascript" src="/scripts/jquery.uitablefilter.js" ></script>
-        <script type="text/javascript" src="/scripts/jquery.highlight-4.closure.js" ></script>
-
         <!--[if IE]><script src="/scripts/excanvas.compiled.js" type="text/javascript"></script><![endif]-->
         <script type="text/javascript" src="/scripts/yoopay.js"></script>
-        <script type="text/javascript" src="/scripts/jquery.cleditor.js"></script>
-        <script type="text/javascript" src="/kindeditor-4.1.2/kindeditor.js"></script>
-        <script type="text/javascript" src="/scripts/jquery.datepicker.local.cn.js"></script>
-        <c:if test="${param.current_page == 'payment_widget' || param.current_page == 'calendar_widget' || param.current_page == 'checkin' || param.current_page == 'api'}">
-            <script type="text/javascript" src="/scripts/jquery.zclip.min.js"></script>
-        </c:if>
     </head>
-
     <body>
-        <%
-            try {
-                pageContext.setAttribute("sysNumbers", Long.parseLong((Config.SYSTEM_STATISTIC_NUMBERS_HTML).toString().trim().replaceAll("\\D", "")));
-                pageContext.setAttribute("totalTicket", Config.SYSTEM_TICKET_COUNT);
-                if (request.getRequestURI().toString().equals("/WEB-INF/public/index.jsp")) {
-                    pageContext.setAttribute("isIndexUrl", true);
-                }
-            } catch (Exception e) {
-            }
-        %>
         <c:choose>
             <c:when test="${empty isIndexUrl}">
                 <div class="container" >
