@@ -5,13 +5,6 @@
     <fmt:setBundle basename="message" scope="session" var="bundle"/>
 </c:if>
 <%-- 设置语言要在输出任何response之前 --%>
-
-<%-- 
-    Document   : header_login
-    Created on : Mar 31, 2011, 6:03:33 PM
-    Author     : HUXIAOFENG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -5,11 +5,10 @@
  */
 package com.cbra.entity;
 
-import com.cbra.support.enums.SysMenuPopedomEnum;
+import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +18,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,14 +30,14 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 后台菜单
+ * 栏目信息内容
  *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "sys_menu")
+@Table(name = "plate_information_content")
 @XmlRootElement
-public class SysMenu implements Serializable {
+public class PlateInformationContent implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,34 +52,12 @@ public class SysMenu implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
-    @Enumerated(EnumType.STRING)
-    @Column(name = "popedom", nullable = false, length = 255)
-    private SysMenuPopedomEnum popedom = SysMenuPopedomEnum.COMMON;
-    @Basic(optional = false)
-    @Size(max = 255)
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
-    @Size(max = 255)
-    @Column(name = "url")
-    private String url;
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SysMenu parentMenu = null;
-    @Basic(optional = false)
-    @Column(name = "sort_index")
-    private Integer sortIndex = 0;
-    @Basic(optional = false)
-    @Column(name = "level")
-    private Integer level = 1;
-
-    public SysMenu() {
-    }
-
-    public SysMenu(Long id) {
-        this.id = id;
-    }
-
+    @Lob
+    @Column(name = "content")
+    private String content;
+    @JoinColumn(name = "plate_information_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    private PlateInformation plateInformation = null;
     public Long getId() {
         return id;
     }
@@ -87,12 +66,20 @@ public class SysMenu implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getContent() {
+        return content;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public PlateInformation getPlateInformation() {
+        return plateInformation;
+    }
+
+    public void setPlateInformation(PlateInformation plateInformation) {
+        this.plateInformation = plateInformation;
     }
 
     public Integer getVersion() {
@@ -111,58 +98,11 @@ public class SysMenu implements Serializable {
         this.createDate = createDate;
     }
 
-    public SysMenuPopedomEnum getPopedom() {
-        return popedom;
+    public PlateInformationContent() {
     }
 
-    public void setPopedom(SysMenuPopedomEnum popedom) {
-        this.popedom = popedom;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public SysMenu getParentMenu() {
-        return parentMenu;
-    }
-
-    public void setParentMenu(SysMenu parentMenu) {
-        this.parentMenu = parentMenu;
-    }
-
-    public Integer getSortIndex() {
-        return sortIndex;
-    }
-
-    public void setSortIndex(Integer sortIndex) {
-        this.sortIndex = sortIndex;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
-
-    /**
-     * 获取文字性的菜单权限
-     *
-     * @return
-     */
-    public String getPopedomStr() {
-        switch (popedom) {
-            case SUPER:
-                return "超级管理员菜单";
-            default:
-                return "普通菜单";
-        }
+    public PlateInformationContent(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -175,10 +115,10 @@ public class SysMenu implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SysMenu)) {
+        if (!(object instanceof PlateInformationContent)) {
             return false;
         }
-        SysMenu other = (SysMenu) object;
+        PlateInformationContent other = (PlateInformationContent) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -187,7 +127,7 @@ public class SysMenu implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.SysMenu[ id=" + id + " ]";
+        return "com.cbra.entity.PlateInformationContent[ id=" + id + " ]";
     }
 
 }

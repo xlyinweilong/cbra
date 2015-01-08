@@ -35,10 +35,10 @@ public class SysRoleMenu implements Serializable {
     @Column(name = "id")
     private Long id;
     @JoinColumn(name = "menu_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private SysMenu sysMenu;
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private SysRole sysRole;
 
     public SysRoleMenu() {

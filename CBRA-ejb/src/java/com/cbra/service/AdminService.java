@@ -5,12 +5,14 @@
  */
 package com.cbra.service;
 
+import com.cbra.entity.Plate;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysRoleMenu;
 import com.cbra.entity.SysUser;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -78,6 +80,16 @@ public class AdminService {
      */
     public SysRole findSysRoleById(Long id) {
         return em.find(SysRole.class, id);
+    }
+
+    /**
+     * 通过ID获取板块
+     *
+     * @param id
+     * @return
+     */
+    public Plate findPlateById(Long id) {
+        return em.find(Plate.class, id);
     }
 
     /**
@@ -543,5 +555,77 @@ public class AdminService {
         TypedQuery<SysRole> query = em.createQuery("SELECT srm.sysRole FROM SysRoleMenu srm WHERE srm.sysMenu.id = :menuId ORDER BY srm.sysRole.sortIndex asc", SysRole.class);
         query.setParameter("menuId", menuId);
         return query.getResultList();
+    }
+
+    /**
+     * 根据菜单删除角色菜单
+     *
+     * @param ids
+     */
+    public void deletePlateByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            Plate plate = em.find(Plate.class, Long.parseLong(id));
+            em.remove(plate);
+        }
+    }
+
+    /**
+     * 获取板块
+     *
+     * @return
+     */
+    public List<Plate> findPlateList() {
+        TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p", Plate.class);
+        return query.getResultList();
+    }
+
+    /**
+     * 创建板块
+     *
+     * @param id
+     * @param name
+     * @param key
+     * @param pid
+     * @return
+     */
+    public Plate createOrUpdatePlate(Long id, String name, PlateKeyEnum key, Long pid) {
+        boolean isCreare = true;
+        Plate plate = new Plate();
+        if (id != null) {
+            isCreare = false;
+            plate = this.findPlateById(id);
+        }
+        plate.setName(name);
+        plate.setPlateKey(key);
+        if (pid != null) {
+            plate.setParentPlate(this.findPlateById(pid));
+        }
+        if (isCreare) {
+            em.persist(plate);
+        } else {
+            em.merge(plate);
+        }
+        return plate;
+    }
+    
+    /**
+     * 根据KEY获取板块
+     * 
+     * @param key
+     * @return 
+     */
+    public Plate findPlateByKey(PlateKeyEnum key) {
+        Plate plate = null;
+        try {
+            TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p WHERE p.plateKey = :key", Plate.class);
+            query.setParameter("key", key);
+            plate = query.getSingleResult();
+        } catch (NoResultException ex) {
+            plate = null;
+        }
+        return plate;
     }
 }

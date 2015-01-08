@@ -5,7 +5,7 @@
  */
 package com.cbra.entity;
 
-import com.cbra.support.enums.SysUserTypeEnum;
+import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -18,7 +18,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,14 +30,14 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 后台用户
+ * 栏目信息
  *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "sys_user")
+@Table(name = "plate_information")
 @XmlRootElement
-public class SysUser implements Serializable {
+public class PlateInformation implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,42 +52,32 @@ public class SysUser implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
-    @Enumerated(EnumType.STRING)
-    @Column(name = "admin_type", nullable = false, length = 255)
-    private SysUserTypeEnum adminType = SysUserTypeEnum.ORDINARY;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "account")
-    private String account;
+    @Column(name = "visit_count")
+    private int visitCount = 0;
     @Basic(optional = false)
-    @Size(max = 255)
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
-    @Size(max = 255)
-    @Column(name = "passwd")
-    private String passwd;
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @NotNull
+    @Column(name = "is_top")
+    private boolean isTop = false;
+    @Column(name = "target")
+    private String target;
+    @Column(name = "title")
+    private String title;
+    @Column(name = "nav_url")
+    private String navUrl;
+    @Column(name = "pic_url")
+    private String picUrl;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "pic_url")
+    private String introduction;
+    @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SysRole sysRole;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "deleted", nullable = false)
-    private Boolean deleted = false;
-
-    public SysUser() {
-    }
-
-    public SysUser(Long id) {
-        this.id = id;
-    }
-
-    public SysUser(Long id, String account) {
-        this.id = id;
-        this.account = account;
-    }
-
+    private Plate plate = null;
+    @JoinColumn(name = "plate_information_content_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    private PlateInformationContent plateInformationContent = null;
     public Long getId() {
         return id;
     }
@@ -94,36 +86,68 @@ public class SysUser implements Serializable {
         this.id = id;
     }
 
-    public String getAccount() {
-        return account;
+    public int getVisitCount() {
+        return visitCount;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setVisitCount(int visitCount) {
+        this.visitCount = visitCount;
     }
 
-    public String getName() {
-        return name;
+    public boolean isIsTop() {
+        return isTop;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIsTop(boolean isTop) {
+        this.isTop = isTop;
     }
 
-    public String getPasswd() {
-        return passwd;
+    public String getTarget() {
+        return target;
     }
 
-    public void setPasswd(String passwd) {
-        this.passwd = passwd;
+    public void setTarget(String target) {
+        this.target = target;
     }
 
-    public SysUserTypeEnum getAdminType() {
-        return adminType;
+    public String getTitle() {
+        return title;
     }
 
-    public void setAdminType(SysUserTypeEnum adminType) {
-        this.adminType = adminType;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getNavUrl() {
+        return navUrl;
+    }
+
+    public void setNavUrl(String navUrl) {
+        this.navUrl = navUrl;
+    }
+
+    public String getPicUrl() {
+        return picUrl;
+    }
+
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public Plate getPlate() {
+        return plate;
+    }
+
+    public void setPlate(Plate plate) {
+        this.plate = plate;
     }
 
     public Integer getVersion() {
@@ -142,20 +166,11 @@ public class SysUser implements Serializable {
         this.createDate = createDate;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
+    public PlateInformation() {
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public SysRole getSysRole() {
-        return sysRole;
-    }
-
-    public void setSysRole(SysRole sysRole) {
-        this.sysRole = sysRole;
+    public PlateInformation(Long id) {
+        this.id = id;
     }
 
     @Override
@@ -168,10 +183,10 @@ public class SysUser implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SysUser)) {
+        if (!(object instanceof PlateInformation)) {
             return false;
         }
-        SysUser other = (SysUser) object;
+        PlateInformation other = (PlateInformation) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -180,7 +195,7 @@ public class SysUser implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.SysUser[ id=" + id + " ]";
+        return "com.cbra.entity.PlateInformation[ id=" + id + " ]";
     }
 
 }

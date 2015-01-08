@@ -44,7 +44,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -111,7 +111,7 @@ public class AdminServlet extends BaseServlet {
         ROLE_DELETE, ROLE_SORT, ROLE_CREATE_OR_UPDATE,
         USER_DELETE, USER_CREATE_OR_UPDATE,
         POPEDOM_DELETE, CHOOSE_ROLE,
-
+        PLATE_DELETE, PLATE_CREATE_OR_UPDATE,
     }
 
     @Override
@@ -172,6 +172,8 @@ public class AdminServlet extends BaseServlet {
                 return doDeletePopedom(request, response);
             case CHOOSE_ROLE:
                 return doChooseRole(request, response);
+            case PLATE_DELETE:
+            case PLATE_CREATE_OR_UPDATE:
             default:
                 throw new BadPostActionException();
         }
@@ -185,6 +187,7 @@ public class AdminServlet extends BaseServlet {
         MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
         ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
+        PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE,
     }
 
     @Override
@@ -198,6 +201,7 @@ public class AdminServlet extends BaseServlet {
             case USER_MANAGE:
             case MENU_MANAGE:
             case POPEDOM_MANAGE:
+            case PLATE_MANAGE:
             case MY_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
@@ -230,6 +234,9 @@ public class AdminServlet extends BaseServlet {
                 return loadPopedomList(request, response);
             case POPEDOM_CHOOSE_ROLE:
                 return loadPopedomChooseRole(request, response);
+            case PLATE_LIST:
+            case PLATE_INFO:
+            case PLATE_TREE:
             default:
                 throw new BadPageException();
         }
