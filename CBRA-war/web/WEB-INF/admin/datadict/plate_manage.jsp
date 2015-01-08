@@ -40,7 +40,7 @@
         </div>
         <table style="width:100%;">
             <tr>
-                <td style="border-right: 1px solid #dedede;width:200px;"><iframe id="treeFrame" name="treeFrame" src="/admin/organization/menu_tree" frameborder="0" scrolling="auto" style="width:100%; height:100%"></iframe></td>
+                <td style="border-right: 1px solid #dedede;width:200px;"><iframe id="treeFrame" name="treeFrame" src="/admin/datadict/plate_tree" frameborder="0" scrolling="auto" style="width:100%; height:100%"></iframe></td>
                 <td><iframe id="listFrame" name="listFrame" src="about:blank" frameborder="0" scrolling="auto" style="width: 100%; height: 100%"></iframe></td>
             </tr>
         </table>

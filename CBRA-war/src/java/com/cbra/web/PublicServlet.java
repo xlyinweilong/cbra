@@ -19,8 +19,9 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 
 /**
- *
- * @author HUXIAOFENG
+ * 公共WEB层
+ * 
+ * @author yin.weilong
  */
 @WebServlet(name = "PublicServlet", urlPatterns = {"/public/*"})
 public class PublicServlet extends BaseServlet {
@@ -83,10 +84,6 @@ public class PublicServlet extends BaseServlet {
         switch (action) {
             case SET_LANG:
                 return doSetLang(request, response);
-            case FOLLOW_US:
-                return doFollowOurWeiBo(request, response);
-            case SHARE_TO_WEIBO:
-                return doShareToWeiBo(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -105,10 +102,6 @@ public class PublicServlet extends BaseServlet {
                 return loadIndex(request, response);
             case SET_LANG:
                 return loadSetLang(request, response);
-            case BLOG:
-                return loadBlog(request, response);
-            case API:
-                return loadAPI(request, response);
             default:
                 return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -121,13 +114,6 @@ public class PublicServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean doShareToWeiBo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return FORWARD_TO_ANOTHER_URL;
-    }
-
-    private boolean doFollowOurWeiBo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return FORWARD_TO_ANOTHER_URL;
-    }
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -141,13 +127,6 @@ public class PublicServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean loadBlog(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    private boolean loadAPI(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
     // ************************************************************************
     // *************** 支持性函数、共用函数等非直接功能函数，放在这下面
     // ************************************************************************

@@ -583,6 +583,23 @@ public class AdminService {
     }
 
     /**
+     * 根据父获取板块
+     *
+     * @param parentPlateId
+     * @return
+     */
+    public List<Plate> findPlateListByParentId(Long parentPlateId) {
+        TypedQuery<Plate> query = null;
+        if (parentPlateId == null) {
+            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate is null", Plate.class);
+        }else{
+            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate.id = :parentPlateId ", Plate.class);
+        query.setParameter("parentPlateId", parentPlateId);
+        }
+        return query.getResultList();
+    }
+
+    /**
      * 创建板块
      *
      * @param id
@@ -610,12 +627,12 @@ public class AdminService {
         }
         return plate;
     }
-    
+
     /**
      * 根据KEY获取板块
-     * 
+     *
      * @param key
-     * @return 
+     * @return
      */
     public Plate findPlateByKey(PlateKeyEnum key) {
         Plate plate = null;

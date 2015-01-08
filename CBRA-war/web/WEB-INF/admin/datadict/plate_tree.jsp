@@ -25,9 +25,9 @@
                     }
                 };
                 var zNodes = [
-                {id:'0', pId:'0', name:"菜单列表", open:true, url:"/admin/organization/menu_list", target : "listFrame"}
-                <c:forEach var="menu" items="${menuList}">
-                    ,{id:'${menu.id}', pId:'0', name:"${menu.name}", open:true, url:"/admin/organization/menu_list?id=${menu.id}", target: "listFrame"}
+                {id:'0', pId:'0', name:"栏目列表", open:true, url:"/admin/datadict/plate_list", target : "listFrame"}
+                <c:forEach var="plate" items="${plateList}">
+                            ,{id:'${plate.id}', pId:'<c:if test="${plate.parentPlate == null}">0</c:if><c:if test="${plate.parentPlate != null}">${plate.parentPlate.id}</c:if>', name:"${plate.name}", open:true, url:"/admin/datadict/plate_list?id=${plate.id}", target: "listFrame"}
                 </c:forEach>
                 ];
                 $(document).ready(function () {

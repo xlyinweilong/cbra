@@ -52,7 +52,7 @@ public class Plate implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
     @Enumerated(EnumType.STRING)
-    @Column(name = "key", nullable = false, length = 255)
+    @Column(name = "plate_key", nullable = false, length = 255)
     private PlateKeyEnum plateKey;
     @Basic(optional = false)
     @NotNull

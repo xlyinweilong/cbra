@@ -70,7 +70,7 @@ public class PlateInformation implements Serializable {
     private String picUrl;
     @Lob
     @Size(max = 65535)
-    @Column(name = "pic_url")
+    @Column(name = "introduction")
     private String introduction;
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -112,6 +112,14 @@ public class PlateInformation implements Serializable {
 
     public String getTitle() {
         return title;
+    }
+
+    public PlateInformationContent getPlateInformationContent() {
+        return plateInformationContent;
+    }
+
+    public void setPlateInformationContent(PlateInformationContent plateInformationContent) {
+        this.plateInformationContent = plateInformationContent;
     }
 
     public void setTitle(String title) {

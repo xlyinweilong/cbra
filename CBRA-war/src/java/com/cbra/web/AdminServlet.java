@@ -6,12 +6,14 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.Plate;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
 import com.cbra.service.AdminService;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
+import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -173,7 +175,9 @@ public class AdminServlet extends BaseServlet {
             case CHOOSE_ROLE:
                 return doChooseRole(request, response);
             case PLATE_DELETE:
+                return doDeletePlate(request, response);
             case PLATE_CREATE_OR_UPDATE:
+                return doCreateOrUpdatePlate(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -235,8 +239,11 @@ public class AdminServlet extends BaseServlet {
             case POPEDOM_CHOOSE_ROLE:
                 return loadPopedomChooseRole(request, response);
             case PLATE_LIST:
+                return loadPlateList(request, response);
             case PLATE_INFO:
+                return loadPlateInfo(request, response);
             case PLATE_TREE:
+                return loadPlateTree(request, response);
             default:
                 throw new BadPageException();
         }
@@ -543,6 +550,53 @@ public class AdminServlet extends BaseServlet {
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 删除栏目
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeletePlate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deletePlateByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建或者更新栏目
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdatePlate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long pid = super.getRequestLong(request, "pid");
+        String name = super.getRequestString(request, "plateName");
+        String key = super.getRequestString(request, "plateKey");
+        PlateKeyEnum plateKey = null;
+        try {
+            plateKey = PlateKeyEnum.valueOf(key);
+        } catch (Exception e) {
+            plateKey = null;
+        }
+        if (name == null || plateKey == null) {
+            setErrorResult("保存失败！参数无效！", request);
+            forward("/admin/common/jumpnoback", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        Plate plate =  adminService.createOrUpdatePlate(id, name, plateKey, pid);
+        request.setAttribute("plate", plate);
+        setSuccessResult("保存成功！", "/admin/datadict/plate_list", request);
+        forward("/admin/common/jumpback", request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -794,41 +848,60 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 栏目树
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plateList", adminService.findPlateList());
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 栏目列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plateList", adminService.findPlateListByParentId(super.getRequestLong(request, "id")));
+        request.setAttribute("pid", super.getRequestString(request, "id"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 栏目详细信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Plate plate = null;
+        if (super.getRequestLong(request, "id") != null) {
+            plate = adminService.findPlateById(super.getRequestLong(request, "id"));
+            request.setAttribute("id", plate.getId());
+        } else {
+            plate = new Plate();
+        }
+        request.setAttribute("plate", plate);
+        request.setAttribute("plateKeyEnumList", Arrays.asList(PlateKeyEnum.values()));
+        request.setAttribute("pid", super.getRequestString(request, "pid"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
     //*********************************************************************
-    private void setDate(HttpServletRequest request, HttpServletResponse response) {
-        Date startDate = this.getRequestStartDate(request);
-        Date endDate = this.getRequestEndDate(request);
-        request.setAttribute("startDate", startDate);
-        request.setAttribute("endDate", endDate);
-    }
-
-    private Date getRequestStartDate(HttpServletRequest request) {
-        String start = request.getParameter("start");
-        Date startDate = null;
-        if (start != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                startDate = sdf.parse(start);
-            } catch (ParseException ex) {
-            }
-        }
-        return startDate;
-    }
-
-    private Date getRequestEndDate(HttpServletRequest request) {
-        String end = request.getParameter("end");
-        Date endDate = null;
-        if (end != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                endDate = sdf.parse(end);
-            } catch (ParseException ex) {
-            }
-        }
-        return endDate;
-    }
-
 }
