@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.UserAccountTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
@@ -66,10 +67,11 @@ public class UserAccount implements Serializable {
     private String verifyUrl;
     @Size(max = 2)
     @Column(name = "language", length = 2)
+    @Enumerated(EnumType.STRING)
     /**
      * 语言
      */
-    private String language = "zh";
+    private LanguageType language = LanguageType.ZH;
     @Enumerated(EnumType.STRING)
     /**
      * 帐号类型
@@ -174,11 +176,11 @@ public class UserAccount implements Serializable {
         this.verifyUrl = verifyUrl;
     }
 
-    public String getLanguage() {
+    public LanguageType getLanguage() {
         return language;
     }
 
-    public void setLanguage(String language) {
+    public void setLanguage(LanguageType language) {
         this.language = language;
     }
 

@@ -9,6 +9,7 @@ import java.io.IOException;
 import cn.yoopay.support.exception.YpLinkAlreadyExistException;
 import cn.yoopay.support.exception.*;
 import com.cbra.entity.UserAccount;
+import com.cbra.support.enums.LanguageType;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class UserAccountService {
 
     public UserAccount setLanguage(Long uid, String language) {
         UserAccount userAccount = this.findById(uid);
-        userAccount.setLanguage(language);
+        userAccount.setLanguage(LanguageType.valueOf(language.toUpperCase()));
         return em.merge(userAccount);
     }
 

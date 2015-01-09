@@ -6,6 +6,7 @@
 package com.cbra.service;
 
 import com.cbra.entity.Plate;
+import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysRoleMenu;
@@ -13,6 +14,7 @@ import com.cbra.entity.SysUser;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.PlateKeyEnum;
+import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -578,7 +580,7 @@ public class AdminService {
      * @return
      */
     public List<Plate> findPlateList() {
-        TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p", Plate.class);
+        TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p ORDER BY p.sortIndex ASC", Plate.class);
         return query.getResultList();
     }
 
@@ -591,10 +593,10 @@ public class AdminService {
     public List<Plate> findPlateListByParentId(Long parentPlateId) {
         TypedQuery<Plate> query = null;
         if (parentPlateId == null) {
-            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate is null", Plate.class);
-        }else{
-            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate.id = :parentPlateId ", Plate.class);
-        query.setParameter("parentPlateId", parentPlateId);
+            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate is null ORDER BY p.sortIndex ASC", Plate.class);
+        } else {
+            query = em.createQuery("SELECT p FROM Plate p WHERE p.parentPlate.id = :parentPlateId ORDER BY p.sortIndex ASC", Plate.class);
+            query.setParameter("parentPlateId", parentPlateId);
         }
         return query.getResultList();
     }
@@ -604,11 +606,13 @@ public class AdminService {
      *
      * @param id
      * @param name
+     * @param enName
+     * @param type
      * @param key
      * @param pid
      * @return
      */
-    public Plate createOrUpdatePlate(Long id, String name, PlateKeyEnum key, Long pid) {
+    public Plate createOrUpdatePlate(Long id, String name, String enName, PlateTypeEnum type, PlateKeyEnum key, Long pid) {
         boolean isCreare = true;
         Plate plate = new Plate();
         if (id != null) {
@@ -616,7 +620,10 @@ public class AdminService {
             plate = this.findPlateById(id);
         }
         plate.setName(name);
+        plate.setEnName(enName);
         plate.setPlateKey(key);
+        plate.setPlateType(type);
+        plate.setSortIndex(99);
         if (pid != null) {
             plate.setParentPlate(this.findPlateById(pid));
         }
@@ -644,5 +651,83 @@ public class AdminService {
             plate = null;
         }
         return plate;
+    }
+
+    /**
+     * 排序栏目
+     *
+     * @param ids
+     */
+    public void sortPlateById(String... ids) {
+        int i = 0;
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            Plate plate = em.find(Plate.class, Long.parseLong(id));
+            plate.setSortIndex(i++);
+            em.merge(plate);
+        }
+    }
+
+    /**
+     * 获取栏目信息
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @param list
+     * @param page
+     * @return
+     */
+    public ResultList<PlateInformation> findPlateInformationList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<PlateInformation> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<PlateInformation> query = builder.createQuery(PlateInformation.class);
+        Root root = query.from(PlateInformation.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("name")) {
+            criteria.add(builder.like(root.get("name"), map.get("name").toString()));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("createDate")));
+                TypedQuery<PlateInformation> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<PlateInformation> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
     }
 }

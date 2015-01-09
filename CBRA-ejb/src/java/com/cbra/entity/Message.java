@@ -6,7 +6,7 @@
 package com.cbra.entity;
 
 import com.cbra.support.enums.PlateKeyEnum;
-import com.cbra.support.enums.PlateTypeEnum;
+import com.cbra.support.enums.SysUserTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -19,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,14 +30,14 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 栏目板块
+ * 消息模块
  *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "plate")
+//@Table(name = "message")
 @XmlRootElement
-public class Plate implements Serializable {
+public class Message implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,28 +52,21 @@ public class Plate implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plate_key", length = 255)
-    private PlateKeyEnum plateKey;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plate_type", nullable = false)
-    private PlateTypeEnum plateType;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "en_name")
-    private String enName;
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Plate parentPlate = null;
-    @Basic(optional = false)
-    @Column(name = "sort_index")
-    private Integer sortIndex = 0;
+    private Plate plate;
+    @JoinColumn(name = "plate_information_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private PlateInformation plateInformation;
+    @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserAccount userAccount;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "content")
+    private String content;
+    
+
     public Long getId() {
         return id;
     }
@@ -97,57 +91,10 @@ public class Plate implements Serializable {
         this.createDate = createDate;
     }
 
-    public PlateKeyEnum getPlateKey() {
-        return plateKey;
+    public Message() {
     }
 
-    public void setPlateKey(PlateKeyEnum plateKey) {
-        this.plateKey = plateKey;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Plate getParentPlate() {
-        return parentPlate;
-    }
-
-    public void setParentPlate(Plate parentPlate) {
-        this.parentPlate = parentPlate;
-    }
-
-    public PlateTypeEnum getPlateType() {
-        return plateType;
-    }
-
-    public void setPlateType(PlateTypeEnum plateType) {
-        this.plateType = plateType;
-    }
-     public String getEnName() {
-        return enName;
-    }
-
-    public void setEnName(String enName) {
-        this.enName = enName;
-    }
-
-    public Integer getSortIndex() {
-        return sortIndex;
-    }
-
-    public void setSortIndex(Integer sortIndex) {
-        this.sortIndex = sortIndex;
-    }
-    
-    public Plate() {
-    }
-
-    public Plate(Long id) {
+    public Message(Long id) {
         this.id = id;
     }
 
@@ -161,10 +108,10 @@ public class Plate implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Plate)) {
+        if (!(object instanceof Message)) {
             return false;
         }
-        Plate other = (Plate) object;
+        Message other = (Message) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

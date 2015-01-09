@@ -6,14 +6,15 @@
 package com.cbra.support.enums;
 
 /**
- * 板块KEY
+ * 板块类型
  *
  * @author yin.weilong
  */
-public enum PlateKeyEnum {
+public enum PlateTypeEnum {
 
-    HOME_NAVIGATION,//首页标签
-    HOME_SHUFFLING_AD_MENU,//广告轮播图
-    
+    NAVIGATION,//导航
+    MENU,//菜单，位于导航下
+    AD,//广告
+    TOP,//置顶
 
 }

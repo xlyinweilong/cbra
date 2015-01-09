@@ -24,19 +24,11 @@
                 $.fn.UnCheckAll("ids", "cbk_all");
                 //显示添加界面
                 $("#addBtn").click(function () {
-                    window.location.href = "/admin/datadict/plate_info?pid=${pid}";
+                    window.location.href = "/admin/plate/plate_info_info?plateId=${plateId}";
                 });
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
-                    $.fn.delete_items("ids", "/admin/datadict/plate_list?a=PLATE_DELETE&id=${pid}");
-                    $.fn.refreshtree();
-                });
-                //排序
-                $("#sortBtn").click(function () {
-                    parent.parent.tipsWindown('菜单排序', 'iframe:/admin/datadict/plate_sort_list?id=${pid}', '350', '400', 'true', '', 'true', '', 'no');
-                    parent.parent.$("#windown-close").bind('click', function () {
-                        window.location.href = "/admin/datadict/plate_list?id=${pid}";
-                    });
+                    $.fn.delete_items("ids", "/admin/plate/plate_info_list?a=PLATE_INFO_DELETE&plateId=${plateId}");
                 });
                 $(".tiptop a").click(function () {
                     $(".tip").fadeOut(200);
@@ -44,21 +36,17 @@
             });
             //显示修改界面
             $.fn.edit = function (sid) {
-                window.location.href = "/admin/datadict/plate_info?id=" + sid + "&pid=${pid}";
+                window.location.href = "/admin/plate/plate_info_info?id=" + sid + "&plateId=${plateId}";
             };
             //删除单个设备信息
             $.fn.deleteItem = function (sid) {
-                var url = "/admin/datadict/plate_list?a=PLATE_DELETE&pid=${pid}&ids=" + sid;
+                var url = "/admin/plate/plate_info_list?a=PLATE_INFO_DELETE&plateId=${plateId}&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
                     });
-                    $.fn.refreshtree();
                 }
             };
-            $.fn.refreshtree = function () {
-                parent.treeFrame.location.href = "/admin/datadict/plate_tree";
-            }
         </script>
     </head>
     <body>
@@ -88,7 +76,10 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
-                                栏目名称
+                                标题
+                            </th>
+                            <th>
+                                发布时间
                             </th>
                             <th>
                                 操作
@@ -96,26 +87,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="plate" items="${plateList}">
+                        <c:forEach var="plateInfo" items="${resultList}">
                             <tr>
                                 <td>
-                                    <input name="ids" type="checkbox" value="${plate.id}" />
+                                    <input name="ids" type="checkbox" value="${plateInfo.id}" />
                                 </td>
                                 <td>
-                                    ${plate.name}
+                                    ${plateInfo.title}
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">修改</a>
-                                    <a href="javascript:$.fn.deleteItem('${plate.id}');" class="tablelink">删除</a>
+                                    <fmt:formatDate value="${plateInfo.pushDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
+                                </td>
+                                <td>
+                                    <a href="javascript:$.fn.edit('${plateInfo.id}');" class="tablelink">修改</a>
+                                    <a href="javascript:$.fn.deleteItem('${plateInfo.id}');" class="tablelink">删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
             </div>
         </form>
-        <script type="text/javascript">
-            <c:if test = "${reflashTreeFrameUrl != null}" >$.fn.refreshtree();</c:if>
-        </script>
     </body>
 </html>

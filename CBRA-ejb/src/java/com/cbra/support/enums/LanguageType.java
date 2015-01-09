@@ -6,14 +6,12 @@
 package com.cbra.support.enums;
 
 /**
- * 板块KEY
+ * 语言
  *
  * @author yin.weilong
  */
-public enum PlateKeyEnum {
+public enum LanguageType {
 
-    HOME_NAVIGATION,//首页标签
-    HOME_SHUFFLING_AD_MENU,//广告轮播图
-    
+    ZH, EN;
 
 }

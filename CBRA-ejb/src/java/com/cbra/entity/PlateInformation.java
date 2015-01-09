@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
 import java.util.Date;
@@ -78,6 +79,20 @@ public class PlateInformation implements Serializable {
     @JoinColumn(name = "plate_information_content_id", referencedColumnName = "id")
     @OneToOne(fetch = FetchType.LAZY)
     private PlateInformationContent plateInformationContent = null;
+    @Size(max = 2)
+    @Column(name = "language", length = 2)
+    @Enumerated(EnumType.STRING)
+    private LanguageType language = LanguageType.ZH;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "push_date", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date pushDate = new Date();
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
+
     public Long getId() {
         return id;
     }
@@ -154,6 +169,14 @@ public class PlateInformation implements Serializable {
         return plate;
     }
 
+    public Date getPushDate() {
+        return pushDate;
+    }
+
+    public void setPushDate(Date pushDate) {
+        this.pushDate = pushDate;
+    }
+
     public void setPlate(Plate plate) {
         this.plate = plate;
     }
@@ -174,11 +197,27 @@ public class PlateInformation implements Serializable {
         this.createDate = createDate;
     }
 
+    public LanguageType getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(LanguageType language) {
+        this.language = language;
+    }
+
     public PlateInformation() {
     }
 
     public PlateInformation(Long id) {
         this.id = id;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

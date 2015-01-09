@@ -26,17 +26,15 @@
             //$.fn.initpage();
             $("#saveBtn").click(function () {
                 var rules = {
-                    "plateName": {required: true},
-                    "plateEnName": {required: true}
+                    "menuName": {required: true}
                 };
                 var messages = {
-                    "plateName": {required: "栏目中文名称必须填写！"},
-                    "plateEnName": {required: "栏目英文名称必须填写！"}
+                    "menuName": {required: "菜单名称必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
                 $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/datadict/plate_info");
+                $("#form1").attr("action", "/admin/organization/menu_info");
                 $("#form1").submit();
             });
             //$.fn.save();
@@ -53,7 +51,7 @@
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "/admin/datadict/plate_list?id=${pid}";
+                window.location.href = "/admin/organization/menu_list?id=${pid}";
             });
         }
         /**
@@ -67,25 +65,17 @@
         <div class="formbody">
             <div class="formtitle"><span>基本信息</span></div>
             <form id="form1" name="form1" method="post">
-                <input type="hidden" name="a" value="PLATE_CREATE_OR_UPDATE" />
+                <input type="hidden" name="a" value="MENU_CREATE_OR_UPDATE" />
                 <input type="hidden" name="id" value="${id}" />
                 <input type="hidden" name="pid" value="${pid}" />
                 <ul class="forminfo">
-                    <li><label>栏目中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="plateName" value="${plate.name}" maxlength="25" /><i>栏目名称不能超过25个汉字，必填项</i></li>
-                    <li><label>栏目英文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="plateEnName" value="${plate.enName}" maxlength="200" /><i>栏目名称不能超过200个字符，必填项</i></li>
-                    <li><label>栏目关键字</label>
-                        <select name="plateKey" class="dfinput" style="width: 354px;">
-                            <c:forEach var="plateKey" items="${plateKeyEnumList}">
-                                <option value="${plateKey.name()}" <c:if test="${plateKey == plate.plateKey}">selected="selected"</c:if>>
-                                    ${plateKey.name()}
-                                </option>
-                            </c:forEach>
-                        </select></li>
-                    <li><label>栏目类型</label>
-                        <select name="plateType" class="dfinput" style="width: 354px;">
-                            <c:forEach var="plateType" items="${plateTypeEnumList}">
-                                <option value="${plateType.name()}" <c:if test="${plateType == plate.plateType}">selected="selected"</c:if>>
-                                    ${plateType.name()}
+                    <li><label>菜单名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="menuName" value="${sysMenu.name}" maxlength="25" /><i>菜单名称不能超过25个汉字，必填项</i></li>
+                    <li><label>链接地址</label><input type="text" class="dfinput" style="width: 350px;" name="menuUrl" value="${sysMenu.url}" maxlength="200" /><i></i></li>
+                    <li><label>菜单类型</label>
+                        <select name="menuPopedom" class="dfinput" style="width: 354px;">
+                            <c:forEach var="menuPopedom" items="${menuPopedomList}">
+                                <option value="${menuPopedom.name()}" <c:if test="${menuPopedom == sysMenu.popedom}">selected="selected"</c:if>>
+                                    ${menuPopedom.getMean(menuPopedom)}
                                 </option>
                             </c:forEach>
                         </select></li>

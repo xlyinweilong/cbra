@@ -7,6 +7,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Plate;
+import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
@@ -14,6 +15,7 @@ import com.cbra.service.AdminService;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.enums.PlateKeyEnum;
+import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -46,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -113,7 +115,8 @@ public class AdminServlet extends BaseServlet {
         ROLE_DELETE, ROLE_SORT, ROLE_CREATE_OR_UPDATE,
         USER_DELETE, USER_CREATE_OR_UPDATE,
         POPEDOM_DELETE, CHOOSE_ROLE,
-        PLATE_DELETE, PLATE_CREATE_OR_UPDATE,
+        PLATE_DELETE, PLATE_SORT, PLATE_CREATE_OR_UPDATE,
+        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE
     }
 
     @Override
@@ -178,6 +181,8 @@ public class AdminServlet extends BaseServlet {
                 return doDeletePlate(request, response);
             case PLATE_CREATE_OR_UPDATE:
                 return doCreateOrUpdatePlate(request, response);
+            case PLATE_SORT:
+                return doSortPlate(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -191,7 +196,8 @@ public class AdminServlet extends BaseServlet {
         MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
         ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
-        PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE,
+        PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
+        PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
     }
 
     @Override
@@ -206,6 +212,7 @@ public class AdminServlet extends BaseServlet {
             case MENU_MANAGE:
             case POPEDOM_MANAGE:
             case PLATE_MANAGE:
+            case PLATE_INFO_MANAGE:
             case MY_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
@@ -244,6 +251,14 @@ public class AdminServlet extends BaseServlet {
                 return loadPlateInfo(request, response);
             case PLATE_TREE:
                 return loadPlateTree(request, response);
+            case PLATE_SORT_LIST:
+                return loadPlateSortList(request, response);
+            case PLATE_INFO_LIST:
+                return loadPlateInfoList(request, response);
+            case PLATE_INFO_INFO:
+
+            case PLATE_INFO_TREE:
+                return loadPlateInfoTree(request, response);
             default:
                 throw new BadPageException();
         }
@@ -578,6 +593,7 @@ public class AdminServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         Long pid = super.getRequestLong(request, "pid");
         String name = super.getRequestString(request, "plateName");
+        String enName = super.getRequestString(request, "plateEnName");
         String key = super.getRequestString(request, "plateKey");
         PlateKeyEnum plateKey = null;
         try {
@@ -585,16 +601,46 @@ public class AdminServlet extends BaseServlet {
         } catch (Exception e) {
             plateKey = null;
         }
-        if (name == null || plateKey == null) {
+        String type = super.getRequestString(request, "plateType");
+        PlateTypeEnum plateType = null;
+        try {
+            plateType = PlateTypeEnum.valueOf(type);
+        } catch (Exception e) {
+            plateType = null;
+        }
+        if (name == null || plateType == null || enName == null) {
             setErrorResult("保存失败！参数无效！", request);
             forward("/admin/common/jumpnoback", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        Plate plate =  adminService.createOrUpdatePlate(id, name, plateKey, pid);
+        Plate plate = adminService.createOrUpdatePlate(id, name, enName, plateType, plateKey, pid);
         request.setAttribute("plate", plate);
         setSuccessResult("保存成功！", "/admin/datadict/plate_list", request);
+        request.setAttribute("reflashTreeFrameUrl", "/admin/datadict/plate_tree");
         forward("/admin/common/jumpback", request, response);
         return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 栏目排序
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doSortPlate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.sortPlateById(ids);
+        String id = super.getRequestString(request, "pid");
+        if (id != null) {
+            setSuccessResult("保存成功！", request);
+            forward("/admin/datadict/plate_sort_list?id=" + id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
     // ************************************************************************
@@ -775,7 +821,6 @@ public class AdminServlet extends BaseServlet {
         }
         Map<String, Object> map = new HashMap<>();
         ResultList<SysUser> resultList = adminService.findSysUserList(map, page, 10, null, true);
-
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -895,8 +940,59 @@ public class AdminServlet extends BaseServlet {
             plate = new Plate();
         }
         request.setAttribute("plate", plate);
+        request.setAttribute("plateTypeEnumList", Arrays.asList(PlateTypeEnum.values()));
         request.setAttribute("plateKeyEnumList", Arrays.asList(PlateKeyEnum.values()));
         request.setAttribute("pid", super.getRequestString(request, "pid"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 栏目排序页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateSortList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plateList", adminService.findPlateListByParentId(super.getRequestLong(request, "id")));
+        request.setAttribute("pid", super.getRequestString(request, "id"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 栏目信息树
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateInfoTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plateList", adminService.findPlateList());
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 栏目信息列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateInfoList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("plateId", super.getRequestLong(request, "plateId"));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
