@@ -5,6 +5,7 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.Config;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.UserAccountService;
 import com.cbra.support.FileUploadItem;
@@ -849,8 +850,8 @@ public abstract class BaseServlet extends HttpServlet {
             }
 
             // 创建临时上传目录
-            String targetDir = "";
-//            Config.FILE_UPLOAD_TEMP_DIR;
+            String targetDir = Config.FILE_UPLOAD_TEMP_DIR;
+            
             if (uploadPath != null) {
                 targetDir = uploadPath;
             }
@@ -996,14 +997,14 @@ public abstract class BaseServlet extends HttpServlet {
             firstSubClassName = this.parseObjectName(firstSubPrefix, true);
         }
 
-        Class c = Class.forName("cn.yoopay.entity." + className);
+        Class c = Class.forName("com.cbra.entity." + className);
         Class firstSubC = null;
         Class secondSubC = null;
         if (null != firstSubClassName) {
-            firstSubC = Class.forName("cn.yoopay.entity." + firstSubClassName);
+            firstSubC = Class.forName("com.cbra.entity." + firstSubClassName);
         }
         if (null != secondSubClassName) {
-            secondSubC = Class.forName("cn.yoopay.entity." + secondSubClassName);
+            secondSubC = Class.forName("com.cbra.entity." + secondSubClassName);
         }
         Map<String, Object> objectContainer = new LinkedHashMap<String, Object>();
         Map<String, Object> firstSubObjectContainer = new LinkedHashMap<String, Object>();

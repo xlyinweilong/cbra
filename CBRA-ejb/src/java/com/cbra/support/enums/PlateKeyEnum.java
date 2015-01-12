@@ -14,6 +14,6 @@ public enum PlateKeyEnum {
 
     HOME_NAVIGATION,//首页标签
     HOME_SHUFFLING_AD_MENU,//广告轮播图
-    
-
+    ABOUT,CONTACT_US,
+    NEWS,  
 }

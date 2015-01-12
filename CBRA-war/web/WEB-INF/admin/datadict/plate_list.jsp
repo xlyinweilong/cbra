@@ -29,12 +29,13 @@
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
                     $.fn.delete_items("ids", "/admin/datadict/plate_list?a=PLATE_DELETE&id=${pid}");
-                    $.fn.refreshtree();
+                    refreshtree();
                 });
                 //排序
                 $("#sortBtn").click(function () {
                     parent.parent.tipsWindown('菜单排序', 'iframe:/admin/datadict/plate_sort_list?id=${pid}', '350', '400', 'true', '', 'true', '', 'no');
                     parent.parent.$("#windown-close").bind('click', function () {
+                        refreshtree();
                         window.location.href = "/admin/datadict/plate_list?id=${pid}";
                     });
                 });
@@ -51,12 +52,12 @@
                 var url = "/admin/datadict/plate_list?a=PLATE_DELETE&pid=${pid}&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
+                        refreshtree();
                         window.location.href = window.location.href;
                     });
-                    $.fn.refreshtree();
                 }
             };
-            $.fn.refreshtree = function () {
+            function refreshtree() {
                 parent.treeFrame.location.href = "/admin/datadict/plate_tree";
             }
         </script>

@@ -14,4 +14,13 @@ public enum LanguageType {
 
     ZH, EN;
 
+    public String getLanguageMean() {
+        switch (this) {
+            case EN:
+                return "英语";
+            default:
+                return "中文";
+        }
+    }
+
 }

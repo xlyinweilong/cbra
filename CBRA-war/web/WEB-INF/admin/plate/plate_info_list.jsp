@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -61,9 +62,6 @@
                         <li class="click" id="deleteBtn">
                             <span><img src="<%=path%>/background/images/t03.png" />
                             </span>删除
-                        </li>
-                        <li class="click" id="sortBtn">
-                            <span><img src="<%=path%>/background/images/leftico01.png" width="20" height="20" /> </span>排序
                         </li>
                     </ul>
                     <ul class="toolbar1">

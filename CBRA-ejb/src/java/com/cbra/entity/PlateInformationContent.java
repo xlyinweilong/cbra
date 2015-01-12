@@ -47,11 +47,6 @@ public class PlateInformationContent implements Serializable {
     private Long id;
     @Version
     private Integer version;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "create_date", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createDate = new Date();
     @Lob
     @Column(name = "content")
     private String content;
@@ -88,14 +83,6 @@ public class PlateInformationContent implements Serializable {
 
     public void setVersion(Integer version) {
         this.version = version;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     public PlateInformationContent() {

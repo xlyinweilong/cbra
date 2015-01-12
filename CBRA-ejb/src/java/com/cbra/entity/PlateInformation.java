@@ -10,6 +10,7 @@ import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -76,10 +77,8 @@ public class PlateInformation implements Serializable {
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plate plate = null;
-    @JoinColumn(name = "plate_information_content_id", referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "plateInformation", fetch = FetchType.EAGER)
     private PlateInformationContent plateInformationContent = null;
-    @Size(max = 2)
     @Column(name = "language", length = 2)
     @Enumerated(EnumType.STRING)
     private LanguageType language = LanguageType.ZH;

@@ -5,6 +5,7 @@
  */
 package com.cbra.web;
 
+import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
@@ -12,8 +13,12 @@ import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
 import com.cbra.service.AdminService;
+import com.cbra.support.FileUploadItem;
+import com.cbra.support.FileUploadObj;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
+import com.cbra.support.Tools;
+import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
@@ -41,7 +46,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
 
 /**
  * 后台管理WEB层
@@ -116,7 +123,7 @@ public class AdminServlet extends BaseServlet {
         USER_DELETE, USER_CREATE_OR_UPDATE,
         POPEDOM_DELETE, CHOOSE_ROLE,
         PLATE_DELETE, PLATE_SORT, PLATE_CREATE_OR_UPDATE,
-        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE
+        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE,
     }
 
     @Override
@@ -183,6 +190,10 @@ public class AdminServlet extends BaseServlet {
                 return doCreateOrUpdatePlate(request, response);
             case PLATE_SORT:
                 return doSortPlate(request, response);
+            case PLATE_INFO_DELETE:
+                return doDeletePlateInfo(request, response);
+            case PLATE_INFO_CREATE_OR_UPDATE:
+                return doCreateOrUpdatePlateInfo(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -190,7 +201,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum PageEnum {
 
-        JUMPBACK, JUMPNOBACK,
+        JUMPBACK, JUMPNOBACK, KE_UPLOAD, KE_MANAGER, KE_DEL,
         LOGIN, MAIN, TOP, LEFT, RIGHT,
         USER_MANAGE, USER_LIST, USER_INFO, MY_INFO,
         MENU_MANAGE, MENU_LIST, MENU_INFO, MENU_TREE, MENU_SORT_LIST,
@@ -256,9 +267,15 @@ public class AdminServlet extends BaseServlet {
             case PLATE_INFO_LIST:
                 return loadPlateInfoList(request, response);
             case PLATE_INFO_INFO:
-
+                return loadPlateInfoInfo(request, response);
             case PLATE_INFO_TREE:
                 return loadPlateInfoTree(request, response);
+            case KE_UPLOAD:
+                return loadKeUpload(request, response);
+            case KE_MANAGER:
+                return loadKeManager(request, response);
+            case KE_DEL:
+                return loadKeDel(request, response);
             default:
                 throw new BadPageException();
         }
@@ -615,7 +632,11 @@ public class AdminServlet extends BaseServlet {
         }
         Plate plate = adminService.createOrUpdatePlate(id, name, enName, plateType, plateKey, pid);
         request.setAttribute("plate", plate);
-        setSuccessResult("保存成功！", "/admin/datadict/plate_list", request);
+        if (pid != null) {
+            setSuccessResult("保存成功！", "/admin/datadict/plate_list?id=" + pid, request);
+        } else {
+            setSuccessResult("保存成功！", "/admin/datadict/plate_list", request);
+        }
         request.setAttribute("reflashTreeFrameUrl", "/admin/datadict/plate_tree");
         forward("/admin/common/jumpback", request, response);
         return FORWARD_TO_ANOTHER_URL;
@@ -638,6 +659,60 @@ public class AdminServlet extends BaseServlet {
             setSuccessResult("保存成功！", request);
             forward("/admin/datadict/plate_sort_list?id=" + id, request, response);
             return FORWARD_TO_ANOTHER_URL;
+        }
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 删除栏目信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeletePlateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deletePlateInformationByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建/更新栏目信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdatePlateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long plateId = super.getRequestLong(request, "plateId");
+        Long id = super.getRequestLong(request, "id");
+        Plate plate = adminService.findPlateById(plateId);
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId);
+            if (pi != null) {
+                id = pi.getId();
+            }
+            String content = super.getRequestString(request, "content");
+            String languageType = super.getRequestString(request, "languageType");
+            String pushDateStr = super.getRequestString(request, "pushDate");
+            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            LanguageType languageTypeEnum = null;
+            try {
+                languageTypeEnum = LanguageType.valueOf(languageType);
+            } catch (Exception e) {
+                languageTypeEnum = LanguageType.ZH;
+            }
+            if (pushDate == null || content == null) {
+                setErrorResult("保存失败，参数异常！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, content, pushDate, languageTypeEnum);
+            request.setAttribute("plateInfo", plateInfo);
         }
         setSuccessResult("保存成功！", request);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -985,15 +1060,145 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadPlateInfoList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer page = super.getRequestInteger(request, "page");
-        if (page == null) {
-            page = 1;
+        Long plateId = super.getRequestLong(request, "plateId");
+        Plate plate = adminService.findPlateById(plateId);
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+            super.forward("/admin/plate/plate_info_info?plateId=" + plateId, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        } else {
+            Integer page = super.getRequestInteger(request, "page");
+            if (page == null) {
+                page = 1;
+            }
+            Map<String, Object> map = new HashMap<>();
+            map.put("plateId", plateId);
+            ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, page, 15, null, true);
+            request.setAttribute("resultList", resultList);
         }
-        Map<String, Object> map = new HashMap<>();
-        ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, page, 15, null, true);
-        request.setAttribute("resultList", resultList);
-        request.setAttribute("plateId", super.getRequestLong(request, "plateId"));
+        request.setAttribute("plateId", plateId);
         return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载栏目信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateInfoInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long plateId = super.getRequestLong(request, "plateId");
+        PlateInformation plateInfo = null;
+        if (id == null) {
+            plateInfo = new PlateInformation();
+        } else {
+            plateInfo = adminService.findPlateInformationById(id);
+        }
+        Plate plate = adminService.findPlateById(plateId);
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+            plateInfo = adminService.findPlateInformationByPlateId(plateId);
+            request.setAttribute("showBackBtn", false);
+        } else {
+            request.setAttribute("showBackBtn", true);
+        }
+        request.setAttribute("plateInfo", plateInfo);
+        request.setAttribute("plate", plate);
+        request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSessionException
+     */
+    private boolean loadKeUpload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
+        SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
+        FileUploadObj fileUploadObj = null;
+        String dirName = request.getParameter("dir");
+        System.out.println("***************1");
+        try {
+            System.out.println("***************2");
+            fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+           System.out.println("***************3");
+            List<FileUploadItem> list = fileUploadObj.getFileList();
+             System.out.println(list.size());
+            for (FileUploadItem item : list) {
+                System.out.println(item.getUploadFileName());
+                System.out.println(item.getUploadFullPath());
+                JSONObject obj = null;
+                try {
+                    String name = adminService.setHtmlEditorUploadFile(item, sysUser, dirName);
+                    if (name != null) {
+                        obj = new JSONObject();
+                        obj.put("error", 0);
+                        obj.put("url", name);
+                        super.outputText(response, obj.toJSONString());
+                    }
+                } catch (ImageConvertException e) {
+                    setErrorResult(bundle.getString("ACCOUNT_REGINFO_MSG_请上传正确的图片格式"), request);
+                    return KEEP_GOING_WITH_ORIG_URL;
+                }
+            }
+            return KEEP_GOING_WITH_ORIG_URL;
+        } catch (FileUploadException ex) {
+            setErrorResult(ex.getMessage(), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+    }
+
+    /**
+     * 文件管理
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSessionException
+     */
+    private boolean loadKeManager(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
+        SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
+        String dirName = request.getParameter("dir");
+        String path = request.getParameter("path") != null ? request.getParameter("path") : "";
+        String order = request.getParameter("order") != null ? request.getParameter("order").toLowerCase() : "name";
+        Map map = adminService.doHtmlEditorFileManager(sysUser, dirName, path, order);
+        if (null != map && !map.isEmpty()) {
+            JSONObject result = new JSONObject();
+            result.put("moveup_dir_path", map.get("moveup_dir_path"));
+            result.put("current_dir_path", map.get("current_dir_path"));
+            result.put("current_url", map.get("current_url"));
+            result.put("total_count", map.get("total_count"));
+            result.put("file_list", map.get("file_list"));
+            response.setContentType("application/json; charset=UTF-8");
+            super.outputText(response, result.toJSONString());
+        }
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 删除文件‘
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSessionException
+     */
+    private boolean loadKeDel(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
+        SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
+        String fileName = request.getParameter("filename");
+        adminService.doHtmlEditorFileDel(sysUser, fileName);
+        return super.outputSuccessAjax("Success...", null, response);
     }
 
     // ************************************************************************
