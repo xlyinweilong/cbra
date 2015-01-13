@@ -252,14 +252,14 @@ K.options = {
 	minHeight : 50,
 	minChangeSize : 5,
 	items : [
-		'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+		'source', '|', 'undo', 'redo', '|', 'cut', 'copy', 'paste',
 		'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
 		'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
-		'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+		'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 
 		'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
 		'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
-		'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
-		'anchor', 'link', 'unlink', '|', 'about'
+		'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+		'anchor', 'link', 'unlink'
 	],
 	noDisableItems : ['source', 'fullscreen'],
 	colorTable : [
@@ -2389,7 +2389,8 @@ _extend(KRange, {
 					parent = knode.parent();
 					if (!parent || _NOSPLIT_TAG_MAP[parent.name] || !toBlock && parent.isBlock()) {
 						break;
-					}
+					}
+
 					knode = parent;
 				}
 				if (isStart) {

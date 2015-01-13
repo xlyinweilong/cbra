@@ -5,6 +5,8 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.enums.MessageSecretLevelEnum;
+import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import java.io.Serializable;
@@ -35,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author yin.weilong
  */
 @Entity
-//@Table(name = "message")
+@Table(name = "message")
 @XmlRootElement
 public class Message implements Serializable {
 
@@ -52,6 +54,12 @@ public class Message implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private MessageTypeEnum type = MessageTypeEnum.PUBLISH_FROM_USER;
+    @Column(name = "secret_level")
+    @Enumerated(EnumType.STRING)
+    private MessageSecretLevelEnum secretLevel = MessageSecretLevelEnum.PUBLIC;
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plate plate;
@@ -66,7 +74,6 @@ public class Message implements Serializable {
     @Column(name = "content")
     private String content;
     
-
     public Long getId() {
         return id;
     }
@@ -98,6 +105,54 @@ public class Message implements Serializable {
         this.id = id;
     }
 
+    public MessageTypeEnum getType() {
+        return type;
+    }
+
+    public void setType(MessageTypeEnum type) {
+        this.type = type;
+    }
+
+    public MessageSecretLevelEnum getSecretLevel() {
+        return secretLevel;
+    }
+
+    public void setSecretLevel(MessageSecretLevelEnum secretLevel) {
+        this.secretLevel = secretLevel;
+    }
+
+    public Plate getPlate() {
+        return plate;
+    }
+
+    public void setPlate(Plate plate) {
+        this.plate = plate;
+    }
+
+    public PlateInformation getPlateInformation() {
+        return plateInformation;
+    }
+
+    public void setPlateInformation(PlateInformation plateInformation) {
+        this.plateInformation = plateInformation;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -120,7 +175,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.Plate[ id=" + id + " ]";
+        return "com.cbra.entity.Message[ id=" + id + " ]";
     }
 
 }
