@@ -28,10 +28,10 @@
         </style>
         <script language="javascript">
             $(function () {
-                if(self.window.location.href !=top.window.location.href ){
-			//如果由于权限不足显示了登录页，则浏览器地址重置为登陆页
-			top.window.location.href = "/admin";
-		}
+                if (self.window.location.href != top.window.location.href) {
+                    //如果由于权限不足显示了登录页，则浏览器地址重置为登陆页
+                    top.window.location.href = "/admin";
+                }
                 $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});
                 $(window).resize(function () {
                     $('.loginbox').css({'position': 'absolute', 'left': ($(window).width() - 692) / 2});
@@ -60,13 +60,9 @@
                     </li>
                 </ul>
             </div>
-
             <div class="loginbody">
-
                 <span class="systemlogo"></span>
-
                 <div class="loginbox">
-
                     <ul>
                         <li>
                             <input name="account" id="username" type="text" class="loginuser" value="${account}" onkeypress="mykeypress(event);"/>
@@ -89,11 +85,11 @@
                 版权所有 2014 云端房产网 吉ICP备14002652号-1 技术支持 长春博岸信息科技有限责任公司
             </div>
         </form>
-         <script type="text/javascript">
+        <script type="text/javascript">
             $(document).ready(function () {
-                <c:if test="${postResult != null && postResult.success == false}">
-                 alert("${postResult.singleErrorMsg}");
-             </c:if>
+            <c:if test="${postResult != null && postResult.success == false}">
+                alert("${postResult.singleErrorMsg}");
+            </c:if>
                 $("#username").focus();
             });
             function logon() {
@@ -112,7 +108,7 @@
             }
             function mykeypress(event) {
                 var e = event || window.event || arguments.callee.caller.arguments[0];
-                if(e && e.keyCode==13){
+                if (e && e.keyCode == 13) {
                     logon();
                 }
             }
