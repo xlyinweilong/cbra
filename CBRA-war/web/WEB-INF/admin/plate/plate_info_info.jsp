@@ -39,7 +39,7 @@
                 $("#form1").attr("target", "iframe1");
                 $("#form1").attr("action", "/admin/plate/plate_info_info");
 //                Keditor.html('');
-		Keditor.sync();
+                Keditor.sync();
                 $("#form1").submit();
             });
             $("#gobackBtn").click(function () {
@@ -57,6 +57,14 @@
                 <input type="hidden" name="id" value="${plateInfo.id}" />
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
+                    <c:if test="${plate.plateKey == 'NEWS'}">
+                        <li><label>标题</label>
+                            <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />
+                        </li>
+                        <li><label>简介</label>
+                            <textarea name="introduction" class="dfinput"  style="width: 350px;height: 150px">${plateInfo.introduction}</textarea>
+                        </li>
+                    </c:if>
                     <li><label>内容</label>
                         <textarea name="content" class="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
                     </li>

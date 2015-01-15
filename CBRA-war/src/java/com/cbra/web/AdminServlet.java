@@ -692,22 +692,39 @@ public class AdminServlet extends BaseServlet {
         Long plateId = super.getRequestLong(request, "plateId");
         Long id = super.getRequestLong(request, "id");
         Plate plate = adminService.findPlateById(plateId);
+        String pushDateStr = super.getRequestString(request, "pushDate");
+        Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+        if (pushDate == null) {
+            setErrorResult("保存失败，参数异常！", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String languageType = super.getRequestString(request, "languageType");
+        LanguageType languageTypeEnum = null;
+        try {
+            languageTypeEnum = LanguageType.valueOf(languageType);
+        } catch (Exception e) {
+            languageTypeEnum = LanguageType.ZH;
+        }
         if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
             PlateInformation pi = adminService.findPlateInformationByPlateId(plateId);
             if (pi != null) {
                 id = pi.getId();
             }
             String content = super.getRequestString(request, "content");
-            String languageType = super.getRequestString(request, "languageType");
-            String pushDateStr = super.getRequestString(request, "pushDate");
-            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
-            LanguageType languageTypeEnum = null;
-            try {
-                languageTypeEnum = LanguageType.valueOf(languageType);
-            } catch (Exception e) {
-                languageTypeEnum = LanguageType.ZH;
+            if (content == null) {
+                setErrorResult("保存失败，参数异常！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
             }
-            if (pushDate == null || content == null) {
+            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, content, pushDate, languageTypeEnum);
+            request.setAttribute("plateInfo", plateInfo);
+        } else if (PlateKeyEnum.NEWS.equals(plate.getPlateKey())) {
+            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId);
+            if (pi != null) {
+                id = pi.getId();
+            }
+            String content = super.getRequestString(request, "content");
+
+            if (content == null) {
                 setErrorResult("保存失败，参数异常！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
@@ -1128,9 +1145,9 @@ public class AdminServlet extends BaseServlet {
         try {
             System.out.println("***************2");
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
-           System.out.println("***************3");
+            System.out.println("***************3");
             List<FileUploadItem> list = fileUploadObj.getFileList();
-             System.out.println(list.size());
+            System.out.println(list.size());
             for (FileUploadItem item : list) {
                 System.out.println(item.getUploadFileName());
                 System.out.println(item.getUploadFullPath());
