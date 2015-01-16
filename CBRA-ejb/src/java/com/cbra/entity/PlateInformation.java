@@ -62,8 +62,8 @@ public class PlateInformation implements Serializable {
     @NotNull
     @Column(name = "is_top")
     private boolean isTop = false;
-    @Column(name = "target")
-    private String target;
+    @Column(name = "name")
+    private String name;
     @Column(name = "title")
     private String title;
     @Column(name = "nav_url")
@@ -114,14 +114,6 @@ public class PlateInformation implements Serializable {
 
     public void setIsTop(boolean isTop) {
         this.isTop = isTop;
-    }
-
-    public String getTarget() {
-        return target;
-    }
-
-    public void setTarget(String target) {
-        this.target = target;
     }
 
     public String getTitle() {
@@ -217,6 +209,14 @@ public class PlateInformation implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

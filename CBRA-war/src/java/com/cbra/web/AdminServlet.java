@@ -55,7 +55,7 @@ import org.json.simple.JSONObject;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -209,6 +209,7 @@ public class AdminServlet extends BaseServlet {
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
         PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
+        PLATE_AUTH_MANAGE, PLATE_AUTH_LIST, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
     }
 
     @Override
@@ -224,6 +225,7 @@ public class AdminServlet extends BaseServlet {
             case POPEDOM_MANAGE:
             case PLATE_MANAGE:
             case PLATE_INFO_MANAGE:
+            case PLATE_AUTH_MANAGE:
             case MY_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
@@ -269,6 +271,12 @@ public class AdminServlet extends BaseServlet {
             case PLATE_INFO_INFO:
                 return loadPlateInfoInfo(request, response);
             case PLATE_INFO_TREE:
+                return loadPlateInfoTree(request, response);
+            case PLATE_AUTH_LIST:
+                return loadPlateInfoList(request, response);
+            case PLATE_AUTH_INFO:
+                return loadPlateInfoInfo(request, response);
+            case PLATE_AUTH_TREE:
                 return loadPlateInfoTree(request, response);
             case KE_UPLOAD:
                 return loadKeUpload(request, response);
