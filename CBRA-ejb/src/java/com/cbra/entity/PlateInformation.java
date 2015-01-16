@@ -77,7 +77,7 @@ public class PlateInformation implements Serializable {
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plate plate = null;
-    @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "plateInformation", fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "plateInformation", fetch = FetchType.LAZY)
     private PlateInformationContent plateInformationContent = null;
     @Column(name = "language", length = 2)
     @Enumerated(EnumType.STRING)

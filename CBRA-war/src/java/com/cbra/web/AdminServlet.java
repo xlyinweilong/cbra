@@ -706,29 +706,43 @@ public class AdminServlet extends BaseServlet {
             languageTypeEnum = LanguageType.ZH;
         }
         if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
-            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId);
+            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
+            PlateInformation piEn = adminService.findPlateInformationByPlateId(plateId, LanguageType.EN);
+            if (piEn != null) {
+                id = piEn.getId();
+            }
             if (pi != null) {
                 id = pi.getId();
             }
             String content = super.getRequestString(request, "content");
-            if (content == null) {
-                setErrorResult("保存失败，参数异常！", request);
+            String contentEn = super.getRequestString(request, "contentEn");
+            System.out.println(content);
+            System.out.println(contentEn);
+            if (content == null || contentEn == null) {
+                setErrorResult("请填写内容！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, content, pushDate, languageTypeEnum);
+            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(plateId, content, pushDate, LanguageType.ZH);
+            PlateInformation plateInfoEn = adminService.createOrUpdatePlateInformation(plateId, contentEn, pushDate, LanguageType.EN);
             request.setAttribute("plateInfo", plateInfo);
+            request.setAttribute("plateInfoEn", plateInfoEn);
         } else if (PlateKeyEnum.NEWS.equals(plate.getPlateKey())) {
-            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId);
-            if (pi != null) {
-                id = pi.getId();
+            PlateInformation pi = new PlateInformation();
+            if (id != null) {
+                pi = adminService.findPlateInformationById(id);
             }
             String content = super.getRequestString(request, "content");
-
+            String title = super.getRequestString(request, "title");
+            String introduction = super.getRequestString(request, "introduction");
             if (content == null) {
+                setErrorResult("请填写内容！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            if (title == null || introduction == null) {
                 setErrorResult("保存失败，参数异常！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, content, pushDate, languageTypeEnum);
+            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum);
             request.setAttribute("plateInfo", plateInfo);
         }
         setSuccessResult("保存成功！", request);
@@ -1112,11 +1126,19 @@ public class AdminServlet extends BaseServlet {
         if (id == null) {
             plateInfo = new PlateInformation();
         } else {
-            plateInfo = adminService.findPlateInformationById(id);
+            plateInfo = adminService.findPlateInformationByIdFetchContent(id);
         }
         Plate plate = adminService.findPlateById(plateId);
         if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
-            plateInfo = adminService.findPlateInformationByPlateId(plateId);
+            plateInfo = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
+            if (plateInfo != null) {
+                plateInfo.setPlateInformationContent(adminService.findContentByPlateInformation(plateInfo.getId()));
+            }
+            PlateInformation plateEnInfo = adminService.findPlateInformationByPlateId(plateId, LanguageType.EN);
+            if (plateEnInfo != null) {
+                plateEnInfo.setPlateInformationContent(adminService.findContentByPlateInformation(plateEnInfo.getId()));
+            }
+            request.setAttribute("plateEnInfo", plateEnInfo);
             request.setAttribute("showBackBtn", false);
         } else {
             request.setAttribute("showBackBtn", true);
@@ -1141,11 +1163,8 @@ public class AdminServlet extends BaseServlet {
         SysUser sysUser = (SysUser) super.getSessionValue(request, SESSION_ATTRIBUTE_ADMIN);
         FileUploadObj fileUploadObj = null;
         String dirName = request.getParameter("dir");
-        System.out.println("***************1");
         try {
-            System.out.println("***************2");
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
-            System.out.println("***************3");
             List<FileUploadItem> list = fileUploadObj.getFileList();
             System.out.println(list.size());
             for (FileUploadItem item : list) {

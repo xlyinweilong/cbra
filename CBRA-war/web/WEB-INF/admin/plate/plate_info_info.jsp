@@ -26,12 +26,23 @@
     </head>
     <script type="text/javascript">
         var Keditor;
+        var KeditorEn;
         $(function () {
             $("#saveBtn").click(function () {
                 var rules = {
+                    <c:if test="${plate.plateKey == 'NEWS'}">
+                       "title": {required: true},
+                       "introduction": {required: true},
+                       "content": {required: true},
+                    </c:if>
                     "pushDate": {required: true}
                 };
                 var messages = {
+                    <c:if test="${plate.plateKey == 'NEWS'}">
+                       "title": {required: "标题必须填写！"},
+                       "introduction": {required: "简介必须填写！"},
+                       "content": {required: "内容必须填写！"},
+                    </c:if>
                     "pushDate": {required: "发布时间必须填写！"}
                 };
                 //初始化验证框架
@@ -40,6 +51,9 @@
                 $("#form1").attr("action", "/admin/plate/plate_info_info");
 //                Keditor.html('');
                 Keditor.sync();
+                <c:if test="${plate.plateKey == 'ABOUT'}">
+                KeditorEn.sync();
+                </c:if>
                 $("#form1").submit();
             });
             $("#gobackBtn").click(function () {
@@ -58,17 +72,23 @@
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
                     <c:if test="${plate.plateKey == 'NEWS'}">
-                        <li><label>标题</label>
+                        <li><label>标题<b>*</b></label>
                             <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />
                         </li>
-                        <li><label>简介</label>
+                        <li><label>简介<b>*</b></label>
                             <textarea name="introduction" class="dfinput"  style="width: 350px;height: 150px">${plateInfo.introduction}</textarea>
                         </li>
                     </c:if>
-                    <li><label>内容</label>
-                        <textarea name="content" class="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
+                    <li><label><c:if test="${plate.plateKey == 'ABOUT'}">中文</c:if>内容<b>*</b></label>
+                        <textarea name="content" id="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
                     </li>
-                    <li><label>语言类型</label>
+                    <c:if test="${plate.plateKey == 'ABOUT'}">
+                    <li><label>英文内容<b>*</b></label>
+                        <textarea name="contentEn" id="htmlKeditorEn" style="width: 600px;height: 600px">${plateEnInfo.plateInformationContent.content}</textarea>
+                    </li>
+                    </c:if>
+                    <c:if test="${plate.plateKey == 'NEWS'}">
+                    <li><label>语言类型<b>*</b></label>
                         <select name="languageType" class="dfinput" style="width: 354px;">
                             <c:forEach var="languageType" items="${languageTypeList}">
                                 <option value="${languageType.name()}" <c:if test="${languageType == plateInfo.language}">selected="selected"</c:if>>
@@ -77,6 +97,7 @@
                             </c:forEach>
                         </select>
                     </li>
+                    </c:if>
                     <li><label>发布时间<b>*</b></label>
                         <input type="text" class="dfinput" style="width: 350px;" name="pushDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${plateInfo.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" />
                     </li>
@@ -90,10 +111,15 @@
         <iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
         <script type="text/javascript">
             $(document).ready(function () {
+                <c:if test="${postResult.singleSuccessMsg != null}">alert("${postResult.singleSuccessMsg}");</c:if>
+                <c:if test="${postResult.singleErrorMsg != null}">alert("${postResult.singleErrorMsg}");</c:if>
                 KindEditor.ready(function (K) {
                     Keditor = createKindEditor("htmlKeditor", 0, null, null);
+                    <c:if test="${plate.plateKey == 'ABOUT'}">
+                    KeditorEn = createKindEditor("htmlKeditorEn", 0, null, null);
+                    </c:if>
                     function createKindEditor(className, resizeType, width, height) {
-                        return K.create('textarea[class="' + className + '"]', {
+                        return K.create('textarea[id="' + className + '"]', {
                             resizeType: resizeType,
                             uploadJson: '/admin/ke_upload',
                             fileManagerJson: '/admin/ke_manager',

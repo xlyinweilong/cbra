@@ -691,6 +691,38 @@ public class AdminService {
     }
 
     /**
+     * 根据ID获取栏目信息
+     *
+     * @param id
+     * @return
+     */
+    public PlateInformation findPlateInformationByIdFetchContent(Long id) {
+        PlateInformation pi = em.find(PlateInformation.class, id);
+        if (pi != null) {
+            pi.setPlateInformationContent(this.findContentByPlateInformation(id));
+        }
+        return pi;
+    }
+
+    /**
+     * 根据栏目信息获取内容
+     *
+     * @param plateInformationId
+     * @return
+     */
+    public PlateInformationContent findContentByPlateInformation(Long plateInformationId) {
+        TypedQuery<PlateInformationContent> query = em.createQuery("SELECT p FROM PlateInformationContent p WHERE p.plateInformation.id = :plateInformationId", PlateInformationContent.class);
+        query.setParameter("plateInformationId", plateInformationId);
+        PlateInformationContent pic = null;
+        try {
+            pic = query.getSingleResult();
+        } catch (NoResultException ex) {
+            pic = null;
+        }
+        return pic;
+    }
+
+    /**
      * 获取栏目信息
      *
      * @param map
@@ -733,7 +765,7 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("createDate")));
+                query.orderBy(builder.desc(root.get("pushDate")));
                 TypedQuery<PlateInformation> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;
@@ -771,11 +803,13 @@ public class AdminService {
      * 根据栏目获取栏目信息
      *
      * @param plateId
+     * @param language
      * @return
      */
-    public PlateInformation findPlateInformationByPlateId(Long plateId) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT p FROM PlateInformation p WHERE p.plate.id = :plateId ORDER BY p.createDate DESC", PlateInformation.class);
+    public PlateInformation findPlateInformationByPlateId(Long plateId, LanguageType language) {
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT p FROM PlateInformation p WHERE p.plate.id = :plateId AND p.language = :language ORDER BY p.createDate DESC", PlateInformation.class);
         query.setParameter("plateId", plateId);
+        query.setParameter("language", language);
         List<PlateInformation> list = query.getResultList();
         if (list == null || list.isEmpty()) {
             return null;
@@ -786,14 +820,57 @@ public class AdminService {
     /**
      * 创建或者更新栏目信息
      *
-     * @param id
      * @param plateId
      * @param content
      * @param pushDate
      * @param languageTypeEnum
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String content, Date pushDate, LanguageType languageTypeEnum) {
+    public PlateInformation createOrUpdatePlateInformation(Long plateId, String content, Date pushDate, LanguageType languageTypeEnum) {
+        PlateInformation plateInfo =  this.findPlateInformationByPlateId(plateId,languageTypeEnum);
+        boolean isCreare = true;
+        if (plateInfo != null) {
+            isCreare = false;
+        }else{
+            plateInfo = new PlateInformation();
+        }
+        plateInfo.setLanguage(languageTypeEnum);
+        plateInfo.setPushDate(pushDate);
+        if (isCreare) {
+            plateInfo.setPlate(this.findPlateById(plateId));
+        }
+        if (isCreare) {
+            em.persist(plateInfo);
+            em.flush();
+        } else {
+            em.merge(plateInfo);
+        }
+        PlateInformationContent pic = this.findContentByPlateInformation(plateInfo.getId());
+        if (pic == null) {
+            pic= new PlateInformationContent();
+            pic.setPlateInformation(plateInfo);
+            pic.setContent(content);
+            em.persist(pic);
+        } else {
+            pic.setContent(content);
+            em.merge(pic);
+        }
+        return plateInfo;
+    }
+
+    /**
+     * 创建或者更新栏目信息
+     * 
+     * @param id
+     * @param plateId
+     * @param title
+     * @param introduction
+     * @param content
+     * @param pushDate
+     * @param languageTypeEnum
+     * @return 
+     */
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -802,6 +879,8 @@ public class AdminService {
         }
         plateInfo.setLanguage(languageTypeEnum);
         plateInfo.setPushDate(pushDate);
+        plateInfo.setTitle(title);
+        plateInfo.setIntroduction(introduction);
         if (plateId != null && isCreare) {
             plateInfo.setPlate(this.findPlateById(plateId));
         }
