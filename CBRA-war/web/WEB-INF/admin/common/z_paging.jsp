@@ -36,7 +36,7 @@
             <input id="gopage" type="text" maxlength="8" autoComplete="off" value="<%=pageIndex%>" style="width:40px;height:18px;ime-mode:disabled;border:1px #CECABC solid;">
             <input type="button" onclick="gomypage();" value="跳 转" style="cursor: pointer;width:50px;height:20px;box-shadow: 1 #CECABC solid;">
             当前[<%=pageIndex%>/<%=totalPageCount%>]页
-            <input id="currentPage" type="hidden" value="1" name="page">
+            <input id="currentPage" type="hidden" value="1" name="page" />
             <script language="javascript">
                 $(document).ready(function () {
                     $("#gopage").keyup(function () {

@@ -277,7 +277,7 @@ public class AdminServlet extends BaseServlet {
             case PLATE_AUTH_INFO:
                 return loadPlateInfoInfo(request, response);
             case PLATE_AUTH_TREE:
-                return loadPlateInfoTree(request, response);
+                return loadPlateAuthTree(request, response);
             case KE_UPLOAD:
                 return loadKeUpload(request, response);
             case KE_MANAGER:
@@ -1154,6 +1154,20 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("plateInfo", plateInfo);
         request.setAttribute("plate", plate);
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 权限树
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPlateAuthTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plateList", adminService.findPlateList());
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

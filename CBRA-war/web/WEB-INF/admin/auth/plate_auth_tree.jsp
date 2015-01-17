@@ -25,9 +25,9 @@
                     }
                 };
                 var zNodes = [
-                {id:'0', pId:'0', name:"栏目列表", open:true, target : "listFrame"}
+                {id:'0', pId:'0', name:"菜单列表", open:true, target : "listFrame"}
                 <c:forEach var="plate" items="${plateList}">
-                            ,{id:'${plate.id}', pId:'<c:if test="${plate.parentPlate == null}">0</c:if><c:if test="${plate.parentPlate != null}">${plate.parentPlate.id}</c:if>', name:"${plate.name}", open:true, <c:if test="${plate.parentPlate != null}">url:"/admin/plate/plate_info_list?plateId=${plate.id}",</c:if> target: "listFrame"}
+                            ,{id:'${plate.id}', pId:'<c:if test="${plate.parentPlate == null}">0</c:if><c:if test="${plate.parentPlate != null}">${plate.parentPlate.id}</c:if>', name:"${plate.name}", open:true, <c:if test="${plate.parentPlate != null}">url:"/admin/plate/plate_auth_list?plateId=${plate.id}",</c:if> target: "listFrame"}
                 </c:forEach>
                 ];
                 $(document).ready(function () {
