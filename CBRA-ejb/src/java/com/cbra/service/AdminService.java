@@ -601,6 +601,18 @@ public class AdminService {
     }
 
     /**
+     * 获取权限面板
+     * 
+     * @return 
+     */
+    public List<Plate> findPlateAuthList() {
+        List<PlateKeyEnum> authList = PlateKeyEnum.getNeedAuthority();
+        TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p WHERE p.plateKey IN :authList ORDER BY p.sortIndex ASC", Plate.class);
+        query.setParameter("authList", authList);
+        return query.getResultList();
+    }
+
+    /**
      * 根据父获取板块
      *
      * @param parentPlateId
@@ -827,11 +839,11 @@ public class AdminService {
      * @return
      */
     public PlateInformation createOrUpdatePlateInformation(Long plateId, String content, Date pushDate, LanguageType languageTypeEnum) {
-        PlateInformation plateInfo =  this.findPlateInformationByPlateId(plateId,languageTypeEnum);
+        PlateInformation plateInfo = this.findPlateInformationByPlateId(plateId, languageTypeEnum);
         boolean isCreare = true;
         if (plateInfo != null) {
             isCreare = false;
-        }else{
+        } else {
             plateInfo = new PlateInformation();
         }
         plateInfo.setLanguage(languageTypeEnum);
@@ -847,7 +859,7 @@ public class AdminService {
         }
         PlateInformationContent pic = this.findContentByPlateInformation(plateInfo.getId());
         if (pic == null) {
-            pic= new PlateInformationContent();
+            pic = new PlateInformationContent();
             pic.setPlateInformation(plateInfo);
             pic.setContent(content);
             em.persist(pic);
@@ -860,7 +872,7 @@ public class AdminService {
 
     /**
      * 创建或者更新栏目信息
-     * 
+     *
      * @param id
      * @param plateId
      * @param title
@@ -868,7 +880,7 @@ public class AdminService {
      * @param content
      * @param pushDate
      * @param languageTypeEnum
-     * @return 
+     * @return
      */
     public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum) {
         PlateInformation plateInfo = new PlateInformation();

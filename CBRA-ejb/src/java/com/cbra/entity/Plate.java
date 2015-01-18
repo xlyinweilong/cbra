@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import java.io.Serializable;
@@ -73,6 +74,15 @@ public class Plate implements Serializable {
     @Basic(optional = false)
     @Column(name = "sort_index")
     private Integer sortIndex = 0;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "plate_auth", length = 255)
+    private PlateAuthEnum touristAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_auth", length = 255)
+    private PlateAuthEnum userAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "coompany_auth", length = 255)
+    private PlateAuthEnum companyAuth;
     public Long getId() {
         return id;
     }
@@ -143,7 +153,31 @@ public class Plate implements Serializable {
     public void setSortIndex(Integer sortIndex) {
         this.sortIndex = sortIndex;
     }
-    
+
+    public PlateAuthEnum getTouristAuth() {
+        return touristAuth;
+    }
+
+    public void setTouristAuth(PlateAuthEnum touristAuth) {
+        this.touristAuth = touristAuth;
+    }
+
+    public PlateAuthEnum getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(PlateAuthEnum userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    public PlateAuthEnum getCompanyAuth() {
+        return companyAuth;
+    }
+
+    public void setCompanyAuth(PlateAuthEnum companyAuth) {
+        this.companyAuth = companyAuth;
+    }
+
     public Plate() {
     }
 

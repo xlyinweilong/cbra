@@ -209,7 +209,7 @@ public class AdminServlet extends BaseServlet {
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
         PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
-        PLATE_AUTH_MANAGE, PLATE_AUTH_LIST, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
+        PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
     }
 
     @Override
@@ -272,10 +272,8 @@ public class AdminServlet extends BaseServlet {
                 return loadPlateInfoInfo(request, response);
             case PLATE_INFO_TREE:
                 return loadPlateInfoTree(request, response);
-            case PLATE_AUTH_LIST:
-                return loadPlateInfoList(request, response);
             case PLATE_AUTH_INFO:
-                return loadPlateInfoInfo(request, response);
+                return loadPlateAuthInfo(request, response);
             case PLATE_AUTH_TREE:
                 return loadPlateAuthTree(request, response);
             case KE_UPLOAD:
@@ -1167,9 +1165,24 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadPlateAuthTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("plateList", adminService.findPlateList());
+        request.setAttribute("plateList", adminService.findPlateAuthList());
         return KEEP_GOING_WITH_ORIG_URL;
     }
+    
+    /**
+     * 权限设置页
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean loadPlateAuthInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("plate", adminService.findPlateById(super.getRequestLong(request, "plateId")));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
 
     /**
      * 上传文件

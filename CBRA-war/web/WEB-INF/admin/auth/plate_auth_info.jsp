@@ -67,8 +67,8 @@
         <div class="formbody">
             <div class="formtitle"><span>${plate.name}</span></div>
             <form id="form1" name="form1" method="post">
-                <input type="hidden" name="a" value="PLATE_INFO_CREATE_OR_UPDATE" />
-                <input type="hidden" name="id" value="${plateInfo.id}" />
+                <input type="hidden" name="a" value="PLATE_AUTH_CREATE_OR_UPDATE" />
+                <input type="hidden" name="id" value="${plate.id}" />
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
                     <c:if test="${plate.plateKey == 'NEWS'}">
