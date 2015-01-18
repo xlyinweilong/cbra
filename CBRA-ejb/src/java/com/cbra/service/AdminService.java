@@ -18,6 +18,7 @@ import com.cbra.support.FileUploadItem;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
@@ -602,14 +603,32 @@ public class AdminService {
 
     /**
      * 获取权限面板
-     * 
-     * @return 
+     *
+     * @return
      */
     public List<Plate> findPlateAuthList() {
         List<PlateKeyEnum> authList = PlateKeyEnum.getNeedAuthority();
         TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p WHERE p.plateKey IN :authList ORDER BY p.sortIndex ASC", Plate.class);
         query.setParameter("authList", authList);
         return query.getResultList();
+    }
+
+    /**
+     * 更新权限
+     * 
+     * @param id
+     * @param touristAuthEnum
+     * @param userAuthEnum
+     * @param companyAuthEnum
+     * @return 
+     */
+    public Plate updatePlateAuth(Long id, PlateAuthEnum touristAuthEnum, PlateAuthEnum userAuthEnum, PlateAuthEnum companyAuthEnum) {
+        Plate plate = this.findPlateById(id);
+        plate.setCompanyAuth(companyAuthEnum);
+        plate.setUserAuth(userAuthEnum);
+        plate.setTouristAuth(touristAuthEnum);
+        em.merge(plate);
+        return plate;
     }
 
     /**

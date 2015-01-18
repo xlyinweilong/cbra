@@ -16,10 +16,20 @@ import java.util.List;
 public enum PlateAuthEnum {
 
     ONLY_VIEW,//仅可见
-    ALL_REPAY,//
-    USER_AND_COMPANY_REPAY,
-    ONLY_USER_REPAY,
-    ONLY_COMPANY_REPAY,
-    COMMITTEE;
+    NO_VIEW,//
+    VIEW_AND_REPAY;
+
+    public String getAuthMean() {
+        switch (this) {
+            case ONLY_VIEW:
+                return "仅可见";
+            case NO_VIEW:
+                return "详细不可见";
+            case VIEW_AND_REPAY:
+                return "可见可留言";
+            default:
+                return "详细不可见";
+        }
+    }
 
 }

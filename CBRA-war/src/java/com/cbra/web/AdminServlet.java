@@ -19,6 +19,7 @@ import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
@@ -124,6 +125,7 @@ public class AdminServlet extends BaseServlet {
         POPEDOM_DELETE, CHOOSE_ROLE,
         PLATE_DELETE, PLATE_SORT, PLATE_CREATE_OR_UPDATE,
         PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE,
+        PLATE_AUTH_CREATE_OR_UPDATE;
     }
 
     @Override
@@ -194,6 +196,8 @@ public class AdminServlet extends BaseServlet {
                 return doDeletePlateInfo(request, response);
             case PLATE_INFO_CREATE_OR_UPDATE:
                 return doCreateOrUpdatePlateInfo(request, response);
+            case PLATE_AUTH_CREATE_OR_UPDATE:
+                return doCreateOrUpdateAuthInfo(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -755,6 +759,42 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 创建/更新权限信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateAuthInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String touristAuth = super.getRequestString(request, "touristAuth");
+        String userAuth = super.getRequestString(request, "userAuth");
+        String companyAuth = super.getRequestString(request, "companyAuth");
+        PlateAuthEnum touristAuthEnum = null;
+        PlateAuthEnum userAuthEnum = null;
+        PlateAuthEnum companyAuthEnum = null;
+        try {
+            touristAuthEnum = PlateAuthEnum.valueOf(touristAuth);
+            userAuthEnum = PlateAuthEnum.valueOf(userAuth);
+            companyAuthEnum = PlateAuthEnum.valueOf(companyAuth);
+        } catch (Exception e) {
+            touristAuthEnum = PlateAuthEnum.ONLY_VIEW;
+            userAuthEnum = PlateAuthEnum.ONLY_VIEW;
+            companyAuthEnum = PlateAuthEnum.ONLY_VIEW;
+        }
+        if (id == null) {
+            setErrorResult("保存失败，参数异常！", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        Plate plate = adminService.updatePlateAuth(id, touristAuthEnum, userAuthEnum, companyAuthEnum);
+        request.setAttribute("plate", plate);
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -1154,7 +1194,7 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 权限树
      *
@@ -1168,21 +1208,21 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("plateList", adminService.findPlateAuthList());
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 权限设置页
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadPlateAuthInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("plate", adminService.findPlateById(super.getRequestLong(request, "plateId")));
+        request.setAttribute("plateAuthEnumList", Arrays.asList(PlateAuthEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
 
     /**
      * 上传文件
