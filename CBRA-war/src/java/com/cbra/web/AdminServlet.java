@@ -715,7 +715,7 @@ public class AdminServlet extends BaseServlet {
         } catch (Exception e) {
             languageTypeEnum = LanguageType.ZH;
         }
-        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.CONTACT_US.equals(plate.getPlateKey())) {
             PlateInformation pi = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
             PlateInformation piEn = adminService.findPlateInformationByPlateId(plateId, LanguageType.EN);
             if (piEn != null) {
@@ -769,7 +769,7 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean doCreateOrUpdateAuthInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = super.getRequestLong(request, "id");
+        Long id = super.getRequestLong(request, "plateId");
         String touristAuth = super.getRequestString(request, "touristAuth");
         String userAuth = super.getRequestString(request, "userAuth");
         String companyAuth = super.getRequestString(request, "companyAuth");
@@ -791,6 +791,7 @@ public class AdminServlet extends BaseServlet {
         }
         Plate plate = adminService.updatePlateAuth(id, touristAuthEnum, userAuthEnum, companyAuthEnum);
         request.setAttribute("plate", plate);
+        request.setAttribute("plateId", plate.getId());
         setSuccessResult("保存成功！", request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1175,7 +1176,7 @@ public class AdminServlet extends BaseServlet {
             plateInfo = adminService.findPlateInformationByIdFetchContent(id);
         }
         Plate plate = adminService.findPlateById(plateId);
-        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.CONTACT_US.equals(plate.getPlateKey())) {
             plateInfo = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
             if (plateInfo != null) {
                 plateInfo.setPlateInformationContent(adminService.findContentByPlateInformation(plateInfo.getId()));

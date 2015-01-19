@@ -27,7 +27,7 @@
         $(function () {
             $("#saveBtn").click(function () {
                 $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/plate/plate_auth_info");
+                $("#form1").attr("action", "/admin/auth/plate_auth_info");
                 $("#form1").submit();
             });
         });
@@ -37,12 +37,12 @@
             <div class="formtitle"><span>${plate.name}</span></div>
             <form id="form1" name="form1" method="post">
                 <input type="hidden" name="a" value="PLATE_AUTH_CREATE_OR_UPDATE" />
-                <input type="hidden" name="id" value="${plate.id}" />
+                <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
                     <li><label>游客权力<b>*</b></label>
                         <select name="touristAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="auth" items="${plateAuthEnumList}">
-                                <option value="${languageType.name()}" <c:if test="${auth == plate.touristAuth}">selected="selected"</c:if>>
+                                <option value="${auth.name()}" <c:if test="${auth == plate.touristAuth}">selected="selected"</c:if>>
                                     ${auth.authMean}
                                 </option>
                             </c:forEach>
@@ -51,7 +51,7 @@
                     <li><label>个人会员权力<b>*</b></label>
                         <select name="userAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="auth" items="${plateAuthEnumList}">
-                                <option value="${languageType.name()}" <c:if test="${auth == plate.userAuth}">selected="selected"</c:if>>
+                                <option value="${auth.name()}" <c:if test="${auth == plate.userAuth}">selected="selected"</c:if>>
                                     ${auth.authMean}
                                 </option>
                             </c:forEach>

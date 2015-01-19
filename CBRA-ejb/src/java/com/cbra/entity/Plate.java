@@ -81,7 +81,7 @@ public class Plate implements Serializable {
     @Column(name = "user_auth", length = 255)
     private PlateAuthEnum userAuth;
     @Enumerated(EnumType.STRING)
-    @Column(name = "coompany_auth", length = 255)
+    @Column(name = "company_auth", length = 255)
     private PlateAuthEnum companyAuth;
     public Long getId() {
         return id;

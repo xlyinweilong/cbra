@@ -36,4 +36,18 @@ public enum PlateKeyEnum {
         list.add(COMMITTEE);
         return list;
     }
+
+    /**
+     * 获取可以留言的栏目
+     *
+     * @return
+     */
+    public static List<PlateKeyEnum> getLeaveMessage() {
+        List<PlateKeyEnum> list = new ArrayList<>();
+        list.add(CONTACT_US);
+        list.add(NEWS);
+        list.add(MEMBER);
+        list.add(COMMITTEE);
+        return list;
+    }
 }

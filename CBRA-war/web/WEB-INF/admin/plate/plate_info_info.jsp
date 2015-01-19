@@ -51,7 +51,7 @@
                 $("#form1").attr("action", "/admin/plate/plate_info_info");
 //                Keditor.html('');
                 Keditor.sync();
-                <c:if test="${plate.plateKey == 'ABOUT'}">
+                <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                 KeditorEn.sync();
                 </c:if>
                 $("#form1").submit();
@@ -82,7 +82,7 @@
                     <li><label><c:if test="${plate.plateKey == 'ABOUT'}">中文</c:if>内容<b>*</b></label>
                         <textarea name="content" id="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
                     </li>
-                    <c:if test="${plate.plateKey == 'ABOUT'}">
+                    <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                     <li><label>英文内容<b>*</b></label>
                         <textarea name="contentEn" id="htmlKeditorEn" style="width: 600px;height: 600px">${plateEnInfo.plateInformationContent.content}</textarea>
                     </li>
@@ -115,7 +115,7 @@
                 <c:if test="${postResult.singleErrorMsg != null}">alert("${postResult.singleErrorMsg}");</c:if>
                 KindEditor.ready(function (K) {
                     Keditor = createKindEditor("htmlKeditor", 0, null, null);
-                    <c:if test="${plate.plateKey == 'ABOUT'}">
+                    <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                     KeditorEn = createKindEditor("htmlKeditorEn", 0, null, null);
                     </c:if>
                     function createKindEditor(className, resizeType, width, height) {
