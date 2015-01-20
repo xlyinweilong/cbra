@@ -612,6 +612,18 @@ public class AdminService {
         query.setParameter("authList", authList);
         return query.getResultList();
     }
+    
+    /**
+     * 获取消息面板
+     * 
+     * @return 
+     */
+    public List<Plate> findPlateMessageList() {
+        List<PlateKeyEnum> authList = PlateKeyEnum.getLeaveMessage();
+        TypedQuery<Plate> query = em.createQuery("SELECT p FROM Plate p WHERE p.plateKey IN :authList ORDER BY p.sortIndex ASC", Plate.class);
+        query.setParameter("authList", authList);
+        return query.getResultList();
+    }
 
     /**
      * 更新权限
