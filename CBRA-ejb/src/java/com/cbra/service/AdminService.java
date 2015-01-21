@@ -7,6 +7,7 @@ package com.cbra.service;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import com.cbra.Config;
+import com.cbra.entity.Message;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.PlateInformationContent;
@@ -18,6 +19,7 @@ import com.cbra.support.FileUploadItem;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
@@ -612,11 +614,11 @@ public class AdminService {
         query.setParameter("authList", authList);
         return query.getResultList();
     }
-    
+
     /**
      * 获取消息面板
-     * 
-     * @return 
+     *
+     * @return
      */
     public List<Plate> findPlateMessageList() {
         List<PlateKeyEnum> authList = PlateKeyEnum.getLeaveMessage();
@@ -627,12 +629,12 @@ public class AdminService {
 
     /**
      * 更新权限
-     * 
+     *
      * @param id
      * @param touristAuthEnum
      * @param userAuthEnum
      * @param companyAuthEnum
-     * @return 
+     * @return
      */
     public Plate updatePlateAuth(Long id, PlateAuthEnum touristAuthEnum, PlateAuthEnum userAuthEnum, PlateAuthEnum companyAuthEnum) {
         Plate plate = this.findPlateById(id);
@@ -783,7 +785,7 @@ public class AdminService {
         List<Predicate> criteria = new ArrayList<>();
         criteria.add(builder.equal(root.get("deleted"), false));
         if (map.containsKey("plateId")) {
-            criteria.add(builder.equal(root.get("plate").get("id"), map.get("plateId").toString()));
+            criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
         }
         try {
             if (list == null || !list) {
@@ -824,6 +826,86 @@ public class AdminService {
         } catch (NoResultException ex) {
         }
         return resultList;
+    }
+
+    /**
+     * 获取消息列表
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @param list
+     * @param page
+     * @return
+     */
+    public ResultList<Message> findMessageList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<Message> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Message> query = builder.createQuery(Message.class);
+        Root root = query.from(PlateInformation.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("plateId")) {
+            criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
+        }
+        if (map.containsKey("type")) {
+            criteria.add(builder.equal(root.get("type"), (MessageTypeEnum) map.get("type")));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("pushDate")));
+                TypedQuery<Message> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<Message> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
+    }
+
+    /**
+     * 删除信息
+     *
+     * @param ids
+     */
+    public void deleteMessageByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            Message message = em.find(Message.class, Long.parseLong(id));
+            message.setDeleted(Boolean.TRUE);
+            em.merge(message);
+        }
     }
 
     /**

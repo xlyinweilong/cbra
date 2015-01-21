@@ -73,6 +73,10 @@ public class Message implements Serializable {
     @Size(max = 65535)
     @Column(name = "content")
     private String content;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
     
     public Long getId() {
         return id;
@@ -151,6 +155,14 @@ public class Message implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

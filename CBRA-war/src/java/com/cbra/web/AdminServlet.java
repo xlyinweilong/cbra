@@ -7,6 +7,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.Message;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SysMenu;
@@ -200,9 +201,9 @@ public class AdminServlet extends BaseServlet {
             case PLATE_AUTH_CREATE_OR_UPDATE:
                 return doCreateOrUpdateAuthInfo(request, response);
             case MESSAGE_DELETE:
-                return doDeletePlateInfo(request, response);
+                return doDeleteMessage(request, response);
             case MESSAGE_CREATE_OR_UPDATE:
-                return doCreateOrUpdateAuthInfo(request, response);
+                return doCreateOrUpdateMessage(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -219,7 +220,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
         PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
         PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
-        MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE,MESSAGE_LIST,
+        MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE, MESSAGE_LIST,
     }
 
     @Override
@@ -809,6 +810,43 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 删除信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteMessageByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 创建更新信息
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean doCreateOrUpdateMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long plateId = super.getRequestLong(request, "plateId");
+        if (id == null) {
+            setErrorResult("保存失败，参数异常！", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        //Message message = adminService.updatePlateAuth(id, touristAuthEnum, userAuthEnum, companyAuthEnum);
+        request.setAttribute("plateId", plateId);
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -1240,40 +1278,39 @@ public class AdminServlet extends BaseServlet {
 
     /**
      * 信息树
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadMessageTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("plateList", adminService.findPlateMessageList());
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 消息列表
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadMessageList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer page = super.getRequestInteger(request, "page");
-            if (page == null) {
-                page = 1;
-            }
+        if (page == null) {
+            page = 1;
+        }
         Map<String, Object> map = new HashMap<>();
-            ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, page, 15, null, true);
-            request.setAttribute("resultList", resultList);
-        request.setAttribute("plateList", adminService.findPlateListByParentId(super.getRequestLong(request, "id")));
+        ResultList<Message> resultList = adminService.findMessageList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", super.getRequestLong(request, "plateId"));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 上传文件
      *

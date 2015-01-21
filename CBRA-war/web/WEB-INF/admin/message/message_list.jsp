@@ -29,13 +29,11 @@
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
                     $.fn.delete_items("ids", "/admin/datadict/plate_list?a=PLATE_DELETE&id=${pid}");
-                    refreshtree();
                 });
                 //排序
                 $("#sortBtn").click(function () {
                     parent.parent.tipsWindown('菜单排序', 'iframe:/admin/datadict/plate_sort_list?id=${pid}', '350', '400', 'true', '', 'true', '', 'no');
                     parent.parent.$("#windown-close").bind('click', function () {
-                        refreshtree();
                         window.location.href = "/admin/datadict/plate_list?id=${pid}";
                     });
                 });
@@ -52,14 +50,10 @@
                 var url = "/admin/datadict/plate_list?a=PLATE_DELETE&pid=${pid}&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
-                        refreshtree();
                         window.location.href = window.location.href;
                     });
                 }
             };
-            function refreshtree() {
-                parent.treeFrame.location.href = "/admin/datadict/plate_tree";
-            }
         </script>
     </head>
     <body>
@@ -89,7 +83,7 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
-                                栏目名称
+                                栏目
                             </th>
                             <th>
                                 操作
@@ -106,7 +100,9 @@
                                     ${plate.name}
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">修改</a>
+                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">查看</a>
+                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">回复</a>
+                                    <c:if test=""><a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">修改</a></c:if>
                                     <a href="javascript:$.fn.deleteItem('${plate.id}');" class="tablelink">删除</a>
                                 </td>
                             </tr>
