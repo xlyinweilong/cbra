@@ -57,7 +57,7 @@ public class PlateInformation implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "visit_count")
-    private int visitCount = 0;
+    private long visitCount = 0l;
     @Basic(optional = false)
     @NotNull
     @Column(name = "is_top")
@@ -100,11 +100,11 @@ public class PlateInformation implements Serializable {
         this.id = id;
     }
 
-    public int getVisitCount() {
+    public long getVisitCount() {
         return visitCount;
     }
 
-    public void setVisitCount(int visitCount) {
+    public void setVisitCount(long visitCount) {
         this.visitCount = visitCount;
     }
 
