@@ -58,8 +58,8 @@ public class FundCollectionTicket implements Serializable {
     @Column(name = "price_amount")
     private BigDecimal priceAmount = null;
     @ManyToOne
-    @JoinColumn(name = "fund_collection_id", referencedColumnName = "id")
-    private FundCollectionTicket fundCollection;
+    @JoinColumn(name = "collection_id", referencedColumnName = "id")
+    private FundCollection fundCollection;
     @OneToOne
     @JoinColumn(name = "attendee_id", referencedColumnName = "id")
     private Attendee attendee;
@@ -134,11 +134,11 @@ public class FundCollectionTicket implements Serializable {
         this.priceAmount = priceAmount;
     }
 
-    public FundCollectionTicket getFundCollection() {
+    public FundCollection getFundCollection() {
         return fundCollection;
     }
 
-    public void setFundCollection(FundCollectionTicket fundCollection) {
+    public void setFundCollection(FundCollection fundCollection) {
         this.fundCollection = fundCollection;
     }
 

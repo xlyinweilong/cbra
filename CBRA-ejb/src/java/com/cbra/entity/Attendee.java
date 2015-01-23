@@ -5,22 +5,17 @@
  */
 package com.cbra.entity;
 
-import com.cbra.support.enums.MessageSecretLevelEnum;
-import com.cbra.support.enums.MessageTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -78,6 +73,8 @@ public class Attendee implements Serializable {
     private UserAccount userAccount;
     @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "attendee", fetch = FetchType.LAZY)
     private FundCollectionTicket fundCollectionTicket;
+    @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "attendee", fetch = FetchType.LAZY)
+    private OrderCollectionItem orderCollectionItem;
     @ManyToOne
     @JoinColumn(name = "fund_collection_id", referencedColumnName = "id")
     private FundCollectionTicket fundCollection;
@@ -195,6 +192,14 @@ public class Attendee implements Serializable {
 
     public void setFundCollection(FundCollectionTicket fundCollection) {
         this.fundCollection = fundCollection;
+    }
+
+    public OrderCollectionItem getOrderCollectionItem() {
+        return orderCollectionItem;
+    }
+
+    public void setOrderCollectionItem(OrderCollectionItem orderCollectionItem) {
+        this.orderCollectionItem = orderCollectionItem;
     }
 
     @Override

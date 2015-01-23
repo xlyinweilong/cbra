@@ -6,12 +6,14 @@
 package com.cbra.support.enums;
 
 /**
- * 用户分类
- * 
+ * 允许的参加者
+ *
  * @author yin.weilong
  */
-public enum UserAccountTypeEnum {
-    USER,//个人用户
-    COMPANY,//企业用户
-    SUB;//企业用户附属账户
+public enum OrderStatusEnum {
+
+    INIT,//开放
+    ONLY_MEMBERS,//仅会员
+    ONLY_COMPANY//仅限企业会员
+
 }

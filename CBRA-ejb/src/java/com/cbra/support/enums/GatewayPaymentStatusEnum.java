@@ -6,12 +6,13 @@
 package com.cbra.support.enums;
 
 /**
- * 用户分类
- * 
+ * 网关状态
+ *
  * @author yin.weilong
  */
-public enum UserAccountTypeEnum {
-    USER,//个人用户
-    COMPANY,//企业用户
-    SUB;//企业用户附属账户
+public enum GatewayPaymentStatusEnum {
+
+    PAYMENT_PENDING,
+    
+
 }
