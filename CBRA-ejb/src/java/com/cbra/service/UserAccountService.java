@@ -95,7 +95,6 @@ public class UserAccountService {
 
     public UserAccount setLanguage(Long uid, String language) {
         UserAccount userAccount = this.findById(uid);
-        userAccount.setLanguage(LanguageType.valueOf(language.toUpperCase()));
         return em.merge(userAccount);
     }
 

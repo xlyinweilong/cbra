@@ -70,12 +70,13 @@ public abstract class Account implements Serializable {
     private String verifyUrl;
     //验证时间
     @Column(name = "verify_date")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date verifyDate;
     @Size(max = 2)
     @Column(name = "language", length = 2)
     @Enumerated(EnumType.STRING)
     //账户默认语言
-    private LanguageType language = LanguageType.ZH;
+    private LanguageType userLanguage = LanguageType.ZH;
     @Size(max = 255)
     @Column(name = "email")
     //邮件
@@ -157,12 +158,12 @@ public abstract class Account implements Serializable {
         this.verifyDate = verifyDate;
     }
 
-    public LanguageType getLanguage() {
-        return language;
+    public LanguageType getUserLanguage() {
+        return userLanguage;
     }
 
-    public void setLanguage(LanguageType language) {
-        this.language = language;
+    public void setUserLanguage(LanguageType userLanguage) {
+        this.userLanguage = userLanguage;
     }
 
     public String getEmail() {
