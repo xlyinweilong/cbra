@@ -10,7 +10,7 @@ package com.cbra.support.enums;
  * 
  * @author yin.weilong
  */
-public enum UserAccountTypeEnum {
+public enum AccountTypeEnum {
     USER,//个人用户
     COMPANY,//企业用户
     SUB;//企业用户附属账户
