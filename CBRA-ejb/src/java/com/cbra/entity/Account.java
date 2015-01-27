@@ -93,6 +93,8 @@ public abstract class Account implements Serializable {
     @Column(name = "ic_position", length = 255)
     //产业链位置
     private String icPosition;
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -196,6 +198,14 @@ public abstract class Account implements Serializable {
 
     public void setIcPosition(String icPosition) {
         this.icPosition = icPosition;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 
     @Override

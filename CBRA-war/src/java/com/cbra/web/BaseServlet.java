@@ -7,7 +7,7 @@ package com.cbra.web;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.Config;
 import com.cbra.entity.UserAccount;
-import com.cbra.service.UserAccountService;
+import com.cbra.service.AccountService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
@@ -81,7 +81,7 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String REQUEST_ATTRIBUTE_FILEUPLOAD_ITEMS = "items";
     
     @EJB
-    private UserAccountService accountService;
+    private AccountService accountService;
     //这里类似Filter中的Chain。任何一部都有可能跳出而不继续这个Chain。
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
