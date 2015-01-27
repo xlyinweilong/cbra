@@ -7,6 +7,8 @@ package com.cbra.service;
 
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.SubCompanyAccount;
+import com.cbra.entity.UserAccount;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -55,6 +57,59 @@ public class AccountService {
         return null;
     }
 
+    public SubCompanyAccount setSubCompanyAccount(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
+            CompanyAccount companyAccount) throws AccountAlreadyExistException {
+        Account ua = this.findByAccount(account);
+        SubCompanyAccount sub;
+        if (ua == null) {
+            sub = new SubCompanyAccount();
+        } else {
+            throw new AccountAlreadyExistException();
+        }
+        sub.setName(name);
+        sub.setPasswd(Tools.md5(passwd));
+        sub.setAddress(address);
+        sub.setEmail(email);
+        sub.setIcPosition(icPosition);
+        sub.setUserLanguage(LanguageType.valueOf(name));
+        sub.setZipCode(zipCode);
+        sub.setCompanyAccount(companyAccount);
+        em.persist(sub);
+        return sub;
+    }
+
+    public UserAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
+            String enName, String personCardFront, String personCardBack, String personId, Date workingDate, String company,
+            String position, String workExperience, String projectExperience) throws AccountAlreadyExistException {
+        Account ua = this.findByAccount(account);
+        UserAccount user;
+        if (ua == null) {
+            user = new UserAccount();
+        } else {
+            throw new AccountAlreadyExistException();
+        }
+        user.setName(name);
+        user.setPasswd(Tools.md5(passwd));
+        user.setAddress(address);
+        user.setEmail(email);
+        user.setIcPosition(icPosition);
+        user.setUserLanguage(LanguageType.valueOf(name));
+        user.setZipCode(zipCode);
+        user.setCompany(company);
+        user.setEnName(enName);
+        user.setPersonCardBack(personCardBack);
+        user.setPersonCardFront(personCardFront);
+        user.setPersonId(personId);
+        user.setPosition(position);
+        user.setProjectExperience(projectExperience);
+        user.setWorkExperience(workExperience);
+        user.setWorkingDate(workingDate);
+        String verifyUrl = getUniqueAccountVerifyUrl();
+        user.setVerifyUrl(verifyUrl);
+        em.persist(user);
+        return user;
+    }
+
     public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, String nature, String scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field) throws AccountAlreadyExistException {
@@ -83,9 +138,21 @@ public class AccountService {
         company.setScale(scale);
         company.setWebSide(webSide);
         String verifyUrl = getUniqueAccountVerifyUrl();
-        user.setVerifyUrl(verifyUrl);
+        company.setVerifyUrl(verifyUrl);
         em.persist(company);
         return company;
+    }
+
+    public Long getSubCountByCompany(Long companyAccountId) {
+        Long totalCount = null;
+        try {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(s) FROM SubCompanyAccount s WHERE s.companyAccount.id = :companyAccountId and s.deleted = false", Long.class);
+            query.setParameter("companyAccountId", companyAccountId);
+            totalCount = query.getSingleResult();
+        } catch (NoResultException ex) {
+            totalCount = null;
+        }
+        return totalCount;
     }
 
     /**

@@ -66,6 +66,78 @@ public class UserAccount extends Account {
     //项目经验
     private String projectExperience;
 
+    public String getEnName() {
+        return enName;
+    }
+
+    public void setEnName(String enName) {
+        this.enName = enName;
+    }
+
+    public String getPersonCardFront() {
+        return personCardFront;
+    }
+
+    public void setPersonCardFront(String personCardFront) {
+        this.personCardFront = personCardFront;
+    }
+
+    public String getPersonCardBack() {
+        return personCardBack;
+    }
+
+    public void setPersonCardBack(String personCardBack) {
+        this.personCardBack = personCardBack;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+
+    public Date getWorkingDate() {
+        return workingDate;
+    }
+
+    public void setWorkingDate(Date workingDate) {
+        this.workingDate = workingDate;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getWorkExperience() {
+        return workExperience;
+    }
+
+    public void setWorkExperience(String workExperience) {
+        this.workExperience = workExperience;
+    }
+
+    public String getProjectExperience() {
+        return projectExperience;
+    }
+
+    public void setProjectExperience(String projectExperience) {
+        this.projectExperience = projectExperience;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

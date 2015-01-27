@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "sub_company_account")
 @DiscriminatorValue("SUB_COMPANY")
 @XmlRootElement
-public abstract class SubCompanyAccount extends Account {
+public class SubCompanyAccount extends Account {
 
     @JoinColumn(name = "company_account", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
