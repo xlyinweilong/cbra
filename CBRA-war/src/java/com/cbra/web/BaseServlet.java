@@ -6,7 +6,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.Config;
-import com.cbra.entity.UserAccount;
+import com.cbra.entity.Account;
 import com.cbra.service.AccountService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
@@ -48,8 +48,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.EmailValidator;
 
 /**
+ * 父类Servlet
  *
- * @author HUXIAOFENG
+ * @author yin.weilong
  */
 public abstract class BaseServlet extends HttpServlet {
 
@@ -79,7 +80,7 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String REQUEST_ATTRIBUTE_LOGIN_ALLOWED = "pageViewLoginAllowed";
     public static final String REQUEST_ATTRIBUTE_LOGOUT_ALLOWED = "pageViewLogoutAllowed";
     public static final String REQUEST_ATTRIBUTE_FILEUPLOAD_ITEMS = "items";
-    
+
     @EJB
     private AccountService accountService;
     //这里类似Filter中的Chain。任何一部都有可能跳出而不继续这个Chain。
@@ -110,7 +111,6 @@ public abstract class BaseServlet extends HttpServlet {
             if (!loginControlForward(request, response)) {
                 return;
             }
-
 
             //多语言相关处理，需要在正式processAction或者processPage之前选择好语言并初始化语言包，以供后续使用。
             if (!processLocale(request, response)) {
@@ -223,6 +223,13 @@ public abstract class BaseServlet extends HttpServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 从GOOKIE中获取语言
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     String getLanguageFromCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = getLanguageCookie(request, response);
         if (cookie == null) {
@@ -232,6 +239,13 @@ public abstract class BaseServlet extends HttpServlet {
         return lang;
     }
 
+    /**
+     * 获取语言的COOKIE
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     Cookie getLanguageCookie(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         for (int i = 0; cookies != null && i < cookies.length; i++) {
@@ -244,6 +258,14 @@ public abstract class BaseServlet extends HttpServlet {
         return null;
     }
 
+    /**
+     * 获取COOKIE
+     *
+     * @param request
+     * @param response
+     * @param cname
+     * @return
+     */
     Cookie getCookie(HttpServletRequest request, HttpServletResponse response, String cname) {
         Cookie[] cookies = request.getCookies();
         for (int i = 0; cookies != null && i < cookies.length; i++) {
@@ -256,6 +278,14 @@ public abstract class BaseServlet extends HttpServlet {
         return null;
     }
 
+    /**
+     * 获取COOKIE的值
+     *
+     * @param request
+     * @param response
+     * @param cname
+     * @return
+     */
     String getCookieValue(HttpServletRequest request, HttpServletResponse response, String cname) {
         Cookie[] cookies = request.getCookies();
         for (int i = 0; cookies != null && i < cookies.length; i++) {
@@ -268,12 +298,27 @@ public abstract class BaseServlet extends HttpServlet {
         return null;
     }
 
+    /**
+     * 设置COOKIE
+     *
+     * @param request
+     * @param response
+     * @param cname
+     * @param cvalue
+     */
     void setCookieValue(HttpServletRequest request, HttpServletResponse response, String cname, String cvalue) {
         Cookie cookie = new Cookie(cname, cvalue);
         cookie.setPath("/");
         response.addCookie(cookie);
     }
 
+    /**
+     * 删除COOKIE
+     *
+     * @param request
+     * @param response
+     * @param cname
+     */
     void removeCookie(HttpServletRequest request, HttpServletResponse response, String cname) {
         Cookie cookie = new Cookie(cname, null);
         cookie.setPath("/");
@@ -281,11 +326,27 @@ public abstract class BaseServlet extends HttpServlet {
         response.addCookie(cookie);
     }
 
+    /**
+     * 保存用户语言
+     *
+     * @param lang
+     * @param request
+     * @param response
+     * @return
+     */
     Locale setLanguage(String lang, HttpServletRequest request, HttpServletResponse response) {
         Locale locale = new Locale(lang);
         return setLanguage(locale, request, response);
     }
 
+    /**
+     * 保存用户语言
+     *
+     * @param locale
+     * @param request
+     * @param response
+     * @return
+     */
     Locale setLanguage(Locale locale, HttpServletRequest request, HttpServletResponse response) {
         if (locale == null) {
             locale = new Locale(DEFAULT_LANG);
@@ -304,7 +365,7 @@ public abstract class BaseServlet extends HttpServlet {
         }
         response.addCookie(cookie);
         //Set db
-        UserAccount user = getUserFromSessionNoException(request);
+        Account user = getUserFromSessionNoException(request);
         if (user != null && !locale.getLanguage().equalsIgnoreCase("")) {
             user = accountService.setLanguage(user.getId(), locale.getLanguage());
             setSessionUser(request, user);
@@ -312,6 +373,12 @@ public abstract class BaseServlet extends HttpServlet {
         return locale;
     }
 
+    /**
+     * 从request中获取用户语言
+     *
+     * @param request
+     * @return
+     */
     Locale getLanguage(HttpServletRequest request) {
         Locale locale = null;
         HttpSession session = request.getSession(false);
@@ -324,6 +391,15 @@ public abstract class BaseServlet extends HttpServlet {
         return locale;
     }
 
+    /**
+     * 登录控制
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     boolean loginControlForward(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Boolean pageViewLoginAllowed = (Boolean) request.getAttribute("pageViewLoginAllowed");
         Boolean pageViewLogoutAllowed = (Boolean) request.getAttribute("pageViewLogoutAllowed");
@@ -362,26 +438,54 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 设置只能登录访问
+     *
+     * @param request
+     */
     void setLoginOnly(HttpServletRequest request) {
         request.setAttribute(REQUEST_ATTRIBUTE_LOGIN_ALLOWED, Boolean.TRUE);
         request.setAttribute(REQUEST_ATTRIBUTE_LOGOUT_ALLOWED, Boolean.FALSE);
     }
 
+    /**
+     * 设置只能未登录访问
+     *
+     * @param request
+     */
     void setLogoutOnly(HttpServletRequest request) {
         request.setAttribute(REQUEST_ATTRIBUTE_LOGIN_ALLOWED, Boolean.FALSE);
         request.setAttribute(REQUEST_ATTRIBUTE_LOGOUT_ALLOWED, Boolean.TRUE);
     }
 
+    /**
+     * 设置未登录和登录都能访问
+     *
+     * @param request
+     */
     void setLoginLogoutBothAllowed(HttpServletRequest request) {
         request.setAttribute(REQUEST_ATTRIBUTE_LOGIN_ALLOWED, Boolean.TRUE);
         request.setAttribute(REQUEST_ATTRIBUTE_LOGOUT_ALLOWED, Boolean.TRUE);
     }
 
+    /**
+     * 设置未登录和登录都不能访问
+     *
+     * @param request
+     */
     void setNoPermit(HttpServletRequest request) {
         request.setAttribute(REQUEST_ATTRIBUTE_LOGIN_ALLOWED, Boolean.FALSE);
         request.setAttribute(REQUEST_ATTRIBUTE_LOGOUT_ALLOWED, Boolean.FALSE);
     }
 
+    /**
+     * 兼容上传表单获取action
+     *
+     * @param request
+     * @return
+     * @throws FileUploadException
+     * @throws UnsupportedEncodingException
+     */
     String getActionString(HttpServletRequest request) throws FileUploadException, UnsupportedEncodingException {
         //解决是否为文件上传
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
@@ -409,6 +513,14 @@ public abstract class BaseServlet extends HttpServlet {
 
     }
 
+    /**
+     * 获取真实页面
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
     void randerPage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 //        String requestURI = request.getRequestURI();
 //        String contextPath = request.getContextPath();
@@ -433,86 +545,230 @@ public abstract class BaseServlet extends HttpServlet {
         }
 
         //System.out.println("Randers page: " + url);
-
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
         requestDispatcher.forward(request, response);
     }
 
+    /**
+     * include
+     *
+     * @param url
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
     void include(String url, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(url);
         requestDispatcher.include(request, response);
     }
 
+    /**
+     * redirect
+     *
+     * @param url
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
     void redirect(String url, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.sendRedirect(url);
         response.flushBuffer();
     }
 
+    /**
+     * 重定向到404页面
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     void redirectToFileNotFound(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setStatus(404);
         response.sendRedirect("/error404.html");
         response.flushBuffer();
     }
 
+    /**
+     * forward
+     *
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void forward(String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher(pageForwardTo);
         requestDispatcher.forward(request, response);
     }
 
+    /**
+     * 设置返回结果信息
+     *
+     * @param postResult
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
     void setPostResult(PostResult postResult, HttpServletRequest request) throws ServletException, IOException {
         request.setAttribute("postResult", postResult);
     }
 
+    /**
+     * 设置返回的错误结果信息
+     *
+     * @param error
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
     void setErrorResult(String error, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(false, error);
         setPostResult(postResult, request);
     }
 
+    /**
+     * 设置返回的错误结果信息
+     *
+     * @param msg
+     * @param redirectUrl
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
     void setErrorResult(String msg, String redirectUrl, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg, redirectUrl);
         setPostResult(postResult, request);
     }
 
+    /**
+     * 设置返回的成功结果信息
+     *
+     * @param msg
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
     void setSuccessResult(String msg, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg);
         setPostResult(postResult, request);
     }
 
+    /**
+     * 设置返回的成功结果信息
+     *
+     * @param msg
+     * @param redirectUrl
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
     void setSuccessResult(String msg, String redirectUrl, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg, redirectUrl);
         setPostResult(postResult, request);
     }
 
+    /**
+     * 包含带有结果
+     *
+     * @param postResult
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void includeWithResult(PostResult postResult, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("postResult", postResult);
         include(pageForwardTo, request, response);
     }
 
+    /**
+     * 包含带有错误结果信息
+     *
+     * @param error
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void includeWithError(String error, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PostResult postResult = new PostResult(false, error);
         includeWithResult(postResult, pageForwardTo, request, response);
     }
 
+    /**
+     * 包含带有成功结果信息
+     *
+     * @param msg
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void includeWithSuccess(String msg, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg);
         includeWithResult(postResult, pageForwardTo, request, response);
     }
 
+    /**
+     * 转发带有结果信息
+     *
+     * @param postResult
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void forwardWithResult(PostResult postResult, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("postResult", postResult);
         forward(pageForwardTo, request, response);
     }
 
+    /**
+     * 转发带有错误结果信息
+     *
+     * @param error
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void forwardWithError(String error, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PostResult postResult = new PostResult(false, error);
         forwardWithResult(postResult, pageForwardTo, request, response);
     }
 
+    /**
+     * 转发带有成功结果信息
+     *
+     * @param msg
+     * @param pageForwardTo
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void forwardWithSuccess(String msg, String pageForwardTo, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg);
         forwardWithResult(postResult, pageForwardTo, request, response);
     }
 
+    /**
+     * 转发带有异常
+     *
+     * @param t
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void forwardWithException(Throwable t, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("exceptionMessage", t.toString());
         String stackTrace = Tools.getStackTrace(t);
@@ -520,6 +776,15 @@ public abstract class BaseServlet extends HttpServlet {
         forward("/public/exception", request, response);
     }
 
+    /**
+     * 包含带有异常
+     *
+     * @param t
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     void includeWithException(Throwable t, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("exceptionMessage", t.toString());
         String stackTrace = Tools.getStackTrace(t);
@@ -528,10 +793,33 @@ public abstract class BaseServlet extends HttpServlet {
         include("/WEB-INF/public/exception.jsp", request, response);
     }
 
+    /**
+     * 校验空白的参数
+     *
+     * @param singleErrorMsg
+     * @param request
+     * @param response
+     * @param params
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     boolean validateBlankParams(String singleErrorMsg, HttpServletRequest request, HttpServletResponse response, String... params) throws ServletException, IOException {
         return validateBlankParams(singleErrorMsg, null, request, response, params);
     }
 
+    /**
+     * 校验空白的参数
+     *
+     * @param singleErrorMsg
+     * @param errorPage
+     * @param request
+     * @param response
+     * @param params
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     boolean validateBlankParams(String singleErrorMsg, String errorPage, HttpServletRequest request, HttpServletResponse response, String... params) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, null);
         for (String param : params) {
@@ -551,40 +839,80 @@ public abstract class BaseServlet extends HttpServlet {
         return true;
     }
 
+    /**
+     * 从会话取值
+     *
+     * @param request
+     * @param key
+     * @return
+     */
     Object getSessionValue(HttpServletRequest request, String key) {
         HttpSession session = request.getSession();
         return session.getAttribute(key);
     }
 
+    /**
+     * 保存键值对到会话
+     *
+     * @param request
+     * @param key
+     * @param value
+     */
     void setSessionValue(HttpServletRequest request, String key, Object value) {
         HttpSession session = request.getSession();
         session.setAttribute(key, value);
     }
 
-    UserAccount getUserFromSession(HttpServletRequest request) throws NoSessionException {
+    /**
+     * 从会话中获取用户
+     *
+     * @param request
+     * @return
+     * @throws NoSessionException
+     */
+    Account getUserFromSession(HttpServletRequest request) throws NoSessionException {
         HttpSession session = request.getSession();
-        UserAccount user = (UserAccount) session.getAttribute("user");
+        Account user = (Account) session.getAttribute("user");
         if (user == null) {
             throw new NoSessionException("Fatal Error: no session!");
         }
         return user;
     }
 
-    UserAccount getUserFromSessionNoException(HttpServletRequest request) {
+    /**
+     * 从会话中获取用户
+     *
+     * @param request
+     * @return
+     */
+    Account getUserFromSessionNoException(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        UserAccount user = (UserAccount) session.getAttribute("user");
+        Account user = (Account) session.getAttribute("user");
         return user;
     }
 
-    UserAccount getUserFromSessionAndRequest(HttpServletRequest request) {
+    /**
+     * 从会话和请求中获取用户
+     *
+     * @param request
+     * @return
+     */
+    Account getUserFromSessionAndRequest(HttpServletRequest request) {
         HttpSession session = request.getSession();
-        UserAccount user = (UserAccount) session.getAttribute("user");
+        Account user = (Account) session.getAttribute("user");
         if (user == null) {
-            user = (UserAccount) request.getAttribute("user");
+            user = (Account) request.getAttribute("user");
         }
         return user;
     }
 
+    /**
+     * 获取URL中需要的值
+     *
+     * @param request
+     * @param index
+     * @return
+     */
     String getPathInfoStringAt(HttpServletRequest request, int index) {
         String[] pathArray = (String[]) request.getAttribute(REQUEST_ATTRIBUTE_PATHINFO_ARRAY);
         String path = null;
@@ -599,6 +927,15 @@ public abstract class BaseServlet extends HttpServlet {
         return path;
     }
 
+    /**
+     * 从请求中获取字符串
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     String getRequestString(HttpServletRequest request, String param) throws ServletException, IOException {
         String result = request.getParameter(param);
         if (StringUtils.isBlank(result)) {
@@ -609,6 +946,15 @@ public abstract class BaseServlet extends HttpServlet {
         return result;
     }
 
+    /**
+     * 从请求中获取邮件地址
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     String getRequestEmail(HttpServletRequest request, String param) throws ServletException, IOException {
         String str = getRequestString(request, param);
         if (str == null) {
@@ -622,6 +968,12 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 字符串转成BigDecimal
+     *
+     * @param str
+     * @return
+     */
     BigDecimal getBigDecimal(String str) {
         if (str == null) {
             return null;
@@ -633,16 +985,40 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 从请求中获取BigDecimal
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     BigDecimal getRequestBigDecimal(HttpServletRequest request, String param) throws ServletException, IOException {
         String str = getRequestString(request, param);
         return getBigDecimal(str);
     }
 
+    /**
+     * 从url中获取BigDecimal
+     *
+     * @param request
+     * @param index
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     BigDecimal getPathInfoBigDecimalAt(HttpServletRequest request, int index) throws ServletException, IOException {
         String str = getPathInfoStringAt(request, index);
         return getBigDecimal(str);
     }
 
+    /**
+     * 字符串转int
+     *
+     * @param str
+     * @return
+     */
     Integer getInteger(String str) {
         if (str == null) {
             return null;
@@ -654,11 +1030,26 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 从请求中获取int
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Integer getRequestInteger(HttpServletRequest request, String param) throws ServletException, IOException {
         String str = getRequestString(request, param);
         return getInteger(str);
     }
 
+    /**
+     * 字符串转布尔值
+     *
+     * @param str
+     * @return
+     */
     Boolean getBoolean(String str) {
         if (str == null) {
             return null;
@@ -666,11 +1057,30 @@ public abstract class BaseServlet extends HttpServlet {
         return Boolean.valueOf(str);
     }
 
+    /**
+     * 从请求中获取布尔值
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Boolean getRequestBoolean(HttpServletRequest request, String param) throws ServletException, IOException {
         String str = getRequestString(request, param);
         return getBoolean(str);
     }
 
+    /**
+     * 从请求中获取带有默认值的布尔值
+     *
+     * @param request
+     * @param param
+     * @param opt
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Boolean optRequestBoolean(HttpServletRequest request, String param, Boolean opt) throws ServletException, IOException {
         String str = getRequestString(request, param);
         Boolean result = getBoolean(str);
@@ -680,11 +1090,26 @@ public abstract class BaseServlet extends HttpServlet {
         return result;
     }
 
+    /**
+     * 从URL中获取int
+     *
+     * @param request
+     * @param index
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Integer getPathInfoIntegerAt(HttpServletRequest request, int index) throws ServletException, IOException {
         String str = getPathInfoStringAt(request, index);
         return getInteger(str);
     }
 
+    /**
+     * 字符串转成long
+     *
+     * @param str
+     * @return
+     */
     Long getLong(String str) {
         if (str == null) {
             return null;
@@ -696,11 +1121,29 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 从请求中获取long
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Long getRequestLong(HttpServletRequest request, String param) throws ServletException, IOException {
         String str = getRequestString(request, param);
         return getLong(str);
     }
 
+    /**
+     * 从URL中获取long
+     *
+     * @param request
+     * @param index
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     Long getPathInfoLongAt(HttpServletRequest request, int index) throws ServletException, IOException {
         String str = getPathInfoStringAt(request, index);
         return getLong(str);
@@ -708,55 +1151,114 @@ public abstract class BaseServlet extends HttpServlet {
 
     /**
      * 网站根路径：eg：http://localhost:8080/
+     *
+     * @param request
+     * @return
      */
     String getSiteBaseUrl(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/";
     }
 
-
-    void setSessionUser(HttpServletRequest request, UserAccount userAccount) {
+    /**
+     * 保存用户的SESSION
+     *
+     * @param request
+     * @param userAccount
+     */
+    void setSessionUser(HttpServletRequest request, Account userAccount) {
         request.getSession().setAttribute(SESSION_ATTRIBUTE_USER, userAccount);
     }
 
+    /**
+     * 时间格式化
+     *
+     * @param request
+     */
     void setDateStyle(HttpServletRequest request) {
         Locale locale = getLanguage(request);
         String dateParseStyle = locale.getLanguage().equals("zh") ? "yyyy/MM/dd" : "MM/dd/yyyy";
         request.setAttribute("dateStyle", dateParseStyle);
     }
 
-    void setCurrencyRate(HttpServletRequest request) {
-//        request.setAttribute("rateCNY2USD", Config.PAYGATE_USD_TO_CNY_EXCHANGE_RATE);
-//        request.setAttribute("rateUSD2CNY", Config.PAYGATE_CNY_TO_USD_EXCHANGE_RATE);
-    }
-
+    /**
+     * 输出JSON格式的成功信息
+     *
+     * @param msg
+     * @param redirectUrl
+     * @param response
+     * @return
+     * @throws IOException
+     */
     Boolean outputSuccessAjax(String msg, String redirectUrl, HttpServletResponse response) throws IOException {
         return outputAjax(true, msg, redirectUrl, response);
     }
 
+    /**
+     * 输出JSON格式的错误信息
+     *
+     * @param msg
+     * @param redirectUrl
+     * @param response
+     * @return
+     * @throws IOException
+     */
     Boolean outputErrorAjax(String msg, String redirectUrl, HttpServletResponse response) throws IOException {
         return outputAjax(false, msg, redirectUrl, response);
     }
 
+    /**
+     * 输出JSON格式的信息
+     *
+     * @param successMsg
+     * @param msg
+     * @param redirectUrl
+     * @param response
+     * @return
+     * @throws IOException
+     */
     Boolean outputAjax(boolean successMsg, String msg, String redirectUrl, HttpServletResponse response) throws IOException {
         outputText(response, toJSON(new PostResult(successMsg, msg, redirectUrl)));
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 输出JSON格式
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     Boolean outputAjax(HttpServletRequest request, HttpServletResponse response) throws IOException {
         outputText(response, toJSON(request));
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 输出错误参数的JSON格式信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     Boolean outputErrorParamJSON(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map result = new HashMap();
         result.put("success", false);
         result.put("errorMsg", bundle.getString("GLOBAL_MSG_PARAM_INVALID"));
-//        JSONSerializer serializer = new JSONSerializer();
-//        String serialize = serializer.serialize(result);
-//        outputText(response, serialize);
+        JSONSerializer serializer = new JSONSerializer();
+        String serialize = serializer.serialize(result);
+        outputText(response, serialize);
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 输出文本
+     *
+     * @param response
+     * @param text
+     * @throws IOException
+     */
     void outputText(HttpServletResponse response, String text) throws IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -767,6 +1269,19 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 输出JSON或者转发
+     *
+     * @param request
+     * @param response
+     * @param isFromAjax
+     * @param successMsg
+     * @param msg
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
     Boolean outputAjaxOrForward(HttpServletRequest request, HttpServletResponse response, boolean isFromAjax, boolean successMsg, String msg, String url) throws IOException, ServletException {
         if (isFromAjax) {
             return outputAjax(successMsg, msg, url, response);
@@ -780,12 +1295,24 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 对象JSON化
+     *
+     * @param o
+     * @return
+     */
     String toJSON(Object o) {
         JSONSerializer serializer = new JSONSerializer();
         String serialize = serializer.serialize(o);
         return serialize;
     }
 
+    /**
+     * 请求JSON化
+     *
+     * @param request
+     * @return
+     */
     String toJSON(HttpServletRequest request) {
         PostResult result = (PostResult) request.getAttribute("postResult");
         if (result != null) {
@@ -796,6 +1323,17 @@ public abstract class BaseServlet extends HttpServlet {
         return null;
     }
 
+    /**
+     * 获取上传文件
+     *
+     * @param request
+     * @param maxFileSizeMB
+     * @param fileNamePrefix
+     * @param uploadPath
+     * @param fileType
+     * @return
+     * @throws FileUploadException
+     */
     public FileUploadObj uploadFile(HttpServletRequest request, double maxFileSizeMB, String fileNamePrefix, String uploadPath, String fileType) throws FileUploadException {
         //上传数据封装到上传对象中
         FileUploadObj fileUploadObj = new FileUploadObj();
@@ -851,7 +1389,7 @@ public abstract class BaseServlet extends HttpServlet {
 
             // 创建临时上传目录
             String targetDir = Config.FILE_UPLOAD_TEMP_DIR;
-            
+
             if (uploadPath != null) {
                 targetDir = uploadPath;
             }
@@ -867,7 +1405,6 @@ public abstract class BaseServlet extends HttpServlet {
             // 上传前文件基名和扩展名
             String baseName = FilenameUtils.getBaseName(fileName);
             String extension = FilenameUtils.getExtension(fileName);
-
 
             //设置上传后文件名前缀
             if (fileNamePrefix != null && fileNamePrefix.length() > 0) {
@@ -930,6 +1467,14 @@ public abstract class BaseServlet extends HttpServlet {
         return fileUploadObj;
     }
 
+    /**
+     * 输出文件下载
+     *
+     * @param request
+     * @param response
+     * @param file
+     * @param displayName
+     */
     void outputFileForDownload(HttpServletRequest request, HttpServletResponse response, File file, String displayName) {
         FileInputStream is = null;
         ServletOutputStream sos = null;
@@ -984,6 +1529,24 @@ public abstract class BaseServlet extends HttpServlet {
         }
     }
 
+    /**
+     * 表单集合传递
+     *
+     * @param requestDataMap
+     * @param prefix
+     * @param firstSubPrefix
+     * @param secondSubPrefix
+     * @param locale
+     * @param escapeHTML
+     * @return
+     * @throws ClassNotFoundException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws NoSuchFieldException
+     * @throws NoSuchMethodException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     public Map<String, Object> getFormFieldListMap(Map requestDataMap, String prefix, String firstSubPrefix, String secondSubPrefix, Locale locale, boolean escapeHTML) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchFieldException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         String dateParseStyle = locale.getLanguage().equals("zh") ? "yy/MM/dd" : "MM/dd/yy";
 
@@ -1241,15 +1804,33 @@ public abstract class BaseServlet extends HttpServlet {
         return objectContainer;
     }
 
+    /**
+     * 获取集合内容的角标
+     *
+     * @param rawStr
+     * @return
+     */
     public String getIndexStr(String rawStr) {
         return rawStr.substring(rawStr.indexOf("[") + 1, rawStr.indexOf("]"));
     }
 
+    /**
+     * 通过属性访问SET方法
+     *
+     * @param rawStr
+     * @return
+     */
     private String parseObjectSetMethod(String rawStr) {
         String result = "set" + this.parseObjectName(rawStr, true);
         return result;
     }
 
+    /**
+     * 通过属性访问GET方法
+     *
+     * @param rawStr
+     * @return
+     */
     private String parseObjectGetMethod(String rawStr) {
         String result = "get" + this.parseObjectName(rawStr, true);
         return result;
@@ -1276,6 +1857,14 @@ public abstract class BaseServlet extends HttpServlet {
         return result.toString().replaceAll("\\[.*\\]", "");
     }
 
+    /**
+     * 私网IP段检查
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
     public boolean checkRequestIsPrivateInternetIp(HttpServletRequest request) throws IOException, ServletException {
         String ip = request.getRemoteAddr();
         if (ip.matches("^10\\..*$") || ip.matches("^172\\.(1[6-9]\\.|2[0-9]\\.|3[0-1]\\.).*$") || ip.matches("^192\\.168\\..*$")) {
@@ -1284,6 +1873,14 @@ public abstract class BaseServlet extends HttpServlet {
         return false;
     }
 
+    /**
+     * HTTPS请求验证
+     *
+     * @param request
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
     public boolean checkRequestIsHttps(HttpServletRequest request) throws IOException, ServletException {
         if ("https".equals(request.getScheme()) && this.checkRequestPort(request, 443)) {
             return true;
@@ -1291,6 +1888,15 @@ public abstract class BaseServlet extends HttpServlet {
         return false;
     }
 
+    /**
+     * 端口检查
+     *
+     * @param request
+     * @param port
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
     public boolean checkRequestPort(HttpServletRequest request, int port) throws IOException, ServletException {
         if (request.getServerPort() == port) {
             return true;
