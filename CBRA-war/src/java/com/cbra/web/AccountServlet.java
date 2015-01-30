@@ -34,7 +34,7 @@ import org.apache.commons.lang.StringUtils;
  * @author yin.weilong
  */
 @WebServlet(name = "UserAccountServlet", urlPatterns = {"/account/*", "/v/*", "/user/*", "/company/*"})
-public class UserAccountServlet extends BaseServlet {
+public class AccountServlet extends BaseServlet {
 
     @EJB
     private AccountService accountService;
