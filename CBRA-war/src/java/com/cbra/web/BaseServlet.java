@@ -137,9 +137,7 @@ public abstract class BaseServlet extends HttpServlet {
             //这里的异常处理要注意不要用forward，因为那样还会进入某个Servlet里面，有可能发生循环出错的情况。
             //所以，异常处理尽量使用一次性出结果的redirect或include，并且不要用到Servlet管理的url。
             // 比如，jsp页面要用/WEB-INF/等格式。
-        } catch (NoPermException ex) {
-            includeWithError(bundle.getString("GLOBAL_MSG_DATA_ERROR"), "/WEB-INF/public/error_page.jsp", request, response);
-        } catch (BadPostActionException ex) {
+        } catch (NoPermException | BadPostActionException ex) {
             includeWithError(bundle.getString("GLOBAL_MSG_DATA_ERROR"), "/WEB-INF/public/error_page.jsp", request, response);
         } catch (NotVerifiedException ex) {
             includeWithError(bundle.getString("GLOBAL_MSG_EMAIL_VALID"), "/WEB-INF/public/error_page.jsp", request, response);

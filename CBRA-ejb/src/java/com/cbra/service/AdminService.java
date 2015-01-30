@@ -42,6 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
@@ -69,6 +70,9 @@ public class AdminService {
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AdminService.class.getName());
+    
+    @EJB
+    private EmailService emailService;
 
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
@@ -1127,10 +1131,33 @@ public class AdminService {
         this.setUploadFile(item, savePath + "/", filename);
         return Config.HTTP_URL_BASE + "/" + Config.HTML_EDITOR_UPLOAD + "/" + filedirL1.toString() + "/" + sysUser.getId() + "/" + filename;
     }
+    
+     public void sendFundAddFundNoticeEmail() {
+        String language = "zh";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "大隆" : "Yoopay";
+        String fromEmail = "xlyinweilong1@163.com";
+        String templateFile = "fund_add_fund_notice_" + language + ".html";
+        String toEmail = "yinweilong.com@163.com";
+        String amountStr = "￥100";
+        String subjectSuf = amountStr;
+        String subject = "zh".equalsIgnoreCase(language) ? "【充值成功】" + subjectSuf : "【Add Fund Success】" + subjectSuf;
+        Map model = new HashMap();
+//        model.put("orderOwner", owner);
+//        model.put("amountStr", amountStr);
+//        model.put("addFundOrder", addFundOrder);
+//        model.put("gatewayPayment", addFundOrder.getLastGatewayPayment());
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
 
     // **********************************************************************
     // ************* PRIVATE METHODS *****************************************
     // **********************************************************************
+     /**
+      * HTML编辑器方法
+      * 
+      * @param currentPath
+      * @return 
+      */
     private List<Hashtable> getFileInformation(String currentPath) {
         String[] fileTypes = new String[]{"gif", "jpg", "jpeg", "png", "bmp"};
         //目录不存在或不是目录
@@ -1201,7 +1228,7 @@ public class AdminService {
             }
         }
     }
-
+    
     private class TypeComparator implements Comparator {
 
         public int compare(Object a, Object b) {
@@ -1217,6 +1244,13 @@ public class AdminService {
         }
     }
 
+    /**
+     * 保存上传的文件
+     * 
+     * @param item
+     * @param src
+     * @param filename 
+     */
     private void setUploadFile(FileUploadItem item, String src, String filename) {
         try {
             String fullPath = src + filename;

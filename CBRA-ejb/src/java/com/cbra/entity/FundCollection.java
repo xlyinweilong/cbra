@@ -100,7 +100,7 @@ public class FundCollection implements Serializable {
     @Column(name = "type", nullable = false, length = 255)
     private FundCollectionTypeEnum type = FundCollectionTypeEnum.OFFICIAL;
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 255)
+    @Column(name = "allow_attendee", nullable = false, length = 255)
     private FundCollectionAllowAttendeeEnum allowAttendee = FundCollectionAllowAttendeeEnum.PUBLIC;
     @Enumerated(EnumType.STRING)
     @Column(name = "event_language", nullable = false, length = 255)

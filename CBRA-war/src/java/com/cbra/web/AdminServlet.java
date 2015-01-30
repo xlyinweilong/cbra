@@ -336,6 +336,7 @@ public class AdminServlet extends BaseServlet {
         String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");
         SysUser su = null;
+        adminService.sendFundAddFundNoticeEmail();
         try {
             su = adminService.login(account, passwd);
         } catch (AccountNotExistException | EjbMessageException ex) {
@@ -346,6 +347,7 @@ public class AdminServlet extends BaseServlet {
         }
         request.getSession().setAttribute(SESSION_ATTRIBUTE_ADMIN, su);
         redirect("/admin/main", request, response);
+       
         return REDIRECT_TO_ANOTHER_URL;
     }
 

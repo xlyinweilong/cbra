@@ -55,6 +55,7 @@ public class CompanyAccount extends Account {
     //产许可证编号
     private String productionLicenseNumber;
     @Column(name = "production_license_valid_date")
+    @Temporal(TemporalType.TIMESTAMP)
     //安全生产许可证有效期
     private Date productionLicenseValidDate;
     @Lob
