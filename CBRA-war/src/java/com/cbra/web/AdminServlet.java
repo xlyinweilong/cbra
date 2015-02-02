@@ -7,18 +7,23 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.Account;
+import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.Message;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
+import com.cbra.entity.UserAccount;
+import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
@@ -57,11 +62,13 @@ import org.json.simple.JSONObject;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/account/*", "/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
     private AdminService adminService;
+    @EJB
+    private AccountService accountService;
 
     /// <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
     @Override
@@ -128,6 +135,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE,
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
+        ACCOUNT_APPROVAL,
     }
 
     @Override
@@ -200,6 +208,8 @@ public class AdminServlet extends BaseServlet {
                 return doCreateOrUpdatePlateInfo(request, response);
             case PLATE_AUTH_CREATE_OR_UPDATE:
                 return doCreateOrUpdateAuthInfo(request, response);
+            case ACCOUNT_APPROVAL:
+                return doAccountApproval(request, response);
             case MESSAGE_DELETE:
                 return doDeleteMessage(request, response);
             case MESSAGE_CREATE_OR_UPDATE:
@@ -221,6 +231,8 @@ public class AdminServlet extends BaseServlet {
         PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
         PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
         MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE, MESSAGE_LIST,
+        C_USER_LIST, C_USER_INFO,
+        O_USER_LIST, O_USER_INFO,
     }
 
     @Override
@@ -294,6 +306,14 @@ public class AdminServlet extends BaseServlet {
                 return loadMessageTree(request, response);
             case MESSAGE_LIST:
                 return loadMessageList(request, response);
+            case C_USER_LIST:
+                return loadCUserList(request, response);
+            case C_USER_INFO:
+                return loadCUserInfo(request, response);
+            case O_USER_LIST:
+                return loadOUserList(request, response);
+            case O_USER_INFO:
+                return loadOUserInfo(request, response);
             case KE_UPLOAD:
                 return loadKeUpload(request, response);
             case KE_MANAGER:
@@ -347,7 +367,7 @@ public class AdminServlet extends BaseServlet {
         }
         request.getSession().setAttribute(SESSION_ATTRIBUTE_ADMIN, su);
         redirect("/admin/main", request, response);
-       
+
         return REDIRECT_TO_ANOTHER_URL;
     }
 
@@ -813,6 +833,32 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
+     * 用户注册审批
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doAccountApproval(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String status = super.getRequestString(request, "status");
+        String message = super.getRequestString(request, "message");
+        AccountStatus statusEnum = null;
+        try {
+            statusEnum = AccountStatus.valueOf(status);
+        } catch (Exception e) {
+            setErrorResult("保存失败，参数异常！", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        Account account = accountService.approvalAccount(id, statusEnum, message);
+        request.setAttribute("account", account);
+        setSuccessResult("操作成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
      * 删除信息
      *
      * @param request
@@ -826,15 +872,15 @@ public class AdminServlet extends BaseServlet {
         adminService.deleteMessageByIds(ids);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 创建更新信息
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean doCreateOrUpdateMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
@@ -1310,6 +1356,78 @@ public class AdminServlet extends BaseServlet {
         ResultList<Message> resultList = adminService.findMessageList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", super.getRequestLong(request, "plateId"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 公司用户列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadCUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        ResultList<CompanyAccount> resultList = accountService.findCompanyList(map, page, 15);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 公司用户详细信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadCUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        CompanyAccount ca = (CompanyAccount) accountService.findById(id);
+        request.setAttribute("companyAccount", ca);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 个人用户泪列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOUserList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        ResultList<UserAccount> resultList = accountService.findUserList(map, page, 15);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 个人用户详细
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        UserAccount ua = (UserAccount) accountService.findById(id);
+        request.setAttribute("userAccount", ua);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

@@ -9,12 +9,17 @@ import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
+import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
@@ -30,10 +35,13 @@ import javax.persistence.TypedQuery;
 @Stateless
 @LocalBean
 public class AccountService {
-
+    
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AccountService.class.getName());
+    
+    @EJB
+    private EmailService emailService;
 
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
@@ -56,7 +64,7 @@ public class AccountService {
         }
         return null;
     }
-
+    
     public SubCompanyAccount setSubCompanyAccount(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             CompanyAccount companyAccount) throws AccountAlreadyExistException {
         Account ua = this.findByAccount(account);
@@ -77,7 +85,7 @@ public class AccountService {
         em.persist(sub);
         return sub;
     }
-
+    
     public UserAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             String enName, String personCardFront, String personCardBack, String personId, Date workingDate, String company,
             String position, String workExperience, String projectExperience) throws AccountAlreadyExistException {
@@ -109,7 +117,7 @@ public class AccountService {
         em.persist(user);
         return user;
     }
-
+    
     public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, String nature, String scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field) throws AccountAlreadyExistException {
@@ -143,6 +151,12 @@ public class AccountService {
         return company;
     }
 
+    /**
+     * 获取公司账户的子账户数量
+     *
+     * @param companyAccountId
+     * @return
+     */
     public Long getSubCountByCompany(Long companyAccountId) {
         Long totalCount = null;
         try {
@@ -156,6 +170,54 @@ public class AccountService {
     }
 
     /**
+     * 获取公司用户列表
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @return
+     */
+    public ResultList<CompanyAccount> findCompanyList(Map<String, Object> map, int pageIndex, int maxPerPage) {
+        ResultList<CompanyAccount> resultList = new ResultList<>();
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", Long.class);
+        Long totalCount = countQuery.getSingleResult();
+        resultList.setTotalCount(totalCount.intValue());
+        TypedQuery<CompanyAccount> query = em.createQuery("SELECT c FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", CompanyAccount.class);
+        int startIndex = (pageIndex - 1) * maxPerPage;
+        query.setFirstResult(startIndex);
+        query.setMaxResults(maxPerPage);
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        resultList.addAll(query.getResultList());
+        return resultList;
+    }
+
+    /**
+     * 获取个人用户列表
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @return
+     */
+    public ResultList<UserAccount> findUserList(Map<String, Object> map, int pageIndex, int maxPerPage) {
+        ResultList<UserAccount> resultList = new ResultList<>();
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", Long.class);
+        Long totalCount = countQuery.getSingleResult();
+        resultList.setTotalCount(totalCount.intValue());
+        TypedQuery<UserAccount> query = em.createQuery("SELECT u FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", UserAccount.class);
+        int startIndex = (pageIndex - 1) * maxPerPage;
+        query.setFirstResult(startIndex);
+        query.setMaxResults(maxPerPage);
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        resultList.addAll(query.getResultList());
+        return resultList;
+    }
+
+    /**
      * 获取账户
      *
      * @param id
@@ -163,6 +225,31 @@ public class AccountService {
      */
     public Account findById(Long id) {
         return em.find(Account.class, id);
+    }
+
+    /**
+     * 审批账户
+     *
+     * @param id
+     * @param status
+     * @param message
+     * @return
+     */
+    public Account approvalAccount(Long id, AccountStatus status, String message) {
+        Account account = this.findById(id);
+        account.setStatus(status);
+        if (AccountStatus.APPROVAL_REJECT.equals(status)) {
+            //发送拒绝邮件
+            this.sendAccountApprovalFail(account, message);
+        } else if (AccountStatus.ASSOCIATE_MEMBER.equals(status)) {
+            //生成随机密码
+            String passwd = Tools.generateRandom8Chars();
+            account.setPasswd(passwd);
+            //发送成功邮件
+            this.sendAccountApprovalSuccess(account);
+        }
+        em.merge(account);
+        return account;
     }
 
     /**
@@ -221,7 +308,7 @@ public class AccountService {
     // ************* PRIVATE METHODS *****************************************
     // **********************************************************************
     /**
-     * 生成唯一的验证URL
+     * 生成唯一的验证URL（算法有待提高）
      *
      * @return
      */
@@ -252,4 +339,52 @@ public class AccountService {
         return true;
     }
 
+    // **********************************************************************
+    // ************* SEND EMAIL METHODS *****************************************
+    // **********************************************************************
+    /**
+     * 发送注册成功邮件
+     *
+     * @param account
+     */
+    private void sendAccountApprovalSuccess(Account account) {
+        String language = account.getUserLanguage().toString();
+        String toEmail = account.getEmail();
+        if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
+            language = "zh";
+        }
+        language = language.toLowerCase();
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
+        String fromEmail = "withdraw@yoopay.cn";
+        String templateFile = "account_approval_success_" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        Map model = new HashMap();
+        model.put("account", account);
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
+
+    /**
+     * 发送注册失败邮件
+     *
+     * @param account
+     */
+    private void sendAccountApprovalFail(Account account, String message) {
+        String language = account.getUserLanguage().toString();
+        String toEmail = account.getEmail();
+        if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
+            language = "zh";
+        }
+        language = language.toLowerCase();
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
+        String fromEmail = "withdraw@yoopay.cn";
+        String templateFile = "account_approval_fail_" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        Map model = new HashMap();
+        model.put("account", account);
+        if (Tools.isNotBlank(message)) {
+            model.put("message", message);
+            model.put("showMessage", true);
+        }
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
 }

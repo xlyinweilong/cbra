@@ -48,11 +48,11 @@ import org.apache.commons.validator.EmailValidator;
 import sun.misc.BASE64Encoder;
 
 /**
+ * 工具类
  *
- * @author HUXIAOFENG
+ * @author yin.weilong
  */
 public class Tools {
-
 
     public static Map<String, Date> getAdminStartDate(Date startDate, Date endDate) {
         Map<String, Date> map = new HashMap<String, Date>();
@@ -146,7 +146,6 @@ public class Tools {
         return dFormat.parse(str);
     }
 
-
     public static String formatCurrency(Number number, Locale locale) {
         DecimalFormat df = new DecimalFormat("¤#,###", DecimalFormatSymbols.getInstance(locale));
         return df.format(number);
@@ -161,19 +160,6 @@ public class Tools {
     public static String formatRMBCurrency(Number number) {
         return formatCurrency(number, Locale.CHINA);
     }
-    //Convert tools
-
-//    public static double convertCNYtoUSD(BigDecimal cny) {
-//        BigDecimal rate = new BigDecimal(Config.PAYGATE_CNY_TO_USD_EXCHANGE_RATE);
-//        BigDecimal bd = cny.multiply(rate);
-//        return bd.doubleValue();
-//    }
-//
-//    public static double convertUSDtoCNY(BigDecimal usd) {
-//        BigDecimal rate = new BigDecimal(Config.PAYGATE_USD_TO_CNY_EXCHANGE_RATE);
-//        BigDecimal bd = usd.multiply(rate);
-//        return bd.doubleValue();
-//    }
 
     public static double round(double v, int scale) {
         if (scale < 0) {
@@ -483,18 +469,8 @@ public class Tools {
         }
         return sb.toString();
     }
-    //Codec Utils
 
-    public static String md5WithoutYoopay(String s) {
-        try {
-            s = s.toUpperCase().trim();
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update(s.getBytes(), 0, s.length());
-            s = new BigInteger(1, m.digest()).toString(16);
-        } catch (NoSuchAlgorithmException ex) {
-        }
-        return s;
-    }
+    //Codec Utils
 
     public static String md5(String s) {
         try {
@@ -705,7 +681,6 @@ public class Tools {
         out.close();
     }
 
-
     public static boolean isInstanceof(Object sourceObject, String theClassName) {
         try {
             Class c = Class.forName(theClassName);
@@ -747,140 +722,6 @@ public class Tools {
             }
         }
         return ipAddress;
-    }
-
-    public static String getResponseSign4APIRefund(String appKey, String tid, String refundYAPITID, String amount, String currency,
-            String customEmail, String resultStatus, String type, String sandbox) {
-        StringBuilder str = new StringBuilder();
-        if (Tools.isNotBlank(appKey)) {
-            str.append(appKey);
-        }
-        if (Tools.isNotBlank(tid)) {
-            str.append(tid);
-        }
-        if (Tools.isNotBlank(refundYAPITID)) {
-            str.append(refundYAPITID);
-        }
-        if (Tools.isNotBlank(amount)) {
-            str.append(amount);
-        }
-        if (Tools.isNotBlank(currency)) {
-            str.append(currency);
-        }
-        if (Tools.isNotBlank(customEmail)) {
-            str.append(customEmail);
-        }
-        if (Tools.isNotBlank(resultStatus)) {
-            str.append(resultStatus);
-        }
-        if (Tools.isNotBlank(type)) {
-            str.append(type);
-        }
-        if (Tools.isNotBlank(sandbox)) {
-            str.append(sandbox);
-        }
-        return Tools.md5WithoutYoopay(str.toString());
-    }
-
-    public static String getRequestSign4APIChargeList(String appKey, String sellerEmail, String yapiTID) {
-        StringBuilder str = new StringBuilder();
-        if (Tools.isNotBlank(appKey)) {
-            str.append(appKey);
-        }
-        if (Tools.isNotBlank(sellerEmail)) {
-            str.append(sellerEmail);
-        }
-        if (Tools.isNotBlank(yapiTID)) {
-            str.append(yapiTID);
-        }
-        return Tools.md5WithoutYoopay(str.toString());
-    }
-
-    public static String getRequestSign4APIRefund(String appKey, String sellerEmail, String tid, String yapiTID, String amount,
-            String fullRefund, String notifyURL, String sandbox) {
-        StringBuilder str = new StringBuilder();
-        if (Tools.isNotBlank(appKey)) {
-            str.append(appKey);
-        }
-        if (Tools.isNotBlank(sellerEmail)) {
-            str.append(sellerEmail);
-        }
-        if (Tools.isNotBlank(tid)) {
-            str.append(tid);
-        }
-        if (Tools.isNotBlank(yapiTID)) {
-            str.append(yapiTID);
-        }
-        if (Tools.isNotBlank(amount)) {
-            str.append(amount);
-        }
-        if (Tools.isNotBlank(fullRefund)) {
-            str.append(fullRefund);
-        }
-        if (Tools.isNotBlank(notifyURL)) {
-            str.append(fullRefund);
-        }
-        if (Tools.isNotBlank(sandbox)) {
-            str.append(sandbox);
-        }
-        return Tools.md5WithoutYoopay(str.toString());
-    }
-
-    public static String getResponseSign4APICharge(String appKey, String yapiTID, String tid, String itemPrice,
-            String itemCurrency, String resultStatus, String type, String sandbox) {
-        StringBuilder str = new StringBuilder();
-        if (Tools.isNotBlank(appKey)) {
-            str.append(appKey);
-        }
-        if (Tools.isNotBlank(tid)) {
-            str.append(tid);
-        }
-        if (Tools.isNotBlank(itemPrice)) {
-            str.append(itemPrice);
-        }
-        if (Tools.isNotBlank(itemPrice)) {
-            str.append(itemPrice);
-        }
-        if (Tools.isNotBlank(itemCurrency)) {
-            str.append(itemCurrency);
-        }
-        if (Tools.isNotBlank(resultStatus)) {
-            str.append(resultStatus);
-        }
-        if (Tools.isNotBlank(type)) {
-            str.append(type);
-        }
-        if (Tools.isNotBlank(sandbox)) {
-            str.append(sandbox);
-        }
-        return Tools.md5WithoutYoopay(str.toString());
-    }
-
-    public static String getRequestSignAPICharge(String appKey, String sellerEmail, String tid, String itemPrice, String itemCurrency, String notifyUrl, String sandbox) {
-        StringBuilder str = new StringBuilder();
-        if (Tools.isNotBlank(appKey)) {
-            str.append(appKey);
-        }
-        if (Tools.isNotBlank(sellerEmail)) {
-            str.append(sellerEmail);
-        }
-        if (Tools.isNotBlank(tid)) {
-            str.append(tid);
-        }
-        if (Tools.isNotBlank(itemPrice)) {
-            str.append(itemPrice);
-        }
-        if (Tools.isNotBlank(itemCurrency)) {
-            str.append(itemCurrency);
-        }
-        if (Tools.isNotBlankAndNotEqStr(notifyUrl, "null")) {
-            str.append(notifyUrl);
-        }
-        if (Tools.isNotBlankAndNotEqStr(sandbox, "null")) {
-            str.append(sandbox);
-        }
-        System.out.println(str.toString());
-        return Tools.md5WithoutYoopay(str.toString());
     }
 
     public static void main(String[] args) {

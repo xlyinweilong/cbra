@@ -1,5 +1,6 @@
 package com.cbra.entity;
 
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import java.io.Serializable;
 import java.util.Date;
@@ -56,7 +57,11 @@ public abstract class Account implements Serializable {
     private String account;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    //状态
+    private AccountStatus status = AccountStatus.PENDING_FOR_APPROVAL;
+    @Basic()
     @Column(name = "passwd")
     //密码
     private String passwd;
@@ -206,6 +211,14 @@ public abstract class Account implements Serializable {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
     }
 
     @Override
