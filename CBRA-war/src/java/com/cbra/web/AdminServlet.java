@@ -135,7 +135,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE,
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
-        ACCOUNT_APPROVAL,
+        ACCOUNT_APPROVAL, ACCOUNT_DELETE,
     }
 
     @Override
@@ -214,6 +214,8 @@ public class AdminServlet extends BaseServlet {
                 return doDeleteMessage(request, response);
             case MESSAGE_CREATE_OR_UPDATE:
                 return doCreateOrUpdateMessage(request, response);
+            case ACCOUNT_DELETE:
+                return doAccountDelete(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -895,6 +897,21 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 账户删除
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doAccountDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        accountService.deleteAccountByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -1426,7 +1443,7 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean loadOUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
-        UserAccount ua = (UserAccount) accountService.findById(id);
+        UserAccount ua = new UserAccount();//(UserAccount) accountService.findById(id);
         request.setAttribute("userAccount", ua);
         return KEEP_GOING_WITH_ORIG_URL;
     }

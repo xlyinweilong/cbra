@@ -243,7 +243,7 @@ public abstract class Account implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.UserAccount[ id=" + id + " ]";
+        return "com.cbra.entity.Account[ id=" + id + " ]";
     }
 
 }

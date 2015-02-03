@@ -35,11 +35,11 @@ import javax.persistence.TypedQuery;
 @Stateless
 @LocalBean
 public class AccountService {
-    
+
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AccountService.class.getName());
-    
+
     @EJB
     private EmailService emailService;
 
@@ -64,7 +64,23 @@ public class AccountService {
         }
         return null;
     }
-    
+
+    /**
+     * 删除账户
+     *
+     * @param ids
+     */
+    public void deleteAccountByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            Account account = em.find(Account.class, Long.parseLong(id));
+            account.setDeleted(Boolean.TRUE);
+            em.merge(account);
+        }
+    }
+
     public SubCompanyAccount setSubCompanyAccount(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             CompanyAccount companyAccount) throws AccountAlreadyExistException {
         Account ua = this.findByAccount(account);
@@ -85,7 +101,7 @@ public class AccountService {
         em.persist(sub);
         return sub;
     }
-    
+
     public UserAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             String enName, String personCardFront, String personCardBack, String personId, Date workingDate, String company,
             String position, String workExperience, String projectExperience) throws AccountAlreadyExistException {
@@ -117,7 +133,7 @@ public class AccountService {
         em.persist(user);
         return user;
     }
-    
+
     public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, String nature, String scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field) throws AccountAlreadyExistException {
