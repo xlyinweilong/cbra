@@ -23,6 +23,7 @@ import com.cbra.support.FileUploadObj;
 import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateAuthEnum;
@@ -1444,6 +1445,7 @@ public class AdminServlet extends BaseServlet {
     private boolean loadOUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
         UserAccount ua = new UserAccount();//(UserAccount) accountService.findById(id);
+        request.setAttribute("accountIcPositionList", Arrays.asList(AccountIcPosition.values()));
         request.setAttribute("userAccount", ua);
         return KEEP_GOING_WITH_ORIG_URL;
     }

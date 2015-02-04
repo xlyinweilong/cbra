@@ -1,9 +1,12 @@
 package com.cbra.entity;
 
+import com.cbra.support.enums.CompanyNatureEnum;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,8 +35,13 @@ public class CompanyAccount extends Account {
     private String legalPerson;
     @Size(max = 255)
     @Column(name = "nature", length = 255)
+    @Enumerated(EnumType.STRING)
     //企业性质
-    private String nature;
+    private CompanyNatureEnum nature;
+    @Size(max = 255)
+    @Column(name = "nature_others", length = 255)
+    //企业性质其他
+    private String natureOthers;
     @Size(max = 255)
     @Column(name = "scale", length = 255)
     //规模
@@ -82,14 +90,6 @@ public class CompanyAccount extends Account {
 
     public void setLegalPerson(String legalPerson) {
         this.legalPerson = legalPerson;
-    }
-
-    public String getNature() {
-        return nature;
-    }
-
-    public void setNature(String nature) {
-        this.nature = nature;
     }
 
     public String getScale() {
@@ -154,6 +154,22 @@ public class CompanyAccount extends Account {
 
     public void setBusinessLicenseUrl(String businessLicenseUrl) {
         this.businessLicenseUrl = businessLicenseUrl;
+    }
+
+    public CompanyNatureEnum getNature() {
+        return nature;
+    }
+
+    public void setNature(CompanyNatureEnum nature) {
+        this.nature = nature;
+    }
+
+    public String getNatureOthers() {
+        return natureOthers;
+    }
+
+    public void setNatureOthers(String natureOthers) {
+        this.natureOthers = natureOthers;
     }
 
     @Override

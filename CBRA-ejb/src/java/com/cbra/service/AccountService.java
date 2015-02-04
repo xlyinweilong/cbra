@@ -12,6 +12,7 @@ import com.cbra.entity.UserAccount;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
+import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
@@ -135,7 +136,7 @@ public class AccountService {
     }
 
     public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
-            String legalPerson, Date companyCreateDate, String nature, String scale, String webSide, String enterpriseQalityGrading,
+            String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field) throws AccountAlreadyExistException {
         Account user = this.findByAccount(account);
         CompanyAccount company;

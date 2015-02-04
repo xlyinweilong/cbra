@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -19,6 +20,7 @@
         <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.poshytip.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/My97DatePicker/WdatePicker.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
     </head>
     <script type="text/javascript">
@@ -63,16 +65,20 @@
                 <input type="hidden" name="id" value="${userAccount.id}" />
                 <input id="form_action" type="hidden" name="a" value="" />
                 <ul class="forminfo">
-                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.account}" maxlength="25" /></li>
-                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="25" /></li>
-                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.enName}" maxlength="25" /></li>
-                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.email}" maxlength="50" /></li>
-                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>产业链位置</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>职务</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.address}" maxlength="200" /></li>
-                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.zipCode}" maxlength="50" /></li>
+                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.account" value="${userAccount.account}" maxlength="25" /></li>
+                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}" maxlength="25" /></li>
+                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" maxlength="25" /></li>
+                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" maxlength="50" /></li>
+                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${userAccount.workingDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
+                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" maxlength="100" /></li>
+                    <li><label>产业链位置</label>
+                        <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
+                            <input type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                        </c:forEach>
+                    </li>
+                    <li><label>职务</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.position" value="${userAccount.position}" maxlength="100" /></li>
+                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.address" value="${userAccount.address}" maxlength="200" /></li>
+                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.zipCode" value="${userAccount.zipCode}" maxlength="50" /></li>
                     <li style="height: 210px;">
                         <labe style="width:800px">
                             &nbsp;
@@ -117,7 +123,7 @@
                             <label>
                                 审批说明
                             </label>
-                            <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
+                            <textarea name="userAccount.approvalInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.approvalInformation}</textarea>
                             <i></i>
                         </li>
                     </ul>

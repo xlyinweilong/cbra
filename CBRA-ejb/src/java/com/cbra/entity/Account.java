@@ -61,7 +61,6 @@ public abstract class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     //状态
     private AccountStatus status = AccountStatus.PENDING_FOR_APPROVAL;
-    @Basic()
     @Column(name = "passwd")
     //密码
     private String passwd;
@@ -98,8 +97,15 @@ public abstract class Account implements Serializable {
     @Column(name = "ic_position", length = 255)
     //产业链位置
     private String icPosition;
+    @Size(max = 255)
+    @Column(name = "ic_position_others", length = 255)
+    //产业链位置其他信息
+    private String icPositionOthers;
     @Column(name = "deleted")
     private boolean deleted = false;
+    @Column(name = "approval_information")
+    //审批信息
+    private String approvalInformation ;
 
     public Long getId() {
         return id;
@@ -219,6 +225,22 @@ public abstract class Account implements Serializable {
 
     public void setStatus(AccountStatus status) {
         this.status = status;
+    }
+
+    public String getIcPositionOthers() {
+        return icPositionOthers;
+    }
+
+    public void setIcPositionOthers(String icPositionOthers) {
+        this.icPositionOthers = icPositionOthers;
+    }
+
+    public String getApprovalInformation() {
+        return approvalInformation;
+    }
+
+    public void setApprovalInformation(String approvalInformation) {
+        this.approvalInformation = approvalInformation;
     }
 
     @Override
