@@ -1135,9 +1135,9 @@ public class AdminService {
      public void sendFundAddFundNoticeEmail() {
         String language = "zh";
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "大隆" : "Yoopay";
-        String fromEmail = "xlyinweilong1@163.com";
+        String fromEmail = "yinweilong.com@163.com";
         String templateFile = "fund_add_fund_notice_" + language + ".html";
-        String toEmail = "yinweilong.com@163.com";
+        String toEmail = "xlyinweilong1@163.com";
         String amountStr = "￥100";
         String subjectSuf = amountStr;
         String subject = "zh".equalsIgnoreCase(language) ? "【充值成功】" + subjectSuf : "【Add Fund Success】" + subjectSuf;
@@ -1146,6 +1146,7 @@ public class AdminService {
 //        model.put("amountStr", amountStr);
 //        model.put("addFundOrder", addFundOrder);
 //        model.put("gatewayPayment", addFundOrder.getLastGatewayPayment());
+        System.out.println("****************");
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 

@@ -125,7 +125,7 @@ public class EmailService {
         email.setCharset(emailCharset);
         email.setFrom(fromEmail, displayFromName, emailCharset);
         if (replyEmails != null && replyEmails.length > 0) {
-            List<InternetAddress> replyAddressList = new ArrayList<InternetAddress>();
+            List<InternetAddress> replyAddressList = new ArrayList<>();
             for (String replyEmail : replyEmails) {
                 InternetAddress ia = new InternetAddress(replyEmail);
                 replyAddressList.add(ia);
