@@ -48,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.EmailValidator;
 
 /**
- * 父类Servlet
+ * 基础抽象Servlet
  *
  * @author yin.weilong
  */
@@ -71,8 +71,6 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String COOKIE_GATEWAYPAYMENT_ID = "COOKIE_GATEWAYPAYMENT_ID";
     public static final String SESSION_ATTRIBUTE_USER = "user";
     public static final String SESSION_ATTRIBUTE_ADMIN = "admin";
-    public static final String SESSION_ATTRIBUTE_USER_SERVICE_STATUS = "userServiceStatus";
-    public static final String SESSION_ATTRIBUTE_VOLUME_ID = "VOLUME_ID";
     public static final String SESSION_ATTRIBUTE_LOCALE = "SESSION_ATTRIBUTE_LOCALE";
     public static final String REQUEST_ATTRIBUTE_ACTION_ENUM = "ATTRIBUTE_ACTION_ENUM";
     public static final String REQUEST_ATTRIBUTE_PAGE_ENUM = "ATTRIBUTE_PAGE_ENUM";
@@ -964,6 +962,41 @@ public abstract class BaseServlet extends HttpServlet {
         } else {
             return null;
         }
+    }
+
+    /**
+     * 获取日期
+     *
+     * @param request
+     * @param param
+     * @param style
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    Date getRequestDate(HttpServletRequest request, String param, String style) throws ServletException, IOException {
+        String str = getRequestString(request, param);
+        if (str == null) {
+            return null;
+        }
+        return Tools.parseDate(str, style);
+    }
+
+    /**
+     * 获取日期
+     *
+     * @param request
+     * @param param
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    Date getRequestDate(HttpServletRequest request, String param) throws ServletException, IOException {
+        String str = getRequestString(request, param);
+        if (str == null) {
+            return null;
+        }
+        return getRequestDate(request, param, "yyyy-MM-dd HH:mm:ss");
     }
 
     /**

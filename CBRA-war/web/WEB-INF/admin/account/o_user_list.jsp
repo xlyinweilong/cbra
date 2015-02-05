@@ -26,6 +26,9 @@
                 $("#deleteBtn").click(function () {
                     $.fn.delete_items("ids", "/admin/account/o_user_list?a=ACCOUNT_DELETE");
                 });
+                $("#addBtn").click(function(){
+                    window.location.href = "/admin/account/o_user_info?id=";
+                });
                 $(".tiptop a").click(function () {
                     $(".tip").fadeOut(200);
                 });
@@ -64,6 +67,10 @@
             <div class="rightinfo">
                 <div class="tools">
                     <ul class="toolbar">
+                        <li class="click" id="addBtn">
+                            <span><img src="<%=path%>/background/images/t01.png" />
+                            </span>添加
+                        </li>
                         <li class="click" id="deleteBtn">
                             <span><img src="<%=path%>/background/images/t03.png" />
                             </span>删除

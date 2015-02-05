@@ -27,15 +27,19 @@
         $(function () {
             $("#saveBtn").click(function () {
                 var rules = {
-                    "roleName": {required: true}
+                    "userAccount.account": {required: true},
+                    "userAccount.name": {required: true},
+                    "userAccount.email": {required: true}
                 };
                 var messages = {
-                    "roleName": {required: "角色名称必须填写！"}
+                    "userAccount.account": {required: "账户必须填写！"},
+                    "userAccount.name": {required: "中文名称必须填写！"},
+                    "userAccount.email": {required: "邮箱必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
-                $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/organization/role_info");
+                $("#form_action").val("UPDATE_USER_ACCOUNT");
+                $("#form1").attr("action", "/admin/account/o_user_info");
                 $("#form1").submit();
             });
             $.fn.goback();
@@ -46,7 +50,7 @@
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "/admin/organization/role_list";
+                window.location.href = "/admin/account/o_user_list";
             });
         }
     </script>
@@ -56,12 +60,12 @@
             <ul class="placeul">
                 <li><a href="#">首页</a></li>
                 <li><a href="#">用户管理</a></li>
-                <li><a href="#">个人账户管理</a></li>
+                <li><a href="#">个人用户管理</a></li>
             </ul>
         </div>
         <div class="formbody">
             <div class="formtitle"><span>基本信息</span></div>
-            <form id="form1" name="form1" method="post" theme="simple" action="/admin/account/o_user_list">
+            <form id="form1" name="form1" method="post" theme="simple">
                 <input type="hidden" name="id" value="${userAccount.id}" />
                 <input id="form_action" type="hidden" name="a" value="" />
                 <ul class="forminfo">
@@ -100,13 +104,13 @@
                         <label style="display: block;float : left;line-height : 34px;padding:10px; ">
                             工作履历:
                         </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.workExperience}</textarea>
+                        <textarea name="house.workExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.workExperience}</textarea>
                     </li>
                     <li style="margin-top: 15px;">
                         <label style="display: block;float : left;line-height : 34px;padding:10px; ">
                             项目经验:
                         </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
+                        <textarea name="house.projectExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
                     </li>
                 </ul>
                 <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
@@ -138,7 +142,12 @@
                 </li>
                 </ul>
             </form>
-            <iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
+            <script type="text/javascript">
+            $(document).ready(function () {
+                <c:if test="${postResult.singleSuccessMsg != null}">alert("${postResult.singleSuccessMsg}");</c:if>
+                <c:if test="${postResult.singleErrorMsg != null}">alert("${postResult.singleErrorMsg}");</c:if>
+            });
+        </script>
         </div>
     </body>
 </html>

@@ -20,7 +20,6 @@ import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
-import com.cbra.support.Pagination;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountIcPosition;
@@ -38,16 +37,12 @@ import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -137,6 +132,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
         ACCOUNT_APPROVAL, ACCOUNT_DELETE,
+        UPDATE_USER_ACCOUNT,UPDATE_COMPANY_ACCOUNT
     }
 
     @Override
@@ -217,6 +213,10 @@ public class AdminServlet extends BaseServlet {
                 return doCreateOrUpdateMessage(request, response);
             case ACCOUNT_DELETE:
                 return doAccountDelete(request, response);
+            case UPDATE_USER_ACCOUNT:
+                return doUpdateUserAccount(request, response);
+            case UPDATE_COMPANY_ACCOUNT:
+                return doUpdateUserAccount(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -910,6 +910,30 @@ public class AdminServlet extends BaseServlet {
     private boolean doAccountDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] ids = request.getParameterValues("ids");
         accountService.deleteAccountByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 更新个人用户信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doUpdateUserAccount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = super.getRequestEmail(request, "userAccount.email");
+        String account = super.getRequestString(request, "userAccount.account");
+        String enName = super.getRequestString(request, "userAccount.enName");
+        String company = super.getRequestString(request, "userAccount.company");
+        Date workingDate = super.getRequestDate(request, "userAccount.workingDate");
+        String position = super.getRequestString(request, "userAccount.position");
+        String address = super.getRequestString(request, "userAccount.address");
+        String zipCode = super.getRequestString(request, "userAccount.zipCode");
+        String workExperience = super.getRequestString(request, "userAccount.workExperience");
+        String projectExperience = super.getRequestString(request, "userAccount.projectExperience");
+        setSuccessResult("保存成功！", request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

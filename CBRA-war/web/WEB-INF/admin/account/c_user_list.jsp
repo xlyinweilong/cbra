@@ -1,6 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -14,131 +13,123 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>无标题文档</title>
-        <link rel="stylesheet" href="<%=path%>/background/css/style.css" type="text/css" />
-        <link rel="stylesheet" href="<%=path%>/background/js/validate/tip-yellowsimple/tip-yellowsimple.css" type="text/css" />
-        <link rel="stylesheet" href="<%=path%>/background/js/validate/tip-green/tip-green.css" type="text/css" />
+        <link href="<%=path%>/background/css/style.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
-        <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.poshytip.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
-        <script type="text/javascript" src="<%=path%>/background/js/My97DatePicker/WdatePicker.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $('.tablelist tbody tr:odd').addClass('odd');
+                $.fn.CheckAllClick("cbk_all");
+                $.fn.UnCheckAll("ids", "cbk_all");
+                //删除所选设备信息
+                $("#deleteBtn").click(function () {
+                    $.fn.delete_items("ids", "/admin/account/c_user_list?a=ACCOUNT_DELETE");
+                });
+                $(".tiptop a").click(function () {
+                    $(".tip").fadeOut(200);
+                });
+            });
+            //显示修改界面
+            $.fn.edit = function (sid) {
+                window.location.href = "/admin/account/c_user_info?id=" + sid;
+            };
+            //删除单个设备信息
+            $.fn.deleteItem = function (sid) {
+                var url = "/admin/account/c_user_list?a=ACCOUNT_DELETE&ids=" + sid;
+                if (confirm("您确定要删除这条信息吗？")) {
+                    $.post(url, "", function (data) {
+                        window.location.href = window.location.href;
+                    });
+                }
+            };
+        </script>
     </head>
-    <script type="text/javascript">
-        $(function () {
-            $("#saveBtn").click(function () {
-                var rules = {
-                    "roleName": {required: true}
-                };
-                var messages = {
-                    "roleName": {required: "角色名称必须填写！"}
-                };
-                //初始化验证框架
-                FormSave("form1", rules, messages);
-                $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/organization/role_info");
-                $("#form1").submit();
-            });
-            $.fn.goback();
-        });
-
-        /**
-         * 返回
-         */
-        $.fn.goback = function () {
-            $("#gobackBtn").click(function () {
-                window.location.href = "/admin/organization/role_list";
-            });
-        }
-    </script>
     <body>
-        <div class="place">
-            <span>位置：</span>
-            <ul class="placeul">
-                <li><a href="#">首页</a></li>
-                <li><a href="#">用户管理</a></li>
-                <li><a href="#">个人账户管理</a></li>
-            </ul>
-        </div>
-        <div class="formbody">
-            <div class="formtitle"><span>基本信息</span></div>
-            <form id="form1" name="form1" method="post" theme="simple" action="/admin/account/o_user_list">
-                <input type="hidden" name="id" value="${userAccount.id}" />
-                <input id="form_action" type="hidden" name="a" value="" />
-                <ul class="forminfo">
-                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.account" value="${userAccount.account}" maxlength="25" /></li>
-                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}" maxlength="25" /></li>
-                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" maxlength="25" /></li>
-                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" maxlength="50" /></li>
-                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${userAccount.workingDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
-                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" maxlength="100" /></li>
-                    <li><label>产业链位置</label>
-                        <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
-                            <input type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+        <form id="form1" name="form1" method="post">
+            <div class="place">
+                <span>位置：</span>
+                <ul class="placeul">
+                    <li>
+                        <a href="#">首页</a>
+                    </li>
+                    <li>
+                        <a href="#">用户管理</a>
+                    </li>
+                    <li>
+                        <a href="#">公司用户管理</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="rightinfo">
+                <div class="tools">
+                    <ul class="toolbar">
+                        <li class="click" id="deleteBtn">
+                            <span><img src="<%=path%>/background/images/t03.png" />
+                            </span>删除
+                        </li>
+                    </ul>
+                    <ul class="toolbar1">
+                    </ul>
+                </div>
+                <table class="tablelist">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input name="cbk_all" id="cbk_all" type="checkbox" value="1" />
+                            </th>
+                            <th>
+                                账户
+                            </th>
+                            <th>
+                                名称
+                            </th>
+                            <th>
+                                状态
+                            </th>
+                            <th>
+                                创建时间
+                            </th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="company" items="${resultList}">
+                            <tr>
+                                <td align="center" width="30px">
+                                    <input name="ids" type="checkbox" value="${company.id}" />
+                                </td>
+                                <td>
+                                    ${company.account}
+                                </td>
+                                <td>
+                                    ${company.name}
+                                </td>
+                                <td>
+                                    ${company.status.mean}
+                                </td>
+                                <td>
+                                    <fmt:formatDate value="${company.createDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
+                                </td>
+                                <td>
+                                    <a href="javascript:$.fn.edit('${company.id}');"
+                                       class="tablelink">查看</a>
+                                    <a
+                                        href="javascript:$.fn.deleteItem('${company.id}');"
+                                        class="tablelink">删除</a>
+                                </td>
+                            </tr>
                         </c:forEach>
-                    </li>
-                    <li><label>职务</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.position" value="${userAccount.position}" maxlength="100" /></li>
-                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.address" value="${userAccount.address}" maxlength="200" /></li>
-                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.zipCode" value="${userAccount.zipCode}" maxlength="50" /></li>
-                    <li style="height: 210px;">
-                        <labe style="width:800px">
-                            &nbsp;
-                            </label>
-                            <div class="infoleft" style="width:330px;height:220px;">
-                                <div class="listtitle"><a href="${userAccount.personCardFront}" class="more1" target="_blank">查看大图</a>身份证正面照片</div>    
-                                <ul class="newlist">
-                                    <img align="center" width="300px" height="150px" src="${pageContent.request.contextPath}${userAccount.personCardFront}" />
-                                </ul>   
-                            </div>
-                            <div class="infoleft" style="width:330px;height:220px;">
-                                <div class="listtitle"><a href="${userAccount.personCardBack}" class="more1" target="_blank">查看大图</a>身份证反面照片</div>    
-                                <ul class="newlist">
-                                    <img align="center" width="300px" height="150px" src="${pageContent.request.contextPath}${userAccount.personCardBack}" />
-                                </ul>   
-                            </div>
-                    </li>
-                    <li style="margin-top: 35px;">
-                        <label style="display: block;float : left;line-height : 34px;padding:10px; ">
-                            工作履历:
-                        </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.workExperience}</textarea>
-                    </li>
-                    <li style="margin-top: 15px;">
-                        <label style="display: block;float : left;line-height : 34px;padding:10px; ">
-                            项目经验:
-                        </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
-                    </li>
-                </ul>
-                <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
-                    <ul class="forminfo">
-                        <li>
-                            <labe style="height:20px;">&nbsp;</label>
-                        </li>
-                    </ul>
-                    <span style="padding-left: 20px;">审批</span>
-                    <div style="display: block; margin-top: 0px; width: 700px; height: 1px; background-color: black; margin-left: 20px;"></div>
-                    <ul class="forminfo">
-                        <li></li>
-                        <li>
-                            <label>
-                                审批说明
-                            </label>
-                            <textarea name="userAccount.approvalInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.approvalInformation}</textarea>
-                            <i></i>
-                        </li>
-                    </ul>
-                </c:if>
-                <li><label>&nbsp;</label>
-                    <input id="saveBtn" name="saveBtn" type="button" class="btn" value="修改"/>
-                    <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
-                    <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
-                        <input id="passBtn" name="passBtn" type="button" class="btn" value="审批通过" onclick="$.fn.valid(0);"/>
-                        <input id="noPassBtn" name="noPassBtn" type="button" class="btn" value="审批不通过" onclick="$.fn.valid(1);"/>
-                    </c:if>
-                </li>
-                </ul>
-            </form>
-            <iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
-        </div>
+                    </tbody>
+                </table>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
+            </div>
+        </form>
     </body>
 </html>

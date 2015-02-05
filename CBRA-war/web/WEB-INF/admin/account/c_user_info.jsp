@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     response.addHeader("Cache-Control", "no-store,no-cache,must-revalidate");
     response.addHeader("Cache-Control", "post-check=0,pre-check=0");
@@ -19,21 +20,26 @@
         <script type="text/javascript" src="<%=path%>/background/js/jquery.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.poshytip.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
+        <script type="text/javascript" src="<%=path%>/background/js/My97DatePicker/WdatePicker.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
     </head>
     <script type="text/javascript">
-        $(function () {
+         $(function () {
             $("#saveBtn").click(function () {
                 var rules = {
-                    "roleName": {required: true}
+                    "userAccount.account": {required: true},
+                    "userAccount.name": {required: true},
+                    "userAccount.email": {required: true}
                 };
                 var messages = {
-                    "roleName": {required: "角色名称必须填写！"}
+                    "userAccount.account": {required: "账户必须填写！"},
+                    "userAccount.name": {required: "中文名称必须填写！"},
+                    "userAccount.email": {required: "邮箱必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
-                $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/organization/role_info");
+                $("#form_action").val("UPDATE_COMPANY_ACCOUNT");
+                $("#form1").attr("action", "/admin/account/c_user_info");
                 $("#form1").submit();
             });
             $.fn.goback();
@@ -44,7 +50,7 @@
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "/admin/organization/role_list";
+                window.location.href = "/admin/account/c_user_list";
             });
         }
     </script>
@@ -54,26 +60,30 @@
             <ul class="placeul">
                 <li><a href="#">首页</a></li>
                 <li><a href="#">用户管理</a></li>
-                <li><a href="#">个人账户管理</a></li>
+                <li><a href="#">公司账户管理</a></li>
             </ul>
         </div>
         <div class="formbody">
             <div class="formtitle"><span>基本信息</span></div>
-            <form id="form1" name="form1" method="post" theme="simple" action="/admin/account/o_user_list">
-                <input type="hidden" name="id" value="${userAccount.id}" />
+            <form id="form1" name="form1" method="post" theme="simple" action="/admin/account/c_user_list">
+                <input type="hidden" name="id" value="${companyAccount.id}" />
                 <input id="form_action" type="hidden" name="a" value="" />
                 <ul class="forminfo">
-                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.account}" maxlength="25" /></li>
-                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="25" /></li>
-                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.enName}" maxlength="25" /></li>
-                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.email}" maxlength="50" /></li>
-                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>产业链位置</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>职务</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.name}" maxlength="50" /></li>
-                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.address}" maxlength="200" /></li>
-                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="roleName" value="${userAccount.zipCode}" maxlength="50" /></li>
-                    <li>
+                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.account" value="${userAccount.account}" maxlength="25" /></li>
+                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}" maxlength="25" /></li>
+                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" maxlength="25" /></li>
+                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" maxlength="50" /></li>
+                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${userAccount.workingDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
+                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" maxlength="100" /></li>
+                    <li><label>产业链位置</label>
+                        <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
+                            <input type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                        </c:forEach>
+                    </li>
+                    <li><label>职务</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.position" value="${userAccount.position}" maxlength="100" /></li>
+                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.address" value="${userAccount.address}" maxlength="200" /></li>
+                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.zipCode" value="${userAccount.zipCode}" maxlength="50" /></li>
+                    <li style="height: 210px;">
                         <labe style="width:800px">
                             &nbsp;
                             </label>
@@ -90,17 +100,17 @@
                                 </ul>   
                             </div>
                     </li>
-                    <li style="margin-top: 15px;">
+                    <li style="margin-top: 35px;">
                         <label style="display: block;float : left;line-height : 34px;padding:10px; ">
                             工作履历:
                         </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.workExperience}</textarea>
+                        <textarea name="house.workExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.workExperience}</textarea>
                     </li>
                     <li style="margin-top: 15px;">
                         <label style="display: block;float : left;line-height : 34px;padding:10px; ">
                             项目经验:
                         </label>
-                        <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
+                        <textarea name="house.projectExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
                     </li>
                 </ul>
                 <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
@@ -117,21 +127,18 @@
                             <label>
                                 审批说明
                             </label>
-                            <textarea name="house.otherInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;"><s:property value="house.otherInformation" /></textarea>
+                            <textarea name="userAccount.approvalInformation" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.approvalInformation}</textarea>
                             <i></i>
-                        </li>
-                        <li>
-                            <label>
-                                &nbsp;
-                            </label>
-                            <input id="passBtn" name="passBtn" type="button" class="btn" value="审批通过" onclick="$.fn.valid(0);"/>
-                            <input id="noPassBtn" name="noPassBtn" type="button" class="btn" value="审批不通过" onclick="$.fn.valid(1);"/>
                         </li>
                     </ul>
                 </c:if>
                 <li><label>&nbsp;</label>
                     <input id="saveBtn" name="saveBtn" type="button" class="btn" value="修改"/>
                     <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
+                    <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
+                        <input id="passBtn" name="passBtn" type="button" class="btn" value="审批通过" onclick="$.fn.valid(0);"/>
+                        <input id="noPassBtn" name="noPassBtn" type="button" class="btn" value="审批不通过" onclick="$.fn.valid(1);"/>
+                    </c:if>
                 </li>
                 </ul>
             </form>

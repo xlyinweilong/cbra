@@ -57,9 +57,7 @@
                 $("#form1").submit();
             });
             $("#gobackBtn").click(function () {
-                $("#form2").attr("target", "");
-                $("#form2").attr("action", "/admin/plate/plate_info_list");
-                $("#form2").submit();
+                window.location.href = "/admin/plate/plate_info_list?plateId=${plate.id}";
             });
         });
     </script>
