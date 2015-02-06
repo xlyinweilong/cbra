@@ -48,6 +48,7 @@ public class AccountServlet extends BaseServlet {
         if (servletPath.equalsIgnoreCase("/v")) {
             String url = String.format("/account/verify%s", pathInfo);
             forward(url, request, response);
+            
             return FORWARD_TO_ANOTHER_URL;
         }
         // PROCESS ROOT PAGE.
@@ -92,11 +93,6 @@ public class AccountServlet extends BaseServlet {
             case LOAD_ACCOUNT_BY_AJAX:
                 setLoginLogoutBothAllowed(request);
                 break;
-            case OVERVIEW:
-            case MODIFY_PASSWD:
-            case REGINFO:
-                setLoginOnly(request);
-                break;
             default:
                 setLoginOnly(request);
         }
@@ -119,13 +115,15 @@ public class AccountServlet extends BaseServlet {
 
     enum ActionEnum {
 
-        LOGIN_AJAX, SIGNUP_AJAX, LOGIN, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD;
+        LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD;
     }
 
     @Override
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
         switch (action) {
+            case LOGOUT:
+                return doLogout(request, response);
             case LOGIN_AJAX:
                 return doLoginAjax(request, response);
             case SIGNUP_AJAX:
@@ -151,7 +149,8 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW, MODIFY_PASSWD, VERIFY, SEND_VERIFY_EMAIL, RESET_PASSWD, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX;
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW,VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
+        MY_EVENT,MEMBERSHIP_FEE, MODIFY_PASSWD,RESET_PASSWD;
     }
 
     @Override
@@ -183,6 +182,10 @@ public class AccountServlet extends BaseServlet {
                 return KEEP_GOING_WITH_ORIG_URL;
             case LOAD_ACCOUNT_BY_AJAX:
                 return loadAccountByAjax(request, response);
+            case MEMBERSHIP_FEE:
+                return loadMembershipFee(request, response);
+            case MY_EVENT:
+                return loadMyEventList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -191,19 +194,19 @@ public class AccountServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
-    private boolean loadAccountByAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = getRequestString(request, "email");
-        if (validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "password")) {
-            String password = getRequestString(request, "password");
-//            Account user = accountService.getUserForLogin(email, password);
-//            if (user == null) {
-//                setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
-//            } else {
-//                setSuccessResult(toJSON(user), request);
-//            }
-        }
-        super.outputText(response, toJSON(request));
-        return FORWARD_TO_ANOTHER_URL;
+    
+    /**
+     * 登出
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean doLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        super.setSessionUser(request, null);
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
     private boolean doLoginAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -538,6 +541,48 @@ public class AccountServlet extends BaseServlet {
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
+    private boolean loadAccountByAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String email = getRequestString(request, "email");
+        if (validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "password")) {
+            String password = getRequestString(request, "password");
+//            Account user = accountService.getUserForLogin(email, password);
+//            if (user == null) {
+//                setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
+//            } else {
+//                setSuccessResult(toJSON(user), request);
+//            }
+        }
+        super.outputText(response, toJSON(request));
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 会员费
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadMembershipFee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 参与的活动
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean loadMyEventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+
     private boolean loadRegInfo(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -557,11 +602,12 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean loadLogin(HttpServletRequest request, HttpServletResponse response) {
+    private boolean loadLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("p", super.getRequestString(request, "p"));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) {
+    private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

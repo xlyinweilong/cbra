@@ -105,7 +105,22 @@ public abstract class Account implements Serializable {
     private boolean deleted = false;
     @Column(name = "approval_information")
     //审批信息
-    private String approvalInformation ;
+    private String approvalInformation;
+
+    /**
+     * 获取TYPE
+     *
+     * @return
+     */
+    public String getType() {
+        if (this instanceof CompanyAccount) {
+            return "COMPANY";
+        } else if (this instanceof UserAccount) {
+            return "USER";
+        } else {
+            return "SUB_COMPANY";
+        }
+    }
 
     public Long getId() {
         return id;

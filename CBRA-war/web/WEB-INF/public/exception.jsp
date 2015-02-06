@@ -1,22 +1,35 @@
-<%-- 
-    Document   : exception
-    Created on : Apr 1, 2011, 7:14:31 PM
-    Author     : HUXIAOFENG
---%>
+
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:include page="/WEB-INF/public/z_header.jsp"/>
-
-<h1>出异常啦! <span class="btnGreen btnGreen-ok" onmouseover="this.className='btnGreen btnGreen-ok-hover';" onmouseout="this.className='btnGreen btnGreen-ok';"><input type="reset"  value="报告这个错误"/></span></h1>
-<br/><br/>
-<h2>名称: ${exceptionMessage}</h2>
-<br/>
-<h2>详细内容:</h2>
-<div>
-    <textarea name="" rows="20" cols="100">${exceptionStackTrace}
-    </textarea>
-    
-</div>
-
-
-<jsp:include page="/WEB-INF/public/z_footer.jsp"/> <%@include file="/WEB-INF/public/z_footer_close.html" %> 
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!doctype html>
+<html>
+    <head>
+        <jsp:include page="/WEB-INF/public/z_header.jsp"/>
+        <style>
+            .bac-error { width:326px; height:192px; background:url(/images/cuo.jpg) no-repeat top; margin:10px auto; padding:163px 0 0 255px;}
+            .bac-error .kuang { width:195px; height:70px; }
+            .bac-error .kuang h1 { font-size:16px; font-family:"微软雅黑"; margin:10px auto auto 10px;}
+            .bac-error .kuang p { font-size:12px; font-family:"微软雅黑"; margin:5px auto auto 10px;}
+        </style>
+    </head>
+    <body>
+        <jsp:include page="/WEB-INF/public/z_top.jsp"></jsp:include>
+        <jsp:include page="/WEB-INF/public/z_banner.jsp"/>
+        <div class="two-loc">
+            <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 相关操作界面 > 报错页面</div>
+        </div>
+        <!-- 主体 -->
+        <div class="two-main">
+            <div class="bac-error">
+                <div class="kuang">
+                    <h1>出错啦</h1>
+                    <p>非常抱歉，页面加载失败。</p>
+                </div>
+            </div>
+        </div>
+        <!-- 主体 end -->
+        <jsp:include page="/WEB-INF/public/z_end.jsp"/>
+    </body>
+</html>
