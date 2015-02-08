@@ -33,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author yin.weilong
  */
-@WebServlet(name = "AboutServlet", urlPatterns = {"/join/*","/into/*"})
+@WebServlet(name = "AboutServlet", urlPatterns = {"/join/*", "/into/*", "/team/*"})
 public class AboutServlet extends BaseServlet {
 
     @EJB
@@ -71,7 +71,7 @@ public class AboutServlet extends BaseServlet {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
                 //setLogoutOnly(request);
-                //setLoginLogoutBothAllowed(request);
+            //setLoginLogoutBothAllowed(request);
             default:
                 setLoginLogoutBothAllowed(request);
         }
@@ -110,21 +110,41 @@ public class AboutServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        MEMBERSHIP_APPLICATION,JOIN_REG,JOIN_REG_C,QUARTERS,QUARTERS_DETAILS,RECRUIT,COOPERATION,
-        ;
+        MEMBERSHIP_APPLICATION, JOIN_REG, JOIN_REG_C, QUARTERS, QUARTERS_DETAILS, RECRUIT, COOPERATION,
+        IDEA, PATTERN, COURSE, SPEECH, DECLARATION, CONTACT_US,THREE_PARTY_OFFER,OUR_OFFER,OFFER_DETAILS,
+        PURCHASE,OVERSEAS,BUILDING, PENSION,
+        MATERIAL,INDUSTRIALIZATION,GREEN,BIM,INFO_AREA,
+        DIRECTOR,COMMITTEE,BRANCH,EXPERT,STYLE,TEAM_DETAILS;
     }
 
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
-                case MEMBERSHIP_APPLICATION:
-                case JOIN_REG:
-                    case JOIN_REG_C:
-                    case QUARTERS:
-                    case RECRUIT:
-                    case COOPERATION:
-                    case QUARTERS_DETAILS:
+            case MEMBERSHIP_APPLICATION:
+            case JOIN_REG:
+            case JOIN_REG_C:
+            case QUARTERS:
+            case RECRUIT:
+            case COOPERATION:
+            case QUARTERS_DETAILS:
+            case IDEA:
+            case PATTERN:
+            case COURSE:
+            case SPEECH:
+            case DECLARATION:
+            case CONTACT_US:
+            case THREE_PARTY_OFFER:
+                case OUR_OFFER:
+                case OFFER_DETAILS:
+                case PURCHASE:
+                case OVERSEAS:
+                case BUILDING:
+                case PENSION:
+                 case MATERIAL:case INDUSTRIALIZATION:case GREEN: case BIM:
+                 case INFO_AREA:
+                 case DIRECTOR:case COMMITTEE:case BRANCH:case EXPERT:case STYLE:
+                 case TEAM_DETAILS:
                 return KEEP_GOING_WITH_ORIG_URL;
             default:
                 throw new BadPageException();
@@ -134,8 +154,6 @@ public class AboutServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
-    
-
     private boolean doLoginAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestString(request, "email");
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "passwd")) {

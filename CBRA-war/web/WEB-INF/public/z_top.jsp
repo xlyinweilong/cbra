@@ -57,15 +57,15 @@
             <!--首页 end-->
 
             <!--走进筑誉-->
-            <li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 2)" href="/index">走进筑誉</a>
+            <li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 2)" href="/into/idea">走进筑誉</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_2" style="width: 630px; display: none;">
                     <ul class="fl nav-channel">
-                        <li><a href="into-zyln.asp?id=1">筑誉理念</a></li>
-                        <li><a href="into-ywgj.asp?id=2" >业务格局</a></li>
-                        <li><a href="into-fzlc.asp?id=3" >发展历程</a></li>
-                        <li><a href="into-hzzc.asp?id=4" >会长致辞</a></li>
-                        <li><a href="into-lsxy.asp?id=5" >理事宣言</a></li>
-                        <li><a href="into-lxwm.asp?id=6" >联系我们</a></li>
+                        <li><a href="/into/idea">筑誉理念</a></li>
+                        <li><a href="/into/pattern" >业务格局</a></li>
+                        <li><a href="/into/course" >发展历程</a></li>
+                        <li><a href="/into/speech" >会长致辞</a></li>
+                        <li><a href="/into/declaration" >理事宣言</a></li>
+                        <li><a href="/into/contact_us" >联系我们</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:292px;margin-right:30px">&nbsp;</span>
                     <div class="fl hui" style="width:410px">
@@ -118,8 +118,6 @@
                 </div>
             </li>
             <!--新闻中心 end-->
-
-
             <!--活动讲座-->
             <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="hd-jq.asp">活动讲座</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_4" style="min-height: inherit; width: 700px; left: -95px; display: none;">
@@ -143,7 +141,6 @@
                 </div>
             </li>
             <!--活动讲座 end-->
-
             <!--专题培训-->
             <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="st-pxln.asp?id=7">专题培训</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_5" style="left:-206px; width: 700px; display: none;">
@@ -170,7 +167,6 @@
                 </div>
             </li>
             <!--专题培训 end-->
-
             <!--认证体系-->
             <li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 9)" href="auth-per.asp">认证体系</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_9" style="width:300px; left:3px; display: none;">
@@ -196,16 +192,15 @@
                 </div>
             </li>
             <!--认证体系 end-->
-
             <!--团队风采-->
-            <li id="nav_item_6" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 6)" href="team-lscy.asp?id=11" >团队风采</a>
+            <li id="nav_item_6" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 6)" href="/team/director" >团队风采</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_6" style="left: auto;  width: 410px; left: -138px;  display: none;">
                     <ul class="fl nav-channel">
-                        <li><a href="team-lscy.asp?id=11">理事成员</a></li>
-                        <li><a href="team-wyh.asp?id=12">委员会</a></li>
-                        <li><a href="team-gdfh.asp?id=13">各地分会</a></li>
-                        <li><a href="team-lyzj.asp?id=14">领域专家</a></li>
-                        <li><a href="team-bffh.asp?id=15">部分会员风采</a></li>
+                        <li><a href="/team/director">理事成员</a></li>
+                        <li><a href="/team/committee">委员会</a></li>
+                        <li><a href="/team/branch">各地分会</a></li>
+                        <li><a href="/team/expert">领域专家</a></li>
+                        <li><a href="/team/style">部分会员风采</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
@@ -215,16 +210,15 @@
                 </div>
             </li>
             <!--团队风采 end-->
-
             <!--资讯专区-->
-            <li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 7)" href="info-a.asp">资讯专区</a>
+            <li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 7)" href="/into/info_area">资讯专区</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_7" style="width:450px; left: -289px; display: none;">
                     <div class="fl" style="width:100px">
                         <h4>人力资源信息</h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
-                            <li><a href="into-rlzy.asp?id=16">企业人才需求</a></li>
-                            <li><a href="into-zyrc.asp?id=17">筑誉人才库</a></li>
+                            <li><a href="/into/three_party_offer">企业人才需求</a></li>
+                            <li><a href="/into/our_offer">筑誉人才库</a></li>
                         </ul>
                     </div>
                     <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
@@ -232,10 +226,10 @@
                         <h4>资源信息</h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
-                            <li><a href="into-cggq.asp?id=18">采购供求信息</a></li>
-                            <li><a href="into-hwgc.asp?id=19">海外工程合作</a></li>
-                            <li><a href="into-jzcy.asp?id=20">建筑产业化合作</a></li>
-                            <li><a href="into-yldc.asp?id=21">养老地产合作</a></li>
+                            <li><a href="/into/purchase">采购供求信息</a></li>
+                            <li><a href="/into/overseas">海外工程合作</a></li>
+                            <li><a href="/into/building">建筑产业化合作</a></li>
+                            <li><a href="/into/pension">养老地产合作</a></li>
                         </ul>
                     </div>
                     <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
@@ -243,24 +237,23 @@
                         <h4>前沿领域信息</h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
-                            <li><a href="into-xclxjs.asp?id=22">新材料新技术</a></li>
-                            <li><a href="into-jzcyh.asp?id=23" >建筑产业化</a></li>
-                            <li><a href="into-lsjz.asp?id=24" >绿色建筑</a></li>
-                            <li><a href="into-bimjs.asp?id=25" >BIM技术</a></li>
+                            <li><a href="/into/material">新材料新技术</a></li>
+                            <li><a href="/into/industrialization" >建筑产业化</a></li>
+                            <li><a href="/into/green" >绿色建筑</a></li>
+                            <li><a href="/into/bim" >BIM技术</a></li>
                         </ul>
                     </div>
                 </div>
             </li>
             <!--资讯专区 end-->
-
             <!--加入筑誉-->
             <li id="nav_item_8" class="nav-item"><a class="nav-txt" onmouseover="M(this, 8)" href="/join/membership_application" >加入筑誉</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_8" style="left: -670px; width: 720px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/join/membership_application" >会员申请</a></li>
-                        <li><a href="join-zygw.asp?id=27" >筑誉岗位</a></li>
-                        <li><a href="join-zjzm.asp?id=28" >专家招募</a></li>
-                        <li><a href="join-hzhb.asp?id=29" >合作伙伴招募</a></li>
+                        <li><a href="/join/quarters" >筑誉岗位</a></li>
+                        <li><a href="/join/recruit" >专家招募</a></li>
+                        <li><a href="/join/cooperation" >合作伙伴招募</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
@@ -275,7 +268,6 @@
                 </div>
             </li>
             <!--加入筑誉 end-->
-
         </ul>
     </div>
     <!--导航 end-->
