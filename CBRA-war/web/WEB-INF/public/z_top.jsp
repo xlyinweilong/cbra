@@ -43,7 +43,7 @@
         <div class="LOGO-l"><a href="index.asp"><img src="/images/logo.png"></a></div>
         <div class="LOGO-r">
             <p>咨询热线：021-61550302</p>
-            <input type="text" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="location.href = 'Search.asp'">
+            <input type="text" id="search_text" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="search($('#search_text').val())">
         </div>
         <div style=" clear:both;"></div>
     </div>
@@ -119,12 +119,12 @@
             </li>
             <!--新闻中心 end-->
             <!--活动讲座-->
-            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="hd-jq.asp">活动讲座</a>
+            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="/event/ hd-jq.asp">活动讲座</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_4" style="min-height: inherit; width: 700px; left: -95px; display: none;">
                     <ul class="fl nav-channel">
-                        <li><a href="hd-jq.asp">近期活动</a></li>
-                        <li><a href="hd-wq.asp">往期活动</a></li>
-                        <li><a href="hd-hzhb.asp">合作伙伴活动</a></li>
+                        <li><a href="/event/near_future">近期活动</a></li>
+                        <li><a href="/event/period">往期活动</a></li>
+                        <li><a href="/event/partners">合作伙伴活动</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden">
@@ -142,13 +142,13 @@
             </li>
             <!--活动讲座 end-->
             <!--专题培训-->
-            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="st-pxln.asp?id=7">专题培训</a>
+            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="/train/idea">专题培训</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_5" style="left:-206px; width: 700px; display: none;">
                     <ul class="fl nav-channel">
-                        <li><a href="st-pxln.asp?id=7" >培训理念</a></li>
-                        <li><a href="st-jqpx.asp?id=8" >近期培训</a></li>
-                        <li><a href="st-wqpx.asp?id=9" >往期培训</a></li>
-                        <li><a href="st-jstd.asp?id=10" >讲师团队</a></li>
+                        <li><a href="/train/idea" >培训理念</a></li>
+                        <li><a href="/train/near_future" >近期培训</a></li>
+                        <li><a href="/train/period" >往期培训</a></li>
+                        <li><a href="/train/lecturers" >讲师团队</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
@@ -168,16 +168,16 @@
             </li>
             <!--专题培训 end-->
             <!--认证体系-->
-            <li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 9)" href="auth-per.asp">认证体系</a>
+            <li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 9)" href="/auth/design">认证体系</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_9" style="width:300px; left:3px; display: none;">
                     <div class="fl" style="width:100px">
                         <h4>个人认证</h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
-                            <li><a href="auth-per.asp?id=34" >设计</a></li>
-                            <li><a href="auth-per.asp?id=34" >施工</a></li>
-                            <li><a href="auth-per.asp?id=34" >质量</a></li>
-                            <li><a href="auth-per.asp?id=34" >安全</a></li>
+                            <li><a href="/auth/design" >设计</a></li>
+                            <li><a href="/auth/construction" >施工</a></li>
+                            <li><a href="/auth/quality" >质量</a></li>
+                            <li><a href="/auth/safe" >安全</a></li>
                         </ul>
                     </div>
                     <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
@@ -185,8 +185,8 @@
                         <h4>企业认证</h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
-                            <li><a href="auth-bus.asp?id=35" >品质认证</a></li>
-                            <li><a href="auth-bus.asp?id=35" >安全认证</a></li>
+                            <li><a href="/auth/quality_auth" >品质认证</a></li>
+                            <li><a href="/auth/safe_auth" >安全认证</a></li>
                         </ul>
                     </div>
                 </div>

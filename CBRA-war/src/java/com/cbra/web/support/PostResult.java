@@ -7,8 +7,9 @@ package com.cbra.web.support;
 import java.util.HashMap;
 
 /**
+ * 返回信息封装类
  *
- * @author HUXIAOFENG
+ * @author yin.weilong
  */
 public class PostResult {
 

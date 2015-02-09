@@ -1128,7 +1128,7 @@ public class AdminService {
             saveDirFile2.mkdirs();
         }
         String filename = sysUser.getId() + "_" + Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(3)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
-        this.setUploadFile(item, savePath + "/", filename);
+        Tools.setUploadFile(item, savePath + "/", filename);
         return Config.HTTP_URL_BASE + "/" + Config.HTML_EDITOR_UPLOAD + "/" + filedirL1.toString() + "/" + sysUser.getId() + "/" + filename;
     }
     
@@ -1245,19 +1245,4 @@ public class AdminService {
         }
     }
 
-    /**
-     * 保存上传的文件
-     * 
-     * @param item
-     * @param src
-     * @param filename 
-     */
-    private void setUploadFile(FileUploadItem item, String src, String filename) {
-        try {
-            String fullPath = src + filename;
-            FileUtils.copyFile(new File(item.getUploadFullPath()), new File(fullPath));
-            FileUtils.deleteQuietly(new File(item.getUploadFullPath()));
-        } catch (Exception e) {
-        }
-    }
 }

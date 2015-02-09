@@ -33,7 +33,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author yin.weilong
  */
-@WebServlet(name = "AboutServlet", urlPatterns = {"/join/*", "/into/*", "/team/*"})
+@WebServlet(name = "AboutServlet", urlPatterns = {"/join/*", "/into/*", "/team/*", "/auth/*"})
 public class AboutServlet extends BaseServlet {
 
     @EJB
@@ -114,7 +114,8 @@ public class AboutServlet extends BaseServlet {
         IDEA, PATTERN, COURSE, SPEECH, DECLARATION, CONTACT_US,THREE_PARTY_OFFER,OUR_OFFER,OFFER_DETAILS,
         PURCHASE,OVERSEAS,BUILDING, PENSION,
         MATERIAL,INDUSTRIALIZATION,GREEN,BIM,INFO_AREA,
-        DIRECTOR,COMMITTEE,BRANCH,EXPERT,STYLE,TEAM_DETAILS;
+        DIRECTOR,COMMITTEE,BRANCH,EXPERT,STYLE,TEAM_DETAILS,
+        DESIGN,CONSTRUCTION,QUALITY,SAFE,QUALITY_AUTH,SAFE_AUTH;
     }
 
     @Override
@@ -145,6 +146,7 @@ public class AboutServlet extends BaseServlet {
                  case INFO_AREA:
                  case DIRECTOR:case COMMITTEE:case BRANCH:case EXPERT:case STYLE:
                  case TEAM_DETAILS:
+                  case   DESIGN: case CONSTRUCTION: case QUALITY: case SAFE: case QUALITY_AUTH:case SAFE_AUTH:
                 return KEEP_GOING_WITH_ORIG_URL;
             default:
                 throw new BadPageException();

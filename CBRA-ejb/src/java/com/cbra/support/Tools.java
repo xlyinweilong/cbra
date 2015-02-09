@@ -471,7 +471,6 @@ public class Tools {
     }
 
     //Codec Utils
-
     public static String md5(String s) {
         try {
             s = s.toUpperCase().trim() + "CBRA";
@@ -722,6 +721,22 @@ public class Tools {
             }
         }
         return ipAddress;
+    }
+
+    /**
+     * 保存上传的文件
+     *
+     * @param item
+     * @param src
+     * @param filename
+     */
+    public static void setUploadFile(FileUploadItem item, String src, String filename) {
+        try {
+            String fullPath = src + filename;
+            FileUtils.copyFile(new File(item.getUploadFullPath()), new File(fullPath));
+            FileUtils.deleteQuietly(new File(item.getUploadFullPath()));
+        } catch (Exception e) {
+        }
     }
 
     public static void main(String[] args) {

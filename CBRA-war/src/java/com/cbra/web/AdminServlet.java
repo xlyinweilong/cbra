@@ -132,7 +132,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
         ACCOUNT_APPROVAL, ACCOUNT_DELETE,
-        UPDATE_USER_ACCOUNT,UPDATE_COMPANY_ACCOUNT
+        UPDATE_USER_ACCOUNT, UPDATE_COMPANY_ACCOUNT
     }
 
     @Override
@@ -1490,11 +1490,11 @@ public class AdminServlet extends BaseServlet {
         String dirName = request.getParameter("dir");
         try {
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+            if (Tools.isBlank(dirName)) {
+                dirName = fileUploadObj.getFormField("dir");
+            }
             List<FileUploadItem> list = fileUploadObj.getFileList();
-            System.out.println(list.size());
             for (FileUploadItem item : list) {
-                System.out.println(item.getUploadFileName());
-                System.out.println(item.getUploadFullPath());
                 JSONObject obj = null;
                 try {
                     String name = adminService.setHtmlEditorUploadFile(item, sysUser, dirName);

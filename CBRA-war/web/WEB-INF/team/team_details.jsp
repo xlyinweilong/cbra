@@ -19,7 +19,7 @@
             <div class="fm-list">
                 <div class="title"><span><a id="title-span">讲师介绍</a></span></div>
                 <div class="jsjs">
-                    <div class="img"><img src="ls/ls-24.jpg"></div>
+                    <div class="img"><img src="/ls/ls-24.jpg"></div>
                     <div class="detailed"><h1>单鹏安</h1>
                         和君集团高级合伙人<br>
                         和君集团医药医疗事业部总经理<br>

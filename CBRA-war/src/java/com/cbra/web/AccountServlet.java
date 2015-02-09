@@ -4,12 +4,17 @@
  */
 package com.cbra.web;
 
+import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.CompanyAccount;
 import com.cbra.service.AccountService;
+import com.cbra.support.FileUploadItem;
+import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
 import com.cbra.support.exception.AccountNotExistException;
+import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
@@ -27,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
 
 /**
  * 用户WEB层
@@ -48,7 +54,7 @@ public class AccountServlet extends BaseServlet {
         if (servletPath.equalsIgnoreCase("/v")) {
             String url = String.format("/account/verify%s", pathInfo);
             forward(url, request, response);
-            
+
             return FORWARD_TO_ANOTHER_URL;
         }
         // PROCESS ROOT PAGE.
@@ -115,7 +121,8 @@ public class AccountServlet extends BaseServlet {
 
     enum ActionEnum {
 
-        LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD;
+        LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
+        UPLOAD_PERSON_CARD;
     }
 
     @Override
@@ -128,6 +135,8 @@ public class AccountServlet extends BaseServlet {
                 return doLoginAjax(request, response);
             case SIGNUP_AJAX:
                 return doSignupAjax(request, response);
+            case UPLOAD_PERSON_CARD:
+                return doUploadPersonCard(request, response);
             case LOGIN:
                 return doLogin(request, response);
             case SIGNUP:
@@ -149,8 +158,8 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW,VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT,MEMBERSHIP_FEE, MODIFY_PASSWD,RESET_PASSWD;
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD,Z_IFRAME_UPLOAD_PC;
     }
 
     @Override
@@ -186,6 +195,8 @@ public class AccountServlet extends BaseServlet {
                 return loadMembershipFee(request, response);
             case MY_EVENT:
                 return loadMyEventList(request, response);
+            case Z_IFRAME_UPLOAD_PC:
+                return KEEP_GOING_WITH_ORIG_URL;
             default:
                 throw new BadPageException();
         }
@@ -194,15 +205,14 @@ public class AccountServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
-    
     /**
      * 登出
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean doLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         super.setSessionUser(request, null);
@@ -278,12 +288,39 @@ public class AccountServlet extends BaseServlet {
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 上传身份证件
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doUploadPersonCard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        FileUploadObj fileUploadObj = null;
+        try {
+            fileUploadObj = super.uploadFile(request, 2.0, null, null, null);
+            List<FileUploadItem> list = fileUploadObj.getFileList();
+            for (FileUploadItem item : list) {
+                System.out.println(item.getFieldName());
+                super.setSuccessResult("/images/banner-e.png", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            super.setSuccessResult("/images/banner-e.png", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        } catch (FileUploadException ex) {
+            super.setSuccessResult("/images/banner-e.png", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+    }
+
     private boolean doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String account = getRequestString(request, "account");
+        String passwd = getRequestString(request, "passwd");
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "account", "passwd")) {
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        String passwd = getRequestString(request, "passwd");
         Account user;
         try {
             user = accountService.getAccountForLogin(account, passwd);
@@ -568,20 +605,19 @@ public class AccountServlet extends BaseServlet {
     private boolean loadMembershipFee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 参与的活动
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadMyEventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
 
     private boolean loadRegInfo(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
         return KEEP_GOING_WITH_ORIG_URL;
@@ -608,6 +644,7 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("step", super.getPathInfoLongAt(request, 1));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -684,6 +721,9 @@ public class AccountServlet extends BaseServlet {
         // ******************************************************************
         // 这个url是login之后跳转的页面，缺省是overview
         String jump = "/account/overview";
+        if (account instanceof CompanyAccount) {
+            jump = "/account/overview_c";
+        }
         String url = (String) request.getParameter("urlUserWantToAccess");
         if (!StringUtils.isBlank(url)) {
             jump = url;

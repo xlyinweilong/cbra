@@ -8,7 +8,7 @@
     </head>
     <body style="background:url(/images/Reg-bac.jpg) no-repeat top center">
         <div class="reg">
-            <div class="logo"><a href="index.asp"><img src="/images/logo-r.png"></a></div>
+            <div class="logo"><a href="/public/index"><img src="/images/logo-r.png"></a></div>
             <div class="bac">
                 <div class="bac-k">
                     <div class="xianz">

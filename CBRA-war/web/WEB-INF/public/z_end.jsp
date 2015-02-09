@@ -19,6 +19,10 @@
             <div style=" clear:both;"></div>
         </div>
     </div>
-
 </div>
+<script type="text/javascript">
+    function search(st){
+        location.href = "/public/search?search="+st;
+    }
+</script>
 <!-- 底部 end -->
