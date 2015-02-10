@@ -97,6 +97,7 @@ public class AccountServlet extends BaseServlet {
             case RESET_PASSWD:
             case SEND_RESET_PASSWD:
             case LOAD_ACCOUNT_BY_AJAX:
+            case Z_IFRAME_UPLOAD_PC:
                 setLoginLogoutBothAllowed(request);
                 break;
             default:
@@ -159,7 +160,7 @@ public class AccountServlet extends BaseServlet {
     private enum PageEnum {
 
         Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD,Z_IFRAME_UPLOAD_PC;
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC;
     }
 
     @Override
@@ -299,22 +300,33 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean doUploadPersonCard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileUploadObj fileUploadObj = null;
+        String type = super.getRequestString(request, "type");
         try {
             fileUploadObj = super.uploadFile(request, 2.0, null, null, null);
             List<FileUploadItem> list = fileUploadObj.getFileList();
             for (FileUploadItem item : list) {
-                System.out.println(item.getFieldName());
-                super.setSuccessResult("/images/banner-e.png", request);
-                return KEEP_GOING_WITH_ORIG_URL;
+                if ("reg_front_file".equals(item.getFieldName()) || "reg_back_file".equals(item.getFieldName())) {
+                    super.setSuccessResult(type, accountService.setUploadFileToTemp(item), bundle.getString("GLOBAL_保存成功"), request);
+                    return KEEP_GOING_WITH_ORIG_URL;
+                }
             }
-            super.setSuccessResult("/images/banner-e.png", request);
+            setErrorResult(type, "", bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         } catch (FileUploadException ex) {
-            super.setSuccessResult("/images/banner-e.png", request);
+            setErrorResult(type, "", ex.getMessage(), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
     }
 
+    /**
+     * 登录
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
     private boolean doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");

@@ -15,7 +15,27 @@
         <script type="text/javascript" src="${pageContent.request.contextPath}/background/js/jquery.js"></script>
         <script type="text/javascript">
             try {
-                alert("${postResult.singleSuccessMsg}");
+                if (${postResult.success}) {
+                    var type = "${postResult.singleSuccessMsg}";
+                    $("#reg_" + type + "_div", parent.document).parent("div").css("height", "250px");
+                    $("#reg_" + type + "_div", parent.document).hide();
+                    $("#reg_" + type + "_img", parent.document).attr("src", "${postResult.redirectUrl}");
+                    $("#reg_" + type + "_img", parent.document).show();
+                    $("#reg_" + type + "_result", parent.document).css("color", "");
+                    $("#reg_" + type + "_result", parent.document).html("${postResult.object}");
+                    setTimeout(function () {
+                        $("#reg_" + type + "_result", parent.document).html("");
+                    }, 3000);
+                    $("#" + type + "_hidden", parent.document).val("${postResult.redirectUrl}");
+                } else {
+                    var type = "${postResult.singleErrorMsg}";
+                    $("#reg_" + type + "_result", parent.document).css("color", "red");
+                    $("#reg_" + type + "_result", parent.document).html("${postResult.object}");
+                    setTimeout(function () {
+                        $("#reg_" + type + "_result", parent.document).html("");
+                        $("#reg_" + type + "_result", parent.document).css("color", "");
+                    }, 3000);
+                }
             } catch (e) {
             }
             ;
@@ -24,4 +44,3 @@
     <body>
     </body>
 </html>
-

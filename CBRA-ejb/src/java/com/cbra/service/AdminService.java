@@ -1146,7 +1146,6 @@ public class AdminService {
 //        model.put("amountStr", amountStr);
 //        model.put("addFundOrder", addFundOrder);
 //        model.put("gatewayPayment", addFundOrder.getLastGatewayPayment());
-        System.out.println("****************");
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 

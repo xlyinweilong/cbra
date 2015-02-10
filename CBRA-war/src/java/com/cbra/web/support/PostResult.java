@@ -18,6 +18,7 @@ public class PostResult {
     private String singleErrorMsg;
     private HashMap<String, String> errorMsgs = new HashMap<String, String>();
     private String redirectUrl;
+    private Object object;
 
     public PostResult(boolean success, String singleMsg) {
         this.success = success;
@@ -104,4 +105,13 @@ public class PostResult {
         this.success = false;
         this.errorMsgs = errorMsgs;
     }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
+
 }

@@ -635,7 +635,23 @@ public abstract class BaseServlet extends HttpServlet {
      * @throws IOException
      */
     void setErrorResult(String msg, String redirectUrl, HttpServletRequest request) throws ServletException, IOException {
-        PostResult postResult = new PostResult(true, msg, redirectUrl);
+        PostResult postResult = new PostResult(false, msg, redirectUrl);
+        setPostResult(postResult, request);
+    }
+
+    /**
+     * 设置返回的错误结果信息
+     * 
+     * @param msg
+     * @param redirectUrl
+     * @param object
+     * @param request
+     * @throws ServletException
+     * @throws IOException 
+     */
+    void setErrorResult(String msg, String redirectUrl, Object object, HttpServletRequest request) throws ServletException, IOException {
+        PostResult postResult = new PostResult(false, msg, redirectUrl);
+        postResult.setObject(object);
         setPostResult(postResult, request);
     }
 
@@ -663,6 +679,22 @@ public abstract class BaseServlet extends HttpServlet {
      */
     void setSuccessResult(String msg, String redirectUrl, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(true, msg, redirectUrl);
+        setPostResult(postResult, request);
+    }
+
+    /**
+     * 设置返回的成功结果信息
+     *
+     * @param msg
+     * @param redirectUrl
+     * @param object
+     * @param request
+     * @throws ServletException
+     * @throws IOException
+     */
+    void setSuccessResult(String msg, String redirectUrl, Object object, HttpServletRequest request) throws ServletException, IOException {
+        PostResult postResult = new PostResult(true, msg, redirectUrl);
+        postResult.setObject(object);
         setPostResult(postResult, request);
     }
 

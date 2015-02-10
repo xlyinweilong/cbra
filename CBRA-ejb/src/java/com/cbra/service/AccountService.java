@@ -5,10 +5,12 @@
  */
 package com.cbra.service;
 
+import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
+import com.cbra.support.FileUploadItem;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
@@ -16,6 +18,7 @@ import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +30,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * 账户服务层
@@ -64,6 +68,23 @@ public class AccountService {
             return user;
         }
         return null;
+    }
+
+    /**
+     * 保存上传文件到临时文件夹，临时文件夹定时会被清理
+     * 
+     * @param item
+     * @return 
+     */
+    public String setUploadFileToTemp(FileUploadItem item) {
+        String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP;
+        File saveDirFile1 = new File(savePath);
+        if (!saveDirFile1.exists()) {
+            saveDirFile1.mkdirs();
+        }
+        String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
+        Tools.setUploadFile(item, savePath + "/", filename);
+        return Config.HTTP_URL_BASE + "/" + Config.FILE_UPLOAD_TEMP + "/" + filename;
     }
 
     /**

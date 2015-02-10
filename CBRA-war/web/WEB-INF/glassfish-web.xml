@@ -9,4 +9,5 @@
         </property>
     </jsp-config>
     <property name="alternatedocroot_1" value="from=/html_editor_upload/* dir=f:/cbrd/"/>
+    <property name="alternatedocroot_2" value="from=/temp/* dir=f:/cbrd/"/>
 </glassfish-web-app>

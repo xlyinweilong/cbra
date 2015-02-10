@@ -20,6 +20,8 @@ public class Config {
     public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
 
     public static final String HTML_EDITOR_UPLOAD = "html_editor_upload";
+    
+    public static final String FILE_UPLOAD_TEMP = "temp";
 
     public static final String FILE_UPLOAD_TEMP_DIR = "f:/test";
 
