@@ -146,10 +146,10 @@ public class AccountService {
         user.setPersonCardBack(personCardBack);
         user.setPersonCardFront(personCardFront);
         user.setPersonId(personId);
-        user.setPosition(position);
+        //user.setPosition(position);
         user.setProjectExperience(projectExperience);
         user.setWorkExperience(workExperience);
-        user.setWorkingDate(workingDate);
+        //user.setWorkingDate(workingDate);
         String verifyUrl = getUniqueAccountVerifyUrl();
         user.setVerifyUrl(verifyUrl);
         em.persist(user);
@@ -181,7 +181,7 @@ public class AccountService {
         company.setNature(nature);
         company.setProductionLicenseNumber(productionLicenseNumber);
         company.setProductionLicenseValidDate(productionLicenseValidDate);
-        company.setScale(scale);
+        //company.setScale(scale);
         company.setWebSide(webSide);
         String verifyUrl = getUniqueAccountVerifyUrl();
         company.setVerifyUrl(verifyUrl);

@@ -97,10 +97,6 @@ public abstract class Account implements Serializable {
     @Column(name = "ic_position", length = 255)
     //产业链位置
     private String icPosition;
-    @Size(max = 255)
-    @Column(name = "ic_position_others", length = 255)
-    //产业链位置其他信息
-    private String icPositionOthers;
     @Column(name = "deleted")
     private boolean deleted = false;
     @Column(name = "approval_information")
@@ -240,14 +236,6 @@ public abstract class Account implements Serializable {
 
     public void setStatus(AccountStatus status) {
         this.status = status;
-    }
-
-    public String getIcPositionOthers() {
-        return icPositionOthers;
-    }
-
-    public void setIcPositionOthers(String icPositionOthers) {
-        this.icPositionOthers = icPositionOthers;
     }
 
     public String getApprovalInformation() {

@@ -13,6 +13,8 @@ import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountIcPosition;
+import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountNotExistException;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import com.cbra.web.support.BadPageException;
@@ -123,7 +125,7 @@ public class AccountServlet extends BaseServlet {
     enum ActionEnum {
 
         LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
-        UPLOAD_PERSON_CARD;
+        UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST;
     }
 
     @Override
@@ -152,6 +154,8 @@ public class AccountServlet extends BaseServlet {
                 return doChangeRegInfo(request, response);
             case SEND_RESET_PASSWD:
                 return doSendResetPasswd(request, response);
+            case ACCOUNT_IS_EXIST:
+                return doAccountIsExist(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -320,12 +324,12 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * 登录
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String account = getRequestString(request, "account");
@@ -587,6 +591,25 @@ public class AccountServlet extends BaseServlet {
         return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 判断账户是否存在
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doAccountIsExist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String accountName = super.getRequestString(request, "account");
+        Account account = accountService.findByAccount(accountName);
+        if (account == null) {
+            return super.outputSuccessAjax(null, null, response);
+        } else {
+            return super.outputErrorAjax(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), null, response);
+        }
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -656,6 +679,8 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("positions", UserPosition.values());
+        request.setAttribute("icPositions", AccountIcPosition.values());
         request.setAttribute("step", super.getPathInfoLongAt(request, 1));
         return KEEP_GOING_WITH_ORIG_URL;
     }

@@ -1,6 +1,7 @@
 package com.cbra.entity;
 
 import com.cbra.support.enums.CompanyNatureEnum;
+import com.cbra.support.enums.CompanyScaleEnum;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -44,8 +45,9 @@ public class CompanyAccount extends Account {
     private String natureOthers;
     @Size(max = 255)
     @Column(name = "scale", length = 255)
-    //规模
-    private String scale;
+    @Enumerated(EnumType.STRING)
+    //规模(员工人数)
+    private CompanyScaleEnum scale;
     @Size(max = 255)
     @Column(name = "web_side", length = 255)
     //网站
@@ -92,11 +94,11 @@ public class CompanyAccount extends Account {
         this.legalPerson = legalPerson;
     }
 
-    public String getScale() {
+    public CompanyScaleEnum getScale() {
         return scale;
     }
 
-    public void setScale(String scale) {
+    public void setScale(CompanyScaleEnum scale) {
         this.scale = scale;
     }
 

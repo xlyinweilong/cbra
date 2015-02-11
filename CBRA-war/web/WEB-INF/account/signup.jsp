@@ -22,37 +22,45 @@
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
                             <td class="reg-1">中文姓名</td>
-                            <td class="reg-2"><input type="text" name="" value="" class="Input-1"/></td>
+                            <td class="reg-2"><input type="text" name="accountName" id="accountName" class="Input-1" /></td>
                             <td class="reg-1">英文姓名</td>
-                            <td><input type="text" class="Input-1"></td>
+                            <td><input type="text" name="accountEnName" id="accountEnName" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1">手机</td>
-                            <td class="reg-2"><input type="text" name="" value="" class="Input-1"/></td>
+                            <td class="reg-2"><input type="text" name="account" id="account" class="Input-1" /></td>
                             <td class="reg-1">EMAIL</td>
-                            <td><input type="text" class="Input-1"></td>
+                            <td><input type="text" name="email" id="email" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1">行业从业时间</td>
-                            <td class="reg-2"><input type="text" name="" value="" class="Input-1"/></td>
+                            <td class="reg-2"><input type="text" name="workingYear" id="workingYear" class="Input-1" /></td>
                             <td class="reg-1">目前就职公司</td>
-                            <td><input type="text" class="Input-1"></td>
+                            <td><input type="text" name="company" id="company" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">产业链位置</td>
-                            <td class="reg-2"><select class="Input-1"><option>请选择</option></select></td>
-                        </tr>
-                        <tr>
-                            <td class="reg-1">职务</td>
-                            <td class="reg-2"><input type="radio">职务1  <input type="radio">职务1   <input type="radio">职务1   <input type="radio">职务1  <input type="radio">职务1  <input type="radio">职务1 </td>
-                            <td class="reg-1">其他</td>
-                            <td><input type="text" class="Input-1"></td>
+                            <td class="reg-1">职务</td>name="position"
+                            <td class="reg-2">
+                                <c:forEach var="position" items="${positions}">
+                                    <input type="radio" name="position" value="${position.key}" />${position.mean}&nbsp&nbsp&nbsp&nbsp
+                                </c:forEach>
+                            </td>
+                            <td class="reg-1" id="others_td_1">其他</td>
+                            <td id="others_td_2"><input type="text" name="others" id="others" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1">邮寄地址</td>
-                            <td class="reg-2"><input type="text" class="Input-1"></td>
+                            <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" /></td>
                             <td class="reg-1">邮编</td>
-                            <td><input type="text" class="Input-1"></td>
+                            <td><input type="text" name="zipCode" id="zipCode" class="Input-1" /></td>
+                        </tr>
+                        <tr>
+                            <td class="reg-1">产业链位置</td>
+                            <td class="reg-2" colspan="3">
+                                <c:forEach var="icPosition" items="${icPositions}">
+                                    <input type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
+                                </c:forEach>
+                            </td>
                         </tr>
                     </table>
                     <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">

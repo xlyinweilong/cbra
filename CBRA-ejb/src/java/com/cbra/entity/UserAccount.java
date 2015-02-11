@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.enums.UserPosition;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -43,18 +44,18 @@ public class UserAccount extends Account {
     @Column(name = "person_id", length = 255)
     //身份证号
     private String personId;
-    @Column(name = "working_date")
-    @Temporal(TemporalType.TIMESTAMP)
-    //从业开始时间
-    private Date workingDate;
+    @Column(name = "working_year")
+    //从业年限
+    private int workingYear;
     @Size(max = 255)
     @Column(name = "company", length = 255)
     //公司
     private String company;
     @Size(max = 255)
     @Column(name = "position", length = 255)
+    @Temporal(TemporalType.TIMESTAMP)
     //职务
-    private String position;
+    private UserPosition position;
     @Lob
     @Size(max = 65535)
     @Column(name = "work_experience")
@@ -98,12 +99,12 @@ public class UserAccount extends Account {
         this.personId = personId;
     }
 
-    public Date getWorkingDate() {
-        return workingDate;
+    public int getWorkingYear() {
+        return workingYear;
     }
 
-    public void setWorkingDate(Date workingDate) {
-        this.workingDate = workingDate;
+    public void setWorkingYear(int workingYear) {
+        this.workingYear = workingYear;
     }
 
     public String getCompany() {
@@ -114,11 +115,11 @@ public class UserAccount extends Account {
         this.company = company;
     }
 
-    public String getPosition() {
+    public UserPosition getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
+    public void setPosition(UserPosition position) {
         this.position = position;
     }
 
