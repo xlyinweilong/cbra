@@ -19,8 +19,7 @@ public enum UserPosition {
     MARKETING,//营销经理
     DB,//市场开拓经理
     DESIGNER,//设计师
-    ENGINEER,//工程师
-    OTHERS;//其他
+    ENGINEER;//工程师
 
     public String getMean() {
         switch (this) {
@@ -40,8 +39,6 @@ public enum UserPosition {
                 return "设计师";
             case ENGINEER:
                 return "工程师";
-            case OTHERS:
-                return "其他";
             default:
                 return "其他";
         }

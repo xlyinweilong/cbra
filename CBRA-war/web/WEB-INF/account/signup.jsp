@@ -12,7 +12,7 @@
         <!-- 主体 -->
         <div class="ind-reg">
             <!-- 标题 -->
-            <form id="reg_form" method="post" enctype="multipart/form-data" action="/account/signup">
+            <form id="reg_form" method="post" action="/account/signup">
                 <input type="hidden" name="a" value="SIGNUP" />
                 <input id="front_hidden" type="hidden" name="front" value="" />
                 <input id="back_hidden" type="hidden" name="back" value="" />
@@ -33,8 +33,8 @@
                             <td><input type="text" name="email" id="email" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">行业从业时间</td>
-                            <td class="reg-2"><input type="text" name="workingYear" id="workingYear" class="Input-1" /></td>
+                            <td class="reg-1">从业年限</td>
+                            <td class="reg-2"><input type="text" name="workingYear" id="workingYear" class="Input-1" />（年）</td>
                             <td class="reg-1">目前就职公司</td>
                             <td><input type="text" name="company" id="company" class="Input-1" /></td>
                         </tr>
@@ -47,12 +47,18 @@
                         <tr>
                             <td class="reg-1">职务</td>
                             <td class="reg-2" style="line-height: 22px;">
-                                <c:forEach var="position" items="${positions}">
-                                    <input type="radio" name="position" value="${position.name()}" />${position.mean}&nbsp&nbsp&nbsp&nbsp
-                                </c:forEach>
+                                <span style="padding-right: 15px;">
+                                    <select id="position" name="position" class="Input-1">
+                                        <option value="">请选择</option>
+                                        <c:forEach var="position" items="${positions}">
+                                            <option value="${position.name()}">${position.mean}</option>
+                                        </c:forEach>
+                                            <option value="others">其他</option>
+                                    </select>
+                                </span>   
                             </td>
-                            <td class="reg-1" id="others_td_1">其他</td>
-                            <td id="others_td_2"><input type="text" name="others" id="others" class="Input-1" /></td>
+                            <td class="reg-1" id="others_td_1" style="display: none">其他</td>
+                            <td id="others_td_2" style="display: none"><input type="text" name="others" id="others" class="Input-1"/></td>
                         </tr>
                         <tr>
                             <td class="reg-1">产业链位置</td>
@@ -71,6 +77,8 @@
                         </tr>
                     </table>
                 </div>
+                <input type="hidden" id="workExperience_hidden" name="workExperience" value="" />
+                <input type="hidden" id="projectExperience_hidden" name="projectExperience" value="" />
             </form>
             <div id="step2" style="display: none">
                 <div class="Title-reg">实名认证</div>
@@ -158,12 +166,70 @@
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript">
             $(document).ready(function () {
+                $("#position").change(function() {
+                    if($("#position").val() == 'others'){
+                        $("#others_td_1").show();
+                        $("#others_td_2").show();
+                    }else{
+                        $("#others_td_1").hide();
+                        $("#others_td_2").hide();
+                    }
+                });
                 $("#step1_next").click(function () {
+                    if(CBRAValid.checkFormValueNull($("#accountName"))){
+                        alert("请输入中文姓名");
+                        return;
+                    }
+                    if(CBRAValid.checkFormValueNull($("#accountEnName"))){
+                        alert("请输入英文姓名");
+                        return;
+                    }
+                    if(!CBRAValid.checkFormValueMobile($("#account"))){
+                       //$("#account").css("border", "1px red solid");
+                       alert("请输入合法手机");
+                       return; 
+                    }
+                    if(!CBRAValid.checkFormValueEmail($("#email"))){
+                        alert("请输入合法邮件");
+                        return;
+                    }
+                    if(CBRAValid.checkFormValueNull($("#workingYear"))){
+                        alert("请输入从业年限");
+                        return;
+                    }
+                    if(isNaN($('#workingYear').val())){
+                        alert("从业年限必须是数字");
+                        return;
+                    }
+                    if(CBRAValid.checkFormValueNull($("#company"))){
+                        alert("请输入就职公司");
+                        return;
+                    }
+                    if(CBRAValid.checkFormValueNull($("#address"))){
+                        alert("请输入邮寄地址");
+                        return;
+                    }
+                    if(CBRAValid.checkFormValueNull($("#zipCode"))){
+                        alert("请输入邮寄");
+                        return;
+                    }
+                    if($("#position").val() == ''){
+                        alert("请选择职务");
+                        return;
+                    }
+                    if($("#position").val() == 'others' && CBRAValid.checkFormValueNull($("#others"))){
+                        alert("请输入其他职务");
+                        return;
+                    }
+                    if($("input[name=icPositions]:checked").length < 1){
+                        alert("请选择产业链位置");
+                        return;
+                    }
                     $("#step1").hide();
                     $("#step2").show();
                 });
                 $("#step2_next").click(function () {
-                    if($("#front_hidden").val() == "" || $("#back_hidden").val() == ""){
+                    if ($("#front_hidden").val() == "" || $("#back_hidden").val() == "") {
                         alert("请上传文件");
                         return;
                     }
@@ -171,7 +237,7 @@
                     $("#step3").show();
                 });
                 $("#step3_next").click(function () {
-                    if($.trim($("#workExperience").val()) == ""){
+                    if ($.trim($("#workExperience").val()) == "") {
                         alert("请输入内容");
                         return;
                     }
@@ -179,11 +245,14 @@
                     $("#step4").show();
                 });
                 $("#step4_next").click(function () {
-                    if($.trim($("#projectExperience").val()) == ""){
+                    if ($.trim($("#projectExperience").val()) == "") {
                         alert("请输入内容");
                         return;
                     }
+                    $("#workExperience_hidden").val($("#workExperience").val());
+                    $("#projectExperience_hidden").val($("#projectExperience").val());
                     //submit
+                    $("#reg_form").submit();
                 });
                 $("#step2_before").click(function () {
                     $("#step2").hide();
@@ -204,14 +273,14 @@
                     $("#reg_back").click();
                 });
                 $("#reg_front_submit").click(function () {
-                    if($("#reg_front").val() == ''){
+                    if ($("#reg_front").val() == '') {
                         alert("请选择图片路径！");
                         return;
                     }
                     $("#reg_front_form").submit();
                 });
                 $("#reg_back_submit").click(function () {
-                    if($("#reg_back").val() == ''){
+                    if ($("#reg_back").val() == '') {
                         alert("请选择图片路径！");
                         return;
                     }

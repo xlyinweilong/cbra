@@ -8,6 +8,7 @@ import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
@@ -15,6 +16,7 @@ import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.UserPosition;
+import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import com.cbra.web.support.BadPageException;
@@ -393,45 +395,67 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean doSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String email = getRequestEmail(request, "email");
-//        String mobilePhone = getRequestString(request, "mobilePhone");
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "name", "email", "passwd1", "passwd2")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String name = getRequestString(request, "name");
-//
-//        if (email == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败邮件错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (mobilePhone == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String passwd1 = getRequestString(request, "passwd1");
-//        String passwd2 = getRequestString(request, "passwd2");
-//
-//        // ******************************************************************
-//        if (!passwd1.equals(passwd2)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_两次密码不一致"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (passwd1.length() < 6) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserAccount user = null;
-//        try {
-//            user = accountService.signup(name, email, mobilePhone, passwd2, bundle.getLocale().getLanguage());
-//        } catch (UserExistException ex) {
-//            setErrorResult(MessageFormat.format(bundle.getString("ACCOUNT_SIGNUP_MSG_已注册,请登录"), email), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//
-//        // ******************************************************************
-//        // 注册成功后直接登录进来。
-//        return login(user, true, request, response);
-        return KEEP_GOING_WITH_ORIG_URL;
+        System.out.println("%%%%%%%%%%%");
+        String email = getRequestEmail(request, "email");
+        String mobile = getRequestString(request, "account");
+        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "accountName", "accountEnName", "account", "email", "workingYear", "company", "address", "zipCode", "position", "front", "back", "workExperience", "projectExperience", "icPositions")) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String name = getRequestString(request, "accountName");
+        String enName = getRequestString(request, "accountEnName");
+        String address = getRequestString(request, "address");
+        String zipCode = getRequestString(request, "zipCode");
+        String personCardFront = getRequestString(request, "front");
+        String personCardBack = getRequestString(request, "back");
+        String company = getRequestString(request, "company");
+        String position = getRequestString(request, "position");
+        String workExperience = getRequestString(request, "workExperience");
+        String projectExperience = getRequestString(request, "projectExperience");
+        String others = getRequestString(request, "others");
+        Integer workingYear = super.getRequestInteger(request, "workingYear");
+        if (email == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败邮件错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (mobile == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (workingYear == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String[] icPositions = request.getParameterValues("icPositions");
+        if (icPositions.length < 1) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        UserPosition up = null;
+        try {
+            up = UserPosition.valueOf(position);
+        } catch (Exception e) {
+            up = null;
+        }
+        if (up == null && Tools.isBlank(others)) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String icPosition;
+        StringBuilder sb = new StringBuilder();
+        for (String ic : icPositions) {
+            sb.append(ic);
+            sb.append("_");
+        }
+        icPosition = sb.toString();
+        UserAccount userAccount = null;
+        try {
+            userAccount = accountService.signupUser(mobile, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, enName, personCardFront, personCardBack, workingYear, company, up, others, workExperience, projectExperience);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
+        } catch (IOException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_找不到图片"), request);
+        }
+        return login(userAccount, true, request, response);
     }
 
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

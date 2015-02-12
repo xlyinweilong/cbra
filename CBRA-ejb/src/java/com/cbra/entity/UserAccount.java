@@ -10,6 +10,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,41 +30,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class UserAccount extends Account {
 
-    @Size(max = 255)
     @Column(name = "en_name", length = 255)
     //英文名
     private String enName;
-    @Size(max = 255)
     @Column(name = "person_card_front", length = 255)
     //身份证文件正面URL
     private String personCardFront;
-    @Size(max = 255)
     @Column(name = "person_card_back", length = 255)
     //身份证文件背面URL
     private String personCardBack;
-    @Size(max = 255)
     @Column(name = "person_id", length = 255)
     //身份证号
     private String personId;
     @Column(name = "working_year")
     //从业年限
     private int workingYear;
-    @Size(max = 255)
-    @Column(name = "company", length = 255)
+    @Column(name = "company")
     //公司
     private String company;
-    @Size(max = 255)
-    @Column(name = "position", length = 255)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "position")
+    @Enumerated(EnumType.STRING)
     //职务
     private UserPosition position;
+    @Column(name = "position_others", length = 255)
+    //职务
+    private String positionOthers;
     @Lob
-    @Size(max = 65535)
     @Column(name = "work_experience")
     //工作经验
     private String workExperience;
     @Lob
-    @Size(max = 65535)
     @Column(name = "project_experience")
     //项目经验
     private String projectExperience;
@@ -137,6 +134,14 @@ public class UserAccount extends Account {
 
     public void setProjectExperience(String projectExperience) {
         this.projectExperience = projectExperience;
+    }
+
+    public String getPositionOthers() {
+        return positionOthers;
+    }
+
+    public void setPositionOthers(String positionOthers) {
+        this.positionOthers = positionOthers;
     }
 
     @Override

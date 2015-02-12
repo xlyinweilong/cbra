@@ -22,6 +22,8 @@ public class Config {
     public static final String HTML_EDITOR_UPLOAD = "html_editor_upload";
     
     public static final String FILE_UPLOAD_TEMP = "temp";
+    
+    public static final String FILE_UPLOAD_ACCOUNT = "account";
 
     public static final String FILE_UPLOAD_TEMP_DIR = "f:/test";
 

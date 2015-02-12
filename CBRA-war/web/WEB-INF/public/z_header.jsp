@@ -14,4 +14,5 @@
 <link href="/css/master.css" rel="stylesheet" type="text/css"><!--top-->
 <script type="text/javascript" src="/scripts/jquery-1.8.2.min.js"></script>
 <script type="text/javascript" src="/js/base.js"></script><!--导航 -->
+<script type="text/javascript" src="/js/common.js"></script>
 

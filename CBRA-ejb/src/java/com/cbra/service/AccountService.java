@@ -16,9 +16,11 @@ import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -72,9 +75,9 @@ public class AccountService {
 
     /**
      * 保存上传文件到临时文件夹，临时文件夹定时会被清理
-     * 
+     *
      * @param item
-     * @return 
+     * @return
      */
     public String setUploadFileToTemp(FileUploadItem item) {
         String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP;
@@ -84,7 +87,7 @@ public class AccountService {
         }
         String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
         Tools.setUploadFile(item, savePath + "/", filename);
-        return Config.HTTP_URL_BASE + "/" + Config.FILE_UPLOAD_TEMP + "/" + filename;
+        return Config.HTTP_URL_BASE + Config.FILE_UPLOAD_TEMP + "/" + filename;
     }
 
     /**
@@ -124,9 +127,9 @@ public class AccountService {
         return sub;
     }
 
-    public UserAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
-            String enName, String personCardFront, String personCardBack, String personId, Date workingDate, String company,
-            String position, String workExperience, String projectExperience) throws AccountAlreadyExistException {
+    public UserAccount signupUser(String account, String name, String email, String language, String address, String zipCode, String icPosition,
+            String enName, String personCardFront, String personCardBack, int workingYear, String company,
+            UserPosition position, String others, String workExperience, String projectExperience) throws AccountAlreadyExistException, IOException {
         Account ua = this.findByAccount(account);
         UserAccount user;
         if (ua == null) {
@@ -135,21 +138,28 @@ public class AccountService {
             throw new AccountAlreadyExistException();
         }
         user.setName(name);
-        user.setPasswd(Tools.md5(passwd));
         user.setAddress(address);
         user.setEmail(email);
         user.setIcPosition(icPosition);
-        user.setUserLanguage(LanguageType.valueOf(name));
+        try {
+            user.setUserLanguage(LanguageType.valueOf(language));
+        } catch (Exception e) {
+            user.setUserLanguage(LanguageType.ZH);
+        }
         user.setZipCode(zipCode);
         user.setCompany(company);
         user.setEnName(enName);
-        user.setPersonCardBack(personCardBack);
-        user.setPersonCardFront(personCardFront);
-        user.setPersonId(personId);
-        //user.setPosition(position);
+        //处理图片
+        //personCardBack = personCardBack.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() - 1);
+        //FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + personCardBack), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + personCardBack));
+        //FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + personCardBack));
+        //user.setPersonCardBack(Config.FILE_UPLOAD_ACCOUNT + personCardBack);
+        //user.setPersonCardFront(personCardFront);
+        user.setPosition(position);
+        user.setPositionOthers(others);
         user.setProjectExperience(projectExperience);
         user.setWorkExperience(workExperience);
-        //user.setWorkingDate(workingDate);
+        user.setWorkingYear(workingYear);
         String verifyUrl = getUniqueAccountVerifyUrl();
         user.setVerifyUrl(verifyUrl);
         em.persist(user);
