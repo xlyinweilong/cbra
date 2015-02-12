@@ -137,6 +137,7 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistException();
         }
+        user.setAccount(account);
         user.setName(name);
         user.setAddress(address);
         user.setEmail(email);
