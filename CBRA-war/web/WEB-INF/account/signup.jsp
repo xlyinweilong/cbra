@@ -39,24 +39,24 @@
                             <td><input type="text" name="company" id="company" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">职务</td>name="position"
-                            <td class="reg-2">
-                                <c:forEach var="position" items="${positions}">
-                                    <input type="radio" name="position" value="${position.key}" />${position.mean}&nbsp&nbsp&nbsp&nbsp
-                                </c:forEach>
-                            </td>
-                            <td class="reg-1" id="others_td_1">其他</td>
-                            <td id="others_td_2"><input type="text" name="others" id="others" class="Input-1" /></td>
-                        </tr>
-                        <tr>
                             <td class="reg-1">邮寄地址</td>
                             <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" /></td>
                             <td class="reg-1">邮编</td>
                             <td><input type="text" name="zipCode" id="zipCode" class="Input-1" /></td>
                         </tr>
                         <tr>
+                            <td class="reg-1">职务</td>
+                            <td class="reg-2" style="line-height: 22px;">
+                                <c:forEach var="position" items="${positions}">
+                                    <input type="radio" name="position" value="${position.name()}" />${position.mean}&nbsp&nbsp&nbsp&nbsp
+                                </c:forEach>
+                            </td>
+                            <td class="reg-1" id="others_td_1">其他</td>
+                            <td id="others_td_2"><input type="text" name="others" id="others" class="Input-1" /></td>
+                        </tr>
+                        <tr>
                             <td class="reg-1">产业链位置</td>
-                            <td class="reg-2" colspan="3">
+                            <td class="reg-2" colspan="3" style="line-height: 22px;">
                                 <c:forEach var="icPosition" items="${icPositions}">
                                     <input type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
                                 </c:forEach>
