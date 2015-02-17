@@ -15,6 +15,9 @@ import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountIcPosition;
+import com.cbra.support.enums.AccountStatus;
+import com.cbra.support.enums.CompanyNatureEnum;
+import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
@@ -93,7 +96,6 @@ public class AccountServlet extends BaseServlet {
             case LOGIN:
             case SIGNUP:
             case SIGNUP_C:
-            case SIGNUP_SELECT:
                 setLogoutOnly(request);
                 break;
             case LOGOUT:
@@ -165,7 +167,7 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP_SELECT, SIGNUP, SIGNUP_C, OVERVIEW, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP, SIGNUP_C, OVERVIEW, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
         MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC;
     }
 
@@ -181,7 +183,7 @@ public class AccountServlet extends BaseServlet {
             case SIGNUP:
                 return loadSignup(request, response);
             case SIGNUP_C:
-            case SIGNUP_SELECT:
+                return loadSignupCompany(request, response);
             case OVERVIEW:
                 return loadOverview(request, response);
             case MODIFY_PASSWD:
@@ -339,6 +341,7 @@ public class AccountServlet extends BaseServlet {
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "account", "passwd")) {
             return KEEP_GOING_WITH_ORIG_URL;
         }
+        request.setAttribute("account", account);
         Account user;
         try {
             user = accountService.getAccountForLogin(account, passwd);
@@ -347,6 +350,10 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         if (user == null) {
+            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL)) {
             setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -394,8 +401,16 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 个人用户注册
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean doSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("%%%%%%%%%%%");
         String email = getRequestEmail(request, "email");
         String mobile = getRequestString(request, "account");
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "accountName", "accountEnName", "account", "email", "workingYear", "company", "address", "zipCode", "position", "front", "back", "workExperience", "projectExperience", "icPositions")) {
@@ -455,6 +470,7 @@ public class AccountServlet extends BaseServlet {
         } catch (IOException ex) {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_找不到图片"), request);
         }
+        //return 注册成功
         return login(userAccount, true, request, response);
     }
 
@@ -630,7 +646,7 @@ public class AccountServlet extends BaseServlet {
         if (account == null) {
             return super.outputSuccessAjax(null, null, response);
         } else {
-            return super.outputErrorAjax(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), null, response);
+            return super.outputErrorAjax(bundle.getString("ACCOUNT_已经存在"), null, response);
         }
     }
 
@@ -702,10 +718,36 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 普通用户注册页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("positions", UserPosition.values());
         request.setAttribute("icPositions", AccountIcPosition.values());
-        request.setAttribute("step", super.getPathInfoLongAt(request, 1));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 公司用户注册页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadSignupCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("positions", UserPosition.values());
+        request.setAttribute("icPositions", AccountIcPosition.values());
+        request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
+        request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
+        
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

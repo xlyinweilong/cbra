@@ -76,7 +76,7 @@ public abstract class Account implements Serializable {
     @Column(name = "verify_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date verifyDate;
-    @Column(name = "language", length = 255)
+    @Column(name = "user_language", length = 255)
     @Enumerated(EnumType.STRING)
     //账户默认语言
     private LanguageType userLanguage = LanguageType.ZH;
@@ -232,7 +232,7 @@ public abstract class Account implements Serializable {
     public AccountStatus getStatus() {
         return status;
     }
-
+    
     public void setStatus(AccountStatus status) {
         this.status = status;
     }

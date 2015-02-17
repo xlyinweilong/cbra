@@ -2,7 +2,16 @@
 .vPagging a {display: inline-block;padding: 3px 8px;line-height: normal;border: 1px solid #ccc;	background:#F6F6F6;text-decoration: none;vertical-align: middle;cursor:pointer;	color:#333 }
 .vPagging a:hover { border:solid 1px #4E8235; color:#333 }
 .vPagging a.curp{ border:solid 1px #4E8235;background:#6CB54A;	color: #fff;}
-
+.wrongMessage {
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.wrongMessage {
+    background: none repeat scroll 0 0 #f8e1e1;
+    color: #bd2c2c;
+}
 body{margin:0 auto;min-width:1000px;color:#2B2B2B;font:12px/1.5 "微软雅黑";}
 ul,li,dl,dt,dd,table,td,th,form,h1,h2,h3,h4,h5,h6,p,img,input{margin:0;padding:0;list-style:none}
 img{border:none}

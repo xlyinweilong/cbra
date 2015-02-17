@@ -53,7 +53,7 @@
                                         <c:forEach var="position" items="${positions}">
                                             <option value="${position.name()}">${position.mean}</option>
                                         </c:forEach>
-                                            <option value="others">其他</option>
+                                        <option value="others">其他</option>
                                     </select>
                                 </span>   
                             </td>
@@ -71,182 +71,216 @@
                     </table>
                     <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
                         <tr>
+                            <td style="width: 350px;" align="right">
+                                <div align="center" id="signup_msg_1" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                                </td>
+                                <td align="center" >
+                                    <input id="step1_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
+                                </td>
+                                <td style="width: 350px;">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <input type="hidden" id="workExperience_hidden" name="workExperience" value="" />
+                    <input type="hidden" id="projectExperience_hidden" name="projectExperience" value="" />
+                </form>
+                <div id="step2" style="display: none">
+                    <div class="Title-reg">实名认证</div>
+                    <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
+                        <tr>
+                        <form id="reg_front_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=front">
+                            <input type="hidden" name="a" value="upload_person_card" />
+                            <td align="center" style="width:457px;">
+                                <div class="reg-img">
+                                    <div id="reg_front_div">
+                                        <br><br><br><p>上传身份证正面</p><p>上传图片大小不得超过2MB
+                                            支持JPG、PNG图片格式</p>
+                                    </div>
+                                    <img id="reg_front_img" src="" width="300" height="190" style="display: none" />
+                                    <input id="reg_front_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <p id="reg_front_result"></p>
+                                </div>
+                                <input id="reg_front_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
+                                <input style="display: none" id="reg_front" type="file" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value" />
+                            </td>
+                        </form>
+                        <form id="reg_back_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=back">
+                            <input type="hidden" name="a" value="upload_person_card"  />
+                            <td id="reg_back_td" align="center" style="width:457px;">
+                                <div class="reg-img">
+                                    <div id="reg_back_div">
+                                        <br><br><br><p>上传身份证背面</p><p>上传图片大小不得超过2MB
+                                            支持JPG、PNG图片格式</p>
+                                    </div>
+                                    <img id="reg_back_img" src="" width="300" height="190" style="display: none" />
+                                    <input id="reg_back_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <p id="reg_back_result"></p>
+                                </div>
+                                <input id="reg_back_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
+                                <input style="display: none" id="reg_back" type="file" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value" />
+                            </td>
+                        </form>
+                        </tr>
+                    </table>
+                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                        <tr>
+                            <td style="width: 300px;" align="right">
+                                <div align="center" id="signup_msg_2" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                            </td>
                             <td align="center" >
-                                <input id="step1_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
+                                <input id="step2_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
+                                <input id="step2_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
+                            </td>
+                            <td style="width: 300px;">
                             </td>
                         </tr>
                     </table>
                 </div>
-                <input type="hidden" id="workExperience_hidden" name="workExperience" value="" />
-                <input type="hidden" id="projectExperience_hidden" name="projectExperience" value="" />
-            </form>
-            <div id="step2" style="display: none">
-                <div class="Title-reg">实名认证</div>
-                <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
-                    <tr>
-                    <form id="reg_front_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=front">
-                        <input type="hidden" name="a" value="upload_person_card" />
-                        <td align="center" style="width:457px;">
-                            <div class="reg-img">
-                                <div id="reg_front_div">
-                                    <br><br><br><p>上传身份证正面</p><p>上传图片大小不得超过2MB
-                                        支持JPG、PNG图片格式</p>
-                                </div>
-                                <img id="reg_front_img" src="" width="300" height="190" style="display: none" />
-                                <input id="reg_front_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
-                                <p id="reg_front_result"></p>
-                            </div>
-                            <input id="reg_front_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
-                            <input style="display: none" id="reg_front" type="file" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value" />
-                        </td>
-                    </form>
-                    <form id="reg_back_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=back">
-                        <input type="hidden" name="a" value="upload_person_card"  />
-                        <td id="reg_back_td" align="center" style="width:457px;">
-                            <div class="reg-img">
-                                <div id="reg_back_div">
-                                    <br><br><br><p>上传身份证背面</p><p>上传图片大小不得超过2MB
-                                        支持JPG、PNG图片格式</p>
-                                </div>
-                                <img id="reg_back_img" src="" width="300" height="190" style="display: none" />
-                                <input id="reg_back_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
-                                <p id="reg_back_result"></p>
-                            </div>
-                            <input id="reg_back_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
-                            <input style="display: none" id="reg_back" type="file" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value" />
-                        </td>
-                    </form>
-                    </tr>
-                </table>
-                <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                    <tr>
-                        <td align="center" >
-                            <input id="step2_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
-                            <input id="step2_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="step3" style="display: none">
-                <div class="Title-reg">工作履历</div>
+                <div id="step3" style="display: none">
+                    <div class="Title-reg">工作履历</div>
 
-                <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
-                    <tr>
-                        <td align="center" ><textarea id="workExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
-                    </tr>
-                </table>
-                <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                    <tr>
-                        <td align="center" >
-                            <input id="step3_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
-                            <input id="step3_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
-                        </td>
-                    </tr>
-                </table>
+                    <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
+                        <tr>
+                            <td align="center" ><textarea id="workExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
+                        </tr>
+                    </table>
+                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                        <tr>
+                            <td style="width: 300px;" align="right">
+                                <div align="center" id="signup_msg_3" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                            </td>
+                            <td align="center" >
+                                <input id="step3_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
+                                <input id="step3_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="下一步" />
+                            </td>
+                            <td style="width: 300px;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="step4" style="display: none">
+                    <div class="Title-reg">项目经验</div>
+                    <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
+                        <tr>
+                            <td align="center" ><textarea id="projectExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
+                        </tr>
+                    </table>
+                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                        <tr>
+                            <td style="width: 300px;" align="right">
+                                <div align="center" id="signup_msg_4" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                            </td>
+                            <td align="center" >
+                                <input id="step4_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
+                                <input id="step4_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="提 交" />
+                            </td>
+                            <td style="width: 300px;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div id="step4" style="display: none">
-                <div class="Title-reg">项目经验</div>
-                <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
-                    <tr>
-                        <td align="center" ><textarea id="projectExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
-                    </tr>
-                </table>
-                <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                    <tr>
-                        <td align="center" >
-                            <input id="step4_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
-                            <input id="step4_next" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="提 交" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-        <iframe id="iframe1" name="iframe1" style="display:none;"></iframe>
-        <!-- 主体 end -->
+            <iframe id="iframe1" name="iframe1" style="display:none;"></iframe>
+            <!-- 主体 end -->
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript">
             $(document).ready(function () {
-                $("#position").change(function() {
-                    if($("#position").val() == 'others'){
+                $("#position").change(function () {
+                    if ($("#position").val() == 'others') {
                         $("#others_td_1").show();
                         $("#others_td_2").show();
-                    }else{
+                    } else {
                         $("#others_td_1").hide();
                         $("#others_td_2").hide();
                     }
                 });
                 $("#step1_next").click(function () {
-                    if(CBRAValid.checkFormValueNull($("#accountName"))){
-                        alert("请输入中文姓名");
+                    if (CBRAValid.checkFormValueNull($("#accountName"))) {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入中文姓名", $("#accountName"));
                         return;
                     }
-                    if(CBRAValid.checkFormValueNull($("#accountEnName"))){
-                        alert("请输入英文姓名");
+                    if (CBRAValid.checkFormValueNull($("#accountEnName"))) {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入英文姓名", $("#accountEnName"));
                         return;
                     }
-                    if(!CBRAValid.checkFormValueMobile($("#account"))){
-                       //$("#account").css("border", "1px red solid");
-                       alert("请输入合法手机");
-                       return; 
-                    }
-                    if(!CBRAValid.checkFormValueEmail($("#email"))){
-                        alert("请输入合法邮件");
+                    if (!CBRAValid.checkFormValueMobile($("#account"))) {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入合法手机", $("#account"));
                         return;
                     }
-                    if(CBRAValid.checkFormValueNull($("#workingYear"))){
-                        alert("请输入从业年限");
-                        return;
-                    }
-                    if(isNaN($('#workingYear').val())){
-                        alert("从业年限必须是数字");
-                        return;
-                    }
-                    if(CBRAValid.checkFormValueNull($("#company"))){
-                        alert("请输入就职公司");
-                        return;
-                    }
-                    if(CBRAValid.checkFormValueNull($("#address"))){
-                        alert("请输入邮寄地址");
-                        return;
-                    }
-                    if(CBRAValid.checkFormValueNull($("#zipCode"))){
-                        alert("请输入邮寄");
-                        return;
-                    }
-                    if($("#position").val() == ''){
-                        alert("请选择职务");
-                        return;
-                    }
-                    if($("#position").val() == 'others' && CBRAValid.checkFormValueNull($("#others"))){
-                        alert("请输入其他职务");
-                        return;
-                    }
-                    if($("input[name=icPositions]:checked").length < 1){
-                        alert("请选择产业链位置");
-                        return;
-                    }
-                    $("#step1").hide();
-                    $("#step2").show();
+                    //发送ajax
+                    $.post("/account/signup", {
+                        a: "ACCOUNT_IS_EXIST",
+                        account: $("#account").val()
+                    }, function (json) {
+                        if (!json.success) {
+                            CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), json.singleErrorMsg,$("#account"));
+                        }
+                        else {
+                            //call back
+                            if (!CBRAValid.checkFormValueEmail($("#email"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入合法邮件", $("#email"));
+                                return;
+                            }
+                            if (CBRAValid.checkFormValueNull($("#workingYear"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入从业年限", $("#workingYear"));
+                                return;
+                            }
+                            if (isNaN($('#workingYear').val())) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "从业年限必须是数字", $("#workingYear"));
+                                return;
+                            }
+                            if (CBRAValid.checkFormValueNull($("#company"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入就职公司", $("#company"));
+                                return;
+                            }
+                            if (CBRAValid.checkFormValueNull($("#address"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入邮寄地址", $("#address"));
+                                return;
+                            }
+                            if (CBRAValid.checkFormValueNull($("#zipCode"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入邮寄", $("#zipCode"));
+                                return;
+                            }
+                            if ($("#position").val() == '') {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请选择职务", $("#position"));
+                                return;
+                            }
+                            if ($("#position").val() == 'others' && CBRAValid.checkFormValueNull($("#others"))) {
+                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入其他职务", $("#others"));
+                                return;
+                            }
+                            if ($("input[name=icPositions]:checked").length < 1) {
+                                CBRAMessage.showMessage($("#signup_msg_1"), "请选择产业链位置");
+                                return;
+                            }
+                            $("#step1").hide();
+                            $("#step2").show();
+                            $("#signup_msg_1").html("");
+                        }
+                    }, "json");
                 });
                 $("#step2_next").click(function () {
                     if ($("#front_hidden").val() == "" || $("#back_hidden").val() == "") {
-                        alert("请上传文件");
+                        CBRAMessage.showMessage($("#signup_msg_2"), "请上传文件");
                         return;
                     }
                     $("#step2").hide();
                     $("#step3").show();
+                    $("#signup_msg_2").html("");
                 });
                 $("#step3_next").click(function () {
                     if ($.trim($("#workExperience").val()) == "") {
-                        alert("请输入内容");
+                        CBRAMessage.showMessage($("#signup_msg_3"), "请输入内容");
                         return;
                     }
                     $("#step3").hide();
                     $("#step4").show();
+                    $("#signup_msg_3").html("");
                 });
                 $("#step4_next").click(function () {
                     if ($.trim($("#projectExperience").val()) == "") {
-                        alert("请输入内容");
+                        CBRAMessage.showMessage($("#signup_msg_4"), "请输入内容");
                         return;
                     }
                     $("#workExperience_hidden").val($("#workExperience").val());
@@ -274,19 +308,19 @@
                 });
                 $("#reg_front_submit").click(function () {
                     if ($("#reg_front").val() == '') {
-                        alert("请选择图片路径！");
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_front"));
                         return;
                     }
                     $("#reg_front_form").submit();
                 });
                 $("#reg_back_submit").click(function () {
                     if ($("#reg_back").val() == '') {
-                        alert("请选择图片路径！");
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_back"));
                         return;
                     }
                     $("#reg_back_form").submit();
                 });
-            })
+            });
         </script>
     </body>
 </html>

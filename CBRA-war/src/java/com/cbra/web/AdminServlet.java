@@ -30,6 +30,7 @@ import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
+import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
@@ -846,7 +847,7 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean doAccountApproval(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
-        String status = super.getRequestString(request, "status");
+        String status = super.getRequestString(request, "type");
         String message = super.getRequestString(request, "message");
         AccountStatus statusEnum = null;
         try {
@@ -923,16 +924,48 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean doUpdateUserAccount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
         String email = super.getRequestEmail(request, "userAccount.email");
+        String name = super.getRequestString(request, "userAccount.name");
+        String passwd = super.getRequestString(request, "userAccount.passwd");
         String account = super.getRequestString(request, "userAccount.account");
         String enName = super.getRequestString(request, "userAccount.enName");
         String company = super.getRequestString(request, "userAccount.company");
-        Date workingDate = super.getRequestDate(request, "userAccount.workingDate");
+        Integer workingYear = super.getRequestInteger(request, "userAccount.workingYear");
         String position = super.getRequestString(request, "userAccount.position");
         String address = super.getRequestString(request, "userAccount.address");
         String zipCode = super.getRequestString(request, "userAccount.zipCode");
         String workExperience = super.getRequestString(request, "userAccount.workExperience");
         String projectExperience = super.getRequestString(request, "userAccount.projectExperience");
+        String others = super.getRequestString(request, "userAccount.others");
+        String[] icPositions = request.getParameterValues("accountIcPosition");
+        if (icPositions.length < 1) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String icPosition;
+        StringBuilder sb = new StringBuilder();
+        for (String ic : icPositions) {
+            sb.append(ic);
+            sb.append("_");
+        }
+        icPosition = sb.toString();
+        UserPosition up = null;
+        try {
+            up = UserPosition.valueOf(position);
+        } catch (Exception e) {
+            up = null;
+        }
+        if (up == null && Tools.isBlank(others)) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        UserAccount userAccount = null;
+        try {
+            userAccount = accountService.updateUserAccount(id, account, passwd, name, email, address, zipCode, icPosition, enName, workingYear, company, up, others, workExperience, projectExperience);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
+        }
         setSuccessResult("保存成功！", request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1468,8 +1501,10 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean loadOUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
-        UserAccount ua = new UserAccount();//(UserAccount) accountService.findById(id);
+        UserAccount ua = (UserAccount) accountService.findById(id);
+        request.setAttribute("positionList", Arrays.asList(ua.getIcPosition().split("_")));
         request.setAttribute("accountIcPositionList", Arrays.asList(AccountIcPosition.values()));
+        request.setAttribute("positions", UserPosition.values());
         request.setAttribute("userAccount", ua);
         return KEEP_GOING_WITH_ORIG_URL;
     }

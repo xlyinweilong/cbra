@@ -67,10 +67,11 @@
             <div class="rightinfo">
                 <div class="tools">
                     <ul class="toolbar">
+                        <%--
                         <li class="click" id="addBtn">
                             <span><img src="<%=path%>/background/images/t01.png" />
                             </span>添加
-                        </li>
+                        </li>--%>
                         <li class="click" id="deleteBtn">
                             <span><img src="<%=path%>/background/images/t03.png" />
                             </span>删除

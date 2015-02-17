@@ -8,7 +8,7 @@
     </head>
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
-        <jsp:include page="/WEB-INF/public/z_account_banner.jsp" />
+        <jsp:include page="/WEB-INF/account/z_account_banner.jsp" />
         <!-- 主体 -->
         <div class="mc-main">
             <table width="1000" border="0" cellpadding="0" cellspacing="0">

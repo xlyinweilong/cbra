@@ -7,10 +7,6 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    request.setAttribute("mainMenuSelection", cn.yoopay.web.support.MenuSelectionEnum.ACCOUNT);
-    request.setAttribute("subMenuSelection", cn.yoopay.web.support.MenuSelectionEnum.ACCOUNT_REG_INFO);
-%>
 <jsp:include page="/WEB-INF/public/z_header.jsp"/>
 <div class="BlueBox">
     <div class="BlueBoxContent826">

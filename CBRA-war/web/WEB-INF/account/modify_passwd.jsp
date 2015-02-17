@@ -8,7 +8,7 @@
     </head>
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
-        <jsp:include page="/WEB-INF/public/z_account_banner.jsp" />
+        <jsp:include page="/WEB-INF/account/z_account_banner.jsp" />
         <!-- 主体 -->
         <div class="mc-main">
 
@@ -16,7 +16,7 @@
                 <tr>
                     <td valign="top" class="fl-nav">
 
-                        <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="4" /></jsp:include>
+                        <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="5" /></jsp:include>
 
                     </td>
 

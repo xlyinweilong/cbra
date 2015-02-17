@@ -63,6 +63,9 @@ var CBRAMessage = {
     showWrongMessageAndBorderEle : function(container, message, ele) {
         this.showMessage(container, message);
         ele.css("border", "1px red solid");
+        setTimeout(function(){
+            ele.css("border", "");
+        },3000);
     },
     showMessage : function(container, message) {
         container.html(message);

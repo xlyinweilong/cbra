@@ -64,10 +64,10 @@ public class AccountService {
      */
     public Account getAccountForLogin(String account, String passwd) throws AccountNotExistException {
         Account user = this.findByAccount(account);
-        if (user == null) {
+        if (user == null || user.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
             throw new AccountNotExistException();
         }
-        if (!user.getPasswd().equalsIgnoreCase(Tools.md5(passwd))) {
+        if (user.getPasswd().equalsIgnoreCase(Tools.md5(passwd))) {
             return user;
         }
         return null;
@@ -151,11 +151,14 @@ public class AccountService {
         user.setCompany(company);
         user.setEnName(enName);
         //处理图片
-        //personCardBack = personCardBack.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() - 1);
-        //FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + personCardBack), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + personCardBack));
-        //FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + personCardBack));
-        //user.setPersonCardBack(Config.FILE_UPLOAD_ACCOUNT + personCardBack);
-        //user.setPersonCardFront(personCardFront);
+        personCardBack = personCardBack.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
+        FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + personCardBack), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + personCardBack));
+        FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + personCardBack));
+        user.setPersonCardBack("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + personCardBack);
+        personCardFront = personCardFront.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
+        FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + personCardFront), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + personCardFront));
+        FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + personCardFront));
+        user.setPersonCardFront("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + personCardFront);
         user.setPosition(position);
         user.setPositionOthers(others);
         user.setProjectExperience(projectExperience);
@@ -165,6 +168,58 @@ public class AccountService {
         user.setVerifyUrl(verifyUrl);
         em.persist(user);
         return user;
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param id
+     * @param account
+     * @param passwd
+     * @param name
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @param enName
+     * @param workingYear
+     * @param company
+     * @param position
+     * @param others
+     * @param workExperience
+     * @param projectExperience
+     * @return
+     * @throws AccountAlreadyExistException
+     */
+    public UserAccount updateUserAccount(Long id, String account, String passwd, String name, String email, String address, String zipCode, String icPosition,
+            String enName, Integer workingYear, String company,
+            UserPosition position, String others, String workExperience, String projectExperience) throws AccountAlreadyExistException {
+        Account ua = this.findByAccount(account);
+        UserAccount user;
+        if (ua == null) {
+            user = new UserAccount();
+        } else if (ua.getId().equals(id)) {
+            user = (UserAccount) ua;
+        } else {
+            throw new AccountAlreadyExistException();
+        }
+        if (Tools.isNotBlank(passwd)) {
+            user.setPasswd(Tools.md5(passwd));
+        }
+        user.setAccount(account);
+        user.setName(name);
+        user.setAddress(address);
+        user.setEmail(email);
+        user.setIcPosition(icPosition);
+        user.setZipCode(zipCode);
+        user.setCompany(company);
+        user.setEnName(enName);
+        user.setPosition(position);
+        user.setPositionOthers(others);
+        user.setProjectExperience(projectExperience);
+        user.setWorkExperience(workExperience);
+        user.setWorkingYear(workingYear);
+        return em.merge(user);
     }
 
     public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
@@ -293,9 +348,9 @@ public class AccountService {
         } else if (AccountStatus.ASSOCIATE_MEMBER.equals(status)) {
             //生成随机密码
             String passwd = Tools.generateRandom8Chars();
-            account.setPasswd(passwd);
+            account.setPasswd(Tools.md5(passwd));
             //发送成功邮件
-            this.sendAccountApprovalSuccess(account);
+            this.sendAccountApprovalSuccess(account, passwd);
         }
         em.merge(account);
         return account;
@@ -395,8 +450,9 @@ public class AccountService {
      * 发送注册成功邮件
      *
      * @param account
+     * @param passwd
      */
-    private void sendAccountApprovalSuccess(Account account) {
+    private void sendAccountApprovalSuccess(Account account, String passwd) {
         String language = account.getUserLanguage().toString();
         String toEmail = account.getEmail();
         if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
@@ -409,6 +465,7 @@ public class AccountService {
         String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
+        model.put("passwd", passwd);
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 

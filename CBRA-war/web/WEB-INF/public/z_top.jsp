@@ -23,14 +23,14 @@
             <div class="right-gn">
                 <c:if test="${empty sessionScope.user}"><a href="/account/login">会员登录</a>  |  <a href="/account/signup">快速注册</a></c:if>
             　　<c:if test="${not empty sessionScope.user}">
-                  <c:if test="${sessionScope.user == 'USER'}">
-                  <a href="/account/overview" >个人会员中心</a>
+                  <c:if test="${sessionScope.user.type == 'USER'}">
+                      <a href="/account/overview" >个人会员中心</a>
                   </c:if>
-                  <c:if test="${sessionScope.user == 'COMPANY' || sessionScope.user == 'SUB_COMPANY'}">
+                  <c:if test="${sessionScope.user.type == 'COMPANY' || sessionScope.user.type == 'SUB_COMPANY'}">
                   <a href="/account/overview" >企业会员中心</a>
                   </c:if>
                 </c:if>
-                  |  <a href="#">English</a>   |   <a href="#">中文</a>   
+                  &nbsp;&nbsp;<a href="#">English</a>   |   <a href="#">中文</a>   
                   <%--|   <a href="error-c.asp">报错页面连接，知道后程序去掉</a>--%>
             </div>
 
