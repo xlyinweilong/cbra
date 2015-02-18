@@ -77,6 +77,10 @@ public class CompanyAccount extends Account {
     @Column(name = "business_license", length = 255)
     //上传企业营业执照副本（彩色加盖公章）
     private String businessLicenseUrl;
+    @Size(max = 255)
+    @Column(name = "qualification_certificate", length = 255)
+    //资质证书打包文件
+    private String qualificationCertificateUrl;
 
     public Date getCompanyCreateDate() {
         return companyCreateDate;
@@ -173,6 +177,15 @@ public class CompanyAccount extends Account {
     public void setNatureOthers(String natureOthers) {
         this.natureOthers = natureOthers;
     }
+
+    public String getQualificationCertificateUrl() {
+        return qualificationCertificateUrl;
+    }
+
+    public void setQualificationCertificateUrl(String qualificationCertificateUrl) {
+        this.qualificationCertificateUrl = qualificationCertificateUrl;
+    }
+
 
     @Override
     public int hashCode() {

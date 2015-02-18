@@ -15,6 +15,7 @@ import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
+import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -196,13 +197,10 @@ public class AccountService {
             UserPosition position, String others, String workExperience, String projectExperience) throws AccountAlreadyExistException {
         Account ua = this.findByAccount(account);
         UserAccount user;
-        if (ua == null) {
-            user = new UserAccount();
-        } else if (ua.getId().equals(id)) {
-            user = (UserAccount) ua;
-        } else {
+        if (ua != null && !ua.getId().equals(id)) {
             throw new AccountAlreadyExistException();
         }
+        user = (UserAccount) this.findById(id);
         if (Tools.isNotBlank(passwd)) {
             user.setPasswd(Tools.md5(passwd));
         }
@@ -222,9 +220,92 @@ public class AccountService {
         return em.merge(user);
     }
 
-    public CompanyAccount signupCompany(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
-            String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String scale, String webSide, String enterpriseQalityGrading,
-            Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field) throws AccountAlreadyExistException {
+    /**
+     * 公司账户更新
+     *
+     * @param id
+     * @param account
+     * @param passwd
+     * @param name
+     * @param email
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @param companyCreateDate
+     * @param legalPerson
+     * @param webSide
+     * @param enterpriseQalityGrading
+     * @param authenticationDate
+     * @param productionLicenseNumber
+     * @param productionLicenseValidDate
+     * @param nature
+     * @param natureOthers
+     * @param scale
+     * @return
+     * @throws AccountAlreadyExistException
+     */
+    public CompanyAccount updateCompanyAccount(Long id, String account, String passwd, String name, String email, String address, String zipCode, String icPosition,
+            Date companyCreateDate, String legalPerson, String webSide, String enterpriseQalityGrading, Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate,
+            CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale) throws AccountAlreadyExistException {
+        Account ua = this.findByAccount(account);
+        CompanyAccount company;
+         if (ua != null && !ua.getId().equals(id)) {
+            throw new AccountAlreadyExistException();
+        }
+        company = (CompanyAccount) this.findById(id);
+        if (Tools.isNotBlank(passwd)) {
+            company.setPasswd(Tools.md5(passwd));
+        }
+        company.setAccount(account);
+        company.setName(name);
+        company.setAddress(address);
+        company.setEmail(email);
+        company.setIcPosition(icPosition);
+        company.setZipCode(zipCode);
+        company.setCompanyCreateDate(companyCreateDate);
+        company.setLegalPerson(legalPerson);
+        company.setWebSide(webSide);
+        company.setEnterpriseQalityGrading(enterpriseQalityGrading);
+        company.setAuthenticationDate(authenticationDate);
+        company.setProductionLicenseNumber(productionLicenseNumber);
+        company.setProductionLicenseValidDate(productionLicenseValidDate);
+        company.setNature(nature);
+        company.setNatureOthers(natureOthers);
+        company.setScale(scale);
+        return em.merge(company);
+    }
+
+    /**
+     * 公司账户注册
+     *
+     * @param account
+     * @param name
+     * @param email
+     * @param language
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @param legalPerson
+     * @param companyCreateDate
+     * @param nature
+     * @param natureOthers
+     * @param scale
+     * @param webSide
+     * @param enterpriseQalityGrading
+     * @param authenticationDate
+     * @param productionLicenseNumber
+     * @param productionLicenseValidDate
+     * @param field
+     * @param businessLicenseUrl
+     * @param qualificationCertificateUrl
+     * @return
+     * @throws AccountAlreadyExistException
+     * @throws IOException
+     */
+    public CompanyAccount signupCompany(String account, String name, String email, String language, String address, String zipCode, String icPosition,
+            String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale, String webSide, String enterpriseQalityGrading,
+            Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field,
+            String businessLicenseUrl, String qualificationCertificateUrl) throws AccountAlreadyExistException, IOException {
         Account user = this.findByAccount(account);
         CompanyAccount company;
         if (user == null) {
@@ -232,23 +313,37 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistException();
         }
+        company.setAccount(account);
         company.setName(name);
-        company.setPasswd(Tools.md5(passwd));
         company.setAddress(address);
         company.setEmail(email);
         company.setIcPosition(icPosition);
-        company.setUserLanguage(LanguageType.valueOf(name));
+        company.setCompanyCreateDate(companyCreateDate);
         company.setZipCode(zipCode);
         company.setAuthenticationDate(authenticationDate);
-        // company.setBusinessLicenseUrl(webSide);
         company.setEnterpriseQalityGrading(enterpriseQalityGrading);
         company.setField(field);
+        try {
+            company.setUserLanguage(LanguageType.valueOf(language));
+        } catch (Exception e) {
+            company.setUserLanguage(LanguageType.ZH);
+        }
         company.setLegalPerson(legalPerson);
         company.setNature(nature);
+        company.setNatureOthers(natureOthers);
         company.setProductionLicenseNumber(productionLicenseNumber);
         company.setProductionLicenseValidDate(productionLicenseValidDate);
-        //company.setScale(scale);
+        company.setScale(scale);
         company.setWebSide(webSide);
+        //处理图片
+        businessLicenseUrl = businessLicenseUrl.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
+        FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + businessLicenseUrl), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + businessLicenseUrl));
+        FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + businessLicenseUrl));
+        company.setBusinessLicenseUrl("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + businessLicenseUrl);
+        qualificationCertificateUrl = qualificationCertificateUrl.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
+        FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl));
+        FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl));
+        company.setQualificationCertificateUrl("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl);
         String verifyUrl = getUniqueAccountVerifyUrl();
         company.setVerifyUrl(verifyUrl);
         em.persist(company);

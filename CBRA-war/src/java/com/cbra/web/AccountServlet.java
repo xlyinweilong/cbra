@@ -18,6 +18,7 @@ import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
+import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
@@ -310,10 +311,16 @@ public class AccountServlet extends BaseServlet {
         FileUploadObj fileUploadObj = null;
         String type = super.getRequestString(request, "type");
         try {
-            fileUploadObj = super.uploadFile(request, 2.0, null, null, null);
+            if ("bl".equalsIgnoreCase(type)) {
+                fileUploadObj = super.uploadFile(request, 5.0, null, null, null);
+            } else if ("qc".equalsIgnoreCase(type)) {
+                fileUploadObj = super.uploadFile(request, 20.0, null, null, null);
+            } else {
+                fileUploadObj = super.uploadFile(request, 2.0, null, null, null);
+            }
             List<FileUploadItem> list = fileUploadObj.getFileList();
             for (FileUploadItem item : list) {
-                if ("reg_front_file".equals(item.getFieldName()) || "reg_back_file".equals(item.getFieldName())) {
+                if ("reg_front_file".equals(item.getFieldName()) || "reg_back_file".equals(item.getFieldName()) || "reg_bl_file".equals(item.getFieldName()) || "reg_qc_file".equals(item.getFieldName())) {
                     super.setSuccessResult(type, accountService.setUploadFileToTemp(item), bundle.getString("GLOBAL_保存成功"), request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
@@ -475,44 +482,79 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String email = getRequestEmail(request, "email");
-//        //Log Request
-//        super.logRequest(request, LogRequestTypeEnum.SIGNUP_C, email, null, null);
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "company", "name", "position", "email", "passwd1", "passwd2")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String company = getRequestString(request, "company");
-//        String name = getRequestString(request, "name");
-//        String position = getRequestString(request, "position");
-//        String mobile = getRequestString(request, "mobile");
-//        if (email == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败邮件错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String passwd1 = getRequestString(request, "passwd1");
-//        String passwd2 = getRequestString(request, "passwd2");
-//
-//        // ******************************************************************
-//        if (!passwd1.equals(passwd2)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_两次密码不一致"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (passwd1.length() < 6) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserAccount user = null;
-//        try {
-//            user = accountService.signupCompany(company, name, mobile, position, email, passwd2, bundle.getLocale().getLanguage());
-//        } catch (UserExistException ex) {
-//            setErrorResult(MessageFormat.format(bundle.getString("ACCOUNT_SIGNUP_MSG_已注册,请登录"), email), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//
-//        // ******************************************************************
-//        // 注册成功后直接登录进来。
-//        return login(user, true, request, response);
-        return KEEP_GOING_WITH_ORIG_URL;
+        String email = getRequestEmail(request, "email");
+        String account = getRequestString(request, "account");
+        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "account", "accountName", "companyCreateDate", "address",
+                "zipCode", "enterpriseQalityGrading", "authenticationDate", "productionLicenseNumber", "productionLicenseValidDate", "field", "bl",
+                "qc", "webSide", "companyNature", "legalPerson", "companyScale")) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String name = getRequestString(request, "accountName");
+        String companyCreateDate = getRequestString(request, "companyCreateDate");
+        String address = getRequestString(request, "address");
+        String zipCode = getRequestString(request, "zipCode");
+        String enterpriseQalityGrading = getRequestString(request, "enterpriseQalityGrading");
+        String authenticationDate = getRequestString(request, "authenticationDate");
+        String productionLicenseNumber = getRequestString(request, "productionLicenseNumber");
+        String productionLicenseValidDate = getRequestString(request, "productionLicenseValidDate");
+        String field = getRequestString(request, "field");
+        String bl = getRequestString(request, "bl");
+        String qc = getRequestString(request, "qc");
+        String webSide = getRequestString(request, "webSide");
+        String companyNature = getRequestString(request, "companyNature");
+        String companyScale = getRequestString(request, "companyScale");
+        String natureOthers = getRequestString(request, "natureOthers");
+        String legalPerson = super.getRequestString(request, "legalPerson");
+        if (email == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败邮件错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (account == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String[] icPositions = request.getParameterValues("icPositions");
+        if (icPositions.length < 1) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        Date companyCreate = Tools.parseDate(companyCreateDate, "yyyy-MM-dd");
+        Date authentication = Tools.parseDate(authenticationDate, "yyyy-MM-dd");
+        Date productionLicenseValid = Tools.parseDate(productionLicenseValidDate, "yyyy-MM-dd");
+        CompanyScaleEnum companyScaleEnum = null;
+        try {
+            companyScaleEnum = CompanyScaleEnum.valueOf(companyScale);
+        } catch (Exception e) {
+            companyScaleEnum = null;
+        }
+        CompanyNatureEnum companyNatureEnum = null;
+        try {
+            companyNatureEnum = CompanyNatureEnum.valueOf(companyNature);
+        } catch (Exception e) {
+            companyNatureEnum = null;
+        }
+        if (companyNatureEnum == null && Tools.isBlank(natureOthers)) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String icPosition;
+        StringBuilder sb = new StringBuilder();
+        for (String ic : icPositions) {
+            sb.append(ic);
+            sb.append("_");
+        }
+        icPosition = sb.toString();
+        CompanyAccount companyAccount = null;
+        try {
+            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValid, field, bl, qc);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
+        } catch (IOException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_找不到图片"), request);
+        }
+        //return 注册成功
+        return login(companyAccount, true, request, response);
+        //return KEEP_GOING_WITH_ORIG_URL;
     }
 
     private boolean doSendResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
@@ -747,7 +789,7 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute("icPositions", AccountIcPosition.values());
         request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
         request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
-        
+
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

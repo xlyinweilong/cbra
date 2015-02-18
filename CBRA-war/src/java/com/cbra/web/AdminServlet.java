@@ -24,6 +24,8 @@ import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
+import com.cbra.support.enums.CompanyNatureEnum;
+import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
@@ -217,7 +219,7 @@ public class AdminServlet extends BaseServlet {
             case UPDATE_USER_ACCOUNT:
                 return doUpdateUserAccount(request, response);
             case UPDATE_COMPANY_ACCOUNT:
-                return doUpdateUserAccount(request, response);
+                return doUpdateCompanyAccount(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -970,10 +972,76 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 更新公司用户信息
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean doUpdateCompanyAccount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String email = super.getRequestEmail(request, "email");
+        String name = super.getRequestString(request, "name");
+        String passwd = super.getRequestString(request, "passwd");
+        String account = super.getRequestString(request, "account");
+        Date companyCreateDate = super.getRequestDate(request, "companyCreateDate");
+        String legalPerson = super.getRequestString(request, "legalPerson");
+        String webSide = super.getRequestString(request, "webSide");
+        String enterpriseQalityGrading = super.getRequestString(request, "enterpriseQalityGrading");
+        Date authenticationDate = super.getRequestDate(request, "authenticationDate");
+        String zipCode = super.getRequestString(request, "zipCode");
+        String address = super.getRequestString(request, "address");
+        String productionLicenseNumber = super.getRequestString(request, "productionLicenseNumber");
+        Date productionLicenseValidDate = super.getRequestDate(request, "productionLicenseValidDate");
+        String natureOthers = super.getRequestString(request, "natureOthers");
+        String[] icPositions = request.getParameterValues("accountIcPosition");
+        if (icPositions.length < 1) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String icPosition;
+        StringBuilder sb = new StringBuilder();
+        for (String ic : icPositions) {
+            sb.append(ic);
+            sb.append("_");
+        }
+        icPosition = sb.toString();
+        String nature = super.getRequestString(request, "nature");
+        CompanyNatureEnum cn = null;
+        try {
+            cn = CompanyNatureEnum.valueOf(nature);
+        } catch (Exception e) {
+            cn = null;
+        }
+        if (cn == null && Tools.isBlank(natureOthers)) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String scale = super.getRequestString(request, "scale");
+        CompanyScaleEnum cs = null;
+        try {
+            cs = CompanyScaleEnum.valueOf(scale);
+        } catch (Exception e) {
+            cs = null;
+        }
+        CompanyAccount companyAccount = null;
+        try {
+            companyAccount = accountService.updateCompanyAccount(id, account, passwd, name, email, address, zipCode, icPosition, companyCreateDate, legalPerson, webSide, enterpriseQalityGrading, authenticationDate, productionLicenseNumber, productionLicenseValidDate, cn, natureOthers, cs);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
+        }
+        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
     //*********************************************************************
+
     /**
      * 显示页面左侧
      *
@@ -1466,6 +1534,10 @@ public class AdminServlet extends BaseServlet {
     private boolean loadCUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
         CompanyAccount ca = (CompanyAccount) accountService.findById(id);
+        request.setAttribute("positionList", Arrays.asList(ca.getIcPosition().split("_")));
+        request.setAttribute("accountIcPositionList", Arrays.asList(AccountIcPosition.values()));
+        request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
+        request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
         request.setAttribute("companyAccount", ca);
         return KEEP_GOING_WITH_ORIG_URL;
     }

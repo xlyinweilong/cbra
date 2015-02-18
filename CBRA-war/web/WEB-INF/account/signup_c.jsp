@@ -14,6 +14,9 @@
             <!-- 标题 -->
             <div class="Title"><a href="/account/signup">个人入会申请</a><a href="/account/signup_c" id="ind-reg-b">企业入会申请</a></div>
             <form id="reg_form" method="post" action="/account/signup_c">
+                <input type="hidden" name="a" value="SIGNUP_C" />
+                <input id="bl_hidden" type="hidden" name="bl" value="" />
+                <input id="qc_hidden" type="hidden" name="qc" value="" />
                 <div id="step1">
                     <div class="Title-reg">基本信息<a style=" margin-left:10px; font-size:12px; color:#e8a29a; font-weight:normal;">(必填项)</a></div>
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
@@ -132,18 +135,36 @@
                     <div class="Title-reg">相关证明</div>
                     <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
+                        <form id="reg_bl_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=bl">
+                            <input type="hidden" name="a" value="upload_person_card" />
                             <td align="center" style="width:457px;">
-                                <div class="reg-img"><br><br><br>
-                                    <p>上传企业营业执照副本</p>
-                                    <p>彩色加盖公章<br>上传图片大小不得超过200K，支持JPG、PNG图片格式</p>
-                                    <input type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径"></div><input type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
+                                <div class="reg-img">
+                                    <div id="reg_bl_div"><br/><br/>
+                                        <p>上传企业营业执照副本</p>
+                                        <p>彩色加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
+                                    </div>
+                                    <img id="reg_bl_img" src="" width="300" height="190" style="display: none" />
+                                    <input id="reg_bl_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <p id="reg_bl_result"></p>
+                                </div>
+                                <input id="reg_bl_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
+                                <input style="display: none" id="reg_bl" type="file" name="reg_bl_file" onchange="document.getElementById('reg_bl_result').innerHTML = this.value" />
                             </td>
-                            <td align="center" style="width:457px;">
-                                <div class="reg-img"><br><br><br>
-                                    <p>上传企业资质证书</p><p>可添加多个<br>上传图片大小不得超过200K，支持JPG、PNG图片格式</p>
-                                    <input type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
-                                </div><input type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
+                        </form>
+                        <form id="reg_qc_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=qc">
+                            <input type="hidden" name="a" value="upload_person_card"  />
+                            <td id="reg_qc_td" align="center" style="width:457px;">
+                                <div class="reg-img">
+                                    <div id="reg_qc_div"><br/><br/>
+                                        <p>上传企业资质证书</p><p>加多个请打包成文件<br>上传图片大小不得超过20MB</p>
+                                    </div>
+                                    <input id="reg_qc_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <p id="reg_qc_result"></p>
+                                </div>
+                                <input id="reg_qc_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传文件">
+                                <input style="display: none" id="reg_qc" type="file" name="reg_qc_file" onchange="document.getElementById('reg_qc_result').innerHTML = this.value" />
                             </td>
+                        </form>
                         </tr>
                     </table>
                     <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
@@ -163,6 +184,7 @@
                         </table>
                 </div>
             </div>
+            <iframe id="iframe1" name="iframe1" style="display:none;"></iframe>
             <!-- 主体 end -->
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript">
@@ -267,12 +289,14 @@
                     $("#signup_msg_2").html("");
                 });
                 $("#step3_next").click(function () {
-                    if ($.trim($("#projectExperience").val()) == "") {
-                        CBRAMessage.showMessage($("#signup_msg_4"), "请输入内容");
+                    if ($.trim($("#bl_hidden").val()) == "") {
+                        CBRAMessage.showMessage($("#signup_msg_3"), "请上传企业营业执照副本");
                         return;
                     }
-                    $("#workExperience_hidden").val($("#workExperience").val());
-                    $("#projectExperience_hidden").val($("#projectExperience").val());
+                    if ($.trim($("#qc_hidden").val()) == "") {
+                        CBRAMessage.showMessage($("#signup_msg_3"), "请上传企业资质证书");
+                        return;
+                    }
                     //submit
                     $("#reg_form").submit();
                 });
@@ -284,25 +308,25 @@
                     $("#step3").hide();
                     $("#step2").show();
                 });
-                $("#reg_front_button").click(function () {
-                    $("#reg_front").click();
+                $("#reg_bl_button").click(function () {
+                    $("#reg_bl").click();
                 });
-                $("#reg_back_button").click(function () {
-                    $("#reg_back").click();
+                $("#reg_qc_button").click(function () {
+                    $("#reg_qc").click();
                 });
-                $("#reg_front_submit").click(function () {
-                    if ($("#reg_front").val() == '') {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_front"));
+                $("#reg_bl_submit").click(function () {
+                    if ($("#reg_bl").val() == '') {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_3"), "请选择图片路径", $("#reg_bl"));
                         return;
                     }
-                    $("#reg_front_form").submit();
+                    $("#reg_bl_form").submit();
                 });
-                $("#reg_back_submit").click(function () {
-                    if ($("#reg_back").val() == '') {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_back"));
+                $("#reg_qc_submit").click(function () {
+                    if ($("#reg_qc").val() == '') {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_3"), "请选择文件路径", $("#reg_qc"));
                         return;
                     }
-                    $("#reg_back_form").submit();
+                    $("#reg_qc_form").submit();
                 });
             });
         </script>
