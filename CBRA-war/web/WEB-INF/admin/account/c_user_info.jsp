@@ -77,7 +77,7 @@
             </ul>
         </div>
         <div class="formbody">
-            <div class="formtitle"><span>状态：${userAccount.status.mean}</span></div>
+            <div class="formtitle"><span>状态：${companyAccount.status.mean}</span></div>
             <form id="form1" name="form1" method="post" theme="simple">
                 <input type="hidden" name="id" value="${companyAccount.id}" />
                 <input id="form_action" type="hidden" name="a" value="" />

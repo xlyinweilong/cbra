@@ -11,6 +11,7 @@
             <div class="logo"><a href="/public/index"><img src="/images/logo-r.png"></a></div>
             <form action="/account/login" method="post" id="form_login">
                 <input type="hidden" name="a" value="LOGIN" />
+                <input type="hidden" name="p" value="${p}" />
                 <div class="bac">
                     <div class="bac-k">
                         <div class="xianz">

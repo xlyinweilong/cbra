@@ -8,6 +8,7 @@ import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.support.FileUploadItem;
@@ -168,8 +169,8 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP, SIGNUP_C, OVERVIEW, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC;
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO;
     }
 
     @Override
@@ -187,6 +188,10 @@ public class AccountServlet extends BaseServlet {
                 return loadSignupCompany(request, response);
             case OVERVIEW:
                 return loadOverview(request, response);
+            case OVERVIEW_C:
+                return loadOverviewCompany(request, response);
+            case RESET_USER_INFO:
+                return loadResetUserInfo(request, response);
             case MODIFY_PASSWD:
                 return KEEP_GOING_WITH_ORIG_URL;
             case REGINFO:
@@ -349,6 +354,7 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         request.setAttribute("account", account);
+        request.setAttribute("p", getRequestString(request, "p"));
         Account user;
         try {
             user = accountService.getAccountForLogin(account, passwd);
@@ -616,30 +622,25 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean doModifyPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "password", "password1", "password2")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String password = getRequestString(request, "password").trim();
-//        String password1 = getRequestString(request, "password1").trim();
-//        String password2 = getRequestString(request, "password2").trim();
-//        UserAccount user = getUserFromSession(request);
-//        user = accountService.findById(user.getId());
-//        if (!user.getPasswd().equals(Tools.md5(password))) {
-//            setErrorResult(bundle.getString("ACCOUNT_MODIFYPASSWD_MSG_原密码不正确"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        int length = password1.length();
-//        String reg = "^([A-Za-z]+[0-9]+[A-Za-z0-9]*|([0-9]+[A-Za-z]+[A-Za-z0-9]*))$";
-//        if (length < 6) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (!password1.equals(password2)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_两次密码不一致"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        accountService.changePasswd(user.getId(), password1);
-//        setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
+        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "oldpasswd", "newpasswd")) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String oldpasswd = getRequestString(request, "oldpasswd");
+        String newpasswd = getRequestString(request, "newpasswd");
+        Account account = getUserFromSession(request);
+        account = accountService.findById(account.getId());
+        if (!account.getPasswd().equals(Tools.md5(oldpasswd))) {
+            setErrorResult(bundle.getString("ACCOUNT_MODIFYPASSWD_MSG_原密码不正确"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        int length = oldpasswd.length();
+        String reg = "^([A-Za-z]+[0-9]+[A-Za-z0-9]*|([0-9]+[A-Za-z]+[A-Za-z0-9]*))$";
+        if (length < 6) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        accountService.changePasswd(account.getId(), newpasswd);
+        setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -740,7 +741,52 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 个人用户首页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        request.setAttribute("user", account);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 公司用户首页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOverviewCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
+        request.setAttribute("company", account);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 修改个人信息页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadResetUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        if (account instanceof CompanyAccount) {
+            request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
+        }
+        request.setAttribute("user", account);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -755,6 +801,15 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 登录页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("p", super.getRequestString(request, "p"));
         return KEEP_GOING_WITH_ORIG_URL;

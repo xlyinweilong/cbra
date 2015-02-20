@@ -144,6 +144,14 @@ public class UserAccount extends Account {
         this.positionOthers = positionOthers;
     }
 
+    public String getPositionString() {
+        if (position == null) {
+            return positionOthers;
+        } else {
+            return position.getMean();
+        }
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

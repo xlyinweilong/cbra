@@ -81,6 +81,14 @@ public class CompanyAccount extends Account {
     @Column(name = "qualification_certificate", length = 255)
     //资质证书打包文件
     private String qualificationCertificateUrl;
+    
+    public String getNatureString(){
+        if(CompanyNatureEnum.OTHERS.equals(nature)){
+            return natureOthers;
+        }else{
+            return nature.getMean();
+        }
+    }
 
     public Date getCompanyCreateDate() {
         return companyCreateDate;

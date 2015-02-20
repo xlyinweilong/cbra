@@ -1,8 +1,11 @@
 package com.cbra.entity;
 
+import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -101,6 +104,27 @@ public abstract class Account implements Serializable {
     @Column(name = "approval_information")
     //审批信息
     private String approvalInformation;
+    @Column(name = "head_image_url")
+    //头像
+    private String headImageUrl;
+    @Column(name = "enrolled_count")
+    //已报名活动
+    private int enrolledCount = 0;
+    @Column(name = "joined_count")
+    //已参加活动
+    private int joinedCount = 0;
+
+    public String getIcPositionString() {
+        StringBuilder sb = new StringBuilder();
+        String[] ics = icPosition.split("_");
+        for (String ic : ics) {
+            if (Tools.isNotBlank(ic)) {
+                sb.append(AccountIcPosition.getName(ic));
+                sb.append(",");
+            }
+        }
+        return sb.substring(0, sb.length() - 1);
+    }
 
     /**
      * 获取TYPE
@@ -232,7 +256,7 @@ public abstract class Account implements Serializable {
     public AccountStatus getStatus() {
         return status;
     }
-    
+
     public void setStatus(AccountStatus status) {
         this.status = status;
     }
@@ -243,6 +267,36 @@ public abstract class Account implements Serializable {
 
     public void setApprovalInformation(String approvalInformation) {
         this.approvalInformation = approvalInformation;
+    }
+
+    public String getHeadImageUrl() {
+        return headImageUrl;
+    }
+
+    public void setHeadImageUrl(String headImageUrl) {
+        this.headImageUrl = headImageUrl;
+    }
+
+    public int getEnrolledCount() {
+        return enrolledCount;
+    }
+
+    public void setEnrolledCount(int enrolledCount) {
+        this.enrolledCount = enrolledCount;
+    }
+
+    public int getJoinedCount() {
+        return joinedCount;
+    }
+
+    public void setJoinedCount(int joinedCount) {
+        this.joinedCount = joinedCount;
+    }
+
+    public int getCreateYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(createDate);
+        return calendar.get(Calendar.YEAR);
     }
 
     @Override

@@ -7,7 +7,7 @@
     <c:if test="${sessionScope.user.type == 'SUB_COMPANY'}">企业会员中心</c:if>
 </h1>
 <ul>
-    <li><a href="/account/overview" <c:if test="${param.page == '1'}">id="mc-nav"</c:if>>基本信息</a></li>
+    <li><a href="/account/overview<c:if test="${sessionScope.user.type == 'COMPANY'}">_c</c:if>" <c:if test="${param.page == '1'}">id="mc-nav"</c:if>>基本信息</a></li>
     <li><a href="/account/membership_fee" <c:if test="${param.page == '2'}">id="mc-nav"</c:if>>会费</a></li>
     <li><a href="/account/my_event" <c:if test="${param.page == '3'}">id="mc-nav"</c:if>>参与的活动</a></li>
     <c:if test="${sessionScope.user.type == 'COMPANY'}">

@@ -1,3 +1,9 @@
+.noticeMessage{line-height:30px; margin:3px 0px; text-align:left}
+.loadingMessage{ background:#FFF8D9; color:#A75C25;  }
+.loadingMessage img{ margin-left:25px;}
+.successMessage{ background:#E7F6E3; color:#148243; _height:1px;}
+.loadingMessage,.successMessage,.wrongMessage{font-size:14px; font-weight:bold;padding-left:10px; padding-right: 10px;}
+.nolist{ background:#FFF8D9; border:solid 1px #FFCA21; padding:10px;font-size:16px;text-align:center;color:#A75C25;}
 .vPagging {text-align:center; margin-top:20px; padding-bottom:20px;}
 .vPagging a {display: inline-block;padding: 3px 8px;line-height: normal;border: 1px solid #ccc;	background:#F6F6F6;text-decoration: none;vertical-align: middle;cursor:pointer;	color:#333 }
 .vPagging a:hover { border:solid 1px #4E8235; color:#333 }

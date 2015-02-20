@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -68,10 +69,22 @@ public class AccountService {
         if (user == null || user.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
             throw new AccountNotExistException();
         }
-        if (user.getPasswd().equalsIgnoreCase(Tools.md5(passwd))) {
+        if (Tools.md5(passwd).equalsIgnoreCase(user.getPasswd())) {
             return user;
         }
         return null;
+    }
+
+    /**
+     * 通过公司账户获取子账户
+     *
+     * @param companyAccount
+     * @return
+     */
+    public List<SubCompanyAccount> getSubCompanyAccountList(CompanyAccount companyAccount) {
+        TypedQuery<SubCompanyAccount> query = em.createQuery("SELECT a FROM SubCompanyAccount a WHERE a.companyAccount = :companyAccount and a.deleted = false", SubCompanyAccount.class);
+        query.setParameter("companyAccount", companyAccount);
+        return query.getResultList();
     }
 
     /**
@@ -171,6 +184,12 @@ public class AccountService {
         return user;
     }
 
+    public void changePasswd(Long id, String newpasswd) {
+        Account account = this.findById(id);
+        account.setPasswd(newpasswd);
+        em.merge(account);
+    }
+
     /**
      * 更新用户信息
      *
@@ -249,7 +268,7 @@ public class AccountService {
             CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale) throws AccountAlreadyExistException {
         Account ua = this.findByAccount(account);
         CompanyAccount company;
-         if (ua != null && !ua.getId().equals(id)) {
+        if (ua != null && !ua.getId().equals(id)) {
             throw new AccountAlreadyExistException();
         }
         company = (CompanyAccount) this.findById(id);
