@@ -21,7 +21,7 @@
                                 <div class="img">
                                 <c:choose>
                                     <c:when test="${empty user.headImageUrl}"><img src="/ls/ls-26.jpg"></c:when>
-                                    <c:otherwise><img src="${user.headImageUrl}"></c:otherwise>
+                                    <c:otherwise><img style="width: 100px; height: 100px;" src="${user.headImageUrl}"></c:otherwise>
                                 </c:choose>
                                 </div>
                                 <div class="hyxx">
@@ -75,7 +75,7 @@
                                     <td class="hyzl-3">${user.projectExperience}</td>
                                 </tr>
                             </table>
-                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="修改资料" onclick="location.href = '#'" ></div>
+                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="修改资料" onclick="location.href = '/account/reset_user_info'" ></div>
                         </td>
                     </tr>
                 </table>

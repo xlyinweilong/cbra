@@ -141,6 +141,105 @@ public class AccountService {
         return sub;
     }
 
+    /**
+     * 更新个人资料
+     *
+     * @param id
+     * @param item
+     * @param enName
+     * @param up
+     * @param others
+     * @param company
+     * @param workingYear
+     * @param workExperience
+     * @param projectExperience
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @return
+     */
+    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition) {
+        UserAccount user = (UserAccount) this.findById(id);
+        user.setCompany(company);
+        user.setEnName(enName);
+        user.setPosition(up);
+        user.setPositionOthers(others);
+        user.setWorkExperience(workExperience);
+        user.setWorkingYear(workingYear);
+        user.setProjectExperience(projectExperience);
+        user.setIcPosition(icPosition);
+        user.setAddress(address);
+        user.setZipCode(zipCode);
+        //上传文件
+        if (item != null) {
+            String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE;
+            File saveDirFile1 = new File(savePath);
+            if (!saveDirFile1.exists()) {
+                saveDirFile1.mkdirs();
+            }
+            String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
+            Tools.setUploadFile(item, savePath + "/", filename);
+            user.setHeadImageUrl("/" + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE + "/" + filename);
+        }
+        em.merge(user);
+        return user;
+    }
+
+    /**
+     * 更新公司用户
+     *
+     * @param id
+     * @param item
+     * @param scale
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @return
+     */
+    public CompanyAccount updateCompanyAccount(Long id, FileUploadItem item, CompanyScaleEnum scale, String address, String zipCode, String icPosition) {
+        CompanyAccount company = (CompanyAccount) this.findById(id);
+        company.setScale(scale);
+        company.setIcPosition(icPosition);
+        company.setAddress(address);
+        company.setZipCode(zipCode);
+        //上传文件
+        if (item != null) {
+            String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE;
+            File saveDirFile1 = new File(savePath);
+            if (!saveDirFile1.exists()) {
+                saveDirFile1.mkdirs();
+            }
+            String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
+            Tools.setUploadFile(item, savePath + "/", filename);
+            company.setHeadImageUrl("/" + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE + "/" + filename);
+        }
+        em.merge(company);
+        return company;
+    }
+
+    /**
+     * 注册用户
+     *
+     * @param account
+     * @param name
+     * @param email
+     * @param language
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @param enName
+     * @param personCardFront
+     * @param personCardBack
+     * @param workingYear
+     * @param company
+     * @param position
+     * @param others
+     * @param workExperience
+     * @param projectExperience
+     * @return
+     * @throws AccountAlreadyExistException
+     * @throws IOException
+     */
     public UserAccount signupUser(String account, String name, String email, String language, String address, String zipCode, String icPosition,
             String enName, String personCardFront, String personCardBack, int workingYear, String company,
             UserPosition position, String others, String workExperience, String projectExperience) throws AccountAlreadyExistException, IOException {
@@ -184,6 +283,46 @@ public class AccountService {
         return user;
     }
 
+    /**
+     * 设置附属账户密码
+     *
+     * @param id
+     * @param parentId
+     * @param account
+     * @param passwd
+     * @throws AccountAlreadyExistException
+     */
+    public void setSubCompany(Long id, Long parentId, String account, String passwd) throws AccountAlreadyExistException {
+        SubCompanyAccount sub;
+        Account a = this.findByAccount(account);
+        if (id == null) {
+            sub = new SubCompanyAccount();
+            if (a != null) {
+                throw new AccountAlreadyExistException();
+            }
+        } else {
+            sub = (SubCompanyAccount) this.findById(id);
+            if (a != null && !a.getAccount().equals(sub.getAccount())) {
+                throw new AccountAlreadyExistException();
+            }
+        }
+        CompanyAccount ca = (CompanyAccount) this.findById(parentId);
+        sub.setCompanyAccount(ca);
+        sub.setPasswd(Tools.md5(passwd));
+        sub.setAccount(account);
+        if (id == null) {
+            em.persist(sub);
+        } else {
+            em.merge(sub);
+        }
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param id
+     * @param newpasswd
+     */
     public void changePasswd(Long id, String newpasswd) {
         Account account = this.findById(id);
         account.setPasswd(newpasswd);

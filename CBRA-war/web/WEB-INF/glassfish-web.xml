@@ -10,4 +10,6 @@
     </jsp-config>
     <property name="alternatedocroot_1" value="from=/html_editor_upload/* dir=f:/cbrd/"/>
     <property name="alternatedocroot_2" value="from=/temp/* dir=f:/cbrd/"/>
+    <property name="alternatedocroot_3" value="from=/account_head_image/* dir=f:/cbrd/"/>
+    <property name="alternatedocroot_4" value="from=/account_ic/* dir=f:/cbrd/"/>
 </glassfish-web-app>

@@ -11,7 +11,7 @@
     <li><a href="/account/membership_fee" <c:if test="${param.page == '2'}">id="mc-nav"</c:if>>会费</a></li>
     <li><a href="/account/my_event" <c:if test="${param.page == '3'}">id="mc-nav"</c:if>>参与的活动</a></li>
     <c:if test="${sessionScope.user.type == 'COMPANY'}">
-        <li><a href="qy-db.asp?id=34" <c:if test="${param.page == '4'}">id="mc-nav"</c:if>>设置登录代表</a></li>
+        <li><a href="/account/agent" <c:if test="${param.page == '4'}">id="mc-nav"</c:if>>设置登录代表</a></li>
     </c:if>
     <li><a href="/account/modify_passwd" <c:if test="${param.page == '5'}">id="mc-nav"</c:if>>修改密码</a></li>
     <li><a href="/account/logout?a=logout">退出</a></li>

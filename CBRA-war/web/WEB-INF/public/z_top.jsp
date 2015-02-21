@@ -27,7 +27,7 @@
                       <a href="/account/overview" >个人会员中心</a>
                   </c:if>
                   <c:if test="${sessionScope.user.type == 'COMPANY' || sessionScope.user.type == 'SUB_COMPANY'}">
-                  <a href="/account/overview" >企业会员中心</a>
+                  <a href="/account/overview_c" >企业会员中心</a>
                   </c:if>
                 </c:if>
                   &nbsp;&nbsp;<a href="#">English</a>   |   <a href="#">中文</a>   

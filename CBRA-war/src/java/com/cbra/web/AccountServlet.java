@@ -131,7 +131,7 @@ public class AccountServlet extends BaseServlet {
     enum ActionEnum {
 
         LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
-        UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST;
+        UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST, RESET_USER_INFO, SET_AGENT;
     }
 
     @Override
@@ -162,6 +162,10 @@ public class AccountServlet extends BaseServlet {
                 return doSendResetPasswd(request, response);
             case ACCOUNT_IS_EXIST:
                 return doAccountIsExist(request, response);
+            case RESET_USER_INFO:
+                return doResetAccountInfo(request, response);
+            case SET_AGENT:
+                return doSetAgent(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -169,8 +173,8 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, REGINFO, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO;
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT;
     }
 
     @Override
@@ -194,8 +198,6 @@ public class AccountServlet extends BaseServlet {
                 return loadResetUserInfo(request, response);
             case MODIFY_PASSWD:
                 return KEEP_GOING_WITH_ORIG_URL;
-            case REGINFO:
-                return loadRegInfo(request, response);
             case VERIFY:
                 return doVerifyEmail(request, response);
             case SEND_VERIFY_EMAIL:
@@ -210,6 +212,8 @@ public class AccountServlet extends BaseServlet {
                 return loadMembershipFee(request, response);
             case MY_EVENT:
                 return loadMyEventList(request, response);
+            case AGENT:
+                return loadAgent(request, response);
             case Z_IFRAME_UPLOAD_PC:
                 return KEEP_GOING_WITH_ORIG_URL;
             default:
@@ -693,6 +697,104 @@ public class AccountServlet extends BaseServlet {
         }
     }
 
+    /**
+     * 修改账户信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doResetAccountInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        FileUploadObj fileUploadObj = null;
+        String[] icPositions;
+        String address, zipCode, scaleCompany, workExperience, projectExperience, position, others, company, enName;
+        Integer workingYear;
+        FileUploadItem item;
+        try {
+            fileUploadObj = super.uploadFile(request, 5.0, null, null, null);
+            item = fileUploadObj.getFileField("headImage");
+            icPositions = fileUploadObj.getFormFieldArray("icPositions");
+            address = fileUploadObj.getFormField("address");
+            zipCode = fileUploadObj.getFormField("zipCode");
+            scaleCompany = fileUploadObj.getFormField("scaleCompany");
+            workExperience = fileUploadObj.getFormField("workExperience");
+            projectExperience = fileUploadObj.getFormField("projectExperience");
+            position = fileUploadObj.getFormField("position");
+            others = fileUploadObj.getFormField("others");
+            company = fileUploadObj.getFormField("company");
+            workingYear = fileUploadObj.getIntegerFormField("workingYear");
+            enName = fileUploadObj.getFormField("enName");
+        } catch (FileUploadException ex) {
+            setErrorResult(ex.getMessage(), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (icPositions.length < 1) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String icPosition;
+        StringBuilder sb = new StringBuilder();
+        for (String ic : icPositions) {
+            sb.append(ic);
+            sb.append("_");
+        }
+        icPosition = sb.toString();
+        if (account instanceof CompanyAccount) {
+            CompanyScaleEnum scale = null;
+            try {
+                scale = CompanyScaleEnum.valueOf(scaleCompany);
+            } catch (Exception e) {
+                scale = null;
+            }
+            accountService.updateCompanyAccount(account.getId(), item, scale, address, zipCode, icPosition);
+        } else {
+            UserPosition up = null;
+            try {
+                up = UserPosition.valueOf(position);
+            } catch (Exception e) {
+                up = null;
+            }
+            if (up == null && others == null) {
+                setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            if (workingYear == null) {
+                setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition);
+        }
+        setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 设置代理人
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doSetAgent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        Long id = super.getRequestLong(request, "id");
+        String accountName = super.getRequestString(request, "account");
+        String passwd = super.getRequestString(request, "passwd");
+        try {
+            accountService.setSubCompany(id, account.getId(), accountName, passwd);
+        } catch (AccountAlreadyExistException ex) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -737,7 +839,24 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean loadRegInfo(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
+    /**
+     * 加载代理人页面
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadAgent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        List<SubCompanyAccount> list = accountService.getSubCompanyAccountList((CompanyAccount) accountService.findById(account.getId()));
+        int i = 0;
+        for (SubCompanyAccount sub : list) {
+            i++;
+            request.setAttribute("id" + i, sub.getId());
+            request.setAttribute("account" + i, sub.getAccount());
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -752,6 +871,7 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
+        account = accountService.findById(account.getId());
         request.setAttribute("user", account);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -767,6 +887,7 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadOverviewCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
+        account = accountService.findById(account.getId());
         request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
         request.setAttribute("company", account);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -783,10 +904,16 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadResetUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
+        account = accountService.findById(account.getId());
         if (account instanceof CompanyAccount) {
             request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
         }
         request.setAttribute("user", account);
+        request.setAttribute("positions", UserPosition.values());
+        request.setAttribute("icPositions", AccountIcPosition.values());
+        request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
+        request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
+        request.setAttribute("positionList", Arrays.asList(account.getIcPosition().split("_")));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -844,7 +971,6 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute("icPositions", AccountIcPosition.values());
         request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
         request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
-
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
