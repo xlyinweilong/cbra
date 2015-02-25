@@ -11,6 +11,7 @@ import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -66,9 +68,15 @@ public class Message implements Serializable {
     @JoinColumn(name = "plate_information_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private PlateInformation plateInformation;
-    @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+    @JoinColumn(name = "offer_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserAccount userAccount;
+    private Offer offer;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account account;
+    @JoinColumn(name = "message_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Message message;
     @Lob
     @Size(max = 65535)
     @Column(name = "content")
@@ -77,7 +85,20 @@ public class Message implements Serializable {
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    
+    @OneToMany(mappedBy = "message", targetEntity = Message.class)
+    private List<Message> messageList;
+
+    public String getUserName() {
+        if (account == null) {
+            if (type.equals(MessageTypeEnum.REPLAY_FROM_ADMIN)) {
+                return "管理员";
+            }
+            return "用户";
+        } else {
+            return account.getName();
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -141,12 +162,12 @@ public class Message implements Serializable {
         this.plateInformation = plateInformation;
     }
 
-    public UserAccount getUserAccount() {
-        return userAccount;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public String getContent() {
@@ -163,6 +184,30 @@ public class Message implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
+    public List<Message> getMessageList() {
+        return messageList;
+    }
+
+    public void setMessageList(List<Message> messageList) {
+        this.messageList = messageList;
+    }
+
+    public Offer getOffer() {
+        return offer;
+    }
+
+    public void setOffer(Offer offer) {
+        this.offer = offer;
     }
 
     @Override

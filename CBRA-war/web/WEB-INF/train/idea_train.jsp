@@ -9,15 +9,15 @@
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
-        <jsp:include page="/WEB-INF/into/z_into_banner.jsp"><jsp:param name="page" value="4" /></jsp:include>
+        <jsp:include page="/WEB-INF/train/z_train_banner.jsp"><jsp:param name="page" value="1" /></jsp:include>
             <!-- 主体 -->
             <div class="two-main">
                 <!-- 左侧导航 -->
-            <jsp:include page="/WEB-INF/into/z_left.jsp"><jsp:param name="page" value="4" /></jsp:include>
+            <jsp:include page="/WEB-INF/train/z_left.jsp"><jsp:param name="page" value="1" /></jsp:include>
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">会长致辞</a></span></div>
+                    <div class="title"><span><a id="title-span">培训理念</a></span></div>
                     <div class="con-single">${plateInformation.plateInformationContent.content}</div>
                 </div>
                 <!-- 右侧内容 end -->

@@ -83,6 +83,9 @@ public class Plate implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "company_auth", length = 255)
     private PlateAuthEnum companyAuth;
+    @Column(name = "page", length = 255)
+    private String page;
+
     public Long getId() {
         return id;
     }
@@ -138,7 +141,8 @@ public class Plate implements Serializable {
     public void setPlateType(PlateTypeEnum plateType) {
         this.plateType = plateType;
     }
-     public String getEnName() {
+
+    public String getEnName() {
         return enName;
     }
 
@@ -183,6 +187,14 @@ public class Plate implements Serializable {
 
     public Plate(Long id) {
         this.id = id;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
     }
 
     @Override

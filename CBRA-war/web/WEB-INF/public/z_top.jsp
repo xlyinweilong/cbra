@@ -53,11 +53,15 @@
     <div class="nav-wrap">
         <ul id="HJ_Nav" class="nav">
             <!--首页-->
-            <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 1)"  href="/public/index">筑誉首页</a></li>
+            <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 1)"  href="/public/index">
+                    ${applicationScope.navigationPlates.get(0).getName()}
+                </a></li>
             <!--首页 end-->
 
             <!--走进筑誉-->
-            <li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 2)" href="/into/idea">走进筑誉</a>
+            <li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 2)" href="/into/idea">
+                    ${applicationScope.navigationPlates.get(1).getName()}
+                </a>
                 <div class="nav-menu clearfix" id="HJ_Menu_2" style="width: 630px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/into/idea">筑誉理念</a></li>
@@ -74,7 +78,9 @@
             </li>
             <!--走进筑誉 end-->
             <!--新闻中心-->
-            <li id="nav_item_3" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 3)" href="/news/news_list">新闻中心</a>
+            <li id="nav_item_3" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 3)" href="/news/news_list">
+                    ${applicationScope.navigationPlates.get(2).getName()}
+                </a>
                 <div class="nav-menu clearfix" id="HJ_Menu_3" style="width: 560px; display: none;">
                     <ul class="fl nav-channel" id="menu-news-switch" onmouseover="inittab( & #39; menu - news - switch & #39; , & #39; li & #39; , & #39; div & #39; )">
                         <li><a href="/news/news_list">筑誉新闻</a></li>
@@ -87,19 +93,19 @@
                             <h4><a href="/news/news_list">筑誉新闻</a></h4>
                             <span class="blank10"></span>
                             <ul class="list list-f12-autoheight">
-                                <li><a href="/news/details" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
-                                <li><a href="/news/details" target="_blank">和君集团党的群众路线教育实践活动总结大会圆满结束</a></li>
-                                <li><a href="/news/details" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
+                                <c:forEach var="news1" items="${applicationScope.newsList}">
+                                    <li><a href="/news/details?id=${news1.id}" target="_blank">${news1.title}</a></li>
+                                </c:forEach>
                             </ul>
                             <h4><a href="/news/industry_list">行业新闻</a></h4>
                             <span class="blank10"></span>
                             <ul class="list list-f12-autoheight">
-                                <li><a href="/news/details" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团</a></li>
-                                <li><a href="/news/details" target="_blank">和君集团党的群众路线教育实践活动总结大会圆满结束</a></li>
-                                <li><a href="/news/details" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
+                                <c:forEach var="news" items="${applicationScope.industryList}">
+                                    <li><a href="/news/details?id=${news.id}" target="_blank">${news.title}</a></li>
+                                </c:forEach>
                             </ul>
                             <span class="blank10"></span>
-                            <span class="more fr"><a href="news.asp" target="_blank">更多</a></span>
+                            <span class="more fr"><a href="/news/news_list" target="_blank">更多</a></span>
                         </div>
                         <div style="display:none">
                             <h4><a href="#" target="_blank">行业新闻</a></h4>
@@ -119,7 +125,7 @@
             </li>
             <!--新闻中心 end-->
             <!--活动讲座-->
-            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="/event/ hd-jq.asp">活动讲座</a>
+            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="/event/ hd-jq.asp">${applicationScope.navigationPlates.get(3).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_4" style="min-height: inherit; width: 700px; left: -95px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/event/near_future">近期活动</a></li>
@@ -142,12 +148,12 @@
             </li>
             <!--活动讲座 end-->
             <!--专题培训-->
-            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="/train/idea">专题培训</a>
+            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="/train/idea">${applicationScope.navigationPlates.get(4).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_5" style="left:-206px; width: 700px; display: none;">
                     <ul class="fl nav-channel">
-                        <li><a href="/train/idea" >培训理念</a></li>
-                        <li><a href="/train/near_future" >近期培训</a></li>
-                        <li><a href="/train/period" >往期培训</a></li>
+                        <li><a href="/train/idea_train" >培训理念</a></li>
+                        <li><a href="/train/near_future_train" >近期培训</a></li>
+                        <li><a href="/train/period_train" >往期培训</a></li>
                         <li><a href="/train/lecturers" >讲师团队</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
@@ -168,7 +174,7 @@
             </li>
             <!--专题培训 end-->
             <!--认证体系-->
-            <li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 9)" href="/auth/design">认证体系</a>
+            <li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 9)" href="/auth/design">${applicationScope.navigationPlates.get(5).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_9" style="width:300px; left:3px; display: none;">
                     <div class="fl" style="width:100px">
                         <h4>个人认证</h4>
@@ -193,7 +199,7 @@
             </li>
             <!--认证体系 end-->
             <!--团队风采-->
-            <li id="nav_item_6" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 6)" href="/team/director" >团队风采</a>
+            <li id="nav_item_6" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 6)" href="/team/director" >${applicationScope.navigationPlates.get(6).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_6" style="left: auto;  width: 410px; left: -138px;  display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/team/director">理事成员</a></li>
@@ -211,7 +217,7 @@
             </li>
             <!--团队风采 end-->
             <!--资讯专区-->
-            <li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 7)" href="/into/info_area">资讯专区</a>
+            <li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 7)" href="/into/info_area">${applicationScope.navigationPlates.get(7).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_7" style="width:450px; left: -289px; display: none;">
                     <div class="fl" style="width:100px">
                         <h4>人力资源信息</h4>
@@ -247,7 +253,7 @@
             </li>
             <!--资讯专区 end-->
             <!--加入筑誉-->
-            <li id="nav_item_8" class="nav-item"><a class="nav-txt" onmouseover="M(this, 8)" href="/join/membership_application" >加入筑誉</a>
+            <li id="nav_item_8" class="nav-item"><a class="nav-txt" onmouseover="M(this, 8)" href="/join/membership_application" >${applicationScope.navigationPlates.get(8).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_8" style="left: -670px; width: 720px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/join/membership_application" >会员申请</a></li>

@@ -6,9 +6,17 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.Offer;
+import com.cbra.entity.Plate;
+import com.cbra.entity.PlateInformation;
 import com.cbra.service.AccountService;
+import com.cbra.service.AdminService;
+import com.cbra.service.CbraService;
 import com.cbra.support.NoPermException;
+import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
@@ -20,6 +28,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +47,10 @@ public class AboutServlet extends BaseServlet {
 
     @EJB
     private AccountService accountService;
+    @EJB
+    private AdminService adminService;
+    @EJB
+    private CbraService cbraService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -70,7 +83,7 @@ public class AboutServlet extends BaseServlet {
     public boolean processLoginControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
-                //setLogoutOnly(request);
+            //setLogoutOnly(request);
             //setLoginLogoutBothAllowed(request);
             default:
                 setLoginLogoutBothAllowed(request);
@@ -101,8 +114,6 @@ public class AboutServlet extends BaseServlet {
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
         switch (action) {
-            case LOGIN_AJAX:
-                return doLoginAjax(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -111,11 +122,11 @@ public class AboutServlet extends BaseServlet {
     private enum PageEnum {
 
         MEMBERSHIP_APPLICATION, JOIN_REG, JOIN_REG_C, QUARTERS, QUARTERS_DETAILS, RECRUIT, COOPERATION,
-        IDEA, PATTERN, COURSE, SPEECH, DECLARATION, CONTACT_US,THREE_PARTY_OFFER,OUR_OFFER,OFFER_DETAILS,
-        PURCHASE,OVERSEAS,BUILDING, PENSION,
-        MATERIAL,INDUSTRIALIZATION,GREEN,BIM,INFO_AREA,
-        DIRECTOR,COMMITTEE,BRANCH,EXPERT,STYLE,TEAM_DETAILS,
-        DESIGN,CONSTRUCTION,QUALITY,SAFE,QUALITY_AUTH,SAFE_AUTH;
+        IDEA, PATTERN, COURSE, SPEECH, DECLARATION, CONTACT_US, THREE_PARTY_OFFER, OUR_OFFER, OFFER_DETAILS,
+        PURCHASE, OVERSEAS, BUILDING, PENSION,
+        MATERIAL, INDUSTRIALIZATION, GREEN, BIM, INFO_AREA,
+        DIRECTOR, COMMITTEE, BRANCH, EXPERT, STYLE, TEAM_DETAILS,
+        DESIGN, CONSTRUCTION, QUALITY, SAFE, QUALITY_AUTH, SAFE_AUTH, DETAILS;
     }
 
     @Override
@@ -125,29 +136,47 @@ public class AboutServlet extends BaseServlet {
             case MEMBERSHIP_APPLICATION:
             case JOIN_REG:
             case JOIN_REG_C:
-            case QUARTERS:
             case RECRUIT:
             case COOPERATION:
-            case QUARTERS_DETAILS:
             case IDEA:
             case PATTERN:
             case COURSE:
             case SPEECH:
             case DECLARATION:
             case CONTACT_US:
+            case DESIGN:
+            case CONSTRUCTION:
+            case SAFE:
+            case QUALITY_AUTH:
+            case SAFE_AUTH:
+            case QUALITY:
+                return loadPagePlate(request, response);
+            case QUARTERS:
             case THREE_PARTY_OFFER:
-                case OUR_OFFER:
-                case OFFER_DETAILS:
-                case PURCHASE:
-                case OVERSEAS:
-                case BUILDING:
-                case PENSION:
-                 case MATERIAL:case INDUSTRIALIZATION:case GREEN: case BIM:
-                 case INFO_AREA:
-                 case DIRECTOR:case COMMITTEE:case BRANCH:case EXPERT:case STYLE:
-                 case TEAM_DETAILS:
-                  case   DESIGN: case CONSTRUCTION: case QUALITY: case SAFE: case QUALITY_AUTH:case SAFE_AUTH:
-                return KEEP_GOING_WITH_ORIG_URL;
+            case OUR_OFFER:
+                return loadPagePlateList(request, response);
+            case QUARTERS_DETAILS:
+            case OFFER_DETAILS:
+                return loadPageOfferInfo(request, response);
+            case PURCHASE:
+            case OVERSEAS:
+            case BUILDING:
+            case PENSION:
+            case MATERIAL:
+            case INDUSTRIALIZATION:
+            case GREEN:
+            case BIM:
+            case DIRECTOR:
+            case COMMITTEE:
+            case BRANCH:
+            case EXPERT:
+            case STYLE:
+                return loadPagePlateInfoList(request, response);
+            case DETAILS:
+            case TEAM_DETAILS:
+                return loadDetails(request, response);
+            case INFO_AREA:
+                return loadInfoArea(request, response);
             default:
                 throw new BadPageException();
         }
@@ -156,24 +185,177 @@ public class AboutServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
-    private boolean doLoginAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = getRequestString(request, "email");
-        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "passwd")) {
-            return super.outputAjax(request, response);
+    // ************************************************************************
+    // *************** PAGE RANDER处理的相关函数，放在这下面
+    // ************************************************************************
+    /**
+     * 加载PLATE页面
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPagePlate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        for (Plate plate : list) {
+            if (page.name().equalsIgnoreCase(plate.getPage())) {
+                request.setAttribute("plate", plate);
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                break;
+            }
         }
-        String passwd = getRequestString(request, "passwd");
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
 
-        // ******************************************************************
-//        Account user = accountService.getUserForLogin(email, passwd);
-//        if (user == null) {
-//            return super.outputErrorAjax(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), null, response);
-//        }
-//
-//        super.setLogRequestUser(logRequest, user);
-        // ******************************************************************
-        // 设置user到session里，并设置显示数据。
-//        return loginAjax(user, request, response);
-        return FORWARD_TO_ANOTHER_URL;
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPagePlateList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        AboutServlet.PageEnum page = (AboutServlet.PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate pagePlate = null;
+        for (Plate plate : list) {
+            if (page.name().equalsIgnoreCase(plate.getPage())) {
+                pagePlate = plate;
+                request.setAttribute("plate", plate);
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                break;
+            }
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        int maxPerPage = 15;
+        Map< String, Object> map = new HashMap<>();
+        map.put("plateId", pagePlate.getId());
+        ResultList<Offer> resultList = adminService.findOfferList(map, pageIndex, maxPerPage, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载招聘信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPageOfferInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Offer offer = adminService.findOfferById(id);
+        request.setAttribute("offer", offer);
+        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(offer.getPlate(), super.getUserFromSessionNoException(request)));
+        request.setAttribute("messageList", cbraService.findMessageList(offer, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载PLATE页面
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPagePlateInfoList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        AboutServlet.PageEnum page = (AboutServlet.PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate pagePlate = null;
+        for (Plate plate : list) {
+            if (page.name().equalsIgnoreCase(plate.getPage())) {
+                pagePlate = plate;
+                request.setAttribute("plate", plate);
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                break;
+            }
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        int maxPerPage = 5;
+        Map< String, Object> map = new HashMap<>();
+        map.put("plateId", pagePlate.getId());
+        ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, pageIndex, maxPerPage, null, true);
+        request.setAttribute("resultList", resultList);
+        //加载左侧点击高的
+        map.put("plateId", pagePlate.getId());
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载详细
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        PlateInformation plateInfo = adminService.findPlateInformationByIdFetchContent(id);
+        //异步增加数量
+        cbraService.addPlateVisitCount(id);
+        //因为异步运算返回的结果慢，这里做数据修正
+        plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
+        //set data
+        request.setAttribute("plateInfo", plateInfo);
+        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request)));
+        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载infoArea
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadInfoArea(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate pagePlate = null;
+        List<Long> plateIds = new LinkedList<>();
+        for (Plate plate : list) {
+            if ("three_party_offer".equalsIgnoreCase(plate.getPage())) {
+                pagePlate = plate;
+            }
+            if ("material".equalsIgnoreCase(plate.getPage())) {
+                plateIds.add(plate.getId());
+            }
+            if ("industrialization".equalsIgnoreCase(plate.getPage())) {
+                plateIds.add(plate.getId());
+            }
+            if ("green".equalsIgnoreCase(plate.getPage())) {
+                plateIds.add(plate.getId());
+            }
+            if ("bim".equalsIgnoreCase(plate.getPage())) {
+                plateIds.add(plate.getId());
+            }
+        }
+        request.setAttribute("offerList", cbraService.findOfferList4Hot(pagePlate, 5));
+        request.setAttribute("plateInfoList", cbraService.findPlateInformationList4Hot(plateIds, 5));
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
 }

@@ -3,7 +3,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="fl-nav">
     <c:if test="${param.page <= 6}">
-        <h1>专题培训</h1>
+        <h1>走进筑誉</h1>
         <ul>
             <li><a href="/into/idea" <c:if test="${param.page == '1'}">id="fl-nav-hover"</c:if>>筑誉理念</a></li>
             <li><a href="/into/pattern" <c:if test="${param.page == '2'}">id="fl-nav-hover"</c:if>>业务格局</a></li>

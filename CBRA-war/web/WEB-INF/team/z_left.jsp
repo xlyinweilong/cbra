@@ -2,7 +2,7 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="fl-nav">
-    <h1>专题培训</h1>
+    <h1>团队风采</h1>
     <ul>
         <li><a href="/team/director" <c:if test="${param.page == '1'}">id="fl-nav-hover"</c:if>>理事成员</a></li>
         <li><a href="/team/committee" <c:if test="${param.page == '2'}">id="fl-nav-hover"</c:if>>委员会</a></li>

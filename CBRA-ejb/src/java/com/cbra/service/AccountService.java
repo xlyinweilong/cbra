@@ -120,6 +120,21 @@ public class AccountService {
         }
     }
 
+    /**
+     * 设置公司账户子账户
+     *
+     * @param account
+     * @param passwd
+     * @param name
+     * @param email
+     * @param language
+     * @param address
+     * @param zipCode
+     * @param icPosition
+     * @param companyAccount
+     * @return
+     * @throws AccountAlreadyExistException
+     */
     public SubCompanyAccount setSubCompanyAccount(String account, String passwd, String name, String email, String language, String address, String zipCode, String icPosition,
             CompanyAccount companyAccount) throws AccountAlreadyExistException {
         Account ua = this.findByAccount(account);

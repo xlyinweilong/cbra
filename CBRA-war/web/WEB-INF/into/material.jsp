@@ -19,30 +19,30 @@
                 <div class="fm-list">
 
                     <div class="title"><span><a id="title-span">新材料新技术</a></span></div>
+                    <form id="form1" action="/into/material" method="post">
+                        <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                     <ul>
-                    <c:forEach begin="1" end="5" step="1">
-                        <li>
-                            <div class="img"><a href="detailed.asp"><img src="/ls/ls-19.jpg"></a></div>
-                            <div class="con"><a href="detailed.asp">
-                                    <p class="p1">我们认为，目前国内建筑市场，随着市场经济的快速发展</p>
-                                    <p class="p2">我们主张要加大行业管理力度，企业信誉评估体系，创造公平竞争环境，规范市场经营行为，加强行业自律，不断提高标准化、工厂化、部品化、装配化水平，采用新工艺、新材料、新设备、新理念，提高企业核心竞争力。</p></a>
-                                <p class="p2"><span>2014-11-22 17:08:15</span><span class="span2"><a href="detailed.asp">[阅读全文]</a></span></p>
-                            </div>
-                            <div style="clear:both;"></div>
-                        </li>
-                    </c:forEach>
-                </ul>
-                <div style="clear:both;"></div>
-                <div class="Page">
-                    <span>上一页</span>
-                    <span id="Page-b">1</span>
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    ...
-                    <span>10</span>
-                    <span>下一页</span>
-                </div>
+                        <c:forEach var="plateInformation" items="${resultList}">
+                            <li>
+                                <div class="img"><a href="/into/details?id=${plateInformation.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty plateInformation.picUrl}">${plateInformation.picUrl}</c:if><c:if test="${empty plateInformation.picUrl}">/ls/ls-19.jpg</c:if>"></a></div>
+                                <div class="con"><a href="/into/details?id=${plateInformation.id}" target="_blank">
+                                        <p class="p1">${plateInformation.title}</p>
+                                        <p class="p2">${plateInformation.introduction}</p></a>
+                                    <p class="p2"><%--<span class="span1"><a href="#">[筑誉动态]</a></span>--%><span>
+                                            <fmt:formatDate value='${plateInformation.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />
+                                        </span><span class="span2"><a href="/into/details?id=${plateInformation.id}" target="_blank" >[阅读全文]</a></span></p>
+                                </div>
+                                <div style="clear:both;"></div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                    <div style="clear:both;"></div>
+                    <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                        <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                        <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                        <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                    </jsp:include>
+                </form>
             </div>
             <!-- 右侧内容 end -->
             <div style="clear:both;"></div>

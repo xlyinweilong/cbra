@@ -272,6 +272,10 @@ public abstract class Account implements Serializable {
     public String getHeadImageUrl() {
         return headImageUrl;
     }
+    
+    public String getHeadImageUrlWithDefault() {
+        return headImageUrl;
+    }
 
     public void setHeadImageUrl(String headImageUrl) {
         this.headImageUrl = headImageUrl;

@@ -10,6 +10,7 @@ import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.Message;
+import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SysMenu;
@@ -131,7 +132,7 @@ public class AdminServlet extends BaseServlet {
         USER_DELETE, USER_CREATE_OR_UPDATE,
         POPEDOM_DELETE, CHOOSE_ROLE,
         PLATE_DELETE, PLATE_SORT, PLATE_CREATE_OR_UPDATE,
-        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE,
+        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE, OFFER_DELETE, OFFER_CREATE_OR_UPDATE,
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
         ACCOUNT_APPROVAL, ACCOUNT_DELETE,
@@ -206,8 +207,12 @@ public class AdminServlet extends BaseServlet {
                 return doDeletePlateInfo(request, response);
             case PLATE_INFO_CREATE_OR_UPDATE:
                 return doCreateOrUpdatePlateInfo(request, response);
+            case OFFER_CREATE_OR_UPDATE:
+                return doCreateOrUpdateOffer(request, response);
             case PLATE_AUTH_CREATE_OR_UPDATE:
                 return doCreateOrUpdateAuthInfo(request, response);
+            case OFFER_DELETE:
+                return doDeleteOffer(request, response);
             case ACCOUNT_APPROVAL:
                 return doAccountApproval(request, response);
             case MESSAGE_DELETE:
@@ -234,11 +239,12 @@ public class AdminServlet extends BaseServlet {
         ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
-        PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE,
+        PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE, OFFER_INFO, OFFER_LIST,
         PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
         MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
+
     }
 
     @Override
@@ -298,8 +304,12 @@ public class AdminServlet extends BaseServlet {
                 return loadPlateSortList(request, response);
             case PLATE_INFO_LIST:
                 return loadPlateInfoList(request, response);
+            case OFFER_LIST:
+                return loadOfferList(request, response);
             case PLATE_INFO_INFO:
                 return loadPlateInfoInfo(request, response);
+            case OFFER_INFO:
+                return loadOfferInfo(request, response);
             case PLATE_INFO_TREE:
                 return loadPlateInfoTree(request, response);
             case PLATE_AUTH_INFO:
@@ -664,6 +674,7 @@ public class AdminServlet extends BaseServlet {
         String name = super.getRequestString(request, "plateName");
         String enName = super.getRequestString(request, "plateEnName");
         String key = super.getRequestString(request, "plateKey");
+        String page = super.getRequestString(request, "platePage");
         PlateKeyEnum plateKey = null;
         try {
             plateKey = PlateKeyEnum.valueOf(key);
@@ -682,7 +693,7 @@ public class AdminServlet extends BaseServlet {
             forward("/admin/common/jumpnoback", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        Plate plate = adminService.createOrUpdatePlate(id, name, enName, plateType, plateKey, pid);
+        Plate plate = adminService.createOrUpdatePlate(id, name, enName, plateType, plateKey, page, pid);
         request.setAttribute("plate", plate);
         if (pid != null) {
             setSuccessResult("保存成功！", "/admin/datadict/plate_list?id=" + pid, request);
@@ -732,6 +743,21 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
+     * 删除招聘信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteOffer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteOfferByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
      * 创建/更新栏目信息
      *
      * @param request
@@ -741,63 +767,139 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean doCreateOrUpdatePlateInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long plateId = super.getRequestLong(request, "plateId");
-        Long id = super.getRequestLong(request, "id");
-        Plate plate = adminService.findPlateById(plateId);
-        String pushDateStr = super.getRequestString(request, "pushDate");
-        Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
-        if (pushDate == null) {
-            setErrorResult("保存失败，参数异常！", request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
-        String languageType = super.getRequestString(request, "languageType");
-        LanguageType languageTypeEnum = null;
+        FileUploadObj fileUploadObj = null;
         try {
-            languageTypeEnum = LanguageType.valueOf(languageType);
-        } catch (Exception e) {
-            languageTypeEnum = LanguageType.ZH;
-        }
-        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.CONTACT_US.equals(plate.getPlateKey())) {
-            PlateInformation pi = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
-            PlateInformation piEn = adminService.findPlateInformationByPlateId(plateId, LanguageType.EN);
-            if (piEn != null) {
-                id = piEn.getId();
+            fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+            List<FileUploadItem> list = fileUploadObj.getFileList();
+            FileUploadItem fileUploadItem = null;
+            for (FileUploadItem item : list) {
+                if ("image".equals(item.getFieldName())) {
+                    fileUploadItem = item;
+                }
             }
-            if (pi != null) {
-                id = pi.getId();
-            }
-            String content = super.getRequestString(request, "content");
-            String contentEn = super.getRequestString(request, "contentEn");
-            System.out.println(content);
-            System.out.println(contentEn);
-            if (content == null || contentEn == null) {
-                setErrorResult("请填写内容！", request);
-                return KEEP_GOING_WITH_ORIG_URL;
-            }
-            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(plateId, content, pushDate, LanguageType.ZH);
-            PlateInformation plateInfoEn = adminService.createOrUpdatePlateInformation(plateId, contentEn, pushDate, LanguageType.EN);
-            request.setAttribute("plateInfo", plateInfo);
-            request.setAttribute("plateInfoEn", plateInfoEn);
-        } else if (PlateKeyEnum.NEWS.equals(plate.getPlateKey())) {
-            PlateInformation pi = new PlateInformation();
-            if (id != null) {
-                pi = adminService.findPlateInformationById(id);
-            }
-            String content = super.getRequestString(request, "content");
-            String title = super.getRequestString(request, "title");
-            String introduction = super.getRequestString(request, "introduction");
-            if (content == null) {
-                setErrorResult("请填写内容！", request);
-                return KEEP_GOING_WITH_ORIG_URL;
-            }
-            if (title == null || introduction == null) {
+            Long plateId = fileUploadObj.getLongFormField("plateId");
+            Long id = fileUploadObj.getLongFormField("id");
+            Plate plate = adminService.findPlateById(plateId);
+            String pushDateStr = fileUploadObj.getFormField("pushDate");
+            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            if (pushDate == null) {
                 setErrorResult("保存失败，参数异常！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum);
-            request.setAttribute("plateInfo", plateInfo);
+            String languageType = fileUploadObj.getFormField("languageType");
+            LanguageType languageTypeEnum = null;
+            try {
+                languageTypeEnum = LanguageType.valueOf(languageType);
+            } catch (Exception e) {
+                languageTypeEnum = LanguageType.ZH;
+            }
+            if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.CONTACT_US.equals(plate.getPlateKey())) {
+                PlateInformation pi = adminService.findPlateInformationByPlateId(plateId, LanguageType.ZH);
+                PlateInformation piEn = adminService.findPlateInformationByPlateId(plateId, LanguageType.EN);
+                if (piEn != null) {
+                    id = piEn.getId();
+                }
+                if (pi != null) {
+                    id = pi.getId();
+                }
+                String content = fileUploadObj.getFormField("content");
+                String contentEn = fileUploadObj.getFormField("contentEn");
+                if (content == null || contentEn == null) {
+                    setErrorResult("请填写内容！", request);
+                    return KEEP_GOING_WITH_ORIG_URL;
+                }
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(plateId, content, pushDate, LanguageType.ZH);
+                PlateInformation plateInfoEn = adminService.createOrUpdatePlateInformation(plateId, contentEn, pushDate, LanguageType.EN);
+                request.setAttribute("plateInfo", plateInfo);
+                request.setAttribute("plateInfoEn", plateInfoEn);
+                request.setAttribute("id", id);
+            } else if (PlateKeyEnum.NEWS.equals(plate.getPlateKey()) || PlateKeyEnum.COMMITTEE.equals(plate.getPlateKey())) {
+                PlateInformation pi = new PlateInformation();
+                if (id != null) {
+                    pi = adminService.findPlateInformationById(id);
+                }
+                String content = fileUploadObj.getFormField("content");
+                String title = fileUploadObj.getFormField("title");
+                String introduction = fileUploadObj.getFormField("introduction");
+                if (content == null) {
+                    setErrorResult("请填写内容！", request);
+                    return KEEP_GOING_WITH_ORIG_URL;
+                }
+                if (title == null || introduction == null) {
+                    setErrorResult("保存失败，参数异常！", request);
+                    return KEEP_GOING_WITH_ORIG_URL;
+                }
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, fileUploadItem);
+                request.setAttribute("plateInfo", plateInfo);
+                request.setAttribute("id", plateInfo.getId());
+            }
+            request.setAttribute("plateId", plateId);
+            setSuccessResult("保存成功！", request);
+        } catch (FileUploadException ex) {
+            setErrorResult(ex.getMessage(), request);
+            return KEEP_GOING_WITH_ORIG_URL;
         }
-        setSuccessResult("保存成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建更新招聘
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateOffer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        FileUploadObj fileUploadObj = null;
+        try {
+            fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+            Long plateId = fileUploadObj.getLongFormField("plateId");
+            Long id = fileUploadObj.getLongFormField("id");
+            String pushDateStr = fileUploadObj.getFormField("pushDate");
+            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            if (pushDate == null) {
+                setErrorResult("保存失败，参数异常！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            String languageType = fileUploadObj.getFormField("languageType");
+            LanguageType languageTypeEnum = null;
+            try {
+                languageTypeEnum = LanguageType.valueOf(languageType);
+            } catch (Exception e) {
+                languageTypeEnum = LanguageType.ZH;
+            }
+            Offer o = new Offer();
+            if (id != null) {
+                o = adminService.findOfferById(id);
+            }
+            String position = fileUploadObj.getFormField("position");
+            String depart = fileUploadObj.getFormField("depart");
+            String city = fileUploadObj.getFormField("city");
+            String station = fileUploadObj.getFormField("station");
+            String count = fileUploadObj.getFormField("count");
+            String monthly = fileUploadObj.getFormField("monthly");
+            String description = fileUploadObj.getFormField("description");
+            String duty = fileUploadObj.getFormField("duty");
+            String competence = fileUploadObj.getFormField("competence");
+            String age = fileUploadObj.getFormField("age");
+            String gender = fileUploadObj.getFormField("gender");
+            String englishLevel = fileUploadObj.getFormField("englishLevel");
+            String education = fileUploadObj.getFormField("education");
+            if (position == null) {
+                setErrorResult("请填写内容！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum);
+            request.setAttribute("offer", offer);
+            request.setAttribute("id", offer.getId());
+            request.setAttribute("plateId", plateId);
+            setSuccessResult("保存成功！", request);
+        } catch (FileUploadException ex) {
+            setErrorResult(ex.getMessage(), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -974,12 +1076,12 @@ public class AdminServlet extends BaseServlet {
 
     /**
      * 更新公司用户信息
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean doUpdateCompanyAccount(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
@@ -1041,7 +1143,6 @@ public class AdminServlet extends BaseServlet {
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
     //*********************************************************************
-
     /**
      * 显示页面左侧
      *
@@ -1382,8 +1483,11 @@ public class AdminServlet extends BaseServlet {
     private boolean loadPlateInfoList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long plateId = super.getRequestLong(request, "plateId");
         Plate plate = adminService.findPlateById(plateId);
-        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey())) {
+        if (PlateKeyEnum.ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.CONTACT_US.equals(plate.getPlateKey())) {
             super.forward("/admin/plate/plate_info_info?plateId=" + plateId, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        } else if (PlateKeyEnum.OFFER.equals(plate.getPlateKey())) {
+            super.forward("/admin/plate/offer_list?plateId=" + plateId, request, response);
             return FORWARD_TO_ANOTHER_URL;
         } else {
             Integer page = super.getRequestInteger(request, "page");
@@ -1394,7 +1498,31 @@ public class AdminServlet extends BaseServlet {
             map.put("plateId", plateId);
             ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, page, 15, null, true);
             request.setAttribute("resultList", resultList);
+            request.setAttribute("plate", plate);
         }
+        request.setAttribute("plateId", plateId);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 招聘列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOfferList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long plateId = super.getRequestLong(request, "plateId");
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", plateId);
+        ResultList<Offer> resultList = adminService.findOfferList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1411,6 +1539,10 @@ public class AdminServlet extends BaseServlet {
     private boolean loadPlateInfoInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
         Long plateId = super.getRequestLong(request, "plateId");
+        if (plateId == null && id == null) {
+            plateId = (Long) (request.getAttribute("plateId"));
+            id = (Long) (request.getAttribute("id"));
+        }
         PlateInformation plateInfo = null;
         if (id == null) {
             plateInfo = new PlateInformation();
@@ -1433,6 +1565,36 @@ public class AdminServlet extends BaseServlet {
             request.setAttribute("showBackBtn", true);
         }
         request.setAttribute("plateInfo", plateInfo);
+        request.setAttribute("plate", plate);
+        request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 招聘信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOfferInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long plateId = super.getRequestLong(request, "plateId");
+        if (plateId == null && id == null) {
+            plateId = (Long) (request.getAttribute("plateId"));
+            id = (Long) (request.getAttribute("id"));
+        }
+        Offer offer = null;
+        if (id == null) {
+            offer = new Offer();
+        } else {
+            offer = adminService.findOfferById(id);
+        }
+        Plate plate = adminService.findPlateById(plateId);
+        request.setAttribute("showBackBtn", true);
+        request.setAttribute("offer", offer);
         request.setAttribute("plate", plate);
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
         return KEEP_GOING_WITH_ORIG_URL;

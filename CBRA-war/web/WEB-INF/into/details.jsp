@@ -9,7 +9,7 @@
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
-        <jsp:include page="/WEB-INF/news/z_news_banner.jsp"><jsp:param name="page" value="3" /></jsp:include>
+        <jsp:include page="/WEB-INF/into/z_into_banner.jsp"><jsp:param name="page" value="17" /></jsp:include>
             <!-- 主体 -->
             <div class="two-main">
                 <!-- 详细信息 -->
@@ -29,27 +29,27 @@
                         <p class="p1">最新评论 (共${messageList.size()}条)</p>
                         <!-- 评论内容 -->
                         <c:forEach var="message" items="${messageList}">
-                        <div class="review-xx">
-                            <div class="img"><img src="<c:choose><c:when test="${message.account == null}">/ls/ls-21.jpg</c:when><c:otherwise>${message.account.headImageUrlWithDefault}</c:otherwise></c:choose>"></div>
-                            <div class="con">
-                                <p class="p2"><span class="span-1">${message.userName}</span><span class="span-2"><fmt:formatDate value='${message.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
-                                <p class="p3">
-                                    ${message.content}
-                                </p>
-                                <c:forEach var="sub" items="${message.messageList}">
-                                <div class="review-xx-hf">
-                                    <div class="img"><img src="/ls/ls-22.jpg"></div>
-                                    <div class="con">
-                                        <p class="p2"><span class="span-1">管理员</span><span class="span-2"><fmt:formatDate value='${sub.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
-                                        <p class="p3">${sub.content}</p>
-                                    </div>
-                                    <div style="clear:both;"></div>
+                            <div class="review-xx">
+                                <div class="img"><img src="<c:choose><c:when test="${message.account == null}">/ls/ls-21.jpg</c:when><c:otherwise>${message.account.headImageUrlWithDefault}</c:otherwise></c:choose>"></div>
+                                        <div class="con">
+                                                <p class="p2"><span class="span-1">${message.userName}</span><span class="span-2"><fmt:formatDate value='${message.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
+                                    <p class="p3">
+                                        ${message.content}
+                                    </p>
+                                    <c:forEach var="sub" items="${message.messageList}">
+                                        <div class="review-xx-hf">
+                                            <div class="img"><img src="/ls/ls-22.jpg"></div>
+                                            <div class="con">
+                                                <p class="p2"><span class="span-1">管理员</span><span class="span-2"><fmt:formatDate value='${sub.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
+                                                <p class="p3">${sub.content}</p>
+                                            </div>
+                                            <div style="clear:both;"></div>
+                                        </div>
+                                        <p class="p4">回复</p>
+                                    </c:forEach>
                                 </div>
-                                <p class="p4">回复</p>
-                                </c:forEach>
+                                <div style="clear:both;"></div>
                             </div>
-                            <div style="clear:both;"></div>
-                        </div>
                         </c:forEach>
                         <!-- 评论内容 end -->
                         <c:if test="${plateAuth == 'VIEW_AND_REPAY'}">
@@ -67,14 +67,6 @@
             </div>
             <div class="news-fr">
                 <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
-                <h1>热门点击</h1>
-                <div class="top-hits">
-                    <ul>
-                        <c:forEach var="palteInfo" items="${plateInfoHots}">
-                            <li><a href="/news/details?id=${palteInfo.id}" target="_blank">${palteInfo.title}</a></li>
-                            </c:forEach>
-                    </ul>
-                </div>
             </div>
             <div style="clear:both;"></div>
         </div>

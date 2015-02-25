@@ -10,47 +10,73 @@
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
         <jsp:include page="/WEB-INF/join/z_join_banner.jsp"><jsp:param name="page" value="4" /></jsp:include>
-        <!-- 主体 -->
-        <div class="two-main">
-            <!-- 左侧导航 -->
+            <!-- 主体 -->
+            <div class="two-main">
+                <!-- 左侧导航 -->
             <jsp:include page="/WEB-INF/join/z_left.jsp"><jsp:param name="page" value="2" /></jsp:include>
-            <!-- 左侧导航 end -->
-            <!-- 右侧内容 -->
-            <div class="fr-con">
-                <div class="title"><span><a id="title-span">职位详细信息</a></span></div>
-                <div class="con-single">
-                    <div style="padding-left:40px;">
-                        <strong>职位名称：</strong>　　助理咨询师　　　<strong>职位编码：</strong><br>	
-                        <strong>部门：</strong>　　　　和君咨询　　　　<strong>发布日期：</strong>　　2015-01-29<br>	
-                        <strong>工作地区：</strong>　　北京市　　　　　<strong>岗位类别：</strong>　　咨询顾问 <br>
-                        <strong>招聘人数：</strong>　　不限　　　　　　<strong>月薪：</strong>　　　　面谈<br>
+                <!-- 左侧导航 end -->
+                <!-- 右侧内容 -->
+                <div class="fr-con">
+                    <div class="title"><span><a id="title-span">职位详细信息</a></span></div>
+                    <div class="con-single">
+                        <div style="padding-left:40px;">
+                            <strong>职位名称：</strong>&nbsp;&nbsp;${offer.position}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>职位编码：</strong>&nbsp;&nbsp;${offer.code}<br>	
+                        <strong>部门：</strong>&nbsp;&nbsp;${offer.depart}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>发布日期：</strong>&nbsp;&nbsp;<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /><br>	
+                        <strong>工作地区：</strong>&nbsp;&nbsp;${offer.city}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>岗位类别：</strong>&nbsp;&nbsp;${offer.station} <br>
+                        <strong>招聘人数：</strong>&nbsp;&nbsp;${offer.count}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>月薪：</strong>&nbsp;&nbsp;${offer.monthly}<br>
                         <strong>职位描述：</strong><br>
-                        管理咨询类职位（战略、组织、人力资源、品牌、企业文化、市场营销等）<br>
-                        【职位名称】  助理咨询师 （全职、实习均可）<br>
+                        ${offer.descriptionHtml}<br>
                         <strong>岗位职责：</strong><br>
-                        1. 在项目经理安排和指导下开展咨询工作；<br>
-                        2. 负责项目所需各种数据、信息和资料的收集整理工作；<br>
-                        3. 参与咨询项目的文案资料编制和修稿；<br>
-                        4. 协助参与咨询项目的行业研究与分析；<br>
-                        5. 协助参与咨询项目的调研与访谈；<br>
-                        6. 公司安排的其他工作。<br>
-
+                        ${offer.dutyHtml}<br>
                         <strong>任职资格：</strong><br>
-
-                        1. 全日制大学本科以上学历，硕士、MBA优先；<br>
-                        2. 专业不限，有研究经验或相关实习经验者优先；<br>
-                        3. 熟练应用Word、PPT、Excel等计算机常用软件；<br>
-                        4. 具备良好的逻辑思维能力与沟通表达能力，善于快速学习与团队协作；<br>
-                        5. 理解咨询行业工作特点，能适应随项目经常性出差。<br>
-
-
+                        ${offer.competenceHtml}<br>
                         <strong>职位要求：</strong><br>
-                        <strong>年龄：</strong>　　　　20~30岁　　　　<strong>性别：</strong>　　　　不限<br>
-                        <strong>英语等级：</strong>	 　　四级	 　　　　　<strong>学历：</strong>	 本科-博士 
-
+                        <strong>年龄：</strong>&nbsp;&nbsp;${offer.age}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>性别：</strong>&nbsp;&nbsp;${offer.gender}<br>
+                        <strong>英语等级：</strong>&nbsp;&nbsp;${offer.englishLevel}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>学历：</strong>&nbsp;&nbsp;${offer.education}
                         <div class="fenxiang">
                             <div class="bshare-custom "><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div>
                         </div>
+                        <!-- 评论 -->
+                        <c:if test="${plateAuth == 'ONLY_VIEW' || plateAuth == 'VIEW_AND_REPAY'}">
+                            <div class="review">
+                                <p class="p1">最新评论 (共${messageList.size()}条)</p>
+                                <!-- 评论内容 -->
+                                <c:forEach var="message" items="${messageList}">
+                                    <div class="review-xx">
+                                        <div class="img"><img src="<c:choose><c:when test="${message.account == null}">/ls/ls-21.jpg</c:when><c:otherwise>${message.account.headImageUrlWithDefault}</c:otherwise></c:choose>"></div>
+                                                <div class="con">
+                                                        <p class="p2"><span class="span-1">${message.userName}</span><span class="span-2"><fmt:formatDate value='${message.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
+                                            <p class="p3">
+                                                ${message.content}
+                                            </p>
+                                            <c:forEach var="sub" items="${message.messageList}">
+                                                <div class="review-xx-hf">
+                                                    <div class="img"><img src="/ls/ls-22.jpg"></div>
+                                                    <div class="con">
+                                                        <p class="p2"><span class="span-1">管理员</span><span class="span-2"><fmt:formatDate value='${sub.createDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span></p><div style="clear:both;"></div>
+                                                        <p class="p3">${sub.content}</p>
+                                                    </div>
+                                                    <div style="clear:both;"></div>
+                                                </div>
+                                                <p class="p4">回复</p>
+                                            </c:forEach>
+                                        </div>
+                                        <div style="clear:both;"></div>
+                                    </div>
+                                </c:forEach>
+                                <!-- 评论内容 end -->
+                                <c:if test="${plateAuth == 'VIEW_AND_REPAY'}">
+                                    <form action="" method="post">
+                                        <input type="hidden" name="a" value="LEAVE_A_MESSAGE" />
+                                        <input type="hidden" name="id" value="${plateInfo.id}" />
+                                        <div class="review-k">
+                                            <textarea class="rev-k"></textarea>
+                                            <input type="button" class="rev-an" value="评论">
+                                        </div>
+                                    </form>
+                                </c:if>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
             </div>

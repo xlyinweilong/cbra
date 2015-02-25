@@ -39,7 +39,11 @@ public class FileUploadObj extends LinkedHashMap {
     }
 
     public String getFormField(String key) {
-        return (String) this.get(key);
+        String str = (String) this.get(key);
+        if (Tools.isNotBlank(str)) {
+            return str.trim();
+        }
+        return null;
     }
 
     public Long getLongFormField(String key) {
@@ -95,7 +99,7 @@ public class FileUploadObj extends LinkedHashMap {
             return opt;
         }
     }
-    
+
     public Integer getIntegerFormField(String key) {
         try {
             return Integer.parseInt(this.getFormField(key));

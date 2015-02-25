@@ -17,9 +17,15 @@ public enum PlateKeyEnum {
 
     HOME_NAVIGATION,//首页标签
     HOME_SHUFFLING_AD_MENU,//广告轮播图
+    HOME_AD_MENU,//广告图
+    HOME_ABOUT,//首页关于
+    HOME_STYLE,//首页会员风采
+    HOME_EXPERT,//首页专家
     ABOUT, CONTACT_US,
     NEWS,//新闻
-    MEMBER, COMMITTEE;
+    OFFER,//招聘
+    EVENT,//活动
+    COMMITTEE;//人物
 
     /**
      * 获取需要配置权限的栏目
@@ -32,7 +38,8 @@ public enum PlateKeyEnum {
         list.add(ABOUT);
         list.add(CONTACT_US);
         list.add(NEWS);
-        list.add(MEMBER);
+        list.add(OFFER);
+        list.add(EVENT);
         list.add(COMMITTEE);
         return list;
     }
@@ -46,7 +53,7 @@ public enum PlateKeyEnum {
         List<PlateKeyEnum> list = new ArrayList<>();
         list.add(CONTACT_US);
         list.add(NEWS);
-        list.add(MEMBER);
+        list.add(EVENT);
         list.add(COMMITTEE);
         return list;
     }

@@ -7,11 +7,14 @@ package com.cbra.web;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.Config;
 import com.cbra.entity.Account;
+import com.cbra.entity.Plate;
 import com.cbra.service.AccountService;
+import com.cbra.service.CbraService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
@@ -30,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -79,8 +83,36 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String REQUEST_ATTRIBUTE_LOGOUT_ALLOWED = "pageViewLogoutAllowed";
     public static final String REQUEST_ATTRIBUTE_FILEUPLOAD_ITEMS = "items";
 
+    public static boolean startup = false;
+
+    @Override
+    public void init() {
+        if (!startup) {
+            startup = true;
+            ServletContext application = this.getServletContext();
+            List<PlateTypeEnum> types = new LinkedList<PlateTypeEnum>();
+            types.add(PlateTypeEnum.NAVIGATION);
+            application.setAttribute("navigationPlates", cbraService.getPlateList4Web(types));
+            types.clear();
+            types.add(PlateTypeEnum.MENU);
+            List<Plate> list = cbraService.getPlateList4Web(types);
+            application.setAttribute("menuPlates", list);
+            for (Plate plate : list) {
+                if ("news_list".equalsIgnoreCase(plate.getPage())) {
+                    application.setAttribute("newsList", cbraService.getPlateInformationList4Hot(plate, 3));
+                }
+                if ("industry_list".equalsIgnoreCase(plate.getPage())) {
+                    application.setAttribute("industryList", cbraService.getPlateInformationList4Hot(plate, 3));
+                }
+            }
+
+        }
+    }
+
     @EJB
     private AccountService accountService;
+    @EJB
+    private CbraService cbraService;
     //这里类似Filter中的Chain。任何一部都有可能跳出而不继续这个Chain。
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -641,13 +673,13 @@ public abstract class BaseServlet extends HttpServlet {
 
     /**
      * 设置返回的错误结果信息
-     * 
+     *
      * @param msg
      * @param redirectUrl
      * @param object
      * @param request
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     void setErrorResult(String msg, String redirectUrl, Object object, HttpServletRequest request) throws ServletException, IOException {
         PostResult postResult = new PostResult(false, msg, redirectUrl);

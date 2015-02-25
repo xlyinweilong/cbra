@@ -19,4 +19,5 @@
     <c:if test="${param.page == '14'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 资讯专区 > 建筑产业化</div></c:if>
     <c:if test="${param.page == '15'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 资讯专区 > 绿色建筑</div></c:if>
     <c:if test="${param.page == '16'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 资讯专区 > BIM技术</div></c:if>
+    <c:if test="${param.page == '17'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 资讯专区 > 详细信息</div></c:if>
 </div>

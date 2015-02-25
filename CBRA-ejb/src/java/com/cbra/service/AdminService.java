@@ -8,6 +8,7 @@ package com.cbra.service;
 import cn.yoopay.support.exception.ImageConvertException;
 import com.cbra.Config;
 import com.cbra.entity.Message;
+import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.PlateInformationContent;
@@ -70,7 +71,7 @@ public class AdminService {
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AdminService.class.getName());
-    
+
     @EJB
     private EmailService emailService;
 
@@ -674,10 +675,11 @@ public class AdminService {
      * @param enName
      * @param type
      * @param key
+     * @param page
      * @param pid
      * @return
      */
-    public Plate createOrUpdatePlate(Long id, String name, String enName, PlateTypeEnum type, PlateKeyEnum key, Long pid) {
+    public Plate createOrUpdatePlate(Long id, String name, String enName, PlateTypeEnum type, PlateKeyEnum key, String page, Long pid) {
         boolean isCreare = true;
         Plate plate = new Plate();
         if (id != null) {
@@ -688,7 +690,10 @@ public class AdminService {
         plate.setEnName(enName);
         plate.setPlateKey(key);
         plate.setPlateType(type);
-        plate.setSortIndex(99);
+        if (isCreare) {
+            plate.setSortIndex(99);
+        }
+        plate.setPage(page);
         if (pid != null) {
             plate.setParentPlate(this.findPlateById(pid));
         }
@@ -751,6 +756,16 @@ public class AdminService {
             pi.setPlateInformationContent(this.findContentByPlateInformation(id));
         }
         return pi;
+    }
+
+    /**
+     * 根据ID获取offer
+     *
+     * @param id
+     * @return
+     */
+    public Offer findOfferById(Long id) {
+        return em.find(Offer.class, id);
     }
 
     /**
@@ -825,6 +840,67 @@ public class AdminService {
                     resultList.setMaxPerPage(maxPerPage);
                 }
                 List<PlateInformation> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
+    }
+
+    /**
+     * 获取招聘列表
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @param list
+     * @param page
+     * @return
+     */
+    public ResultList<Offer> findOfferList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<Offer> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Offer> query = builder.createQuery(Offer.class);
+        Root root = query.from(Offer.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("plateId")) {
+            criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("pushDate")));
+                TypedQuery<Offer> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<Offer> dataList = typeQuery.getResultList();
                 resultList.addAll(dataList);
             }
         } catch (NoResultException ex) {
@@ -929,6 +1005,22 @@ public class AdminService {
     }
 
     /**
+     * 删除招聘信息
+     *
+     * @param ids
+     */
+    public void deleteOfferByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            Offer offer = em.find(Offer.class, Long.parseLong(id));
+            offer.setDeleted(Boolean.TRUE);
+            em.merge(offer);
+        }
+    }
+
+    /**
      * 根据栏目获取栏目信息
      *
      * @param plateId
@@ -997,9 +1089,10 @@ public class AdminService {
      * @param content
      * @param pushDate
      * @param languageTypeEnum
+     * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, FileUploadItem item) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -1010,6 +1103,15 @@ public class AdminService {
         plateInfo.setPushDate(pushDate);
         plateInfo.setTitle(title);
         plateInfo.setIntroduction(introduction);
+        if (item != null) {
+            File saveDirFile = new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            String iamgeName = System.currentTimeMillis() + "_" + Tools.generateRandomNumber(3) + item.getOrigFileExtName();
+            Tools.setUploadFile(item, Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE + "/", iamgeName);
+            plateInfo.setPicUrl("/" + Config.FILE_UPLOAD_PLATE + "/" + iamgeName);
+        }
         if (plateId != null && isCreare) {
             plateInfo.setPlate(this.findPlateById(plateId));
         }
@@ -1030,6 +1132,65 @@ public class AdminService {
             em.merge(pic);
         }
         return plateInfo;
+    }
+
+    /**
+     * 创建更新招聘
+     * 
+     * @param id
+     * @param plateId
+     * @param pushDate
+     * @param position
+     * @param depart
+     * @param city
+     * @param station
+     * @param count
+     * @param monthly
+     * @param description
+     * @param duty
+     * @param competence
+     * @param age
+     * @param gender
+     * @param englishLevel
+     * @param education
+     * @param languageTypeEnum
+     * @return 
+     */
+    public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
+            String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum) {
+        Offer offer = new Offer();
+        boolean isCreare = true;
+        if (id != null) {
+            isCreare = false;
+            offer = this.findOfferById(id);
+        }
+        offer.setLanguageType(languageTypeEnum);
+        offer.setPushDate(pushDate);
+        offer.setAge(age);
+        offer.setCity(city);
+        offer.setCompetence(competence);
+        offer.setCount(count);
+        offer.setDepart(depart);
+        offer.setDescription(description);
+        offer.setDuty(duty);
+        offer.setEducation(education);
+        offer.setEnglishLevel(englishLevel);
+        offer.setGender(gender);
+        offer.setMonthly(monthly);
+        offer.setStation(station);
+        offer.setPosition(position);
+        if (plateId != null && isCreare) {
+            offer.setPlate(this.findPlateById(plateId));
+        }
+        if (isCreare) {
+            em.persist(offer);
+            em.flush();
+            offer.setCode(Tools.generateRandom8Chars(offer.getId()));
+            em.merge(offer);
+        } else {
+            em.merge(offer);
+        }
+        return offer;
     }
 
     /**
@@ -1131,8 +1292,8 @@ public class AdminService {
         Tools.setUploadFile(item, savePath + "/", filename);
         return Config.HTTP_URL_BASE + "/" + Config.HTML_EDITOR_UPLOAD + "/" + filedirL1.toString() + "/" + sysUser.getId() + "/" + filename;
     }
-    
-     public void sendFundAddFundNoticeEmail() {
+
+    public void sendFundAddFundNoticeEmail() {
         String language = "zh";
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "大隆" : "Yoopay";
         String fromEmail = "yinweilong.com@163.com";
@@ -1152,12 +1313,12 @@ public class AdminService {
     // **********************************************************************
     // ************* PRIVATE METHODS *****************************************
     // **********************************************************************
-     /**
-      * HTML编辑器方法
-      * 
-      * @param currentPath
-      * @return 
-      */
+    /**
+     * HTML编辑器方法
+     *
+     * @param currentPath
+     * @return
+     */
     private List<Hashtable> getFileInformation(String currentPath) {
         String[] fileTypes = new String[]{"gif", "jpg", "jpeg", "png", "bmp"};
         //目录不存在或不是目录
@@ -1228,7 +1389,7 @@ public class AdminService {
             }
         }
     }
-    
+
     private class TypeComparator implements Comparator {
 
         public int compare(Object a, Object b) {

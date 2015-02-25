@@ -22,19 +22,19 @@
                         <div class="title-gw">
                             <span class="span-1">职位名称</span><span class="span-2">工作地点</span><span class="span-2">部门</span><span>发布时间</span>
                         </div>
-                    <c:forEach begin="1" end="15" step="1">
+                    <c:forEach items="${resultList}" var="offer">
                         <div class="title-zw">
-                            <a href="/join/quarters_details"><span class="span-1">助理咨询师</span><span class="span-2">北京市</span><span class="span-2">和君咨询</span><span>2015-01-29</span></a>
-                        </div>
-                        <div class="title-zw">
-                            <a href="/join/quarters_details"><span class="span-1">人力资源与企业文化方向 高级咨询师</span><span class="span-2">北京市</span><span class="span-2">和君咨询</span><span>2015-01-29</span></a>
+                            <a href="/join/quarters_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city}</span><span class="span-2">${offer.depart}</span><span><fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></span></a>
                         </div>
                     </c:forEach>
-                    <jsp:include page="/WEB-INF/public/z_paging.jsp">
-                        <jsp:param name="totalCount" value="200" />
-                        <jsp:param name="maxPerPage" value="15" />
-                        <jsp:param name="pageIndex" value="1" />
-                    </jsp:include>
+                    <form id="form1" action="/join/quarters" method="post">
+                        <input type="hidden" name="page" id="page_num" value="${resultList.getPageIndex()}" />
+                        <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                            <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                            <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                            <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                        </jsp:include>
+                    </form>
                 </div>
             </div>
             <!-- 右侧内容 end -->

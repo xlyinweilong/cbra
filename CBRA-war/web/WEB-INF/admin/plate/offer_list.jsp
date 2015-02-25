@@ -25,11 +25,11 @@
                 $.fn.UnCheckAll("ids", "cbk_all");
                 //显示添加界面
                 $("#addBtn").click(function () {
-                    window.location.href = "/admin/plate/plate_info_info?plateId=${plateId}";
+                    window.location.href = "/admin/plate/offer_info?plateId=${plateId}";
                 });
                 //删除所选设备信息
                 $("#deleteBtn").click(function () {
-                    $.fn.delete_items("ids", "/admin/plate/plate_info_list?a=PLATE_INFO_DELETE&plateId=${plateId}");
+                    $.fn.delete_items("ids", "/admin/plate/offer_list?a=OFFER_DELETE&plateId=${plateId}");
                 });
                 $(".tiptop a").click(function () {
                     $(".tip").fadeOut(200);
@@ -37,11 +37,11 @@
             });
             //显示修改界面
             $.fn.edit = function (sid) {
-                window.location.href = "/admin/plate/plate_info_info?id=" + sid + "&plateId=${plateId}";
+                window.location.href = "/admin/plate/offer_info?id=" + sid + "&plateId=${plateId}";
             };
             //删除单个设备信息
             $.fn.deleteItem = function (sid) {
-                var url = "/admin/plate/plate_info_list?a=PLATE_INFO_DELETE&plateId=${plateId}&ids=" + sid;
+                var url = "/admin/plate/offer_list?a=OFFER_DELETE&plateId=${plateId}&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
@@ -74,32 +74,31 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
-                                <c:if test="${plate.plateKey == 'NEWS'}">标题</c:if>
-                                <c:if test="${plate.plateKey == 'COMMITTEE'}">姓名</c:if>
-                                </th>
-                                <th>
-                                    发布时间
-                                </th>
-                                <th>
-                                    操作
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach var="plateInfo" items="${resultList}">
+                                职位名称
+                            </th>
+                            <th>
+                                发布时间
+                            </th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach var="offer" items="${resultList}">
                             <tr>
                                 <td>
-                                    <input name="ids" type="checkbox" value="${plateInfo.id}" />
+                                    <input name="ids" type="checkbox" value="${offer.id}" />
                                 </td>
                                 <td>
-                                    ${plateInfo.title}
+                                    ${offer.position}
                                 </td>
                                 <td>
-                                    <fmt:formatDate value="${plateInfo.pushDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
+                                    <fmt:formatDate value="${offer.pushDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('${plateInfo.id}');" class="tablelink">修改</a>
-                                    <a href="javascript:$.fn.deleteItem('${plateInfo.id}');" class="tablelink">删除</a>
+                                    <a href="javascript:$.fn.edit('${offer.id}');" class="tablelink">修改</a>
+                                    <a href="javascript:$.fn.deleteItem('${offer.id}');" class="tablelink">删除</a>
                                 </td>
                             </tr>
                         </c:forEach>

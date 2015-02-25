@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 /**
  * 分页
- * 
+ *
  * @author yin.weilong
  */
 public class ResultList<E> extends LinkedList<E> {

@@ -18,30 +18,27 @@
                 <!-- 右侧内容 -->
                 <div class="fm-list">
                     <div class="title"><span><a id="title-span">讲师团队</a></span></div>
+                    <form id="form1" action="/train/lecturers" method="post">
                     <ul>
-                    <c:forEach begin="1" end="5">
-                        <li>
-                            <div class="img"><a href="/train/train_details"><img src="/ls/ls-23.jpg"><p>讲师：李天华</p></a></div>
-                            <div class="con"><a href="/train/train_details">
-                                    <p class="p1">个人介绍</p>
-                                    <p class="p2">CBRA筑誉建筑联合会是由建筑行业专家学者，资深从业人员及相关企业自发组成的为会员和行业提供优质服务为宗旨的全产业链合作平台以构筑建筑行业信誉，推动中国建筑行业进步”为使命，致力于打造中国建筑行业最具公信力的专业平台是由建筑行业专家学者，资深从业人员及相关企业自发组成的为会员和行业提供优质服务为宗旨的全产业链合作平台以构筑建筑行业信誉，推动中国建筑行业进步”为使命，致力于打造中国建筑行业最具公信力的专业平台</p></a>
-                                <p class="p2"><span class="span1">阿里巴巴认证课程</span></p>
-                            </div>
-                            <div style="clear:both;"></div>
-                        </li>
-                    </c:forEach>
-                </ul>
-                <div style="clear:both;"></div>
-                <div class="Page">
-                    <span>上一页</span>
-                    <span id="Page-b">1</span>
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    ...
-                    <span>10</span>
-                    <span>下一页</span>
-                </div>
+                        <c:forEach var="plateInformation" items="${resultList}">
+                            <li>
+                                <div class="img"><a href="/team/team_details?id=${plateInformation.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty plateInformation.picUrl}">${plateInformation.picUrl}</c:if><c:if test="${empty plateInformation.picUrl}">/ls/ls-123.jpg</c:if>"><p>${plateInformation.title}</p></a></div>
+                                <div class="con"><a href="/team/team_details?id=${plateInformation.id}" target="_blank">
+                                        <p class="p1">${plateInformation.title}</p>
+                                        <p class="p2">${plateInformation.introduction}</p></a>
+                                    <p class="p2"><span class="span1"></span></p>
+                                </div>
+                                <div style="clear:both;"></div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                    <div style="clear:both;"></div>
+                    <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                        <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                        <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                        <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                    </jsp:include>
+                    </form>
             </div>
             <!-- 右侧内容 end -->
             <div style="clear:both;"></div>

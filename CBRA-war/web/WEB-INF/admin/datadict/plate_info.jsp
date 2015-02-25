@@ -89,6 +89,7 @@
                                 </option>
                             </c:forEach>
                         </select></li>
+                    <li><label>页面名称</label><input type="text" class="dfinput" style="width: 350px;" name="platePage" value="${plate.page}" maxlength="200" /><i></i></li>
                         <li><label>&nbsp;</label>
                             <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
                             <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
