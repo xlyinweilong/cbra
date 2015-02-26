@@ -4,6 +4,8 @@
  */
 package com.cbra.web;
 
+import com.cbra.service.CbraService;
+import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
@@ -20,12 +22,14 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 公共WEB层
- * 
+ *
  * @author yin.weilong
  */
 @WebServlet(name = "PublicServlet", urlPatterns = {"/public/*"})
 public class PublicServlet extends BaseServlet {
 
+    @EJB
+    private CbraService cbraService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -117,13 +121,26 @@ public class PublicServlet extends BaseServlet {
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
-
     private boolean loadSetLang(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         setSuccessResult("ok", request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 加载首页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean loadIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("homeSAD", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_SHUFFLING_AD_MENU, Integer.MAX_VALUE));
+        request.setAttribute("homeAd", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_AD_MENU, 1));
+        request.setAttribute("homeAbout", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_ABOUT, 1));
+        request.setAttribute("homeStyle", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_STYLE, Integer.MAX_VALUE));
+        request.setAttribute("homeExpert", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_EXPERT, Integer.MAX_VALUE));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

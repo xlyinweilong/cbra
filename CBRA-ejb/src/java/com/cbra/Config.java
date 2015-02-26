@@ -5,7 +5,9 @@
  */
 package com.cbra;
 
+import com.cbra.entity.PlateInformation;
 import com.cbra.support.PathUtil;
+import java.util.List;
 
 /**
  * 配置信息
@@ -20,16 +22,23 @@ public class Config {
     public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
 
     public static final String HTML_EDITOR_UPLOAD = "html_editor_upload";
-    
+
     public static final String FILE_UPLOAD_TEMP = "temp";
-    
+
     public static final String FILE_UPLOAD_PLATE = "plate";
-    
+
     public static final String FILE_UPLOAD_ACCOUNT = "account_ic";
-    
+
     public static final String FILE_UPLOAD_ACCOUNT_HEAD_IMAGE = "account_head_image";
 
     public static final String FILE_UPLOAD_TEMP_DIR = "f:/test";
 
     public static final String HTTP_URL_BASE = "http://127.0.0.1:8080/";
+
+    //持久信息
+    public static List<PlateInformation> newsList = null;
+
+    public static List<PlateInformation> industryList = null;
+
+    public static PlateInformation homeAd = null;
 }

@@ -58,7 +58,8 @@
                         $("#gobackBtn").click(function () {
                 window.location.href = "/admin/plate/plate_info_list?plateId=${plate.id}";
                 });
-                });</script>
+                });
+    </script>
     <body>
         <div class="formbody">
             <div class="formtitle"><span>${plate.name}</span></div>
