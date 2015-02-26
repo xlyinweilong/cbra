@@ -117,6 +117,8 @@ public class FundCollection implements Serializable {
     private BigDecimal userPrice = null;
     @Column(name = "company_price", precision = 22, scale = 2)
     private BigDecimal companyPrice = null;
+    @Column(name = "each_company_free_count")
+    private int eachCompanyFreeCount;
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
@@ -362,6 +364,14 @@ public class FundCollection implements Serializable {
 
     public void setStatusEndDate(Date statusEndDate) {
         this.statusEndDate = statusEndDate;
+    }
+
+    public int getEachCompanyFreeCount() {
+        return eachCompanyFreeCount;
+    }
+
+    public void setEachCompanyFreeCount(int eachCompanyFreeCount) {
+        this.eachCompanyFreeCount = eachCompanyFreeCount;
     }
 
     @Override
