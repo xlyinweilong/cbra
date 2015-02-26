@@ -1135,8 +1135,54 @@ public class AdminService {
     }
 
     /**
-     * 创建更新招聘
+     * 创建或者更新栏目信息
      * 
+     * @param id
+     * @param plateId
+     * @param title
+     * @param introduction
+     * @param pushDate
+     * @param navUrl
+     * @param languageTypeEnum
+     * @param item
+     * @return 
+     */
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, Date pushDate, String navUrl, LanguageType languageTypeEnum, FileUploadItem item) {
+        PlateInformation plateInfo = new PlateInformation();
+        boolean isCreare = true;
+        if (id != null) {
+            isCreare = false;
+            plateInfo = this.findPlateInformationById(id);
+        }
+        plateInfo.setLanguage(languageTypeEnum);
+        plateInfo.setPushDate(pushDate);
+        plateInfo.setTitle(title);
+        plateInfo.setIntroduction(introduction);
+        plateInfo.setNavUrl(navUrl);
+        if (item != null) {
+            File saveDirFile = new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            String iamgeName = System.currentTimeMillis() + "_" + Tools.generateRandomNumber(3) + item.getOrigFileExtName();
+            Tools.setUploadFile(item, Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE + "/", iamgeName);
+            plateInfo.setPicUrl("/" + Config.FILE_UPLOAD_PLATE + "/" + iamgeName);
+        }
+        if (plateId != null && isCreare) {
+            plateInfo.setPlate(this.findPlateById(plateId));
+        }
+        if (isCreare) {
+            em.persist(plateInfo);
+            em.flush();
+        } else {
+            em.merge(plateInfo);
+        }
+        return plateInfo;
+    }
+
+    /**
+     * 创建更新招聘
+     *
      * @param id
      * @param plateId
      * @param pushDate
@@ -1154,7 +1200,7 @@ public class AdminService {
      * @param englishLevel
      * @param education
      * @param languageTypeEnum
-     * @return 
+     * @return
      */
     public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
             String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum) {
