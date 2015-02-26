@@ -77,6 +77,19 @@
                             <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />
                         </li>
                     </c:if>
+                    <c:if test="${plate.plateType == 'AD'}">
+                        <li><label>名称<b>*</b></label>
+                            <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />
+                        </li>
+                        <li>
+                            <label>图片</label>
+                            <input type="file" class="dfinput" style="width: 350px;" name="image" />
+                        </li>
+                        <li>
+                            <label>链接</label>
+                            <input type="text" class="dfinput" style="width: 350px;" name="navUrl" value="${plateInfo.navUrl}" maxlength="100" />
+                        </li> 
+                    </c:if>
                     <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
                         <li><label>简介<b>*</b></label>
                             <textarea name="introduction" class="dfinput"  style="width: 350px;height: 150px">${plateInfo.introduction}</textarea>
@@ -86,15 +99,22 @@
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
                         </li>  
                     </c:if>
-                    <li><label><c:if test="${plate.plateKey == 'ABOUT'}">中文</c:if>内容<b>*</b></label>
-                        <textarea name="content" id="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
-                    </li>
+                    <c:if test="${plate.plateKey == 'HOME_ABOUT'}">
+                        <li><label>简介<b>*</b></label>
+                            <textarea name="introduction" class="dfinput"  style="width: 350px;height: 150px">${plateInfo.introduction}</textarea>
+                        </li>
+                    </c:if>
+                    <c:if test="${plate.plateType != 'AD'}">
+                        <li><label><c:if test="${plate.plateKey == 'ABOUT'}">中文</c:if>内容<b>*</b></label>
+                            <textarea name="content" id="htmlKeditor" style="width: 600px;height: 600px">${plateInfo.plateInformationContent.content}</textarea>
+                        </li>
+                    </c:if>
                     <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                         <li><label>英文内容<b>*</b></label>
                             <textarea name="contentEn" id="htmlKeditorEn" style="width: 600px;height: 600px">${plateEnInfo.plateInformationContent.content}</textarea>
                         </li>
                     </c:if>
-                    <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
+                    <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE' || plate.plateType == 'AD'}">
                         <li><label>语言类型<b>*</b></label>
                             <select name="languageType" class="dfinput" style="width: 354px;">
                                 <c:forEach var="languageType" items="${languageTypeList}">

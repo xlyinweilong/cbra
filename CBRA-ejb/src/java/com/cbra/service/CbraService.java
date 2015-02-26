@@ -24,6 +24,7 @@ import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
+import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -90,6 +91,20 @@ public class CbraService {
     public List<PlateInformation> getPlateInformationList4Hot(Plate plate, int maxResults) {
         TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.visitCount DESC", PlateInformation.class);
         query.setParameter("plate", plate);
+        query.setMaxResults(maxResults);
+        return query.getResultList();
+    }
+    
+    /**
+     * 获取首页信息
+     * 
+     * @param plateKeyEnum
+     * @param maxResults
+     * @return 
+     */
+    public List<PlateInformation> getPlateInformationList4Index(PlateKeyEnum plateKeyEnum, int maxResults) {
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.plateKey = :plateKeyEnum AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
+        query.setParameter("plateKeyEnum", plateKeyEnum);
         query.setMaxResults(maxResults);
         return query.getResultList();
     }

@@ -74,8 +74,11 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
-                                <c:if test="${plate.plateKey == 'NEWS'}">标题</c:if>
-                                <c:if test="${plate.plateKey == 'COMMITTEE'}">姓名</c:if>
+                                <c:choose>
+                                    <c:when test="${plate.plateKey == 'NEWS'}">标题</c:when>
+                                    <c:when test="${plate.plateKey == 'COMMITTEE'}">姓名</c:when>
+                                    <c:otherwise>名称</c:otherwise>
+                                </c:choose>
                                 </th>
                                 <th>
                                     发布时间
