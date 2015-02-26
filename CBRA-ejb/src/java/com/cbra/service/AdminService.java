@@ -7,6 +7,7 @@ package com.cbra.service;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import com.cbra.Config;
+import com.cbra.entity.FundCollection;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
@@ -769,6 +770,16 @@ public class AdminService {
     }
 
     /**
+     * 根据ID获取活动
+     *
+     * @param id
+     * @return
+     */
+    public FundCollection findCollectionById(Long id) {
+        return em.find(FundCollection.class, id);
+    }
+
+    /**
      * 根据栏目信息获取内容
      *
      * @param plateInformationId
@@ -909,6 +920,67 @@ public class AdminService {
     }
 
     /**
+     * 获取活动列表
+     *
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @param list
+     * @param page
+     * @return
+     */
+    public ResultList<FundCollection> findCollectionList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<FundCollection> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<FundCollection> query = builder.createQuery(FundCollection.class);
+        Root root = query.from(FundCollection.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("plateId")) {
+            criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("pushDate")));
+                TypedQuery<FundCollection> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<FundCollection> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
+    }
+
+    /**
      * 获取消息列表
      *
      * @param map
@@ -1001,6 +1073,22 @@ public class AdminService {
             PlateInformation plateInfo = em.find(PlateInformation.class, Long.parseLong(id));
             plateInfo.setDeleted(Boolean.TRUE);
             em.merge(plateInfo);
+        }
+    }
+    
+    /**
+     * 删除活动
+     * 
+     * @param ids 
+     */
+    public void deleteFundCollectionByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            FundCollection collection = em.find(FundCollection.class, Long.parseLong(id));
+            collection.setDeleted(Boolean.TRUE);
+            em.merge(collection);
         }
     }
 
@@ -1136,7 +1224,7 @@ public class AdminService {
 
     /**
      * 创建或者更新栏目信息
-     * 
+     *
      * @param id
      * @param plateId
      * @param title
@@ -1145,7 +1233,7 @@ public class AdminService {
      * @param navUrl
      * @param languageTypeEnum
      * @param item
-     * @return 
+     * @return
      */
     public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, Date pushDate, String navUrl, LanguageType languageTypeEnum, FileUploadItem item) {
         PlateInformation plateInfo = new PlateInformation();

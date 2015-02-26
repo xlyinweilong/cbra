@@ -9,6 +9,7 @@ import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.FundCollection;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
@@ -27,6 +28,8 @@ import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
+import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
+import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
@@ -132,7 +135,7 @@ public class AdminServlet extends BaseServlet {
         USER_DELETE, USER_CREATE_OR_UPDATE,
         POPEDOM_DELETE, CHOOSE_ROLE,
         PLATE_DELETE, PLATE_SORT, PLATE_CREATE_OR_UPDATE,
-        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE, OFFER_DELETE, OFFER_CREATE_OR_UPDATE,
+        PLATE_INFO_DELETE, PLATE_INFO_CREATE_OR_UPDATE, OFFER_DELETE, OFFER_CREATE_OR_UPDATE, EVENT_DELETE, EVENT_CREATE_OR_UPDATE,
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
         ACCOUNT_APPROVAL, ACCOUNT_DELETE,
@@ -209,6 +212,10 @@ public class AdminServlet extends BaseServlet {
                 return doCreateOrUpdatePlateInfo(request, response);
             case OFFER_CREATE_OR_UPDATE:
                 return doCreateOrUpdateOffer(request, response);
+            case EVENT_CREATE_OR_UPDATE:
+                return doCreateOrUpdateEvent(request, response);
+            case EVENT_DELETE:
+                return doDeleteEvent(request, response);
             case PLATE_AUTH_CREATE_OR_UPDATE:
                 return doCreateOrUpdateAuthInfo(request, response);
             case OFFER_DELETE:
@@ -239,7 +246,7 @@ public class AdminServlet extends BaseServlet {
         ROLE_LIST, ROLE_INFO, ROLE_SORT_LIST,
         POPEDOM_MANAGE, POPEDOM_MENU, POPEDOM_LIST, POPEDOM_CHOOSE_ROLE,
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
-        PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE, OFFER_INFO, OFFER_LIST,
+        PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE, OFFER_INFO, OFFER_LIST, EVENT_INFO, EVENT_LIST,
         PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
         MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
@@ -336,6 +343,10 @@ public class AdminServlet extends BaseServlet {
                 return loadKeManager(request, response);
             case KE_DEL:
                 return loadKeDel(request, response);
+            case EVENT_INFO:
+                return loadEventInfo(request, response);
+            case EVENT_LIST:
+                return loadEventList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -743,6 +754,21 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
+     * 删除活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doDeleteEvent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        adminService.deleteFundCollectionByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
      * 删除招聘信息
      *
      * @param request
@@ -868,6 +894,67 @@ public class AdminServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean doCreateOrUpdateOffer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        FileUploadObj fileUploadObj = null;
+        try {
+            fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+            Long plateId = fileUploadObj.getLongFormField("plateId");
+            Long id = fileUploadObj.getLongFormField("id");
+            String pushDateStr = fileUploadObj.getFormField("pushDate");
+            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            if (pushDate == null) {
+                setErrorResult("保存失败，参数异常！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            String languageType = fileUploadObj.getFormField("languageType");
+            LanguageType languageTypeEnum = null;
+            try {
+                languageTypeEnum = LanguageType.valueOf(languageType);
+            } catch (Exception e) {
+                languageTypeEnum = LanguageType.ZH;
+            }
+            Offer o = new Offer();
+            if (id != null) {
+                o = adminService.findOfferById(id);
+            }
+            String position = fileUploadObj.getFormField("position");
+            String depart = fileUploadObj.getFormField("depart");
+            String city = fileUploadObj.getFormField("city");
+            String station = fileUploadObj.getFormField("station");
+            String count = fileUploadObj.getFormField("count");
+            String monthly = fileUploadObj.getFormField("monthly");
+            String description = fileUploadObj.getFormField("description");
+            String duty = fileUploadObj.getFormField("duty");
+            String competence = fileUploadObj.getFormField("competence");
+            String age = fileUploadObj.getFormField("age");
+            String gender = fileUploadObj.getFormField("gender");
+            String englishLevel = fileUploadObj.getFormField("englishLevel");
+            String education = fileUploadObj.getFormField("education");
+            if (position == null) {
+                setErrorResult("请填写内容！", request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum);
+            request.setAttribute("offer", offer);
+            request.setAttribute("id", offer.getId());
+            request.setAttribute("plateId", plateId);
+            setSuccessResult("保存成功！", request);
+        } catch (FileUploadException ex) {
+            setErrorResult(ex.getMessage(), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 创建更新活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doCreateOrUpdateEvent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileUploadObj fileUploadObj = null;
         try {
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
@@ -1505,6 +1592,9 @@ public class AdminServlet extends BaseServlet {
         } else if (PlateKeyEnum.OFFER.equals(plate.getPlateKey())) {
             super.forward("/admin/plate/offer_list?plateId=" + plateId, request, response);
             return FORWARD_TO_ANOTHER_URL;
+        } else if (PlateKeyEnum.EVENT.equals(plate.getPlateKey())) {
+            super.forward("/admin/plate/event_list?plateId=" + plateId, request, response);
+            return FORWARD_TO_ANOTHER_URL;
         } else {
             Integer page = super.getRequestInteger(request, "page");
             if (page == null) {
@@ -1540,6 +1630,60 @@ public class AdminServlet extends BaseServlet {
         ResultList<Offer> resultList = adminService.findOfferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 活动列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadEventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long plateId = super.getRequestLong(request, "plateId");
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", plateId);
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("plateId", plateId);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 活动信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadEventInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long plateId = super.getRequestLong(request, "plateId");
+        if (plateId == null && id == null) {
+            plateId = (Long) (request.getAttribute("plateId"));
+            id = (Long) (request.getAttribute("id"));
+        }
+        FundCollection collection = null;
+        if (id == null) {
+            collection = new FundCollection();
+        } else {
+            collection = adminService.findCollectionById(id);
+        }
+        Plate plate = adminService.findPlateById(plateId);
+        request.setAttribute("showBackBtn", true);
+        request.setAttribute("collection", collection);
+        request.setAttribute("plate", plate);
+        request.setAttribute("languageTypeList", Arrays.asList(FundCollectionLanaguageEnum.values()));
+        request.setAttribute("allowAttendeeEnumList", Arrays.asList(FundCollectionAllowAttendeeEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

@@ -13,7 +13,7 @@ package com.cbra.support.enums;
 public enum FundCollectionAllowAttendeeEnum {
 
     PUBLIC,//开放
-    ONLY_MEMBERS,//仅会员
+    ALL_MEMBERS,//所有会员
     ONLY_COMPANY//仅限企业会员
 
 }

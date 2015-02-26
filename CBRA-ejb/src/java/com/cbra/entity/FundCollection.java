@@ -7,8 +7,7 @@ package com.cbra.entity;
 
 import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
 import com.cbra.support.enums.FundCollectionLanaguageEnum;
-import com.cbra.support.enums.FundCollectionStatusEnum;
-import com.cbra.support.enums.FundCollectionTypeEnum;
+import com.cbra.support.enums.PlateAuthEnum;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -22,7 +21,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -67,24 +67,29 @@ public class FundCollection implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "serial_id", length = 255)
     private String serialId;
+    //报名开始时间
+    @Column(name = "status_begin_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date statusBeginDate = null;
+    //报名截至时间
+    @Column(name = "status_end_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date statusEndDate = null;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "title", nullable = false, length = 255)
     private String title;
-    @Column(name = "detail_desc")
-    private String detailDesc;
+    @Lob
     @Column(name = "detail_desc_html")
     private String detailDescHtml;
-    @Column(name = "event_date_desc")
-    private String eventDateDesc;
     @Column(name = "event_begin_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date eventBeginDate = null;
-     @Column(name = "event_end_date")
+    @Column(name = "event_end_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date eventEndDate = null;
-     @Column(name = "checkin_date")
+    @Column(name = "checkin_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date checkinDate = null;
     @Column(name = "event_host")
@@ -93,12 +98,6 @@ public class FundCollection implements Serializable {
     private String eventHostDesc;
     @Column(name = "event_map_url")
     private String eventMapUrl;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 255)
-    private FundCollectionStatusEnum status = FundCollectionStatusEnum.NEAR_FUTURE;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false, length = 255)
-    private FundCollectionTypeEnum type = FundCollectionTypeEnum.OFFICIAL;
     @Enumerated(EnumType.STRING)
     @Column(name = "allow_attendee", nullable = false, length = 255)
     private FundCollectionAllowAttendeeEnum allowAttendee = FundCollectionAllowAttendeeEnum.PUBLIC;
@@ -121,9 +120,18 @@ public class FundCollection implements Serializable {
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    @JoinColumn(name = "fundCollection_id", referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.LAZY)
-    private FundCollection fundCollection = null;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "plate_auth", length = 255)
+    private PlateAuthEnum touristAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_auth", length = 255)
+    private PlateAuthEnum userAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "company_auth", length = 255)
+    private PlateAuthEnum companyAuth;
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Plate parentPlate = null;
     
     public Long getId() {
         return id;
@@ -188,28 +196,12 @@ public class FundCollection implements Serializable {
         this.title = title;
     }
 
-    public String getDetailDesc() {
-        return detailDesc;
-    }
-
-    public void setDetailDesc(String detailDesc) {
-        this.detailDesc = detailDesc;
-    }
-
     public String getDetailDescHtml() {
         return detailDescHtml;
     }
 
     public void setDetailDescHtml(String detailDescHtml) {
         this.detailDescHtml = detailDescHtml;
-    }
-
-    public String getEventDateDesc() {
-        return eventDateDesc;
-    }
-
-    public void setEventDateDesc(String eventDateDesc) {
-        this.eventDateDesc = eventDateDesc;
     }
 
     public Date getEventBeginDate() {
@@ -258,22 +250,6 @@ public class FundCollection implements Serializable {
 
     public void setEventMapUrl(String eventMapUrl) {
         this.eventMapUrl = eventMapUrl;
-    }
-
-    public FundCollectionStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(FundCollectionStatusEnum status) {
-        this.status = status;
-    }
-
-    public FundCollectionTypeEnum getType() {
-        return type;
-    }
-
-    public void setType(FundCollectionTypeEnum type) {
-        this.type = type;
     }
 
     public FundCollectionAllowAttendeeEnum getAllowAttendee() {
@@ -340,12 +316,52 @@ public class FundCollection implements Serializable {
         this.companyPrice = companyPrice;
     }
 
-    public FundCollection getFundCollection() {
-        return fundCollection;
+    public PlateAuthEnum getTouristAuth() {
+        return touristAuth;
     }
 
-    public void setFundCollection(FundCollection fundCollection) {
-        this.fundCollection = fundCollection;
+    public void setTouristAuth(PlateAuthEnum touristAuth) {
+        this.touristAuth = touristAuth;
+    }
+
+    public PlateAuthEnum getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(PlateAuthEnum userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    public PlateAuthEnum getCompanyAuth() {
+        return companyAuth;
+    }
+
+    public void setCompanyAuth(PlateAuthEnum companyAuth) {
+        this.companyAuth = companyAuth;
+    }
+
+    public Plate getParentPlate() {
+        return parentPlate;
+    }
+
+    public void setParentPlate(Plate parentPlate) {
+        this.parentPlate = parentPlate;
+    }
+
+    public Date getStatusBeginDate() {
+        return statusBeginDate;
+    }
+
+    public void setStatusBeginDate(Date statusBeginDate) {
+        this.statusBeginDate = statusBeginDate;
+    }
+
+    public Date getStatusEndDate() {
+        return statusEndDate;
+    }
+
+    public void setStatusEndDate(Date statusEndDate) {
+        this.statusEndDate = statusEndDate;
     }
 
     @Override

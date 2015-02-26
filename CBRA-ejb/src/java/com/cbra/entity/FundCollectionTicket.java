@@ -52,9 +52,9 @@ public class FundCollectionTicket implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
-    @JoinColumn(name = "user_account_id", referencedColumnName = "id")
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private UserAccount userAccount;
+    private Account account;
     @Column(name = "price_amount")
     private BigDecimal priceAmount = null;
     @ManyToOne
@@ -110,12 +110,12 @@ public class FundCollectionTicket implements Serializable {
         this.id = id;
     }
 
-    public UserAccount getUserAccount() {
-        return userAccount;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public Boolean getDeleted() {
