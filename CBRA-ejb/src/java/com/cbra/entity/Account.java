@@ -118,6 +118,7 @@ public abstract class Account implements Serializable {
     private String repasswdUrl;
     //连接创建时间
     @Column(name = "re_passwd_date")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date repasswdDate;
     
 

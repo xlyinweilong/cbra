@@ -57,14 +57,8 @@ public class FundCollection implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "web_id", nullable = false, length = 255)
+    @Column(name = "web_id", length = 255)
     private String webId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
     @Column(name = "serial_id", length = 255)
     private String serialId;
     //报名开始时间
@@ -118,7 +112,7 @@ public class FundCollection implements Serializable {
     @Column(name = "company_price", precision = 22, scale = 2)
     private BigDecimal companyPrice = null;
     @Column(name = "each_company_free_count")
-    private int eachCompanyFreeCount;
+    private int eachCompanyFreeCount = 0;
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
@@ -131,10 +125,23 @@ public class FundCollection implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "company_auth", length = 255)
     private PlateAuthEnum companyAuth;
-    @JoinColumn(name = "parent_id", referencedColumnName = "id")
+    @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Plate parentPlate = null;
-    
+    private Plate plate = null;
+    @Column(name = "image_url", length = 255)
+    private String imageUrl;
+
+    public String getStatus() {
+        Date now = new Date();
+        if (now.before(statusBeginDate)) {
+            return "报名未开始";
+        } else if (now.after(statusEndDate)) {
+            return "报名已经结束";
+        } else {
+            return "报名中";
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -342,12 +349,20 @@ public class FundCollection implements Serializable {
         this.companyAuth = companyAuth;
     }
 
-    public Plate getParentPlate() {
-        return parentPlate;
+    public Plate getPlate() {
+        return plate;
     }
 
-    public void setParentPlate(Plate parentPlate) {
-        this.parentPlate = parentPlate;
+    public void setPlate(Plate plate) {
+        this.plate = plate;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Date getStatusBeginDate() {

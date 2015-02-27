@@ -5,27 +5,32 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
-import com.cbra.entity.Account;
+import com.cbra.entity.FundCollection;
+import com.cbra.entity.Plate;
+import com.cbra.entity.PlateInformation;
 import com.cbra.service.AccountService;
+import com.cbra.service.AdminService;
+import com.cbra.service.CbraService;
 import com.cbra.support.NoPermException;
-import com.cbra.support.Tools;
-import com.cbra.support.exception.AccountNotExistException;
+import com.cbra.support.ResultList;
+import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageTypeEnum;
+import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
+import static com.cbra.web.BaseServlet.REQUEST_ATTRIBUTE_PAGE_ENUM;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
-import flexjson.JSONSerializer;
 import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -38,6 +43,10 @@ public class EventServlet extends BaseServlet {
 
     @EJB
     private AccountService accountService;
+    @EJB
+    private AdminService adminService;
+    @EJB
+    private CbraService cbraService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -110,7 +119,7 @@ public class EventServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        NEAR_FUTURE, PERIOD, PARTNERS,EVENT_DETAILS;
+        NEAR_FUTURE, PERIOD, PARTNERS, EVENT_DETAILS;
     }
 
     @Override
@@ -118,10 +127,13 @@ public class EventServlet extends BaseServlet {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
             case NEAR_FUTURE:
+                return loadNearFutre(request, response);
             case PERIOD:
+                return loadPeriod(request, response);
             case PARTNERS:
+                return loadPariners(request, response);
             case EVENT_DETAILS:
-                return KEEP_GOING_WITH_ORIG_URL;
+                return loadEventDetails(request, response);
             default:
                 throw new BadPageException();
         }
@@ -148,6 +160,120 @@ public class EventServlet extends BaseServlet {
         // 设置user到session里，并设置显示数据。
 //        return loginAjax(user, request, response);
         return FORWARD_TO_ANOTHER_URL;
+    }
+
+    // ************************************************************************
+    // *************** PAGE RANDER处理的相关函数，放在这下面
+    // ************************************************************************
+    /**
+     * 加载近期活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadNearFutre(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate platePage = null;
+        for (Plate plate : list) {
+            if ("event".equalsIgnoreCase(plate.getPage())) {
+                platePage = plate;
+                break;
+            }
+        }
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", platePage.getId());
+        map.put("nearFutre", new Date());
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载往期活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPeriod(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate platePage = null;
+        for (Plate plate : list) {
+            if ("event".equalsIgnoreCase(plate.getPage())) {
+                platePage = plate;
+                break;
+            }
+        }
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", platePage.getId());
+        map.put("period", new Date());
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载合作伙伴的
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPariners(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate platePage = null;
+        for (Plate plate : list) {
+            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+                platePage = plate;
+                break;
+            }
+        }
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", platePage.getId());
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载具体活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadEventDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        FundCollection fundCollection = adminService.findCollectionById(id);
+        //set data
+        request.setAttribute("fundCollection", fundCollection);
+        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
+        request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
 }

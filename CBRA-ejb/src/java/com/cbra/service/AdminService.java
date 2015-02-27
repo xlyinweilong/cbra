@@ -20,6 +20,8 @@ import com.cbra.entity.SysUser;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
+import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
@@ -32,6 +34,7 @@ import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -939,6 +942,12 @@ public class AdminService {
         if (map.containsKey("plateId")) {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
         }
+        if (map.containsKey("nearFutre")) {
+            criteria.add(builder.greaterThan(root.get("statusEndDate"), (Date) map.get("nearFutre")));
+        }
+        if (map.containsKey("period")) {
+            criteria.add(builder.lessThan(root.get("statusEndDate"), (Date) map.get("period")));
+        }
         try {
             if (list == null || !list) {
                 CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -1075,11 +1084,11 @@ public class AdminService {
             em.merge(plateInfo);
         }
     }
-    
+
     /**
      * 删除活动
-     * 
-     * @param ids 
+     *
+     * @param ids
      */
     public void deleteFundCollectionByIds(String... ids) {
         for (String id : ids) {
@@ -1325,6 +1334,78 @@ public class AdminService {
             em.merge(offer);
         }
         return offer;
+    }
+
+    /**
+     * 创建更新活动
+     *
+     * @param id
+     * @param plateId
+     * @param statusBeginDate
+     * @param statusEndDate
+     * @param eventBeginDate
+     * @param eventEndDate
+     * @param checkinDate
+     * @param title
+     * @param detailDescHtml
+     * @param allowAttendee
+     * @param eventLanguage
+     * @param eventLocation
+     * @param touristPrice
+     * @param userPrice
+     * @param companyPrice
+     * @param eachCompanyFreeCount
+     * @param touristAuth
+     * @param userAuth
+     * @param companyAuth
+     * @param fileUploadItem
+     * @return
+     */
+    public FundCollection createOrUpdateFundCollection(Long id, Long plateId, Date statusBeginDate, Date statusEndDate, Date eventBeginDate, Date eventEndDate, Date checkinDate, String title,
+            String detailDescHtml, FundCollectionAllowAttendeeEnum allowAttendee, FundCollectionLanaguageEnum eventLanguage, String eventLocation, BigDecimal touristPrice, BigDecimal userPrice, BigDecimal companyPrice, int eachCompanyFreeCount,
+            PlateAuthEnum touristAuth, PlateAuthEnum userAuth, PlateAuthEnum companyAuth, FileUploadItem fileUploadItem) {
+        FundCollection fundCollection = new FundCollection();
+        boolean isCreare = true;
+        if (id != null) {
+            isCreare = false;
+            fundCollection = em.find(FundCollection.class, id);
+        }
+        fundCollection.setAllowAttendee(allowAttendee);
+        fundCollection.setCheckinDate(checkinDate);
+        fundCollection.setCompanyAuth(companyAuth);
+        fundCollection.setCompanyPrice(companyPrice);
+        fundCollection.setDetailDescHtml(detailDescHtml);
+        fundCollection.setEachCompanyFreeCount(eachCompanyFreeCount);
+        fundCollection.setEventBeginDate(eventBeginDate);
+        fundCollection.setEventEndDate(eventEndDate);
+        fundCollection.setEventLanguage(eventLanguage);
+        fundCollection.setEventLocation(eventLocation);
+        fundCollection.setStatusBeginDate(statusBeginDate);
+        fundCollection.setStatusEndDate(statusEndDate);
+        fundCollection.setTitle(title);
+        fundCollection.setTouristAuth(touristAuth);
+        fundCollection.setTouristPrice(touristPrice);
+        fundCollection.setUserAuth(userAuth);
+        fundCollection.setUserPrice(userPrice);
+        if (fileUploadItem != null) {
+            File saveDirFile = new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            String iamgeName = System.currentTimeMillis() + "_" + Tools.generateRandomNumber(3) + fileUploadItem.getOrigFileExtName();
+            Tools.setUploadFile(fileUploadItem, Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE + "/", iamgeName);
+            fundCollection.setImageUrl("/" + Config.FILE_UPLOAD_PLATE + "/" + iamgeName);
+        }
+        if (plateId != null && isCreare) {
+            fundCollection.setPlate(this.findPlateById(plateId));
+        }
+        if (isCreare) {
+            em.persist(fundCollection);
+            em.flush();
+        } else {
+            em.merge(fundCollection);
+        }
+        return fundCollection;
     }
 
     /**

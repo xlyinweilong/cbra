@@ -44,6 +44,7 @@ import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -860,8 +861,8 @@ public class AdminServlet extends BaseServlet {
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
                     || PlateKeyEnum.HOME_EXPERT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_SHUFFLING_AD_MENU.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_STYLE.equals(plate.getPlateKey())
-                    || PlateKeyEnum.TOP_INTO.equals(plate.getPlateKey())|| PlateKeyEnum.TOP_EVENT.equals(plate.getPlateKey())|| PlateKeyEnum.TOP_TRAIN.equals(plate.getPlateKey())
-                    || PlateKeyEnum.TOP_STYLE.equals(plate.getPlateKey())|| PlateKeyEnum.TOP_JOIN.equals(plate.getPlateKey())) {
+                    || PlateKeyEnum.TOP_INTO.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_EVENT.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_TRAIN.equals(plate.getPlateKey())
+                    || PlateKeyEnum.TOP_STYLE.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_JOIN.equals(plate.getPlateKey())) {
                 PlateInformation pi = new PlateInformation();
                 if (id != null) {
                     pi = adminService.findPlateInformationById(id);
@@ -914,10 +915,6 @@ public class AdminServlet extends BaseServlet {
             } catch (Exception e) {
                 languageTypeEnum = LanguageType.ZH;
             }
-            Offer o = new Offer();
-            if (id != null) {
-                o = adminService.findOfferById(id);
-            }
             String position = fileUploadObj.getFormField("position");
             String depart = fileUploadObj.getFormField("depart");
             String city = fileUploadObj.getFormField("city");
@@ -960,45 +957,55 @@ public class AdminServlet extends BaseServlet {
         FileUploadObj fileUploadObj = null;
         try {
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
+            List<FileUploadItem> list = fileUploadObj.getFileList();
+            FileUploadItem fileUploadItem = null;
+            for (FileUploadItem item : list) {
+                if ("image".equals(item.getFieldName())) {
+                    fileUploadItem = item;
+                }
+            }
             Long plateId = fileUploadObj.getLongFormField("plateId");
             Long id = fileUploadObj.getLongFormField("id");
-            String pushDateStr = fileUploadObj.getFormField("pushDate");
-            Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
-            if (pushDate == null) {
-                setErrorResult("保存失败，参数异常！", request);
-                return KEEP_GOING_WITH_ORIG_URL;
-            }
+            Date statusBeginDate = fileUploadObj.getDateFormField("statusBeginDate", "yyyy-MM-dd HH:mm:ss");
+            Date statusEndDate = fileUploadObj.getDateFormField("statusEndDate", "yyyy-MM-dd HH:mm:ss");
+            Date eventBeginDate = fileUploadObj.getDateFormField("eventBeginDate", "yyyy-MM-dd HH:mm:ss");
+            Date eventEndDate = fileUploadObj.getDateFormField("eventEndDate", "yyyy-MM-dd HH:mm:ss");
+            Date checkinDate = fileUploadObj.getDateFormField("checkinDate", "yyyy-MM-dd HH:mm:ss");
+            String eventLocation = fileUploadObj.getFormField("eventLocation");
+            BigDecimal touristPrice = fileUploadObj.optBigDecimalFormField("eventLocation", BigDecimal.ZERO);
+            BigDecimal userPrice = fileUploadObj.optBigDecimalFormField("userPrice", BigDecimal.ZERO);
+            BigDecimal companyPrice = fileUploadObj.optBigDecimalFormField("companyPrice", BigDecimal.ZERO);
+            Integer eachCompanyFreeCount = fileUploadObj.getIntegerFormField("eachCompanyFreeCount");
+            String touristAuth = fileUploadObj.getFormField("touristAuth");
+            String userAuth = fileUploadObj.getFormField("userAuth");
+            String companyAuth = fileUploadObj.getFormField("companyAuth");
+            String allowAttendee = fileUploadObj.getFormField("allowAttendee");
             String languageType = fileUploadObj.getFormField("languageType");
-            LanguageType languageTypeEnum = null;
+            String detailDescHtml = fileUploadObj.getFormField("detailDescHtml");
+            FundCollectionLanaguageEnum languageTypeEnum = null;
+            PlateAuthEnum touristAuthEnum = null;
+            PlateAuthEnum userAuthEnum = null;
+            PlateAuthEnum companyAuthEnum = null;
+            FundCollectionAllowAttendeeEnum allowAttendeeEnum = null;
+            if(eachCompanyFreeCount == null){
+                eachCompanyFreeCount = 0;
+            }
             try {
-                languageTypeEnum = LanguageType.valueOf(languageType);
+                languageTypeEnum = FundCollectionLanaguageEnum.valueOf(languageType);
+                touristAuthEnum = PlateAuthEnum.valueOf(touristAuth);
+                userAuthEnum = PlateAuthEnum.valueOf(userAuth);
+                companyAuthEnum = PlateAuthEnum.valueOf(companyAuth);
+                allowAttendeeEnum = FundCollectionAllowAttendeeEnum.valueOf(allowAttendee);
             } catch (Exception e) {
-                languageTypeEnum = LanguageType.ZH;
+                languageTypeEnum = FundCollectionLanaguageEnum.ZH;
+                touristAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                userAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                companyAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                allowAttendeeEnum = FundCollectionAllowAttendeeEnum.PUBLIC;
             }
-            Offer o = new Offer();
-            if (id != null) {
-                o = adminService.findOfferById(id);
-            }
-            String position = fileUploadObj.getFormField("position");
-            String depart = fileUploadObj.getFormField("depart");
-            String city = fileUploadObj.getFormField("city");
-            String station = fileUploadObj.getFormField("station");
-            String count = fileUploadObj.getFormField("count");
-            String monthly = fileUploadObj.getFormField("monthly");
-            String description = fileUploadObj.getFormField("description");
-            String duty = fileUploadObj.getFormField("duty");
-            String competence = fileUploadObj.getFormField("competence");
-            String age = fileUploadObj.getFormField("age");
-            String gender = fileUploadObj.getFormField("gender");
-            String englishLevel = fileUploadObj.getFormField("englishLevel");
-            String education = fileUploadObj.getFormField("education");
-            if (position == null) {
-                setErrorResult("请填写内容！", request);
-                return KEEP_GOING_WITH_ORIG_URL;
-            }
-            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum);
-            request.setAttribute("offer", offer);
-            request.setAttribute("id", offer.getId());
+            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, userAuth, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum,fileUploadItem);
+            request.setAttribute("fundCollection", fundCollection);
+            request.setAttribute("id", fundCollection.getId());
             request.setAttribute("plateId", plateId);
             setSuccessResult("保存成功！", request);
         } catch (FileUploadException ex) {
@@ -1682,10 +1689,11 @@ public class AdminServlet extends BaseServlet {
         }
         Plate plate = adminService.findPlateById(plateId);
         request.setAttribute("showBackBtn", true);
-        request.setAttribute("collection", collection);
+        request.setAttribute("fundCollection", collection);
         request.setAttribute("plate", plate);
         request.setAttribute("languageTypeList", Arrays.asList(FundCollectionLanaguageEnum.values()));
         request.setAttribute("allowAttendeeEnumList", Arrays.asList(FundCollectionAllowAttendeeEnum.values()));
+        request.setAttribute("plateAuthEnumList", Arrays.asList(PlateAuthEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

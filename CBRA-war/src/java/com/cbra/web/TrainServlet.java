@@ -6,6 +6,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.FundCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.service.AccountService;
@@ -131,14 +132,15 @@ public class TrainServlet extends BaseServlet {
             case IDEA_TRAIN:
                 return loadPagePlate(request, response);
             case NEAR_FUTURE_TRAIN:
+                return loadNearFutre(request, response);
             case PERIOD_TRAIN:
-                return loadPagePlate(request, response);
+                return loadPeriod(request, response);
             case LECTURERS:
                 return loadPagePlateInfoList(request, response);
             case LECTURERS_DETAILS:
                 return loadDetails(request, response);
             case TRAIN_DETAILS:
-                return KEEP_GOING_WITH_ORIG_URL;
+                return loadEventDetails(request, response);
             default:
                 throw new BadPageException();
         }
@@ -230,6 +232,87 @@ public class TrainServlet extends BaseServlet {
         request.setAttribute("plateInfo", plateInfo);
         request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request)));
         request.setAttribute("messageList", cbraService.findMessageList(plateInfo, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 加载近期活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadNearFutre(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate platePage = null;
+        for (Plate plate : list) {
+            if ("event".equalsIgnoreCase(plate.getPage())) {
+                platePage = plate;
+                break;
+            }
+        }
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", platePage.getId());
+        map.put("nearFutre", new Date());
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载往期活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPeriod(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
+        Plate platePage = null;
+        for (Plate plate : list) {
+            if ("event".equalsIgnoreCase(plate.getPage())) {
+                platePage = plate;
+                break;
+            }
+        }
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("plateId", platePage.getId());
+        map.put("period", new Date());
+        ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载具体活动
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadEventDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        FundCollection fundCollection = adminService.findCollectionById(id);
+        //set data
+        request.setAttribute("fundCollection", fundCollection);
+        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
+        request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

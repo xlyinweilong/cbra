@@ -8,6 +8,7 @@ package com.cbra.service;
 import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.FundCollection;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
@@ -169,6 +170,25 @@ public class CbraService {
             return plate.getTouristAuth();
         }
     }
+    
+    /**
+     * 获取权限
+     * 
+     * @param fundCollection
+     * @param account
+     * @return 
+     */
+     public PlateAuthEnum getPlateAuthEnum(FundCollection fundCollection, Account account) {
+        if (account == null) {
+            return fundCollection.getTouristAuth();
+        } else if (account instanceof CompanyAccount) {
+            return fundCollection.getCompanyAuth();
+        } else if (account instanceof UserAccount) {
+            return fundCollection.getUserAuth();
+        } else {
+            return fundCollection.getTouristAuth();
+        }
+    }
 
     /**
      * 获取信息
@@ -195,6 +215,35 @@ public class CbraService {
             secretLevel.add(MessageSecretLevelEnum.ALL_USER);
             query = em.createQuery("SELECT message FROM Message message WHERE message.plateInformation = :plateInfo AND message.type = :type AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
             query.setParameter("plateInfo", plateInfo).setParameter("type", type).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
+        }
+        return query.getResultList();
+    }
+    
+    /**
+     * 获取信息
+     * 
+     * @param fundCollection
+     * @param type
+     * @param account
+     * @return 
+     */
+    public List<Message> findMessageList(FundCollection fundCollection, MessageTypeEnum type, Account account) {
+        List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
+        TypedQuery<Message> query;
+        if (account == null) {
+            query = em.createQuery("SELECT message FROM Message message WHERE message.fundCollection = :fundCollection AND message.type = :type AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("fundCollection", fundCollection).setParameter("type", type).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
+        } else if (account instanceof CompanyAccount) {
+            secretLevel.add(MessageSecretLevelEnum.PUBLIC);
+            secretLevel.add(MessageSecretLevelEnum.ALL_USER);
+            secretLevel.add(MessageSecretLevelEnum.ONLY_COMPANY);
+            query = em.createQuery("SELECT message FROM Message message WHERE message.fundCollection = :fundCollection AND message.type = :type AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("fundCollection", fundCollection).setParameter("type", type).setParameter("secretLevelList", secretLevel).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
+        } else {
+            secretLevel.add(MessageSecretLevelEnum.PUBLIC);
+            secretLevel.add(MessageSecretLevelEnum.ALL_USER);
+            query = em.createQuery("SELECT message FROM Message message WHERE message.fundCollection = :fundCollection AND message.type = :type AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("fundCollection", fundCollection).setParameter("type", type).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
         }
         return query.getResultList();
     }

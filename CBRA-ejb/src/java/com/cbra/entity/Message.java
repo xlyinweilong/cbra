@@ -71,6 +71,9 @@ public class Message implements Serializable {
     @JoinColumn(name = "offer_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Offer offer;
+    @JoinColumn(name = "fundCollection_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private FundCollection fundCollection;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
@@ -208,6 +211,14 @@ public class Message implements Serializable {
 
     public void setOffer(Offer offer) {
         this.offer = offer;
+    }
+
+    public FundCollection getFundCollection() {
+        return fundCollection;
+    }
+
+    public void setFundCollection(FundCollection fundCollection) {
+        this.fundCollection = fundCollection;
     }
 
     @Override
