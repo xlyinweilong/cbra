@@ -1,3 +1,5 @@
+<%@page import="com.cbra.entity.PlateInformation"%>
+<%@page import="com.cbra.Config"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -139,208 +141,214 @@
                 <div class="content-ba">
                     <div class="new_banner">
                         <ul class="rslides f426x240">
-                            <li><a href="javascript:"><img src="pic/banner-1.jpg" width="1423" height="320" /></a></li>
-                            <li><a><img src="pic/banner-2.jpg" width="1423" height="320" /></a></li>
-                            <li><a><img src="pic/banner-3.jpg" width="1423" height="320" /></a></li>
-                        </ul>
-                    </div>
+                        <%
+                            for (PlateInformation info : Config.homeSAD) {
+                                %>
+                                <li><a href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="1423" height="320" /></a></li>
+                                <%
+                            }
+                        %>
+                    </ul>
                 </div>
             </div>
-            <!-- bannerend -->
+        </div>
+        <!-- bannerend -->
 
-            <!-- 主体 -->
-            <div class="main">
-                <!-- 一 排 -->
-                <div class="One-Row">
-                    <!-- 关于筑誉 -->
-                    <div class="One-Row-fl">
-                        <div class="Title">
-                            <div class="Title-1">关于筑誉</div>
-                            <div class="Title-2"><a href="/account/signup">申请入会</a></div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-                        <div class="Content">
-                            <div class="img"><img src="ls/ls-1.jpg"></div>
-                            <p>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会愿景以及为了体现诚实守信，平等互助和透明规范的协会价值，在21世纪全球聚焦中国迅速发展的今天成立我们的专业行业协会，任重而道远回顾过去的建筑发展历程， 中国建筑无论从设计理念的创新，建筑设计的优化，施工工艺的改良，新材料的应用以及建筑质量的维护都有了重大的突破！</p>
-                        </div>
-                    </div>
-                    <!-- 近期活动 -->
-                    <div class="One-Row-fr">
-                        <div class="Title">
-                            <div class="Title-1">近期活动</div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-                        <ul>
-                            <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="images/ico-bmz.png"></li>
-                            <li><a href="#">[01-02]筑誉建筑联合会成立大会</a><img src="images/ico-bmz.png"></li>
-                            <li><a href="#">[01-02]筑誉建筑联合会第二届理事会</a><img src="images/ico-bmz.png"></li>
-                            <li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴</a></li>
-                            <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a></li>
-                        </ul>
-                    </div>
-                    <div style=" clear:both;"></div>
-                </div>
-                <!-- 一 排 end -->
-
-                <!-- 广告条 -->
-                <div class="ad-sx"><img src="/ls/ls-2.jpg"></div>
-                <!-- 广告条 end-->
-
-                <!-- 二 排 -->
-                <div class="Two-Row">
-
-                    <div class="Two-Row-fl">
-                        <div class="Title">
-                            <div class="Title-1">前沿领域资讯</div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-
-                        <div class="Content">
-                            <div class="Modules">
-                                <div class="img"><img src="/ls/ls-3.jpg"></div>
-                                <div class="xxys">
-                                    <h1>新材料新技术</h1>
-                                    <ul>
-                                        <li><a href="#">我们本着构筑行业信誉...</a></li>
-                                        <li><a href="#">推动中国建筑行业进步的使命...</a></li>
-                                        <li><a href="#">怀着成为建筑业最具公信力专业平台的...</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="Modules">
-                                <div class="img"><img src="/ls/ls-4.jpg"></div>
-                                <div class="xxys">
-                                    <h1>建筑产业化</h1>
-                                    <ul>
-                                        <li><a href="#">我们本着构筑行业信誉...</a></li>
-                                        <li><a href="#">推动中国建筑行业进步的使命...</a></li>
-                                        <li><a href="#">怀着成为建筑业最具公信力专业平台的...</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="Modules">
-                                <div class="img"><img src="ls/ls-5.jpg"></div>
-                                <div class="xxys">
-                                    <h1>绿色建筑</h1>
-                                    <ul>
-                                        <li><a href="#">我们本着构筑行业信誉...</a></li>
-                                        <li><a href="#">推动中国建筑行业进步的使命...</a></li>
-                                        <li><a href="#">怀着成为建筑业最具公信力专业平台的...</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="Modules">
-                                <div class="img"><img src="ls/ls-6.jpg"></div>
-                                <div class="xxys">
-                                    <h1>BIM技术</h1>
-                                    <ul>
-                                        <li><a href="#">我们本着构筑行业信誉...</a></li>
-                                        <li><a href="#">推动中国建筑行业进步的使命...</a></li>
-                                        <li><a href="#">怀着成为建筑业最具公信力专业平台的...</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div style=" clear:both;"></div>
-                        </div>
-                    </div>
-
-                    <div class="Two-Row-fr">
-                        <div class="Title">
-                            <div class="Title-1">专家顾问</div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-                        <ul>
-                            <li><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                            <li class="m-lr"><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                            <li><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                            <li><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                            <li class="m-lr"><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                            <li><a href="team-detailed.asp"><img src="ls/ls-7.jpg"></a></li>
-                        </ul>
-                    </div>
-                    <div style=" clear:both;"></div>
-                </div>
-                <!-- 二 排 end -->
-
-                <!-- 三 排 -->
-                <div class="One-Row">
-                    <!-- 热点新闻 -->
-                    <div class="One-Row-fl">
-                        <div class="Title">
-                            <div class="Title-1">热点新闻</div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-                        <div class="Content">
-                            <div class="img"><img src="ls/ls-1.jpg"></div>
-                            <ul>
-                                <li><a href="#" class="fl">[01-02]我们本着构筑行业信誉，推动中国建筑行业进步的使命</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
-                                <li><a href="#" class="fl">[01-02]怀着成为建筑业最具公信力专业平台的协会愿景以及为了体现</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
-                                <li><a href="#" class="fl">[01-02]平等互助和透明规范的协会价值</a></li>
-                                <li><a href="#" class="fl">[01-02]在21世纪全球聚焦中国迅速发展的今天成立我们的专业行业协会</a></li>
-                                <li><a href="#" class="fl">[01-02]任重而道远回顾过去的建筑发展历程</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- 企业人才需求 -->
-                    <div class="One-Row-fr">
-                        <div class="Title">
-                            <div class="Title-1">企业人才需求</div>
-                            <div class="Title-3"><a href="#">更多</a></div>
-                        </div>
-                        <ul>
-                            <li><a href="#" class="fl">[01-02]筑誉联合会成立大会在陆家嘴圆...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
-                            <li><a href="#" class="fl">[01-02]筑誉建筑联合会成立大会...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
-                            <li><a href="#" class="fl">[01-02]筑誉建筑联合会第二届理事会...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
-                            <li><a href="#" class="fl">[01-02]筑誉联合会成立大会在陆家嘴圆...</a></li>
-                            <li><a href="#" class="fl">[01-02]筑誉建筑联合会成立大会...</a></li>
-                        </ul>
-                    </div>
-                    <div style=" clear:both;"></div>
-                </div>
-                <!-- 三 排 end -->
-                <!-- 四 排 -->
-                <div class="Four-Row">
+        <!-- 主体 -->
+        <div class="main">
+            <!-- 一 排 -->
+            <div class="One-Row">
+                <!-- 关于筑誉 -->
+                <div class="One-Row-fl">
                     <div class="Title">
-                        <div class="Title-1">会员风采</div>
+                        <div class="Title-1">关于筑誉</div>
+                        <div class="Title-2"><a href="/account/signup">申请入会</a></div>
+                        <div class="Title-3"><a href="/into/idea">更多</a></div>
+                    </div>
+                    <div class="Content">
+                        <div class="img"><img style="width: 250px; height: 142px;" src="<%=Config.homeAbout.getPicUrl()%>"></div>
+                        <p><%=Config.homeAbout.getIntroduction()%></p>
+                    </div>
+                </div>
+                <!-- 近期活动 -->
+                <div class="One-Row-fr">
+                    <div class="Title">
+                        <div class="Title-1">近期活动</div>
                         <div class="Title-3"><a href="#">更多</a></div>
                     </div>
+                    <ul>
+                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉建筑联合会成立大会</a><img src="images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉建筑联合会第二届理事会</a><img src="images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴</a></li>
+                        <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a></li>
+                    </ul>
+                </div>
+                <div style=" clear:both;"></div>
+            </div>
+            <!-- 一 排 end -->
 
-                    <!-- 产品滚动 -->
-                    <div class="rollBox">
-                        <div class="Cont" id="ISL_Cont">
-                            <div class="ScrCont">
-                                <div id="List1">
-                                    <!-- 图片列表 begin -->
-                                    <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-8.jpg" /></a></div> 
-                                    <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-9.jpg" /></a></div> 
-                                    <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-10.jpg" /></a></div> 
-                                    <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-8.jpg" /></a></div>
-                                    <!-- 图片列表 end -->
-                                </div>
-                                <div id="List2"></div>
+            <!-- 广告条 -->
+            <div class="ad-sx"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
+            <!-- 广告条 end-->
+
+            <!-- 二 排 -->
+            <div class="Two-Row">
+
+                <div class="Two-Row-fl">
+                    <div class="Title">
+                        <div class="Title-1">前沿领域资讯</div>
+                        <div class="Title-3"><a href="/into/material">更多</a></div>
+                    </div>
+
+                    <div class="Content">
+                        <div class="Modules">
+                            <div class="img"><img src="/ls/ls-3.jpg"></div>
+                            <div class="xxys">
+                                <h1>新材料新技术</h1>
+                                <ul>
+                                    <c:forEach var="info" items="<%=Config.industryList%>">
+                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
+                                    </c:forEach>
+                                </ul>
                             </div>
                         </div>
+                        <div class="Modules">
+                            <div class="img"><img src="/ls/ls-4.jpg"></div>
+                            <div class="xxys">
+                                <h1>建筑产业化</h1>
+                                <ul>
+                                    <c:forEach var="info" items="<%=Config.industrializationListIndex%>">
+                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="Modules">
+                            <div class="img"><img src="/ls/ls-5.jpg"></div>
+                            <div class="xxys">
+                                <h1>绿色建筑</h1>
+                                <ul>
+                                    <c:forEach var="info" items="<%=Config.greenListIndex%>">
+                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="Modules">
+                            <div class="img"><img src="/ls/ls-6.jpg"></div>
+                            <div class="xxys">
+                                <h1>BIM技术</h1>
+                                <ul>
+                                    <c:forEach var="info" items="<%=Config.bimListIndex%>">
+                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style=" clear:both;"></div>
                     </div>
-                    <!-- 产品滚动 结束 -->        
                 </div>
-                <!-- 四 排 end -->
-                <!-- 五 排 -->
-                <div class="Five-Row">
-                    <div class="Title"><img src="images/partner.jpg"></div>
+
+                <div class="Two-Row-fr">
+                    <div class="Title">
+                        <div class="Title-1">专家顾问</div>
+                        <div class="Title-3"><a href="/train/lecturers">更多</a></div>
+                    </div>
                     <ul>
-                        <li><img src="ls/ls-11.jpg"><p>英国伯明翰大学<br>土木工程学院</p></li>
-                        <li><img src="ls/ls-12.jpg"><p>上海交大</p></li>
-                        <li><img src="ls/ls-13.jpg"><p>北方交通大学</p></li>
-                        <li><img src="ls/ls-14.jpg"><p>同济大学经管学院</p></li>
-                        <li><img src="ls/ls-15.jpg"><p>重庆大学建规学院</p></li>
-                        <li><img src="ls/ls-16.jpg"><p>东南大学</p></li>
-                        <li><img src="ls/ls-17.jpg"><p>上海建科院</p></li>
-                        <li><img src="ls/ls-18.jpg"><p>精尚慧</p></li>
+                        <%
+                            int i = 0;
+                            for (PlateInformation info : Config.homeExpert) {
+                                i++;
+                                %>
+                                <li <%if(i==2 || i == 5){%>class="m-lr"<%}%>><a  href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="88" height="88" /></a></li>
+                                <%
+                            }
+                        %>
                     </ul>
-                    <div style=" clear:both;"></div>
                 </div>
+                <div style=" clear:both;"></div>
             </div>
-            <!-- 主体 end -->
+            <!-- 二 排 end -->
+
+            <!-- 三 排 -->
+            <div class="One-Row">
+                <!-- 热点新闻 -->
+                <div class="One-Row-fl">
+                    <div class="Title">
+                        <div class="Title-1">热点新闻</div>
+                        <div class="Title-3"><a href="/news/news_list">更多</a></div>
+                    </div>
+                    <div class="Content">
+                        <div class="img"><img src="/ls/ls-1.jpg"></div>
+                        <ul>
+                            <c:forEach var="news" items="<%=Config.newsList5%>">
+                                <li><a href="/news/news_list?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 企业人才需求 -->
+                <div class="One-Row-fr">
+                    <div class="Title">
+                        <div class="Title-1">企业人才需求</div>
+                        <div class="Title-3"><a href="/into/three_party_offer">更多</a></div>
+                    </div>
+                    <ul>
+                        <c:forEach var="offer" items="<%=Config.offerListIndex%>">
+                            <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
+                        </c:forEach> 
+                    </ul>
+                </div>
+                <div style=" clear:both;"></div>
+            </div>
+            <!-- 三 排 end -->
+            <!-- 四 排 -->
+            <div class="Four-Row">
+                <div class="Title">
+                    <div class="Title-1">会员风采</div>
+                    <div class="Title-3"><a href="/team/style">更多</a></div>
+                </div>
+
+                <!-- 产品滚动 -->
+                <div class="rollBox">
+                    <div class="Cont" id="ISL_Cont">
+                        <div class="ScrCont">
+                            <div id="List1">
+                                <!-- 图片列表 begin -->
+                                <%
+                                     for (PlateInformation info : Config.homeExpert) {
+                                %>
+                                        <div class="pic"><a href="<%=info.getNavUrl()%>" target="_blank"><img src="<%=info.getPicUrl()%>" width="220" height="150"  /></a></div> 
+                                <%
+                                    }
+                                %>
+                                <!-- 图片列表 end -->
+                            </div>
+                            <div id="List2"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 产品滚动 结束 -->        
+            </div>
+            <!-- 四 排 end -->
+            <!-- 五 排 -->
+            <div class="Five-Row">
+                <div class="Title"><img src="/images/partner.jpg"></div>
+                <ul>
+                    <li><img src="/ls/ls-11.jpg"><p>英国伯明翰大学<br>土木工程学院</p></li>
+                    <li><img src="/ls/ls-12.jpg"><p>上海交大</p></li>
+                    <li><img src="/ls/ls-13.jpg"><p>北方交通大学</p></li>
+                    <li><img src="/ls/ls-14.jpg"><p>同济大学经管学院</p></li>
+                    <li><img src="/ls/ls-15.jpg"><p>重庆大学建规学院</p></li>
+                    <li><img src="/ls/ls-16.jpg"><p>东南大学</p></li>
+                    <li><img src="/ls/ls-17.jpg"><p>上海建科院</p></li>
+                    <li><img src="/ls/ls-18.jpg"><p>精尚慧</p></li>
+                </ul>
+                <div style=" clear:both;"></div>
+            </div>
+        </div>
+        <!-- 主体 end -->
 
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript">

@@ -5,6 +5,7 @@
  */
 package com.cbra;
 
+import com.cbra.entity.Offer;
 import com.cbra.entity.PlateInformation;
 import com.cbra.support.PathUtil;
 import java.util.List;
@@ -37,8 +38,39 @@ public class Config {
 
     //持久信息
     public static List<PlateInformation> newsList = null;
-
+    
+    public static List<PlateInformation> newsList5 = null;
+    
     public static List<PlateInformation> industryList = null;
+    
+    public static List<Offer> offerListIndex = null;
+    
+    public static List<PlateInformation> materialListIndex = null;
+    
+    public static List<PlateInformation> industrializationListIndex = null;
+    
+    public static List<PlateInformation> greenListIndex = null;
+    
+    public static List<PlateInformation> bimListIndex = null;
+    
+    public static List<PlateInformation> homeSAD = null;
 
     public static PlateInformation homeAd = null;
+
+    public static PlateInformation homeAbout = null;
+
+    public static List<PlateInformation> homeStyle = null;
+
+    public static List<PlateInformation> homeExpert = null;
+    
+    //top持久信息
+    public static PlateInformation topInto = null;
+    
+    public static PlateInformation topStyle = null;
+
+    public static List<PlateInformation> topEvent= null;
+    
+    public static List<PlateInformation> topTrain = null;
+    
+    public static List<PlateInformation> topJoin = null;
 }

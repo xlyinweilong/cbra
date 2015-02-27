@@ -96,6 +96,20 @@ public class CbraService {
     }
     
     /**
+     * 获取热门新闻
+     *
+     * @param plate
+     * @param maxResults
+     * @return
+     */
+    public List<PlateInformation> getPlateInformationList4Index(Plate plate, int maxResults) {
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
+        query.setParameter("plate", plate);
+        query.setMaxResults(maxResults);
+        return query.getResultList();
+    }
+    
+    /**
      * 获取首页信息
      * 
      * @param plateKeyEnum
@@ -108,7 +122,7 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
-
+    
     /**
      * 获取OFFER
      *

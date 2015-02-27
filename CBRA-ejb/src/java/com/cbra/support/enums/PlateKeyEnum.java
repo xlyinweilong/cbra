@@ -21,6 +21,11 @@ public enum PlateKeyEnum {
     HOME_ABOUT,//首页关于
     HOME_STYLE,//首页会员风采
     HOME_EXPERT,//首页专家
+    TOP_INTO,//走进
+    TOP_EVENT,//讲座
+    TOP_TRAIN,//培训
+    TOP_STYLE,//风采
+    TOP_JOIN,//加入
     ABOUT, CONTACT_US,
     NEWS,//新闻
     OFFER,//招聘
@@ -39,7 +44,6 @@ public enum PlateKeyEnum {
         list.add(CONTACT_US);
         list.add(NEWS);
         list.add(OFFER);
-        list.add(EVENT);
         list.add(COMMITTEE);
         return list;
     }

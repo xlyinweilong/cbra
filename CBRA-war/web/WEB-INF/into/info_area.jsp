@@ -1,3 +1,4 @@
+<%@page import="com.cbra.Config"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -33,7 +34,7 @@
             </div>
             <!-- 一排 end-->
             <!-- 广告 -->
-            <div class="info-ad"><img src="/ls/ls-2.jpg"></div>
+            <div class="info-ad"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
             <!-- 广告 end -->
             <!-- 资源信息 -->
             <div class="info-r">

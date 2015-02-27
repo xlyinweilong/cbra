@@ -35,21 +35,29 @@
                         "introduction": {required: true},
                         "content": {required: true},
         </c:if>
+                <c:if test="${plate.plateType == 'AD'}">
+                    "title": {required: true},
+                </c:if>
                 "pushDate": {required: true}
                 };
                         var messages = {
-        <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
-                        "title": {required: "必须填写！"},
-                                "introduction": {required: "简介必须填写！"},
-                                "content": {required: "内容必须填写！"},
-        </c:if>
-                        "pushDate": {required: "发布时间必须填写！"}
+                         <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
+                            "title": {required: "必须填写！"},
+                            "introduction": {required: "简介必须填写！"},
+                             "content": {required: "内容必须填写！"},
+                        </c:if>
+                        <c:if test="${plate.plateType == 'AD'}">
+                            "title": {required: "必须填写！"},
+                        </c:if>
+                            "pushDate": {required: "发布时间必须填写！"}
                         };
                         //初始化验证框架
                         FormSave("form1", rules, messages);
                         $("#form1").attr("action", "/admin/plate/plate_info_info");
 //                Keditor.html('');
-                        Keditor.sync();
+                if(Keditor != null){
+                     Keditor.sync();
+                }
         <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                 KeditorEn.sync();
         </c:if>
@@ -100,7 +108,7 @@
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
                         </li>  
                     </c:if>
-                    <c:if test="${plate.plateKey == 'HOME_ABOUT'}">
+                    <c:if test="${plate.plateKey == 'HOME_ABOUT' || plate.plateKey == 'TOP_INTO' || plate.plateKey == 'TOP_EVENT' || plate.plateKey == 'TOP_TRAIN' || plate.plateKey == 'TOP_STYLE' || plate.plateKey == 'TOP_JOIN'}">
                         <li><label>简介<b>*</b></label>
                             <textarea name="introduction" class="dfinput"  style="width: 350px;height: 150px">${plateInfo.introduction}</textarea>
                         </li>

@@ -8,6 +8,7 @@ package com.cbra.entity;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -118,6 +119,23 @@ public class PlateInformation implements Serializable {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getTitleIndexStr() {
+        if (title.length() > 15) {
+            return title.substring(0, 14) + "...";
+        }
+        return title;
+    }
+
+    public boolean isNewPushDate() {
+        Calendar cal = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(pushDate);
+        if (cal.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) {
+            return true;
+        }
+        return false;
     }
 
     public PlateInformationContent getPlateInformationContent() {

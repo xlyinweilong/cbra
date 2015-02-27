@@ -136,11 +136,6 @@ public class PublicServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("homeSAD", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_SHUFFLING_AD_MENU, Integer.MAX_VALUE));
-        request.setAttribute("homeAd", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_AD_MENU, 1));
-        request.setAttribute("homeAbout", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_ABOUT, 1));
-        request.setAttribute("homeStyle", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_STYLE, Integer.MAX_VALUE));
-        request.setAttribute("homeExpert", cbraService.getPlateInformationList4Index(PlateKeyEnum.HOME_EXPERT, Integer.MAX_VALUE));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

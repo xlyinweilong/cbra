@@ -643,6 +643,19 @@ public class AccountService {
     }
 
     /**
+     * 发送密码连接
+     *
+     * @param account
+     */
+    public void sendResetPasswdURLEmail(Account account, String language) {
+        String url = this.getUniqueAccountRepasswdUrl();
+        account.setRepasswdUrl(url);
+        em.merge(url);
+        //发送邮件
+        this.sendRepasswd(account, language);
+    }
+
+    /**
      * 根据验证URL获取用户
      *
      * @param verifyUrl
@@ -653,6 +666,24 @@ public class AccountService {
         try {
             TypedQuery<Account> query = em.createQuery("SELECT a FROM Account a WHERE a.verifyUrl = :verifyUrl and a.deleted = false", Account.class);
             query.setParameter("verifyUrl", verifyUrl);
+            user = query.getSingleResult();
+        } catch (NoResultException ex) {
+            user = null;
+        }
+        return user;
+    }
+
+    /**
+     * 根据重置密码URL获取用户
+     *
+     * @param repasswdUrl
+     * @return
+     */
+    public Account findByRepasswdUrl(String repasswdUrl) {
+        Account user = null;
+        try {
+            TypedQuery<Account> query = em.createQuery("SELECT a FROM Account a WHERE a.repasswdUrl = :repasswdUrl and a.deleted = false", Account.class);
+            query.setParameter("repasswdUrl", repasswdUrl);
             user = query.getSingleResult();
         } catch (NoResultException ex) {
             user = null;
@@ -698,6 +729,24 @@ public class AccountService {
     }
 
     /**
+     * 生成唯一的验证URL（算法有待提高）
+     *
+     * @return
+     */
+    private String getUniqueAccountRepasswdUrl() {
+        int maxCount = 10;
+        String repasswdUrl = Tools.generateRandom8Chars();
+        int i = 1;
+        for (; i < maxCount && isExistAccountByRepasswdUrl(repasswdUrl); i++) {
+            repasswdUrl = Tools.generateRandom8Chars();
+        }
+        if (i >= 10) {
+            throw new RuntimeException("System Error");
+        }
+        return repasswdUrl;
+    }
+
+    /**
      * 账户是否存在
      *
      * @param verifyUrl
@@ -705,6 +754,20 @@ public class AccountService {
      */
     private boolean isExistAccount(String verifyUrl) {
         Account account = findByVerifyUrl(verifyUrl);
+        if (account == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 账户是否存在
+     *
+     * @param verifyUrl
+     * @return
+     */
+    private boolean isExistAccountByRepasswdUrl(String repasswdUrl) {
+        Account account = findByRepasswdUrl(repasswdUrl);
         if (account == null) {
             return false;
         }
@@ -759,6 +822,26 @@ public class AccountService {
             model.put("message", message);
             model.put("showMessage", true);
         }
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
+
+    /**
+     * 发送重置密码邮件
+     *
+     * @param account
+     */
+    private void sendRepasswd(Account account, String language) {
+        String toEmail = account.getEmail();
+        if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
+            language = "zh";
+        }
+        language = language.toLowerCase();
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
+        String fromEmail = "withdraw@yoopay.cn";
+        String templateFile = "account_approval_success_" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        Map model = new HashMap();
+        model.put("account", account);
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 }

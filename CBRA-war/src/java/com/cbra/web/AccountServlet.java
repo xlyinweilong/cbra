@@ -98,12 +98,13 @@ public class AccountServlet extends BaseServlet {
             case LOGIN:
             case SIGNUP:
             case SIGNUP_C:
+            case SIGNUP_SUCCESS:
+            case FORGET_PASSWD:
+            case RESET_PASSWD:
                 setLogoutOnly(request);
                 break;
             case LOGOUT:
             case VERIFY:
-            case RESET_PASSWD:
-            case SEND_RESET_PASSWD:
             case LOAD_ACCOUNT_BY_AJAX:
             case Z_IFRAME_UPLOAD_PC:
                 setLoginLogoutBothAllowed(request);
@@ -173,8 +174,8 @@ public class AccountServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, SEND_RESET_PASSWD, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT;
+        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, LOAD_ACCOUNT_BY_AJAX,
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD;
     }
 
     @Override
@@ -204,7 +205,7 @@ public class AccountServlet extends BaseServlet {
                 return doSendVerifyEmail(request, response);
             case RESET_PASSWD:
                 return loadResetPassword(request, response);
-            case SEND_RESET_PASSWD:
+            case FORGET_PASSWD:
                 return KEEP_GOING_WITH_ORIG_URL;
             case LOAD_ACCOUNT_BY_AJAX:
                 return loadAccountByAjax(request, response);
@@ -488,7 +489,8 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_找不到图片"), request);
         }
         //return 注册成功
-        return login(userAccount, true, request, response);
+        forward("/account/signup_success", request, response);
+        return FORWARD_TO_ANOTHER_URL;
     }
 
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -563,34 +565,37 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_找不到图片"), request);
         }
         //return 注册成功
-        return login(companyAccount, true, request, response);
-        //return KEEP_GOING_WITH_ORIG_URL;
+        forward("/account/signup_success", request, response);
+        return FORWARD_TO_ANOTHER_URL;
     }
 
+    /**
+     * 发送找回密码连接
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSessionException 
+     */
     private boolean doSendResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
-//        String email = getRequestEmail(request, "email");
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "verifycode")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//
-//        if (email == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_请输入正确格式的email地址"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String verifycode = getRequestString(request, "verifycode");
-//        String sessionVerifycode = (String) request.getSession().getAttribute("imageverifycode");
-//        if (sessionVerifycode == null || !sessionVerifycode.equals(verifycode)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_验证码输入错误"), request);
-//            request.setAttribute("email", email);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserAccount user = accountService.findByEmail(email);
-//        if (user == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_该账号不存在，请重新输入"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        accountService.sendResetPasswdURLEmail(user, bundle.getLocale().getLanguage());
-//        setSuccessResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_发送成功，请查看您的邮箱"), request);
+        String email = getRequestEmail(request, "email");
+        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "account")) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (email == null) {
+            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_请输入正确格式的email地址"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String account = getRequestString(request, "account");
+        Account user = accountService.findByAccount(account);
+        if (user == null || !user.getEmail().equals(email)) {
+            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_该账号不存在，请重新输入"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        accountService.sendResetPasswdURLEmail(user, bundle.getLocale().getLanguage());
+        request.setAttribute("success", true);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

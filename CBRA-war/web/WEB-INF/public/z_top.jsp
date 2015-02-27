@@ -1,3 +1,4 @@
+<%@page import="com.cbra.Config"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -73,7 +74,7 @@
                     </ul>
                     <span class="nav-menu-line" style="height:292px;margin-right:30px">&nbsp;</span>
                     <div class="fl hui" style="width:410px">
-                        <p><img src="ls/3591G05OQF_m.jpg" width="410" height="247" alt=""><br> 和君集团的基本业务格局为：和君咨询+和君资本+和君商学，即以管理咨询为主体，以资本和商学教育为两翼的“一体两翼”模式。</p></div>
+                        <p><img src="<%=Config.topInto.getPicUrl()%>" width="410" height="247" alt=""><br><%=Config.topInto.getIntroduction()%></p></div>
                 </div>
             </li>
             <!--走进筑誉 end-->
@@ -93,32 +94,19 @@
                             <h4><a href="/news/news_list">筑誉新闻</a></h4>
                             <span class="blank10"></span>
                             <ul class="list list-f12-autoheight">
-                                <c:forEach var="news1" items="${applicationScope.newsList}">
+                                <c:forEach var="news1" items="<%=Config.newsList%>">
                                     <li><a href="/news/details?id=${news1.id}" target="_blank">${news1.title}</a></li>
                                 </c:forEach>
                             </ul>
                             <h4><a href="/news/industry_list">行业新闻</a></h4>
                             <span class="blank10"></span>
                             <ul class="list list-f12-autoheight">
-                                <c:forEach var="news" items="${applicationScope.industryList}">
+                                <c:forEach var="news" items="<%=Config.industryList%>">
                                     <li><a href="/news/details?id=${news.id}" target="_blank">${news.title}</a></li>
                                 </c:forEach>
                             </ul>
                             <span class="blank10"></span>
                             <span class="more fr"><a href="/news/news_list" target="_blank">更多</a></span>
-                        </div>
-                        <div style="display:none">
-                            <h4><a href="#" target="_blank">行业新闻</a></h4>
-                            <span class="blank10"></span>
-                            <ul class="list list-f12-autoheight">
-                                <li><a href="/news/details" target="_blank">和君咨询发起中国首个人才经纪人联盟</a></li>
-                                <li><a href="/news/details" target="_blank">“中国在线教育之都”发布暨首届在线教育投融资峰会</a></li>
-                                <li><a href="/news/details" target="_blank">和君资本合伙人李文明：上市公司主导医药行业并购整合将成潮</a></li>
-                                <li><a href="/news/details" target="_blank">团中央官网报道和君"幸福茶农"启动仪式</a></li>
-                                <li><a href="/news/details" target="_blank">五粮液再次携手和君咨询展开白酒并购</a></li>
-                            </ul>
-                            <span class="blank10"></span>
-                            <span class="more fr"><a href="news-1.asp" target="_blank">更多</a></span>
                         </div>
                     </div>
                 </div>
@@ -132,18 +120,14 @@
                         <li><a href="/event/period">往期活动</a></li>
                         <li><a href="/event/partners">合作伙伴活动</a></li>
                     </ul>
-                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
-                    <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden">
-                        <p><a target="_blank" href="#"><img src="/ls/S765GG2KOC_m.jpg" ></a></p>
-                        <p>&nbsp;</p><p>封面专题：建设幸福企业</p>
-                        <p>对于企业家和管理来说，如何营造让员工感到幸福的工作环境，将企业做好，为国家做贡献，给社会带来帮助，这些才是最重要的。</p>
-                    </div>
-                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
-                    <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden;" >
-                        <p><a href="#" target="_blank"><img src="/ls/201406112030yyfp.jpg"></a></p>
-                        <p>&nbsp;</p>
-                        <p>你需要的不是向日葵和马，你真正需要的是凡高的向日葵和徐悲鸿的马！<br>你需要的不是平庸的咨询服务，你真正需要的是高手做出来的咨询服务！</p>
-                    </div>
+                    <c:forEach var="info" items="<%=Config.topEvent%>">
+                        <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                        <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden">
+                            <p><a target="_blank" href="${info.navUrl}"><img src="${info.picUrl}" style="width: 250px; height: 150px;"></a></p>
+                            <p>&nbsp;</p><p>${info.title}</p>
+                            <p>${info.introduction}</p>
+                        </div>
+                    </c:forEach>
                 </div>
             </li>
             <!--活动讲座 end-->
@@ -156,20 +140,15 @@
                         <li><a href="/train/period_train" >往期培训</a></li>
                         <li><a href="/train/lecturers" >讲师团队</a></li>
                     </ul>
+                    <c:forEach var="info" items="<%=Config.topTrain%>">
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
-                        <p><a href="http://www.hejun.com/channel.php?channelid=748" target="_blank"><img src="/ls/201406191736qfmb.jpg"></a></p>
+                        <p><a href="${info.navUrl}" target="_blank"><img src="${info.picUrl}" style="width: 248px; height: 151px;"></a></p>
                         <p>&nbsp;</p>
-                        <p><strong>成长在和君&nbsp;<br>
-                            </strong>有目标、沉住气、踏实干。拒绝喧嚷、拒绝浮躁、拒绝摆秀、拒绝浮名、拒绝速成，慢慢地蓄深养厚，最终把事业搞辉煌，把自己搞平淡。</p>
+                        <p><strong>${info.title}&nbsp;<br>
+                            </strong>${info.introduction}</p>
                     </div>
-                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
-                    <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
-                        <p><a href="http://www.hejun.com/channel.php?channelid=749" target="_blank"><img src="/ls/201406191739ozeg.jpg"></a></p>
-                        <p>&nbsp;</p>
-                        <p><strong>我们的生活&nbsp;<br>
-                            </strong>经历各种行业、各个地域、各种人生、各类故事，吃百家饭，阅人无数，踏遍千山万水，览尽世间万象，看透人生百态。</p>
-                    </div>
+                    </c:forEach>
                 </div>
             </li>
             <!--专题培训 end-->
@@ -210,8 +189,8 @@
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
-                        <p><a href="#" target="_blank"><img style="height:131px;width:206px;" src="/ls/201409121234mjj8.jpg"></a></p>
-                        <p>实现党建工作与企业经营管理的互动，努力为集团各项工作的健康发展提供坚强的组织保证<br></p>
+                        <p><a href="#" target="_blank"><img style="height:131px;width:206px;" src="<%=Config.topStyle.getPicUrl()%>"></a></p>
+                        <p><%=Config.topStyle.getIntroduction()%><br></p>
                     </div>
                 </div>
             </li>
@@ -261,16 +240,13 @@
                         <li><a href="/join/recruit" >专家招募</a></li>
                         <li><a href="/join/cooperation" >合作伙伴招募</a></li>
                     </ul>
+                    <c:forEach var="info" items="<%=Config.topTrain%>">
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
-                        <p><a href="#" target="_blank"><img src="/ls/201406191736qfmb.jpg"></a></p>
-                        <p><strong>成长在和君&nbsp;<br></strong>有目标、沉住气、踏实干。拒绝喧嚷、拒绝浮躁、拒绝摆秀、拒绝浮名、拒绝速成，慢慢地蓄深养厚，最终把事业搞辉煌，把自己搞平淡。</p>
+                        <p><a href="${info.navUrl}" target="_blank"><img src="${info.picUrl}" style="width: 249px; height: 151px;"></a></p>
+                        <p><strong>${info.title}&nbsp;<br></strong>${info.introduction}</p>
                     </div>
-                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
-                    <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
-                        <p><a href="#" target="_blank"><img src="/ls/201406191739ozeg.jpg"></a></p>
-                        <p><strong>我们的生活&nbsp;<br></strong>经历各种行业、各个地域、各种人生、各类故事，吃百家饭，阅人无数，踏遍千山万水，览尽世间万象，看透人生百态。</p>
-                    </div>
+                    </c:forEach>
                 </div>
             </li>
             <!--加入筑誉 end-->

@@ -113,6 +113,13 @@ public abstract class Account implements Serializable {
     @Column(name = "joined_count")
     //已参加活动
     private int joinedCount = 0;
+    //找回密码
+    @Column(name = "re_passwd_url", length = 255)
+    private String repasswdUrl;
+    //连接创建时间
+    @Column(name = "re_passwd_date")
+    private Date repasswdDate;
+    
 
     public String getIcPositionString() {
         StringBuilder sb = new StringBuilder();
@@ -301,6 +308,22 @@ public abstract class Account implements Serializable {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(createDate);
         return calendar.get(Calendar.YEAR);
+    }
+
+    public String getRepasswdUrl() {
+        return repasswdUrl;
+    }
+
+    public void setRepasswdUrl(String repasswdUrl) {
+        this.repasswdUrl = repasswdUrl;
+    }
+
+    public Date getRepasswdDate() {
+        return repasswdDate;
+    }
+
+    public void setRepasswdDate(Date repasswdDate) {
+        this.repasswdDate = repasswdDate;
     }
 
     @Override

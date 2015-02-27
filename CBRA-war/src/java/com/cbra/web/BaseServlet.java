@@ -97,15 +97,6 @@ public abstract class BaseServlet extends HttpServlet {
             types.add(PlateTypeEnum.MENU);
             List<Plate> list = cbraService.getPlateList4Web(types);
             application.setAttribute("menuPlates", list);
-            for (Plate plate : list) {
-                if ("news_list".equalsIgnoreCase(plate.getPage())) {
-                    application.setAttribute("newsList", cbraService.getPlateInformationList4Hot(plate, 3));
-                }
-                if ("industry_list".equalsIgnoreCase(plate.getPage())) {
-                    application.setAttribute("industryList", cbraService.getPlateInformationList4Hot(plate, 3));
-                }
-            }
-
         }
     }
 

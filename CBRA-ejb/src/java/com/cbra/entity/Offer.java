@@ -11,6 +11,7 @@ import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -113,6 +114,23 @@ public class Offer implements Serializable {
     private Date pushDate = new Date();
     @Column(name = "deleted")
     private boolean deleted = false;
+
+    public String getPositionIndexStr() {
+        if (position.length() > 15) {
+            return position.substring(0, 14) + "...";
+        }
+        return position;
+    }
+
+    public boolean isNewPushDate() {
+        Calendar cal = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(pushDate);
+        if (cal.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) && cal.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) {
+            return true;
+        }
+        return false;
+    }
 
     public Long getId() {
         return id;
