@@ -95,7 +95,7 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
-    
+
     /**
      * 获取热门新闻
      *
@@ -109,13 +109,13 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
-    
+
     /**
      * 获取首页信息
-     * 
+     *
      * @param plateKeyEnum
      * @param maxResults
-     * @return 
+     * @return
      */
     public List<PlateInformation> getPlateInformationList4Index(PlateKeyEnum plateKeyEnum, int maxResults) {
         TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.plateKey = :plateKeyEnum AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
@@ -123,7 +123,7 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
-    
+
     /**
      * 获取OFFER
      *
@@ -162,6 +162,8 @@ public class CbraService {
     public PlateAuthEnum getPlateAuthEnum(Plate plate, Account account) {
         if (account == null) {
             return plate.getTouristAuth();
+        } else if (!AccountStatus.MEMBER.equals(account.getStatus())) {
+            return plate.getTouristAuth();
         } else if (account instanceof CompanyAccount) {
             return plate.getCompanyAuth();
         } else if (account instanceof UserAccount) {
@@ -170,16 +172,18 @@ public class CbraService {
             return plate.getTouristAuth();
         }
     }
-    
+
     /**
      * 获取权限
-     * 
+     *
      * @param fundCollection
      * @param account
-     * @return 
+     * @return
      */
-     public PlateAuthEnum getPlateAuthEnum(FundCollection fundCollection, Account account) {
+    public PlateAuthEnum getPlateAuthEnum(FundCollection fundCollection, Account account) {
         if (account == null) {
+            return fundCollection.getTouristAuth();
+        } else if (!AccountStatus.MEMBER.equals(account.getStatus())) {
             return fundCollection.getTouristAuth();
         } else if (account instanceof CompanyAccount) {
             return fundCollection.getCompanyAuth();
@@ -218,14 +222,14 @@ public class CbraService {
         }
         return query.getResultList();
     }
-    
+
     /**
      * 获取信息
-     * 
+     *
      * @param fundCollection
      * @param type
      * @param account
-     * @return 
+     * @return
      */
     public List<Message> findMessageList(FundCollection fundCollection, MessageTypeEnum type, Account account) {
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();

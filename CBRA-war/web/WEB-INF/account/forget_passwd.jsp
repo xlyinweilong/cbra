@@ -12,7 +12,8 @@
             <body style="background:url(/images/Reg-bac.jpg) no-repeat top center">
                 <div class="xgmm">
                     <div class="tit">忘记密码</div>
-                    <form action="" method="post">
+                    <form action="/account/forget_passwd" method="post" id="forget_fasswd_form">
+                        <input type="hidden" name="a" value="SEND_RESET_PASSWD">
                         <table width="400" border="0" cellspacing="0" cellpadding="0">
                             <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                                 <tr>
@@ -25,30 +26,29 @@
                                 </tr>
                                 <tr>
                                     <td height="44" align="right"></td>
-                                    <td><input type="button" class="rev-an" value="找回密码"></td>
+                                    <td><input id="forget_fasswd" type="button" class="rev-an" value="找回密码"></td>
                                 </tr>
                             </table>
                         </form>
                     </div>
                     <script type="text/javascript">
                         $(document).ready(function () {
-                            $("#login_button").click(function () {
+                            $("#forget_fasswd").click(function () {
                                 if (CBRAValid.checkFormValueNull($("#account"))) {
                                     CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入会员号", $("#account"));
                                     return;
                                 }
                                 if (CBRAValid.checkFormValueNull($("#email"))) {
-                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入>注册邮箱", $("#email"));
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入注册邮箱", $("#email"));
                                     return;
                                 }
-                                $("#form_login").submit();
+                                $("#forget_fasswd_form").submit();
                             });
                         })
                     </script> 
             </c:when>
             <c:otherwise>
                 <jsp:include page="/WEB-INF/public/z_top.jsp" />
-                <jsp:include page="/WEB-INF/account/z_account_banner.jsp" />
                 <div class="two-loc">
                     <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 找回密码</div>
                 </div>
@@ -56,7 +56,6 @@
                 <div class="two-main">
                     <!-- 详细信息 -->
                     <div class="zfcg">
-                        <p class="czcg"><img src="/images/zccg.png"></p>
                         <p class="czcg">一封邮件已经发送到您的邮箱，请注意查收。</p>
                         <p class="czcg"><a href="/public/index">返回首页</a></p>
                     </div>

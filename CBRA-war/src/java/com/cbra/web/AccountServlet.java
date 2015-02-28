@@ -590,7 +590,7 @@ public class AccountServlet extends BaseServlet {
         }
         String account = getRequestString(request, "account");
         Account user = accountService.findByAccount(account);
-        if (user == null || !user.getEmail().equals(email)) {
+        if (user == null || !user.getEmail().equals(email) || AccountStatus.APPROVAL_REJECT.equals(user.getStatus())|| AccountStatus.PENDING_FOR_APPROVAL.equals(user.getStatus())) {
             setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_该账号不存在，请重新输入"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -600,36 +600,39 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean doResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "password", "password1")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String webUrl = getRequestString(request, "webUrl");
-//        if (webUrl == null) {
-//            setErrorResult(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserPasswdReset reset = accountService.findUserPasswdResetByWebUrl(webUrl);
-//        if (reset == null) {
-//            setErrorResult(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String password = getRequestString(request, "password");
-//        String password1 = getRequestString(request, "password1");
-//        if (password.length() < 6) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (!password.equals(password1)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_两次密码不一致"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        accountService.resetPassword(reset.getUser().getId(), reset, password);
-//        request.setAttribute("email", reset.getUser().getEmail());
-//        setSuccessResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_密码激活成功，请登录"), request);
-
+        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "passwd", "key")) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String key = getRequestString(request, "key");
+        if (key == null) {
+            setErrorResult(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        Account account = accountService.findByRepasswdUrl(key);
+        if (account == null) {
+            setErrorResult(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        String password = getRequestString(request, "passwd");
+        if (password.length() < 6) {
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        accountService.resetPassword(account, password);
+        setSuccessResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_密码激活成功，请登录"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 修改密码
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSessionException 
+     */
     private boolean doModifyPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "oldpasswd", "newpasswd")) {
             return KEEP_GOING_WITH_ORIG_URL;
@@ -922,14 +925,33 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 加载重置密码页
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
     private boolean loadResetPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String webUrl = getPathInfoStringAt(request, 1);
-//        request.setAttribute("webUrl", webUrl);
-//        UserPasswdReset reset = accountService.findUserPasswdResetByWebUrl(webUrl);
-//        if (reset == null) {
-//            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-//            return FORWARD_TO_ANOTHER_URL;
-//        }
+        String key = super.getRequestString(request, "key");
+        if (key == null) {
+            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("key", key);
+        Account account = accountService.findByRepasswdUrl(key);
+        if (account == null) {
+            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        if(Tools.addHour(account.getRepasswdDate(), 1).before(new Date())){
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        request.setAttribute("success", true);
+        super.setSuccessResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

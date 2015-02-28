@@ -1,56 +1,79 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%-- 
-    Document   : index
-    Created on : Mar 29, 2011, 10:49:28 AM
-    Author     : HUXIAOFENG
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
-<jsp:include page="/WEB-INF/public/z_header.jsp"/>	
-<div class="login_box">
-        <div class="LoginLeft">
-            <p class="text24 ColorBlue bold"><fmt:message key="ACCOUNT_LOGIN_LABEL_一个链接" bundle="${bundle}"/></p> 
-            <div class="LoginLeftText"><fmt:message key="ACCOUNT_LOGIN_TEXT_友付帮助用户" bundle="${bundle}"/></div>
-        </div>
-        <form action="/account/send_reset_passwd" method="post" id="send_reset_passwd">
-            <div class="loginboxcontent" style="float:right">	
-
-               <div class="sk-item">
-                   <label class="sk-label"> </label>  <div class="noticeMessage">
-                    <div class="wrongMessage" >
-                        <c:if test="${!empty postResult.singleErrorMsg}">
-                            ${postResult.singleErrorMsg}
-                        </c:if>
-                    </div>	
-                    <div class="successMessage" >
-                        <c:if test="${!empty postResult.singleSuccessMsg}">
-                            ${postResult.singleSuccessMsg}
-                        </c:if>
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <jsp:include page="/WEB-INF/public/z_header.jsp"/>
+    </head>
+    <c:choose>
+        <c:when test="${empty success}">
+            <body style="background:url(/images/Reg-bac.jpg) no-repeat top center">
+                <div class="xgmm">
+                    <div class="tit">重置密码</div>
+                    <form action="/account/reset_passwd" method="post" id="reset_passwd_form">
+                        <input type="hidden" name="a" value="RESET_PASSWD" />
+                        <input type="hidden" name="key" value="${key}">
+                        <table width="400" border="0" cellspacing="0" cellpadding="0">
+                            <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                                <tr>
+                                    <td width="100" height="44" align="right">新密码：</td>
+                                    <td><input id="passwd" name="passwd" type="text" class="shuru" /></td>
+                                </tr>
+                                <tr>
+                                    <td height="44" align="right">重复密码：</td>
+                                    <td><input id="repasswd" name="repasswd" type="text" class="shuru" /></td>
+                                </tr>
+                                <tr>
+                                    <td height="44" align="right"></td>
+                                    <td><input id="reset_passwd" type="button" class="rev-an" value="确定"></td>
+                                </tr>
+                            </table>
+                        </form>
                     </div>
-                    <div class="loadingMessage"style="display:none"><fmt:message key="GLOBAL_MSG_LOADING" bundle="${bundle}"/><img src="/images/032.gif" alt="loading" /></div>
-                </div></div>
-
-                    <input type="hidden" name="a" value="send_reset_passwd"/>
-                    <%-- <div class="pop_div2"><span><fmt:message key="ACCOUNT_SEND_RESET_PASSWD_注册邮箱" bundle="${bundle}"/></span><label><input type="text"  class="pop_input2" name="email" id="email"value="${email}"/></label><div class="clear"></div></div>
-                    <div class="pop_div2"><span><fmt:message key="ACCOUNT_SEND_RESET_PASSWD_验证码" bundle="${bundle}"/></span><label><input type="text"  class="pop_input2" name="verifycode" id="verifycode"/></label><div class="clear"></div></div>
-                    <div class="pop_div2"><span></span><label><input type="button" onclick="UserUpdate.validateSendResetPasswd();" name="Submit" class="pop_button2 collection_button" value="<fmt:message key='ACCOUNT_SEND_RESET_PASSWD_提交' bundle='${bundle}'/>"/></label><label><img width="177" height="40" src="/RandImgServlet" class="ensure_img"/></label><div class="clear"></div><div class="clear"></div></div>	--%>			
-                    <div class="sk-item">
-                        <label class="sk-label"><fmt:message key="ACCOUNT_SEND_RESET_PASSWD_注册邮箱" bundle="${bundle}"/></label>
-                        <input type="text"  class="pop_input2" name="email" id="email"value="${email}"/>
+                    <script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#reset_passwd").click(function () {
+                                if (CBRAValid.checkFormValueNull($("#passwd"))) {
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入密码", $("#passwd"));
+                                    return;
+                                }
+                                if ($("#passwd").val().length < 6) {
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "密码必须至少6位", $("#passwd"));
+                                    return;
+                                }
+                                if (CBRAValid.checkFormValueNull($("#repasswd"))) {
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入重复密码", $("#repasswd"));
+                                    return;
+                                }
+                                if ($("#passwd").val() != $("#repasswd").val()) {
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "两次密码不一致", $("#repasswd"));
+                                    return;
+                                }
+                                $("#reset_passwd_form").submit();
+                            });
+                        })
+                    </script> 
+            </c:when>
+            <c:otherwise>
+                <jsp:include page="/WEB-INF/public/z_top.jsp" />
+                <jsp:include page="/WEB-INF/account/z_account_banner.jsp" />
+                <div class="two-loc">
+                    <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 重置密码</div>
+                </div>
+                <!-- 主体 -->
+                <div class="two-main">
+                    <!-- 详细信息 -->
+                    <div class="zfcg">
+                        <p class="czcg">密码已经重置成功！</p>
+                        <p class="czcg"><a href="/account/login">去登录</a></p>
                     </div>
-                    <div class="sk-item">
-                        <label class="sk-label"><fmt:message key="ACCOUNT_SEND_RESET_PASSWD_验证码" bundle="${bundle}"/></label>
-                        <input type="text"  class="pop_input2" name="verifycode" id="verifycode"/>
-                    </div>
-                    <div class="sk-item">
-                        <input type="button" onclick="UserUpdate.validateSendResetPasswd();" name="Submit" class="pop_button2 collection_button" value="<fmt:message key='ACCOUNT_SEND_RESET_PASSWD_提交' bundle='${bundle}'/>"/>
-                        <img width="156" height="40" src="/RandImgServlet" class="ensure_img FloatLeft"/>
-                    </div>
-            </div>
-        </form>
-        <div class="clear"></div>
-    </div>
-<jsp:include page="/WEB-INF/public/z_footer.jsp"/> <%@include file="/WEB-INF/public/z_footer_close.html" %> 
-
+                    <div style="clear:both;"></div>
+                </div>
+                <!-- 主体 end -->
+                <jsp:include page="/WEB-INF/public/z_end.jsp"/>
+            </c:otherwise>
+        </c:choose>
+    </body>
+</html>

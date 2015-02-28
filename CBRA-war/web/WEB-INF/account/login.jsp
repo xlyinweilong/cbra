@@ -23,7 +23,7 @@
                         <input type="text" id="login_account" name="account" value="${account}" class="shuk" placeholder="输入帐号" />
                             <div id="login_msg_2" class="wrongMessage"></div>
                             <input type="password" id="login_passwd" name="passwd" class="shuk-1" placeholder="输入密码" />
-                            <p style="height:36px; line-height:36px; padding:0 5px;"><span class="fl"><input type="checkbox" class="jzmm">记住我　|　<a href="#">忘记密码</a></span><span class="fr"><input type="button" id="login_button" class="anniu" value="登  录"></span></p>
+                            <p style="height:36px; line-height:36px; padding:0 5px;"><span class="fl"><%--<input type="checkbox" class="jzmm">记住我　|　--%><a href="/account/forget_passwd">忘记密码？</a></span><span class="fr"><input type="button" id="login_button" class="anniu" value="登  录"></span></p>
                         </div>
                     </div>
                 </div>

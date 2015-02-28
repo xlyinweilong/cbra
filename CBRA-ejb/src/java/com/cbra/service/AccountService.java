@@ -646,14 +646,30 @@ public class AccountService {
      * 发送密码连接
      *
      * @param account
+     * @param language
      */
     public void sendResetPasswdURLEmail(Account account, String language) {
-        String url = this.getUniqueAccountRepasswdUrl();
+        String url = this.getUniqueAccountRepasswdUrl(account.getId());
         account.setRepasswdUrl(url);
-        em.merge(url);
+        account.setRepasswdDate(new Date());
+        em.merge(account);
         //发送邮件
         this.sendRepasswd(account, language);
     }
+    
+    /**
+     * 密码重置
+     * 
+     * @param account
+     * @param passwd 
+     */
+    public void resetPassword(Account account, String passwd) {
+        account.setPasswd(Tools.md5(passwd));
+        account.setRepasswdUrl(null);
+        account.setRepasswdDate(new Date());
+        em.merge(account);
+    }
+    
 
     /**
      * 根据验证URL获取用户
@@ -730,15 +746,16 @@ public class AccountService {
 
     /**
      * 生成唯一的验证URL（算法有待提高）
-     *
-     * @return
+     * 
+     * @param id
+     * @return 
      */
-    private String getUniqueAccountRepasswdUrl() {
+    private String getUniqueAccountRepasswdUrl(Long id) {
         int maxCount = 10;
-        String repasswdUrl = Tools.generateRandom8Chars();
+        String repasswdUrl = Tools.generateRandom8Chars(id);
         int i = 1;
         for (; i < maxCount && isExistAccountByRepasswdUrl(repasswdUrl); i++) {
-            repasswdUrl = Tools.generateRandom8Chars();
+            repasswdUrl = Tools.generateRandom8Chars(id);
         }
         if (i >= 10) {
             throw new RuntimeException("System Error");
@@ -836,12 +853,13 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
-        String fromEmail = "withdraw@yoopay.cn";
-        String templateFile = "account_approval_success_" + language + ".html";
-        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "Cbra" : "Cbra";
+        String fromEmail = "yinweilong@163.com";
+        String templateFile = "account_reset_passwd" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【密码找回通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
+        model.put("linkUrl", Config.HTTP_URL_BASE +"account/reset_passwd?key="+ account.getRepasswdUrl());
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 }
