@@ -971,8 +971,9 @@ public class AdminServlet extends BaseServlet {
             Date eventBeginDate = fileUploadObj.getDateFormField("eventBeginDate", "yyyy-MM-dd HH:mm:ss");
             Date eventEndDate = fileUploadObj.getDateFormField("eventEndDate", "yyyy-MM-dd HH:mm:ss");
             Date checkinDate = fileUploadObj.getDateFormField("checkinDate", "yyyy-MM-dd HH:mm:ss");
+            String title = fileUploadObj.getFormField("title");
             String eventLocation = fileUploadObj.getFormField("eventLocation");
-            BigDecimal touristPrice = fileUploadObj.optBigDecimalFormField("eventLocation", BigDecimal.ZERO);
+            BigDecimal touristPrice = fileUploadObj.optBigDecimalFormField("touristPrice", BigDecimal.ZERO);
             BigDecimal userPrice = fileUploadObj.optBigDecimalFormField("userPrice", BigDecimal.ZERO);
             BigDecimal companyPrice = fileUploadObj.optBigDecimalFormField("companyPrice", BigDecimal.ZERO);
             Integer eachCompanyFreeCount = fileUploadObj.getIntegerFormField("eachCompanyFreeCount");
@@ -1003,7 +1004,7 @@ public class AdminServlet extends BaseServlet {
                 companyAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
                 allowAttendeeEnum = FundCollectionAllowAttendeeEnum.PUBLIC;
             }
-            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, userAuth, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum,fileUploadItem);
+            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, title, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum,fileUploadItem);
             request.setAttribute("fundCollection", fundCollection);
             request.setAttribute("id", fundCollection.getId());
             request.setAttribute("plateId", plateId);

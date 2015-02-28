@@ -971,7 +971,7 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("pushDate")));
+                query.orderBy(builder.desc(root.get("createDate")));
                 TypedQuery<FundCollection> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;

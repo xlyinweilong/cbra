@@ -106,7 +106,7 @@
                         <select name="touristAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
                                 <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == fundCollection.touristAuth}">selected="selected"</c:if>>
-                                    ${plateAuthEnum.languageMean}
+                                    ${plateAuthEnum.authMean}
                                 </option>
                             </c:forEach>
                         </select>
@@ -115,7 +115,7 @@
                         <select name="userAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
                                 <option value="${allowAttendeeEnum.name()}" <c:if test="${plateAuthEnum == fundCollection.userAuth}">selected="selected"</c:if>>
-                                    ${plateAuthEnum.languageMean}
+                                    ${plateAuthEnum.authMean}
                                 </option>
                             </c:forEach>
                         </select>
@@ -124,7 +124,7 @@
                         <select name="companyAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
                                 <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == fundCollection.companyAuth}">selected="selected"</c:if>>
-                                    ${plateAuthEnum.languageMean}
+                                    ${plateAuthEnum.authMean}
                                 </option>
                             </c:forEach>
                         </select>
@@ -133,7 +133,7 @@
                         <select name="allowAttendee" class="dfinput" style="width: 354px;">
                             <c:forEach var="allowAttendeeEnum" items="${allowAttendeeEnumList}">
                                 <option value="${allowAttendeeEnum.name()}" <c:if test="${allowAttendeeEnum == fundCollection.allowAttendee}">selected="selected"</c:if>>
-                                    ${allowAttendeeEnum.languageMean}
+                                    ${allowAttendeeEnum.mean}
                                 </option>
                             </c:forEach>
                         </select>
@@ -145,7 +145,7 @@
                         <select name="languageType" class="dfinput" style="width: 354px;">
                             <c:forEach var="languageType" items="${languageTypeList}">
                                 <option value="${languageType.name()}" <c:if test="${languageType == fundCollection.eventLanguage}">selected="selected"</c:if>>
-                                    ${languageType.languageMean}
+                                    ${languageType.mean}
                                 </option>
                             </c:forEach>
                         </select>

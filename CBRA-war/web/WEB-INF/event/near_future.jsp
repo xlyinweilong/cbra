@@ -19,11 +19,13 @@
                     <ul>
                         <c:forEach var="fundCollection" items="${resultList}">
                             <li>
-                                <div class="img"><a target="_blank" href="/event/event_details?id=${fundCollection.id}"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty fundCollection.imageUrl}">${fundCollection.imageUrl}</c:if><c:if test="${empty fundCollection.imageUrl}">/ls/ls-19.jpg</c:if>"></a></div>
-                                <div class="con"><a target="_blank" href="/event/event_details?id=${fundCollection.id}">
+                                <div class="img"><a href="/event/event_details?id=${fundCollection.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty fundCollection.imageUrl}">${fundCollection.imageUrl}</c:if><c:if test="${empty fundCollection.imageUrl}">/ls/ls-19.jpg</c:if>"></a></div>
+                                <div class="con"><a href="/event/event_details?id=${fundCollection.id}" target="_blank">
                                         <p class="p1">${fundCollection.title}</p>
                                         <p class="p2">地点：${fundCollection.eventLocation}</p></a>
-                                    <p class="p2"><span><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /></span><span class="span2"><a target="_blank" href="/event/event_details?id=${fundCollection.id}">[阅读全文]</a></span></p>
+                                    <p class="p2"><%--<span class="span1"><a href="#">[筑誉动态]</a></span>--%><span>
+                                            <fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />
+                                        </span><span class="span2"><a href="/event/event_details?id=${fundCollection.id}" target="_blank" >[阅读全文]</a></span></p>
                                 </div>
                                 <div style="clear:both;"></div>
                             </li>
@@ -42,16 +44,9 @@
                 <h1>合作伙伴活动</h1>
                 <div class="top-hits">
                     <ul>
-                        <li><a href="detailed.asp">CBRA筑誉建筑联合会是由建筑行业</a></li>
-                        <li><a href="detailed.asp">专家学者资深从业人员及相关企业自</a></li>
-                        <li><a href="detailed.asp">发组成的为会员和行业提供优</a></li>
-                        <li><a href="detailed.asp">质服务为宗旨的全产业链合作</a></li>
-                        <li><a href="detailed.asp">平台以构筑建筑行业信誉</a></li>
-                        <li><a href="detailed.asp">CBRA筑誉建筑联合会是由建筑行业</a></li>
-                        <li><a href="detailed.asp">专家学者资深从业人员及相关企业自</a></li>
-                        <li><a href="detailed.asp">发组成的为会员和行业提供优</a></li>
-                        <li><a href="detailed.asp">质服务为宗旨的全产业链合作</a></li>
-                        <li><a href="detailed.asp">平台以构筑建筑行业信誉</a></li>
+                        <c:forEach var="event" items="${hotEventList}">
+                            <li><a target="_blank" href="/event/event_details?id=${event.id}">${event.title}</a></li>
+                            </c:forEach>
                     </ul>
                 </div>
             </div>

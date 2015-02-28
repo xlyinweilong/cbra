@@ -13,5 +13,13 @@ package com.cbra.support.enums;
 public enum FundCollectionLanaguageEnum {
 
     ZH, EN;
-
+    public String getMean(){
+        switch (this) {
+            case ZH:
+                return "中文";
+            case EN:
+                return "英文";
+        }
+        return null;
+    }
 }

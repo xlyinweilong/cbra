@@ -42,16 +42,9 @@
                 <h1>合作伙伴活动</h1>
                 <div class="top-hits">
                     <ul>
-                        <li><a href="detailed.asp">CBRA筑誉建筑联合会是由建筑行业</a></li>
-                        <li><a href="detailed.asp">专家学者资深从业人员及相关企业自</a></li>
-                        <li><a href="detailed.asp">发组成的为会员和行业提供优</a></li>
-                        <li><a href="detailed.asp">质服务为宗旨的全产业链合作</a></li>
-                        <li><a href="detailed.asp">平台以构筑建筑行业信誉</a></li>
-                        <li><a href="detailed.asp">CBRA筑誉建筑联合会是由建筑行业</a></li>
-                        <li><a href="detailed.asp">专家学者资深从业人员及相关企业自</a></li>
-                        <li><a href="detailed.asp">发组成的为会员和行业提供优</a></li>
-                        <li><a href="detailed.asp">质服务为宗旨的全产业链合作</a></li>
-                        <li><a href="detailed.asp">平台以构筑建筑行业信誉</a></li>
+                        <c:forEach var="event" items="${hotEventList}">
+                            <li><a target="_blank" href="/event/event_details?id=${event.id}">${event.title}</a></li>
+                        </c:forEach>
                     </ul>
                 </div>
             </div>

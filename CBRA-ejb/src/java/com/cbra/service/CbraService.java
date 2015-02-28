@@ -109,6 +109,20 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
+    
+    /**
+     * 获取热门活动
+     * 
+     * @param plate
+     * @param maxResults
+     * @return 
+     */
+    public List<FundCollection> getFundCollectionList4Web(Plate plate, int maxResults) {
+        TypedQuery<FundCollection> query = em.createQuery("SELECT fundCollection FROM FundCollection fundCollection WHERE fundCollection.plate = :plate AND fundCollection.deleted = false ORDER BY fundCollection.statusBeginDate DESC", FundCollection.class);
+        query.setParameter("plate", plate);
+        query.setMaxResults(maxResults);
+        return query.getResultList();
+    }
 
     /**
      * 获取首页信息

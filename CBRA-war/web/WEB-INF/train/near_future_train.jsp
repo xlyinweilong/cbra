@@ -17,32 +17,31 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fm-list">
+                    <form id="form1" action="/train/near_future_train" method="post">
+                    <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                     <div class="title"><span><a id="title-span">近期培训</a></span></div>
                     <ul>
-                    <c:forEach begin="1" end="5">
+                    <c:forEach var="fundCollection" items="${resultList}">
                         <li>
-                            <div class="img"><a href="detailed.asp"><img src="/ls/ls-19.jpg"></a></div>
-                            <div class="con"><a href="detailed.asp">
-                                    <p class="p1">11月22日筑誉联合会成立大会在陆家嘴圆满落下帷幕</p>
-                                    <p class="p2">CBRA筑誉建筑联合会是由建筑行业专家学者，资深从业人员及相关企业自发组成的为会员和行业提供优质服务为宗旨的全产业链合作平台以构筑建筑行业信誉，推动中国建筑行业进步”为使命</p></a>
-                                <p class="p2"><span>2014-11-22 17:08:15</span><span class="span2"><a href="detailed.asp">[阅读全文]</a></span></p>
-                            </div>
-                            <div style="clear:both;"></div>
-                        </li>
+                                <div class="img"><a href="/train/train_details?id=${fundCollection.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty fundCollection.imageUrl}">${fundCollection.imageUrl}</c:if><c:if test="${empty fundCollection.imageUrl}">/ls/ls-19.jpg</c:if>"></a></div>
+                                <div class="con"><a href="/train/train_details?id=${fundCollection.id}" target="_blank">
+                                        <p class="p1">${fundCollection.title}</p>
+                                        <p class="p2">地点：${fundCollection.eventLocation}</p></a>
+                                    <p class="p2"><%--<span class="span1"><a href="#">[筑誉动态]</a></span>--%><span>
+                                            <fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />
+                                        </span><span class="span2"><a href="/train/train_details?id=${fundCollection.id}" target="_blank" >[阅读全文]</a></span></p>
+                                </div>
+                                <div style="clear:both;"></div>
+                            </li>
                     </c:forEach>
                 </ul>
                 <div style="clear:both;"></div>
-                <div class="Page">
-                    <span>上一页</span>
-                    <span id="Page-b">1</span>
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    ...
-                    <span>10</span>
-                    <span>下一页</span>
-                </div>
-
+                <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
+                </form>
             </div>
             <!-- 右侧内容 end -->
             <div style="clear:both;"></div>

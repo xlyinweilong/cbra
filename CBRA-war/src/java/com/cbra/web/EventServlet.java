@@ -181,7 +181,9 @@ public class EventServlet extends BaseServlet {
         for (Plate plate : list) {
             if ("event".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
-                break;
+            }
+            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -192,6 +194,7 @@ public class EventServlet extends BaseServlet {
         map.put("plateId", platePage.getId());
         map.put("nearFutre", new Date());
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -212,7 +215,9 @@ public class EventServlet extends BaseServlet {
         for (Plate plate : list) {
             if ("event".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
-                break;
+            }
+            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -241,7 +246,7 @@ public class EventServlet extends BaseServlet {
         List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
         Plate platePage = null;
         for (Plate plate : list) {
-            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+            if ("partners".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
                 break;
             }
@@ -253,6 +258,7 @@ public class EventServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(platePage, 10));
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -270,6 +276,7 @@ public class EventServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         FundCollection fundCollection = adminService.findCollectionById(id);
         //set data
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
         request.setAttribute("fundCollection", fundCollection);
         request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));

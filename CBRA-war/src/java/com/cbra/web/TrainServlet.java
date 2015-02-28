@@ -249,9 +249,8 @@ public class TrainServlet extends BaseServlet {
         List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
         Plate platePage = null;
         for (Plate plate : list) {
-            if ("event".equalsIgnoreCase(plate.getPage())) {
+            if ("train".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
-                break;
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -280,9 +279,8 @@ public class TrainServlet extends BaseServlet {
         List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
         Plate platePage = null;
         for (Plate plate : list) {
-            if ("event".equalsIgnoreCase(plate.getPage())) {
+            if ("train".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
-                break;
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -310,6 +308,7 @@ public class TrainServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         FundCollection fundCollection = adminService.findCollectionById(id);
         //set data
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
         request.setAttribute("fundCollection", fundCollection);
         request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));

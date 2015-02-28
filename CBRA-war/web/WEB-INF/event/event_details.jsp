@@ -9,20 +9,19 @@
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
-        <jsp:include page="/WEB-INF/event/z_event_banner.jsp"><jsp:param name="page" value="3" /></jsp:include>
             <!-- 主体 -->
             <div class="two-main">
                 <!-- 详细信息 -->
                 <div class="hd-detailed">
                     <!-- 标题 -->
                     <h1>${fundCollection.title}</h1>
-                    <p id="juhong"><strong>培训状态：</strong>${fundCollection.status}</p>
-                    <p><strong>培训时间：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
+                    <p id="juhong"><strong>活动状态：</strong>${fundCollection.status}</p>
+                    <p><strong>活动时间：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
                     <p><strong>签到时间：</strong><fmt:formatDate value='${fundCollection.checkinDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
-                    <p><strong>培训地点：</strong>${fundCollection.eventLocation}</p>
-                    <p><strong>培训人员：</strong>{fundCollection.allowAttendee$.mean}</p>
-                    <p><strong>培训费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
-                    <p><strong>培训内容介绍：</strong></p>
+                    <p><strong>活动地点：</strong>${fundCollection.eventLocation}</p>
+                    <p><strong>活动人员：</strong>${fundCollection.allowAttendee.mean}</p>
+                    <p><strong>活动费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
+                    <p><strong>活动内容介绍：</strong></p>
                     <p style=" line-height:32px; color:#666;">
                         ${fundCollection.detailDescHtml}
                     </p>
@@ -76,8 +75,8 @@
                 <h1>热门点击</h1>
                 <div class="top-hits">
                     <ul>
-                        <c:forEach var="palteInfo" items="${plateInfoHots}">
-                            <li><a href="/news/details?id=${palteInfo.id}" target="_blank">${palteInfo.title}</a></li>
+                            <c:forEach var="event" items="${hotEventList}">
+                            <li><a target="_blank" href="/event/event_details?id=${event.id}">${event.title}</a></li>
                             </c:forEach>
                     </ul>
                 </div>

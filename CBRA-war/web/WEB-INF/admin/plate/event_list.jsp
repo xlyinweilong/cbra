@@ -91,7 +91,7 @@
                                     <input name="ids" type="checkbox" value="${fundCollection.id}" />
                                 </td>
                                 <td>
-                                    ${fundCollection.position}
+                                    ${fundCollection.title}
                                 </td>
                                 <td>
                                     <fmt:formatDate value="${fundCollection.createDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
