@@ -7,12 +7,14 @@ package com.cbra.service;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import com.cbra.Config;
+import com.cbra.entity.Account;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.PlateInformationContent;
+import com.cbra.entity.ReplyMessage;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysRoleMenu;
@@ -23,6 +25,7 @@ import com.cbra.support.Tools;
 import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
 import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
@@ -990,6 +993,26 @@ public class AdminService {
     }
 
     /**
+     * 根据ID获取信息
+     *
+     * @param id
+     * @return
+     */
+    public Message findMessageById(Long id) {
+        return em.find(Message.class, id);
+    }
+    
+    /**
+     * 根据ID获取信息回复
+     * 
+     * @param id
+     * @return 
+     */
+    public ReplyMessage findReplyMessageById(Long id) {
+        return em.find(ReplyMessage.class, id);
+    }
+
+    /**
      * 获取消息列表
      *
      * @param map
@@ -1003,14 +1026,11 @@ public class AdminService {
         ResultList<Message> resultList = new ResultList<>();
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Message> query = builder.createQuery(Message.class);
-        Root root = query.from(PlateInformation.class);
+        Root root = query.from(Message.class);
         List<Predicate> criteria = new ArrayList<>();
         criteria.add(builder.equal(root.get("deleted"), false));
         if (map.containsKey("plateId")) {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
-        }
-        if (map.containsKey("type")) {
-            criteria.add(builder.equal(root.get("type"), (MessageTypeEnum) map.get("type")));
         }
         try {
             if (list == null || !list) {
@@ -1035,7 +1055,7 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("pushDate")));
+                query.orderBy(builder.desc(root.get("createDate")));
                 TypedQuery<Message> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;
@@ -1506,6 +1526,35 @@ public class AdminService {
         String filename = sysUser.getId() + "_" + Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(3)) + "." + FilenameUtils.getExtension(item.getUploadFileName());
         Tools.setUploadFile(item, savePath + "/", filename);
         return Config.HTTP_URL_BASE + "/" + Config.HTML_EDITOR_UPLOAD + "/" + filedirL1.toString() + "/" + sysUser.getId() + "/" + filename;
+    }
+
+    /**
+     * 创建回复
+     *
+     * @param id
+     * @param mid
+     * @param sysUser
+     * @param content
+     * @param secretLevelEnum
+     * @return
+     */
+    public ReplyMessage createOrUpdateReplyMessage(Long id, Long mid, SysUser sysUser, String content, MessageSecretLevelEnum secretLevelEnum) {
+        ReplyMessage replyMessage = new ReplyMessage();
+        if (id != null) {
+            replyMessage = em.find(ReplyMessage.class, id);
+        }
+        Message target = em.find(Message.class, mid);
+        replyMessage.setMessage(target);
+        replyMessage.setContent(content);
+        replyMessage.setSysUser(sysUser);
+        replyMessage.setSecretLevel(secretLevelEnum);
+        replyMessage.setTargetUrl(target.getTargetUrl());
+        if (id == null) {
+            em.persist(replyMessage);
+        } else {
+            em.merge(replyMessage);
+        }
+        return replyMessage;
     }
 
     public void sendFundAddFundNoticeEmail() {

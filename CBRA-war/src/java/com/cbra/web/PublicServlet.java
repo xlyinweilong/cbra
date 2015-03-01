@@ -95,7 +95,7 @@ public class PublicServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        INDEX, SET_LANG, KEEP_SESSION, WEIBO, BLOG, SEARCH;
+        INDEX, SET_LANG, KEEP_SESSION, WEIBO, BLOG, SEARCH,NO_AUTHORIZATION;
     }
 
     @Override

@@ -5,15 +5,18 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.Account;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.service.CbraService;
+import com.cbra.service.MessageService;
 import com.cbra.support.NoPermException;
 import com.cbra.support.ResultList;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import static com.cbra.web.BaseServlet.REQUEST_ATTRIBUTE_PAGE_ENUM;
@@ -47,6 +50,8 @@ public class MessageServlet extends BaseServlet {
     private AdminService adminService;
     @EJB
     private CbraService cbraService;
+    @EJB
+    private MessageService messageService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -134,6 +139,15 @@ public class MessageServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
+    /**
+     * 发送消息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
     private boolean doSendMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long plateId = super.getRequestLong(request, "plateId");
         String content = getRequestString(request, "content");
@@ -142,12 +156,19 @@ public class MessageServlet extends BaseServlet {
         Long offerId = getRequestLong(request, "offerId");
         String secretLevel = getRequestString(request, "secretLevel");
         String forwardUrl = getRequestString(request, "forwardUrl");
+        Account account = super.getUserFromSessionNoException(request);
+        MessageSecretLevelEnum secretLevelEnum = null;
+        try {
+            secretLevelEnum = MessageSecretLevelEnum.valueOf(secretLevel);
+        } catch (Exception e) {
+            secretLevelEnum = MessageSecretLevelEnum.PUBLIC;
+        }
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "content", "forwardUrl")) {
             return FORWARD_TO_ANOTHER_URL;
         }
-        
-        super.forwardWithSuccess(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), forwardUrl, request, response);
-        return FORWARD_TO_ANOTHER_URL;
+        messageService.createMessageFromUser(account, plateId, content, forwardUrl, fundCollectionId, plateInfoId, offerId, secretLevelEnum);
+        super.redirect(forwardUrl, request, response);
+        return REDIRECT_TO_ANOTHER_URL;
     }
 
     // ************************************************************************

@@ -15,6 +15,8 @@ import com.cbra.support.NoPermException;
 import com.cbra.support.ResultList;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.PlateAuthEnum;
+import static com.cbra.web.BaseServlet.FORWARD_TO_ANOTHER_URL;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import static com.cbra.web.BaseServlet.REQUEST_ATTRIBUTE_PAGE_ENUM;
 import com.cbra.web.support.BadPageException;
@@ -278,7 +280,12 @@ public class EventServlet extends BaseServlet {
         //set data
         request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
         request.setAttribute("fundCollection", fundCollection);
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }

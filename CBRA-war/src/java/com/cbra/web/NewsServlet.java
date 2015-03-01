@@ -225,8 +225,13 @@ public class NewsServlet extends BaseServlet {
         //set data
         request.setAttribute("plateInfo", plateInfo);
         request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(plateInfo.getPlate(), 5));
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request)));
-        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
+        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 }

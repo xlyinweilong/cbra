@@ -7,11 +7,8 @@ package com.cbra.entity;
 
 import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
-import com.cbra.support.enums.PlateKeyEnum;
-import com.cbra.support.enums.SysUserTypeEnum;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +21,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -34,14 +30,14 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 消息模块
+ * 消息回复
  *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "message")
+@Table(name = "reply_message")
 @XmlRootElement
-public class Message implements Serializable {
+public class ReplyMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -56,24 +52,21 @@ public class Message implements Serializable {
     @Column(name = "create_date", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createDate = new Date();
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private MessageTypeEnum type = MessageTypeEnum.PUBLISH_FROM_USER;
     @Column(name = "secret_level")
     @Enumerated(EnumType.STRING)
     private MessageSecretLevelEnum secretLevel = MessageSecretLevelEnum.PUBLIC;
-    @JoinColumn(name = "plate_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Plate plate;
-    @JoinColumn(name = "plate_information_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PlateInformation plateInformation;
-    @JoinColumn(name = "offer_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Offer offer;
-    @JoinColumn(name = "fundCollection_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private FundCollection fundCollection;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
+    @JoinColumn(name = "sys_user_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SysUser sysUser;
+    @JoinColumn(name = "message_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Message message;
     @Lob
     @Size(max = 65535)
     @Column(name = "content")
@@ -84,15 +77,9 @@ public class Message implements Serializable {
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    @OneToMany(mappedBy = "message", targetEntity = ReplyMessage.class)
-    private List<ReplyMessage> messageList;
 
     public String getUserName() {
-        if (account == null) {
-            return "用户";
-        } else {
-            return account.getName();
-        }
+        return "管理员";
     }
 
     public Long getId() {
@@ -119,11 +106,19 @@ public class Message implements Serializable {
         this.createDate = createDate;
     }
 
-    public Message() {
+    public ReplyMessage() {
     }
 
-    public Message(Long id) {
+    public ReplyMessage(Long id) {
         this.id = id;
+    }
+
+    public MessageTypeEnum getType() {
+        return type;
+    }
+
+    public void setType(MessageTypeEnum type) {
+        this.type = type;
     }
 
     public MessageSecretLevelEnum getSecretLevel() {
@@ -132,22 +127,6 @@ public class Message implements Serializable {
 
     public void setSecretLevel(MessageSecretLevelEnum secretLevel) {
         this.secretLevel = secretLevel;
-    }
-
-    public Plate getPlate() {
-        return plate;
-    }
-
-    public void setPlate(Plate plate) {
-        this.plate = plate;
-    }
-
-    public PlateInformation getPlateInformation() {
-        return plateInformation;
-    }
-
-    public void setPlateInformation(PlateInformation plateInformation) {
-        this.plateInformation = plateInformation;
     }
 
     public Account getAccount() {
@@ -174,20 +153,12 @@ public class Message implements Serializable {
         this.deleted = deleted;
     }
 
-    public Offer getOffer() {
-        return offer;
+    public SysUser getSysUser() {
+        return sysUser;
     }
 
-    public void setOffer(Offer offer) {
-        this.offer = offer;
-    }
-
-    public FundCollection getFundCollection() {
-        return fundCollection;
-    }
-
-    public void setFundCollection(FundCollection fundCollection) {
-        this.fundCollection = fundCollection;
+    public void setSysUser(SysUser sysUser) {
+        this.sysUser = sysUser;
     }
 
     public String getTargetUrl() {
@@ -198,14 +169,13 @@ public class Message implements Serializable {
         this.targetUrl = targetUrl;
     }
 
-    public List<ReplyMessage> getMessageList() {
-        return messageList;
+    public Message getMessage() {
+        return message;
     }
 
-    public void setMessageList(List<ReplyMessage> messageList) {
-        this.messageList = messageList;
+    public void setMessage(Message message) {
+        this.message = message;
     }
-
 
     @Override
     public int hashCode() {
@@ -217,10 +187,10 @@ public class Message implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Message)) {
+        if (!(object instanceof ReplyMessage)) {
             return false;
         }
-        Message other = (Message) object;
+        ReplyMessage other = (ReplyMessage) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -229,7 +199,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "com.cbra.entity.Message[ id=" + id + " ]";
+        return "com.cbra.entity.ReplyMessage[ id=" + id + " ]";
     }
 
 }

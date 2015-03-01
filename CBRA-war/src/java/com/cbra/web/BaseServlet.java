@@ -8,6 +8,7 @@ import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.Plate;
+import com.cbra.entity.SysUser;
 import com.cbra.service.AccountService;
 import com.cbra.service.CbraService;
 import com.cbra.support.FileUploadItem;
@@ -940,6 +941,18 @@ public abstract class BaseServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Account user = (Account) session.getAttribute("user");
         return user;
+    }
+    
+    /**
+     * 从会话中获取管理员
+     * 
+     * @param request
+     * @return 
+     */
+    SysUser getSysUserFromSessionNoException(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        SysUser admin = (SysUser) session.getAttribute("admin");
+        return admin;
     }
 
     /**

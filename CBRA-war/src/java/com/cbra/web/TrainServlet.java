@@ -17,7 +17,9 @@ import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.exception.AccountNotExistException;
+import static com.cbra.web.BaseServlet.FORWARD_TO_ANOTHER_URL;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import static com.cbra.web.BaseServlet.REQUEST_ATTRIBUTE_PAGE_ENUM;
 import com.cbra.web.support.BadPageException;
@@ -230,8 +232,13 @@ public class TrainServlet extends BaseServlet {
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         //set data
         request.setAttribute("plateInfo", plateInfo);
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request)));
-        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
+        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
     
@@ -310,7 +317,12 @@ public class TrainServlet extends BaseServlet {
         //set data
         request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
         request.setAttribute("fundCollection", fundCollection);
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }

@@ -14,6 +14,7 @@ import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.entity.ReplyMessage;
 import com.cbra.entity.SysMenu;
 import com.cbra.entity.SysRole;
 import com.cbra.entity.SysUser;
@@ -31,6 +32,7 @@ import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
 import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
@@ -66,7 +68,7 @@ import org.json.simple.JSONObject;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/account/*", "/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/message/*", "/admin/account/*", "/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
@@ -249,7 +251,7 @@ public class AdminServlet extends BaseServlet {
         PLATE_MANAGE, PLATE_LIST, PLATE_INFO, PLATE_TREE, PLATE_SORT_LIST,
         PLATE_INFO_MANAGE, PLATE_INFO_LIST, PLATE_INFO_INFO, PLATE_INFO_TREE, OFFER_INFO, OFFER_LIST, EVENT_INFO, EVENT_LIST,
         PLATE_AUTH_MANAGE, PLATE_AUTH_INFO, PLATE_AUTH_TREE,
-        MESSAGE_MANAGE, MESSAGE_INFO, MESSAGE_TREE, MESSAGE_LIST,
+        MESSAGE_INFO, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
 
@@ -269,7 +271,6 @@ public class AdminServlet extends BaseServlet {
             case PLATE_MANAGE:
             case PLATE_INFO_MANAGE:
             case PLATE_AUTH_MANAGE:
-            case MESSAGE_MANAGE:
             case MY_INFO:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
@@ -325,9 +326,7 @@ public class AdminServlet extends BaseServlet {
             case PLATE_AUTH_TREE:
                 return loadPlateAuthTree(request, response);
             case MESSAGE_INFO:
-                return loadPlateAuthInfo(request, response);
-            case MESSAGE_TREE:
-                return loadMessageTree(request, response);
+                return loadMessageInfo(request, response);
             case MESSAGE_LIST:
                 return loadMessageList(request, response);
             case C_USER_LIST:
@@ -988,7 +987,7 @@ public class AdminServlet extends BaseServlet {
             PlateAuthEnum userAuthEnum = null;
             PlateAuthEnum companyAuthEnum = null;
             FundCollectionAllowAttendeeEnum allowAttendeeEnum = null;
-            if(eachCompanyFreeCount == null){
+            if (eachCompanyFreeCount == null) {
                 eachCompanyFreeCount = 0;
             }
             try {
@@ -1004,7 +1003,7 @@ public class AdminServlet extends BaseServlet {
                 companyAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
                 allowAttendeeEnum = FundCollectionAllowAttendeeEnum.PUBLIC;
             }
-            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, title, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum,fileUploadItem);
+            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, title, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum, fileUploadItem);
             request.setAttribute("fundCollection", fundCollection);
             request.setAttribute("id", fundCollection.getId());
             request.setAttribute("plateId", plateId);
@@ -1105,13 +1104,23 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean doCreateOrUpdateMessage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
-        Long plateId = super.getRequestLong(request, "plateId");
-        if (id == null) {
+        Long mid = super.getRequestLong(request, "mid");
+        String content = super.getRequestString(request, "content");
+        String messageSecretLevel = super.getRequestString(request, "messageSecretLevel");
+        MessageSecretLevelEnum messageSecretLevelEnum = null;
+        try {
+            messageSecretLevelEnum = MessageSecretLevelEnum.valueOf(messageSecretLevel);
+        } catch (Exception e) {
+            messageSecretLevelEnum = MessageSecretLevelEnum.PUBLIC;
+        }
+        if (mid == null) {
             setErrorResult("保存失败，参数异常！", request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        //Message message = adminService.updatePlateAuth(id, touristAuthEnum, userAuthEnum, companyAuthEnum);
-        request.setAttribute("plateId", plateId);
+        ReplyMessage replyMessage = adminService.createOrUpdateReplyMessage(id, mid, super.getSysUserFromSessionNoException(request), content, messageSecretLevelEnum);
+        request.setAttribute("message", replyMessage);
+        request.setAttribute("id", id);
+        request.setAttribute("mid", mid);
         setSuccessResult("保存成功！", request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1801,20 +1810,6 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
-     * 信息树
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadMessageTree(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("plateList", adminService.findPlateMessageList());
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
      * 消息列表
      *
      * @param request
@@ -1831,7 +1826,27 @@ public class AdminServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         ResultList<Message> resultList = adminService.findMessageList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
-        request.setAttribute("plateId", super.getRequestLong(request, "plateId"));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载信息页面
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadMessageInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        Long mid = super.getRequestLong(request, "mid");
+        if (id != null) {
+            request.setAttribute("message", adminService.findReplyMessageById(id));
+        }
+        request.setAttribute("secretLevelList", Arrays.asList(MessageSecretLevelEnum.values()));
+        request.setAttribute("mid", mid);
+        request.setAttribute("id", id);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

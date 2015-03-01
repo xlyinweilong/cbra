@@ -82,4 +82,37 @@ public class MessageService {
         return query.getResultList();
     }
 
+    /**
+     * 用户创建信息
+     * 
+     * @param account
+     * @param plateId
+     * @param content
+     * @param targetUrl
+     * @param fundCollectionId
+     * @param plateInfoId
+     * @param offerId
+     * @param secretLevelEnum
+     * @return 
+     */
+    public Message createMessageFromUser(Account account, Long plateId, String content,String targetUrl, Long fundCollectionId, Long plateInfoId, Long offerId, MessageSecretLevelEnum secretLevelEnum) {
+        Message message = new Message();
+        message.setAccount(account);
+        message.setContent(content);
+        message.setSecretLevel(secretLevelEnum);
+        message.setPlate(adminService.findPlateById(plateId));
+        message.setTargetUrl(targetUrl);
+        if (fundCollectionId != null) {
+            message.setFundCollection(adminService.findCollectionById(fundCollectionId));
+        }
+        if (plateInfoId != null) {
+            message.setPlateInformation(adminService.findPlateInformationById(plateInfoId));
+        }
+        if (offerId != null) {
+            message.setOffer(adminService.findOfferById(offerId));
+        }
+        em.persist(message);
+        return message;
+    }
+    
 }

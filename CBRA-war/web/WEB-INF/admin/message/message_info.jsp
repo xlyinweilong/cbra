@@ -23,79 +23,62 @@
     </head>
     <script type="text/javascript">
         $(function () {
-            //$.fn.initpage();
             $("#saveBtn").click(function () {
                 var rules = {
-                    "plateName": {required: true},
-                    "plateEnName": {required: true}
+                    "content": {required: true}
                 };
                 var messages = {
-                    "plateName": {required: "栏目中文名称必须填写！"},
-                    "plateEnName": {required: "栏目英文名称必须填写！"}
+                    "content": {required: "回复内容必须填写！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
-                $("#form1").attr("target", "iframe1");
-                $("#form1").attr("action", "/admin/datadict/plate_info");
+                $("#form1").attr("action", "/admin/message/message_info");
                 $("#form1").submit();
             });
-            //$.fn.save();
             $.fn.goback();
         });
-        /**
-         * 保存
-         */
-        $.fn.save = function () {
-
-        }
         /**
          * 返回
          */
         $.fn.goback = function () {
             $("#gobackBtn").click(function () {
-                window.location.href = "/admin/datadict/plate_list?id=${pid}";
+                window.location.href = "/admin/message/message_list";
             });
-        }
-        /**
-         * 初始化页面
-         */
-        $.fn.initpage = function () {
-            $("#txt_roleName").focus();
         }
     </script>
     <body>
         <div class="formbody">
-            <div class="formtitle"><span>基本信息</span></div>
+            <div class="formtitle"><span>回复信息</span></div>
             <form id="form1" name="form1" method="post">
-                <input type="hidden" name="a" value="PLATE_CREATE_OR_UPDATE" />
+                <input type="hidden" name="a" value="MESSAGE_CREATE_OR_UPDATE" />
                 <input type="hidden" name="id" value="${id}" />
-                <input type="hidden" name="pid" value="${pid}" />
+                <input type="hidden" name="mid" value="${mid}" />
                 <ul class="forminfo">
-                    <li><label>栏目中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="plateName" value="${plate.name}" maxlength="25" /><i>栏目名称不能超过25个汉字，必填项</i></li>
-                    <li><label>栏目英文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="plateEnName" value="${plate.enName}" maxlength="200" /><i>栏目名称不能超过200个字符，必填项</i></li>
-                    <li><label>栏目关键字</label>
-                        <select name="plateKey" class="dfinput" style="width: 354px;">
-                            <c:forEach var="plateKey" items="${plateKeyEnumList}">
-                                <option value="${plateKey.name()}" <c:if test="${plateKey == plate.plateKey}">selected="selected"</c:if>>
-                                    ${plateKey.name()}
+                    <li><label>回复内容<b>*</b></label>
+                        <textarea name="content" class="dfinput"  style="width: 350px;height: 150px">${message.content}</textarea>
+                    </li>
+                    <li><label>信息等级<b>*</b></label>
+                        <select name="languageType" class="dfinput" style="width: 354px;">
+                            <c:forEach var="secretLevel" items="${secretLevelList}">
+                                <option value="${secretLevel.name()}" <c:if test="${secretLevel == message.secretLevel}">selected="selected"</c:if>>
+                                    ${secretLevel.mean}
                                 </option>
                             </c:forEach>
-                        </select></li>
-                    <li><label>栏目类型</label>
-                        <select name="plateType" class="dfinput" style="width: 354px;">
-                            <c:forEach var="plateType" items="${plateTypeEnumList}">
-                                <option value="${plateType.name()}" <c:if test="${plateType == plate.plateType}">selected="selected"</c:if>>
-                                    ${plateType.name()}
-                                </option>
-                            </c:forEach>
-                        </select></li>
-                        <li><label>&nbsp;</label>
-                            <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
-                            <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
-                        </li>
+                        </select>
+                    </li>
+                    <li><label>&nbsp;</label>
+                        <input id="saveBtn" name="saveBtn" type="button" class="btn" value="保存"/>
+                        <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>
+                    </li>
                 </ul>
             </form>
         </div>
         <iframe name="iframe1" id="iframe1" width="1px" height="1px"></iframe>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                <c:if test="${postResult.singleSuccessMsg != null}">alert("${postResult.singleSuccessMsg}");</c:if>
+                <c:if test="${postResult.singleErrorMsg != null}">alert("${postResult.singleErrorMsg}");</c:if>
+            });
+        </script>
     </body>
 </html>

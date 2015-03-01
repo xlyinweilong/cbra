@@ -17,6 +17,7 @@ import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
@@ -257,7 +258,12 @@ public class AboutServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         Offer offer = adminService.findOfferById(id);
         request.setAttribute("offer", offer);
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(offer.getPlate(), super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(offer.getPlate(), super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
         request.setAttribute("messageList", cbraService.findMessageList(offer, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -317,8 +323,13 @@ public class AboutServlet extends BaseServlet {
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         //set data
         request.setAttribute("plateInfo", plateInfo);
-        request.setAttribute("plateAuth", cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request)));
-        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
+        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+            super.forward("/public/no_authorization", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("plateAuth", auth);
+        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

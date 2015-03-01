@@ -18,36 +18,13 @@
         <script type="text/javascript" src="<%=path%>/background/js/validate/jquery.validate.js"></script>
         <script type="text/javascript" src="<%=path%>/background/js/common/common.js"></script>
         <script type="text/javascript">
-            $(function () {
-                $('.tablelist tbody tr:odd').addClass('odd');
-                $.fn.CheckAllClick("cbk_all");
-                $.fn.UnCheckAll("ids", "cbk_all");
-                //显示添加界面
-                $("#addBtn").click(function () {
-                    window.location.href = "/admin/datadict/plate_info?pid=${pid}";
-                });
-                //删除所选设备信息
-                $("#deleteBtn").click(function () {
-                    $.fn.delete_items("ids", "/admin/datadict/plate_list?a=PLATE_DELETE&id=${pid}");
-                });
-                //排序
-                $("#sortBtn").click(function () {
-                    parent.parent.tipsWindown('菜单排序', 'iframe:/admin/datadict/plate_sort_list?id=${pid}', '350', '400', 'true', '', 'true', '', 'no');
-                    parent.parent.$("#windown-close").bind('click', function () {
-                        window.location.href = "/admin/datadict/plate_list?id=${pid}";
-                    });
-                });
-                $(".tiptop a").click(function () {
-                    $(".tip").fadeOut(200);
-                });
-            });
             //显示修改界面
             $.fn.edit = function (sid) {
-                window.location.href = "/admin/datadict/plate_info?id=" + sid + "&pid=${pid}";
+                window.location.href = "/admin/message/message_info?mid=" + sid;
             };
             //删除单个设备信息
             $.fn.deleteItem = function (sid) {
-                var url = "/admin/datadict/plate_list?a=PLATE_DELETE&pid=${pid}&ids=" + sid;
+                var url = "/admin/message/message_list?a=MESSAGE_DELETE&ids=" + sid;
                 if (confirm("您确定要删除这条信息吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
@@ -57,33 +34,30 @@
         </script>
     </head>
     <body>
+         <div class="place">
+            <span>位置：</span>
+            <ul class="placeul">
+                <li>
+                    <a href="#">首页</a>
+                </li>
+                <li>
+                    <a href="#">留言信息</a>
+                </li>
+                <li>
+                    <a href="#">留言管理</a>
+                </li>
+            </ul>
+        </div>
         <form id="form1" name="form1" method="post">
             <div class="rightinfo">
-                <div class="tools">
-                    <ul class="toolbar">
-                        <li class="click" id="addBtn">
-                            <span><img src="<%=path%>/background/images/t01.png" />
-                            </span>添加
-                        </li>
-                        <li class="click" id="deleteBtn">
-                            <span><img src="<%=path%>/background/images/t03.png" />
-                            </span>删除
-                        </li>
-                        <li class="click" id="sortBtn">
-                            <span><img src="<%=path%>/background/images/leftico01.png" width="20" height="20" /> </span>排序
-                        </li>
-                    </ul>
-                    <ul class="toolbar1">
-                    </ul>
-                </div>
                 <table class="tablelist">
                     <thead>
                         <tr>
-                            <th align="center" width="30px">
-                                <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
+                            <th>
+                                内容
                             </th>
                             <th>
-                                栏目
+                                回复数量
                             </th>
                             <th>
                                 操作
@@ -91,19 +65,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="plate" items="${plateList}">
+                        <c:forEach var="message" items="${resultList}">
                             <tr>
                                 <td>
-                                    <input name="ids" type="checkbox" value="${plate.id}" />
+                                    ${message.content}
                                 </td>
                                 <td>
-                                    ${plate.name}
+                                    <c:if test="${message.messageList != null}">${message.messageList.size()}</c:if><c:if test="${message.messageList == null}">0</c:if>
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">查看</a>
-                                    <a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">回复</a>
-                                    <c:if test=""><a href="javascript:$.fn.edit('${plate.id}');" class="tablelink">修改</a></c:if>
-                                    <a href="javascript:$.fn.deleteItem('${plate.id}');" class="tablelink">删除</a>
+                                        <a href="${message.targetUrl}" target="_blank" class="tablelink">查看</a>
+                                    <a href="javascript:$.fn.edit('${message.id}');" class="tablelink">回复</a>
+                                    <a href="javascript:$.fn.deleteItem('${message.id}');" class="tablelink">删除</a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -111,8 +84,5 @@
                 </table>
             </div>
         </form>
-        <script type="text/javascript">
-            <c:if test = "${reflashTreeFrameUrl != null}" >$.fn.refreshtree();</c:if>
-        </script>
     </body>
 </html>
