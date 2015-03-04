@@ -98,6 +98,55 @@ public abstract class BaseServlet extends HttpServlet {
             types.add(PlateTypeEnum.MENU);
             List<Plate> list = cbraService.getPlateList4Web(types);
             application.setAttribute("menuPlates", list);
+            List<Long> newsids = new LinkedList<>();
+            List<Long> eventids = new LinkedList<>();
+            List<Long> trainids = new LinkedList<>();
+            List<Long> consultids = new LinkedList<>();
+            for (Plate plate : list) {
+                if("news_list".equalsIgnoreCase(plate.getPage())){
+                    newsids.add(plate.getId());
+                }
+                if("industry_list".equalsIgnoreCase(plate.getPage())){
+                    newsids.add(plate.getId());
+                }
+                if("event".equalsIgnoreCase(plate.getPage())){
+                    eventids.add(plate.getId());
+                }
+                if("partners".equalsIgnoreCase(plate.getPage())){
+                    eventids.add(plate.getId());
+                }
+                if("train".equalsIgnoreCase(plate.getPage())){
+                    trainids.add(plate.getId());
+                }
+                if("purchase".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("overseas".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("building".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("pension".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("material".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("industrialization".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("green".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+                if("bim".equalsIgnoreCase(plate.getPage())){
+                    consultids.add(plate.getId());
+                }
+            }
+            application.setAttribute("newsids", newsids);
+            application.setAttribute("eventids", eventids);
+            application.setAttribute("trainids", trainids);
+            application.setAttribute("consultids", consultids);
         }
     }
 
@@ -942,12 +991,12 @@ public abstract class BaseServlet extends HttpServlet {
         Account user = (Account) session.getAttribute("user");
         return user;
     }
-    
+
     /**
      * 从会话中获取管理员
-     * 
+     *
      * @param request
-     * @return 
+     * @return
      */
     SysUser getSysUserFromSessionNoException(HttpServletRequest request) {
         HttpSession session = request.getSession();

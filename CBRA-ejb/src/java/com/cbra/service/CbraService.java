@@ -17,6 +17,7 @@ import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.ResultList;
+import com.cbra.support.SearchInfo;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
@@ -32,6 +33,7 @@ import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,6 +47,7 @@ import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -57,11 +60,11 @@ import org.apache.commons.io.FilenameUtils;
 @Stateless
 @LocalBean
 public class CbraService {
-
+    
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(CbraService.class.getName());
-
+    
     @EJB
     private EmailService emailService;
     @EJB
@@ -80,6 +83,49 @@ public class CbraService {
         TypedQuery<Plate> query = em.createQuery("SELECT plate FROM Plate plate WHERE plate.plateType IN :types ORDER BY plate.sortIndex ASC", Plate.class);
         query.setParameter("types", types);
         return query.getResultList();
+    }
+
+    /**
+     * 获取plateId包含的SearchInfo
+     *
+     * @param ids
+     * @param searchText
+     * @param pageIndex
+     * @param maxPerPage
+     * @return
+     */
+    public ResultList<SearchInfo> findSearch(List<Long> ids, String searchText, int pageIndex, int maxPerPage) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        for (Long id : ids) {
+            sb.append(id);
+            sb.append(",");
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        sb.append(")");
+        ResultList<SearchInfo> resultList = new ResultList<>();
+        Query countQuery = em.createNativeQuery("SELECT SUM(t.id) FROM (SELECT COUNT(plateInfo.id) as id FROM plate_information plateInfo WHERE plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(fundCollection.id) as id FROM fund_collection fundCollection WHERE fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(o.id) as id FROM offer o WHERE o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%') AS t");
+        Long totalCount = ((BigDecimal) countQuery.getSingleResult()).longValue();
+        resultList.setTotalCount(totalCount.intValue());
+        Query query = em.createNativeQuery("SELECT plateInfo.id as id,plateInfo.title as title,plateInfo.plate_id as plateId,plateInfo.introduction as introduction FROM plate_information plateInfo WHERE plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT fundCollection.id as id,fundCollection.title as title,fundCollection.plate_id as plateId,fundCollection.event_location as introduction FROM fund_collection fundCollection WHERE fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT o.id as id,o.position as title,o.plate_id as plateId,o.city as introduction FROM offer o WHERE o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%'");
+        int startIndex = (pageIndex - 1) * maxPerPage;
+        query.setFirstResult(startIndex);
+        query.setMaxResults(maxPerPage);
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        List<SearchInfo> list = new LinkedList<>();
+        for (Object object : query.getResultList()) {
+            SearchInfo si = new SearchInfo();
+            Object[] o = (Object[]) object;
+            si.setId((Long) o[0]);
+            si.setTitle((String) o[1]);
+            si.setPlateId((Long) o[2]);
+            si.setIntroduction((String) o[3]);
+            list.add(si);
+        }
+        resultList.addAll(list);
+        return resultList;
     }
 
     /**
@@ -109,13 +155,13 @@ public class CbraService {
         query.setMaxResults(maxResults);
         return query.getResultList();
     }
-    
+
     /**
      * 获取热门活动
-     * 
+     *
      * @param plate
      * @param maxResults
-     * @return 
+     * @return
      */
     public List<FundCollection> getFundCollectionList4Web(Plate plate, int maxResults) {
         TypedQuery<FundCollection> query = em.createQuery("SELECT fundCollection FROM FundCollection fundCollection WHERE fundCollection.plate = :plate AND fundCollection.deleted = false ORDER BY fundCollection.statusBeginDate DESC", FundCollection.class);

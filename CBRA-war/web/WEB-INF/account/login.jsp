@@ -20,9 +20,9 @@
                         </div>
                         <div class="denglu">
                             <div id="login_msg_1" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
-                        <input type="text" id="login_account" name="account" value="${account}" class="shuk" placeholder="输入帐号" />
+                        <input type="text" id="login_account" name="account" value="${account}" class="shuk" placeholder="输入帐号" onkeypress="mykeypress(event);" />
                             <div id="login_msg_2" class="wrongMessage"></div>
-                            <input type="password" id="login_passwd" name="passwd" class="shuk-1" placeholder="输入密码" />
+                            <input type="password" id="login_passwd" name="passwd" class="shuk-1" placeholder="输入密码" onkeypress="mykeypress(event);" />
                             <p style="height:36px; line-height:36px; padding:0 5px;"><span class="fl"><%--<input type="checkbox" class="jzmm">记住我　|　--%><a href="/account/forget_passwd">忘记密码？</a></span><span class="fr"><input type="button" id="login_button" class="anniu" value="登  录"></span></p>
                         </div>
                     </div>
@@ -32,7 +32,17 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 $("#login_button").click(function () {
-                    if (CBRAValid.checkFormValueNull($("#login_account"))) {
+                    login();
+                });
+            });
+            function mykeypress(event) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if (e && e.keyCode == 13) {
+                    login();
+                }
+            }
+            function login() {
+                if (CBRAValid.checkFormValueNull($("#login_account"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#login_msg_1"),"请输入帐号",$("#login_account"));
                         return;
                     }
@@ -41,8 +51,7 @@
                         return;
                     }
                     $("#form_login").submit();
-                });
-            })
+            }
         </script>             
     </body>
 </html>

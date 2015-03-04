@@ -12,7 +12,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>欢迎登录云端房产网信息管理平台</title>
+        <title>欢迎登录CBRA信息管理平台</title>
         <link href="/background/css/style.css" rel="stylesheet" type="text/css" />
         <script src="/background/js/jquery.js"></script>
         <script src="/background/js/cloud.js"></script>
@@ -47,7 +47,7 @@
                 <div id="cloud2" class="cloud"></div>
             </div>
             <div class="logintop">
-                <span>欢迎登录云端房产网信息管理平台</span>
+                <span>欢迎登录CBRA信息管理平台</span>
                 <ul>
                     <li>
                         <a href="<%=path%>">网站首页</a>
@@ -82,7 +82,7 @@
             </div>
 
             <div class="loginbm">
-                版权所有 2014 云端房产网 吉ICP备14002652号-1 技术支持 长春博岸信息科技有限责任公司
+                版权所有 2015
             </div>
         </form>
         <script type="text/javascript">

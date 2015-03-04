@@ -20,9 +20,15 @@
         </div>
     </div>
 </div>
+<input type="hidden" value="${page}"  id="searchPage" />
 <script type="text/javascript">
     function search(st){
-        location.href = "/public/search?search="+st;
+        var searchPage = $.trim($("#searchPage").val());
+        if(searchPage != null){
+            location.href = "/public/search?page=" + searchPage +"&search=" + st;
+        }else{
+            location.href = "/public/search?search="+st;
+        }
     }
 </script>
 <!-- 底部 end -->

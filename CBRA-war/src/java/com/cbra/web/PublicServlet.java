@@ -5,14 +5,18 @@
 package com.cbra.web;
 
 import com.cbra.service.CbraService;
+import com.cbra.support.ResultList;
+import com.cbra.support.SearchInfo;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -95,7 +99,7 @@ public class PublicServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        INDEX, SET_LANG, KEEP_SESSION, WEIBO, BLOG, SEARCH,NO_AUTHORIZATION;
+        INDEX, SET_LANG, KEEP_SESSION, SEARCH, NO_AUTHORIZATION, SEARCH_INFO;
     }
 
     @Override
@@ -106,6 +110,10 @@ public class PublicServlet extends BaseServlet {
                 return loadIndex(request, response);
             case SET_LANG:
                 return loadSetLang(request, response);
+            case SEARCH:
+                return loadSearch(request, response);
+            case SEARCH_INFO:
+                return loadSearchInfo(request, response);
             default:
                 return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -136,6 +144,82 @@ public class PublicServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载搜索页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadSearch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        String searchText = super.getRequestString(request, "search");
+        String p = super.getRequestString(request, "p");
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        List<Long> list = new LinkedList<Long>();
+        if ("news".equalsIgnoreCase(p)) {
+            list = (List<Long>) application.getAttribute("newsids");
+        } else if ("event".equalsIgnoreCase(p)) {
+            list = (List<Long>) application.getAttribute("eventids");
+        } else if ("train".equalsIgnoreCase(p)) {
+            list = (List<Long>) application.getAttribute("trainids");
+        } else if ("consult".equalsIgnoreCase(p)) {
+            list = (List<Long>) application.getAttribute("consultids");
+        } else {
+            list.addAll((List<Long>) application.getAttribute("newsids"));
+            list.addAll((List<Long>) application.getAttribute("eventids"));
+            list.addAll((List<Long>) application.getAttribute("trainids"));
+            list.addAll((List<Long>) application.getAttribute("consultids"));
+        }
+        ResultList<SearchInfo> resultList = new ResultList<>();
+        if (searchText != null) {
+            resultList = cbraService.findSearch(list, searchText, page, 5);
+        }
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("searchText", searchText);
+        request.setAttribute("p", p);
+        request.setAttribute("page", page);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载搜索内容
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadSearchInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext application = this.getServletContext();
+        Long plateId = super.getRequestLong(request, "plateId");
+        Long id = super.getRequestLong(request, "id");
+        List<Long> newsids = (List<Long>) application.getAttribute("newsids");
+        List<Long> eventids = (List<Long>) application.getAttribute("eventids");
+        List<Long> trainids = (List<Long>) application.getAttribute("trainids");
+        List<Long> consultids = (List<Long>) application.getAttribute("consultids");
+        if(newsids.contains(plateId)){
+            super.forward("/news/details?id="+id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }else if(eventids.contains(plateId)){
+            super.forward("/event/event_details?id="+id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }else if(trainids.contains(plateId)){
+            super.forward("/train/train_details?id="+id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }else if(consultids.contains(plateId)){
+            super.forward("/into/details?id="+id, request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

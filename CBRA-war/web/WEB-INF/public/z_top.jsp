@@ -44,7 +44,7 @@
         <div class="LOGO-l"><a href="index.asp"><img src="/images/logo.png"></a></div>
         <div class="LOGO-r">
             <p>咨询热线：021-61550302</p>
-            <input type="text" id="search_text" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="search($('#search_text').val())">
+            <input type="text" id="search_text" value="${searchText}" onkeypress="mykeypress13(event);" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="search($('#search_text').val())">
         </div>
         <div style=" clear:both;"></div>
     </div>
@@ -253,4 +253,12 @@
         </ul>
     </div>
     <!--导航 end-->
+    <script type="text/javascript">
+            function mykeypress13(event) {
+                var e = event || window.event || arguments.callee.caller.arguments[0];
+                if (e && e.keyCode == 13) {
+                    search($('#search_text').val())
+                }
+            }
+    </script>
 </div>

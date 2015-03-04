@@ -26,7 +26,7 @@
         <div class="mainindex">
             <div class="welinfo">
                 <span><img src="<%=path%>/background/images/man.jpg" width="20" height="24"/></span>
-                <b>${admin.name}，您好，欢迎登录云端房产网信息管理平台</b>
+                <b>${admin.name}，您好，欢迎登录CBRA信息管理平台</b>
                 <a href="/admin/organization/my_info">帐号设置</a>
             </div>
             <div class="welinfo">
