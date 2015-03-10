@@ -91,15 +91,10 @@
                         alert("请输入评论内容");
                         return;
                     }
-//                    if (CBRAValid.checkFormValueNull($("#login_passwd"))) {
-//                        CBRAMessage.showWrongMessageAndBorderEle($("#login_msg_2"),"请输入密码",$("#login_passwd"));
-//                        return;
-//                    }
                     $("#message_form").submit();
                 });
             })
         </script> 
-        </script>
     </body>
 </html>
 

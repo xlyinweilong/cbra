@@ -113,7 +113,7 @@
             </li>
             <!--新闻中心 end-->
             <!--活动讲座-->
-            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="/event/ hd-jq.asp">${applicationScope.navigationPlates.get(3).getName()}</a>
+            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 4)" href="/event/near_future">${applicationScope.navigationPlates.get(3).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_4" style="min-height: inherit; width: 700px; left: -95px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/event/near_future">近期活动</a></li>
@@ -132,7 +132,7 @@
             </li>
             <!--活动讲座 end-->
             <!--专题培训-->
-            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="/train/idea">${applicationScope.navigationPlates.get(4).getName()}</a>
+            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 5)" href="/train/idea_train">${applicationScope.navigationPlates.get(4).getName()}</a>
                 <div class="nav-menu clearfix" id="HJ_Menu_5" style="left:-206px; width: 700px; display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/train/idea_train" >培训理念</a></li>

@@ -5,8 +5,6 @@
  */
 package com.cbra.entity;
 
-import com.cbra.support.enums.MessageSecretLevelEnum;
-import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.OrderStatusEnum;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,12 +14,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -32,15 +28,16 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * 收款订单
+ * 服务订单
  *
  * @author yin.weilong
  */
 @Entity
-@Table(name = "order_collection")
+@Table(name = "order_service")
 @XmlRootElement
-public class OrderCollection implements Serializable{
+public class OrderCbraService implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -65,6 +62,7 @@ public class OrderCollection implements Serializable{
     @Column(name = "status", nullable = false, length = 255)
     private OrderStatusEnum status = OrderStatusEnum.INIT;
     //订单总额
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "amount")
@@ -76,10 +74,10 @@ public class OrderCollection implements Serializable{
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     @ManyToOne(optional = true)
     private Account owner;
-    @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
-    @ManyToOne(optional = false)
-    private FundCollection fundCollection;
-    
+    @JoinColumn(name = "last_gateway_payment_id", referencedColumnName = "id")
+    @ManyToOne(optional = true)
+    private GatewayPayment lastGatewayPayment;
+
     public Long getId() {
         return id;
     }
@@ -136,6 +134,14 @@ public class OrderCollection implements Serializable{
         this.amount = amount;
     }
 
+    public GatewayPayment getLastGatewayPayment() {
+        return lastGatewayPayment;
+    }
+
+    public void setLastGatewayPayment(GatewayPayment lastGatewayPayment) {
+        this.lastGatewayPayment = lastGatewayPayment;
+    }
+
     public boolean isDeleted() {
         return deleted;
     }
@@ -151,27 +157,7 @@ public class OrderCollection implements Serializable{
     public void setOwner(Account owner) {
         this.owner = owner;
     }
-
-    public FundCollection getFundCollection() {
-        return fundCollection;
-    }
-
-    public void setFundCollection(FundCollection fundCollection) {
-        this.fundCollection = fundCollection;
-    }
     
-    public String getUserStr(){
-        if(owner == null){
-            return "游客";
-        }else if(owner instanceof UserAccount){
-            return "个人用户";
-        }else if(owner instanceof CompanyAccount){
-            return "企业用户";
-        }else{
-            return "游客";
-        }
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -182,10 +168,10 @@ public class OrderCollection implements Serializable{
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof OrderCollection)) {
+        if (!(object instanceof OrderCbraService)) {
             return false;
         }
-        OrderCollection other = (OrderCollection) object;
+        OrderCbraService other = (OrderCbraService) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -194,7 +180,7 @@ public class OrderCollection implements Serializable{
 
     @Override
     public String toString() {
-        return "com.cbra.entity.Message[ id=" + id + " ]";
+        return "com.cbra.entity.OrderService[ id=" + id + " ]";
     }
 
 }

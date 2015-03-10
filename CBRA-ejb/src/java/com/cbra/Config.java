@@ -8,6 +8,7 @@ package com.cbra;
 import com.cbra.entity.Offer;
 import com.cbra.entity.PlateInformation;
 import com.cbra.support.PathUtil;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -19,11 +20,11 @@ public class Config {
 
     private Config() {
     }
-
-    public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
+    public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("2000");
     
-    //public static final String FILE_UPLOAD_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/";
+    public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
 
+//    public static final String FILE_UPLOAD_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/";
     public static final String HTML_EDITOR_UPLOAD = "html_editor_upload";
 
     public static final String FILE_UPLOAD_TEMP = "temp";
@@ -35,30 +36,28 @@ public class Config {
     public static final String FILE_UPLOAD_ACCOUNT_HEAD_IMAGE = "account_head_image";
 
     public static final String FILE_UPLOAD_TEMP_DIR = "f:/test";
-    
-    //public static final String FILE_UPLOAD_TEMP_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/test/";
 
+//    public static final String FILE_UPLOAD_TEMP_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/test/";
     public static final String HTTP_URL_BASE = "http://127.0.0.1:8080/";
-    
-    //public static final String HTTP_URL_BASE = "http://121.40.166.16:8080/";
 
+//    public static final String HTTP_URL_BASE = "http://www.cbra.com/";
     //持久信息
     public static List<PlateInformation> newsList = null;
-    
+
     public static List<PlateInformation> newsList5 = null;
-    
+
     public static List<PlateInformation> industryList = null;
-    
+
     public static List<Offer> offerListIndex = null;
-    
+
     public static List<PlateInformation> materialListIndex = null;
-    
+
     public static List<PlateInformation> industrializationListIndex = null;
-    
+
     public static List<PlateInformation> greenListIndex = null;
-    
+
     public static List<PlateInformation> bimListIndex = null;
-    
+
     public static List<PlateInformation> homeSAD = null;
 
     public static PlateInformation homeAd = null;
@@ -68,15 +67,15 @@ public class Config {
     public static List<PlateInformation> homeStyle = null;
 
     public static List<PlateInformation> homeExpert = null;
-    
+
     //top持久信息
     public static PlateInformation topInto = null;
-    
+
     public static PlateInformation topStyle = null;
 
-    public static List<PlateInformation> topEvent= null;
-    
+    public static List<PlateInformation> topEvent = null;
+
     public static List<PlateInformation> topTrain = null;
-    
+
     public static List<PlateInformation> topJoin = null;
 }

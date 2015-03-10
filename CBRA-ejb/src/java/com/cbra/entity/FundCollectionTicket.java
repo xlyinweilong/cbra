@@ -60,6 +60,9 @@ public class FundCollectionTicket implements Serializable {
     @ManyToOne
     @JoinColumn(name = "collection_id", referencedColumnName = "id")
     private FundCollection fundCollection;
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private OrderCollection orderCollection;
     @OneToOne
     @JoinColumn(name = "attendee_id", referencedColumnName = "id")
     private Attendee attendee;
@@ -69,6 +72,9 @@ public class FundCollectionTicket implements Serializable {
     @Size(max = 255)
     @Column(name = "barcode")
     private String barcode;
+    @Size(max = 255)
+    @Column(name = "barcode_head")
+    private String barcodeHead;
     @Column(name = "invalid")
     private Boolean invalid = false;
     @Column(name = "invalid_date")
@@ -78,7 +84,15 @@ public class FundCollectionTicket implements Serializable {
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    
+
+    public OrderCollection getOrderCollection() {
+        return orderCollection;
+    }
+
+    public void setOrderCollection(OrderCollection orderCollection) {
+        this.orderCollection = orderCollection;
+    }
+
     public Long getId() {
         return id;
     }
@@ -180,6 +194,14 @@ public class FundCollectionTicket implements Serializable {
 
     public void setInvalidDate(Date invalidDate) {
         this.invalidDate = invalidDate;
+    }
+
+    public String getBarcodeHead() {
+        return barcodeHead;
+    }
+
+    public void setBarcodeHead(String barcodeHead) {
+        this.barcodeHead = barcodeHead;
     }
 
     @Override

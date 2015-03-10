@@ -324,6 +324,7 @@ public class TrainServlet extends BaseServlet {
         }
         request.setAttribute("plateAuth", auth);
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        request.setAttribute("isSignUpEvent", cbraService.getAccountCanSignUpEvent(fundCollection, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

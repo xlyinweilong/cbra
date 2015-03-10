@@ -81,8 +81,9 @@
                                 </c:forEach>
                             </table>
                         </c:if>
-                        <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="修改资料" onclick="location.href = '/account/reset_user_info'" ></div>
-
+                        <c:if test="${sessionScope.user.type == 'COMPANY'}">
+                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="修改资料" onclick="location.href = '/account/reset_user_info'" ></div>
+                            </c:if>
                     </td>
 
                 </tr>

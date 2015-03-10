@@ -60,11 +60,11 @@ import org.apache.commons.io.FilenameUtils;
 @Stateless
 @LocalBean
 public class CbraService {
-    
+
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(CbraService.class.getName());
-    
+
     @EJB
     private EmailService emailService;
     @EJB
@@ -220,6 +220,11 @@ public class CbraService {
      * @return
      */
     public PlateAuthEnum getPlateAuthEnum(Plate plate, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+            account = user;
+        }
         if (account == null) {
             return plate.getTouristAuth();
         } else if (!AccountStatus.MEMBER.equals(account.getStatus())) {
@@ -241,16 +246,60 @@ public class CbraService {
      * @return
      */
     public PlateAuthEnum getPlateAuthEnum(FundCollection fundCollection, Account account) {
-        if (account == null) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        if (user == null) {
             return fundCollection.getTouristAuth();
-        } else if (!AccountStatus.MEMBER.equals(account.getStatus())) {
+        } else if (!AccountStatus.MEMBER.equals(user.getStatus())) {
             return fundCollection.getTouristAuth();
-        } else if (account instanceof CompanyAccount) {
+        } else if (user instanceof CompanyAccount) {
             return fundCollection.getCompanyAuth();
-        } else if (account instanceof UserAccount) {
+        } else if (user instanceof UserAccount) {
             return fundCollection.getUserAuth();
         } else {
             return fundCollection.getTouristAuth();
+        }
+    }
+
+    /**
+     * 获取账户能否报名活动
+     *
+     * @param fundCollection
+     * @param account
+     * @return
+     */
+    public boolean getAccountCanSignUpEvent(FundCollection fundCollection, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+            account = user;
+        }
+        if (account == null || !AccountStatus.MEMBER.equals(account.getStatus())) {
+            switch (fundCollection.getAllowAttendee()) {
+                case PUBLIC:
+                    return true;
+                default:
+                    return false;
+            }
+        } else if (account instanceof CompanyAccount) {
+            return true;
+        } else if (account instanceof UserAccount) {
+            switch (fundCollection.getAllowAttendee()) {
+                case PUBLIC:
+                case ALL_MEMBERS:
+                    return true;
+                default:
+                    return false;
+            }
+        } else {
+            switch (fundCollection.getAllowAttendee()) {
+                case PUBLIC:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 
@@ -262,6 +311,11 @@ public class CbraService {
      * @return
      */
     public List<Message> findMessageList(PlateInformation plateInfo, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+            account = user;
+        }
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
         if (account == null) {
@@ -291,6 +345,11 @@ public class CbraService {
      * @return
      */
     public List<Message> findMessageList(FundCollection fundCollection, MessageTypeEnum type, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+            account = user;
+        }
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
         if (account == null) {
@@ -320,6 +379,11 @@ public class CbraService {
      * @return
      */
     public List<Message> findMessageList(Offer offer, MessageTypeEnum type, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+            account = user;
+        }
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
         if (account == null) {

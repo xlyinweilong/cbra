@@ -8,21 +8,32 @@ import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.FundCollection;
+import com.cbra.entity.GatewayPayment;
+import com.cbra.entity.OrderCbraService;
+import com.cbra.entity.OrderCollection;
 import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
+import com.cbra.service.CbraService;
+import com.cbra.service.GatewayService;
+import com.cbra.service.OrderService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
+import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
+import com.cbra.support.enums.GatewayPaymentSourceEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.PaymentGatewayTypeEnum;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
+import static com.cbra.web.BaseServlet.FORWARD_TO_ANOTHER_URL;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
@@ -39,6 +50,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
@@ -53,6 +65,12 @@ public class AccountServlet extends BaseServlet {
 
     @EJB
     private AccountService accountService;
+    @EJB
+    private OrderService orderService;
+    @EJB
+    private GatewayService gatewayService;
+    @EJB
+    private CbraService cbraService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -98,7 +116,6 @@ public class AccountServlet extends BaseServlet {
             case LOGIN:
             case SIGNUP:
             case SIGNUP_C:
-            case SIGNUP_SUCCESS:
             case FORGET_PASSWD:
             case RESET_PASSWD:
                 setLogoutOnly(request);
@@ -107,6 +124,7 @@ public class AccountServlet extends BaseServlet {
             case VERIFY:
             case LOAD_ACCOUNT_BY_AJAX:
             case Z_IFRAME_UPLOAD_PC:
+            case SIGNUP_SUCCESS:
                 setLoginLogoutBothAllowed(request);
                 break;
             default:
@@ -132,7 +150,7 @@ public class AccountServlet extends BaseServlet {
     enum ActionEnum {
 
         LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
-        UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST, RESET_USER_INFO, SET_AGENT;
+        UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST, RESET_USER_INFO, SET_AGENT, PAYMENT_ORDER;
     }
 
     @Override
@@ -141,10 +159,6 @@ public class AccountServlet extends BaseServlet {
         switch (action) {
             case LOGOUT:
                 return doLogout(request, response);
-            case LOGIN_AJAX:
-                return doLoginAjax(request, response);
-            case SIGNUP_AJAX:
-                return doSignupAjax(request, response);
             case UPLOAD_PERSON_CARD:
                 return doUploadPersonCard(request, response);
             case LOGIN:
@@ -167,6 +181,8 @@ public class AccountServlet extends BaseServlet {
                 return doResetAccountInfo(request, response);
             case SET_AGENT:
                 return doSetAgent(request, response);
+            case PAYMENT_ORDER:
+                return doPaymentOrder(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -175,7 +191,7 @@ public class AccountServlet extends BaseServlet {
     private enum PageEnum {
 
         Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD;
+        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD, PAY_MEMBERSHIP, RESULT;
     }
 
     @Override
@@ -207,15 +223,18 @@ public class AccountServlet extends BaseServlet {
                 return loadResetPassword(request, response);
             case FORGET_PASSWD:
                 return KEEP_GOING_WITH_ORIG_URL;
-            case LOAD_ACCOUNT_BY_AJAX:
-                return loadAccountByAjax(request, response);
             case MEMBERSHIP_FEE:
                 return loadMembershipFee(request, response);
             case MY_EVENT:
                 return loadMyEventList(request, response);
             case AGENT:
                 return loadAgent(request, response);
+            case PAY_MEMBERSHIP:
+                return loadPayMembership(request, response);
+            case RESULT:
+                return loadResult(request, response);
             case Z_IFRAME_UPLOAD_PC:
+            case SIGNUP_SUCCESS:
                 return KEEP_GOING_WITH_ORIG_URL;
             default:
                 throw new BadPageException();
@@ -239,72 +258,39 @@ public class AccountServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
-    private boolean doLoginAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = getRequestString(request, "email");
-        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "passwd")) {
-            return super.outputAjax(request, response);
+    /**
+     * 支付会费
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doPaymentOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        OrderCbraService orderCbraService = orderService.createOrderService(account);
+        String paymentType = super.getRequestString(request, "payment_type");
+        PaymentGatewayTypeEnum gateway = null;
+        try {
+            gateway = PaymentGatewayTypeEnum.valueOf(paymentType);
+        } catch (Exception e) {
+            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
         }
-        String passwd = getRequestString(request, "passwd");
-
-        // ******************************************************************
-//        Account user = accountService.getUserForLogin(email, passwd);
-//        if (user == null) {
-//            return super.outputErrorAjax(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), null, response);
-//        }
-//
-//        super.setLogRequestUser(logRequest, user);
-        // ******************************************************************
-        // 设置user到session里，并设置显示数据。
-//        return loginAjax(user, request, response);
-        return FORWARD_TO_ANOTHER_URL;
-    }
-
-    private boolean doSignupAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = getRequestEmail(request, "signupEmail");
-        String mobilePhone = getRequestString(request, "signupMobilePhone");
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "name", "signupEmail", "passwd1", "passwd2")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String name = getRequestString(request, "name");
-//
-//        if (email == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败邮件错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (mobilePhone == null) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        String passwd1 = getRequestString(request, "passwd1");
-//        String passwd2 = getRequestString(request, "passwd2");
-//
-//        // ******************************************************************
-//        if (!passwd1.equals(passwd2)) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_两次密码不一致"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        if (passwd1.length() < 6) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_密码长度至少6位,请选择新密码"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserAccount user = null;
-//        try {
-//            user = accountService.signup(name, email, mobilePhone, passwd2, bundle.getLocale().getLanguage());
-//            Long paymentId = super.getRequestLong(request, "pop_signup_payid");
-//            if (paymentId != null && paymentId != -1) {
-//                FundPayment payment = fundService.findPayment(paymentId);
-//                if (email.equalsIgnoreCase(payment.getOwnerUser().getEmail())) {
-//                    user = accountService.setVerified(user.getId(), bundle.getLocale().getLanguage());
-//                }
-//            }
-//        } catch (UserExistException ex) {
-//            setErrorResult(MessageFormat.format(bundle.getString("ACCOUNT_SIGNUP_MSG_已注册,请登录"), email), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-
-        // ******************************************************************
-        // 注册成功后直接登录进来。
-//        return loginAjax(user, request, response);
+        GatewayPayment gatewayPayment = gatewayService.createGatewayPayment(orderCbraService, GatewayPaymentSourceEnum.WEB, gateway);
+        request.setAttribute("gatewayPayment", gatewayPayment);
+        request.setAttribute("order", orderCbraService);
+        String forwardUrl;
+        switch (gateway) {
+            case BANK_TRANSFER:
+                forwardUrl = "/paygate/bank_transfer/";
+                break;
+            default:
+                forwardWithError(bundle.getString("PAYMENT_SELECT_GATEWAY_INVALID_无效的选择"), "/public/error_page", request, response);
+                return FORWARD_TO_ANOTHER_URL;
+        }
+        super.forward(forwardUrl, request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
 
@@ -371,7 +357,7 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        if (user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL)) {
+        if (!(user instanceof SubCompanyAccount) && user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL)) {
             setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -571,13 +557,13 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * 发送找回密码连接
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
      * @throws IOException
-     * @throws NoSessionException 
+     * @throws NoSessionException
      */
     private boolean doSendResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         String email = getRequestEmail(request, "email");
@@ -590,7 +576,7 @@ public class AccountServlet extends BaseServlet {
         }
         String account = getRequestString(request, "account");
         Account user = accountService.findByAccount(account);
-        if (user == null || !user.getEmail().equals(email) || AccountStatus.APPROVAL_REJECT.equals(user.getStatus())|| AccountStatus.PENDING_FOR_APPROVAL.equals(user.getStatus())) {
+        if (user == null || !user.getEmail().equals(email) || AccountStatus.APPROVAL_REJECT.equals(user.getStatus()) || AccountStatus.PENDING_FOR_APPROVAL.equals(user.getStatus())) {
             setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_该账号不存在，请重新输入"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -625,13 +611,13 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * 修改密码
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
      * @throws IOException
-     * @throws NoSessionException 
+     * @throws NoSessionException
      */
     private boolean doModifyPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "oldpasswd", "newpasswd")) {
@@ -806,21 +792,6 @@ public class AccountServlet extends BaseServlet {
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
-    private boolean loadAccountByAjax(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = getRequestString(request, "email");
-        if (validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "password")) {
-            String password = getRequestString(request, "password");
-//            Account user = accountService.getUserForLogin(email, password);
-//            if (user == null) {
-//                setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
-//            } else {
-//                setSuccessResult(toJSON(user), request);
-//            }
-        }
-        super.outputText(response, toJSON(request));
-        return FORWARD_TO_ANOTHER_URL;
-    }
-
     /**
      * 会员费
      *
@@ -831,6 +802,19 @@ public class AccountServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadMembershipFee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        Account user = account;
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        int maxPerPage = 15;
+        ResultList<OrderCbraService> resultList = orderService.findOrderCbraServiceList(user, pageIndex, maxPerPage);
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("user", account);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -844,6 +828,20 @@ public class AccountServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadMyEventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        Account user = account;
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        int maxPerPage = 15;
+        Map<String, Object> map = new HashMap<>();
+        map.put("owner", user);
+        ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(map, pageIndex, maxPerPage, null, true);
+        request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -858,13 +856,52 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadAgent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
-        List<SubCompanyAccount> list = accountService.getSubCompanyAccountList((CompanyAccount) accountService.findById(account.getId()));
+        Account user = account;
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        List<SubCompanyAccount> list = accountService.getSubCompanyAccountList((CompanyAccount) accountService.findById(user.getId()));
         int i = 0;
         for (SubCompanyAccount sub : list) {
             i++;
             request.setAttribute("id" + i, sub.getId());
             request.setAttribute("account" + i, sub.getAccount());
         }
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     *
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPayMembership(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Account account = super.getUserFromSessionNoException(request);
+        if (!account.getStatus().equals(AccountStatus.ASSOCIATE_MEMBER)) {
+            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 订单支付结果
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadResult(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String serialId = super.getPathInfoStringAt(request, 1);
+        OrderCbraService order = orderService.findOrderCbraServiceSerialId(serialId);
+        request.setAttribute("order", order);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -879,7 +916,6 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
-        account = accountService.findById(account.getId());
         request.setAttribute("user", account);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -895,9 +931,12 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadOverviewCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
-        account = accountService.findById(account.getId());
-        request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
-        request.setAttribute("company", account);
+        Account user = account;
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
+        request.setAttribute("company", user);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -927,12 +966,12 @@ public class AccountServlet extends BaseServlet {
 
     /**
      * 加载重置密码页
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadResetPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String key = super.getRequestString(request, "key");
@@ -946,7 +985,7 @@ public class AccountServlet extends BaseServlet {
             forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        if(Tools.addHour(account.getRepasswdDate(), 1).before(new Date())){
+        if (Tools.addHour(account.getRepasswdDate(), 1).before(new Date())) {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -1004,48 +1043,6 @@ public class AccountServlet extends BaseServlet {
     // ************************************************************************
     // *************** 支持性函数、共用函数等非直接功能函数，放在这下面
     // ************************************************************************
-//    private boolean loginAjax(UserAccount user, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        //Save language
-//        if (user.getLanguage() == null) {
-//            user = accountService.setLanguage(user.getId(), bundle.getLocale().getLanguage());
-//        }
-//        //Save yplinkId, only for old yoopay user
-//        if (user.getYpLinkId() == null) {
-//            user = accountService.setYpLink(user.getId());
-//        }
-//        HttpSession session = request.getSession();
-//        // bundle是JSTL用到的session数据，用来在JSP中显示不同语言，
-//        // 在Login时去掉这个bundle，然后会在z_heander中被重新生成，这样可以实现登录之后使用用户自定义的语言的功能。
-//        session.removeAttribute("bundle");
-//        // 设置user到session里，这是登录与否的标志，很重要哦！！
-//        session.setAttribute(SESSION_ATTRIBUTE_USER, user);
-//        UserServiceStatus uss = accountService.getUserServiceStatus(user.getId());
-//        if (uss.getServiceType() == null) {
-//            session.setAttribute("USER_YPSERVICE_TYPE", "FREE");
-//        } else if (uss.getServiceType().equals(YpServiceTypeEnum.STANDARD)) {
-//            session.setAttribute("USER_YPSERVICE_TYPE", "STANDARD");
-//        } else if (uss.getServiceType().equals(YpServiceTypeEnum.PROFESSIONAL)) {
-//            session.setAttribute("USER_YPSERVICE_TYPE", "PROFESSIONAL");
-//        }
-//        if (user.getLanguage() != null) {
-//            super.setLanguage(user.getLanguage(), request, response);
-//        }
-//        //Get User Invoice 
-//        UserInvoice invoice = fundService.findUserInvoiceByUserId(user.getId());
-//
-//        Map<String, Object> result = new HashMap<String, Object>();
-//        result.put("success", true);
-//        result.put("user", user);
-//        if (invoice != null) {
-//            result.put("invoice", invoice);
-//        }
-//        JSONSerializer serializer = new JSONSerializer();
-//        serializer.include("success", "user.email", "user.name", "user.position", "user.company", "user.mobilePhone", "invoice.invoiceTitle", "invoice.recipientPostcode", "invoice.recipientProvince", "invoice.recipientAddress", "invoice.recipientPhone", "invoice.recipientName");
-//        serializer.exclude("*");
-//        String serialize = serializer.serialize(result);
-//        super.outputText(response, serialize);
-//        return FORWARD_TO_ANOTHER_URL;
-//    }
     /**
      * 登录
      *
@@ -1074,7 +1071,7 @@ public class AccountServlet extends BaseServlet {
         // ******************************************************************
         // 这个url是login之后跳转的页面，缺省是overview
         String jump = "/account/overview";
-        if (account instanceof CompanyAccount) {
+        if (account instanceof CompanyAccount || account instanceof SubCompanyAccount) {
             jump = "/account/overview_c";
         }
         String url = (String) request.getParameter("urlUserWantToAccess");

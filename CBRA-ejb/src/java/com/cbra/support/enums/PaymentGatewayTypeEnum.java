@@ -13,5 +13,6 @@ package com.cbra.support.enums;
 public enum PaymentGatewayTypeEnum {
 
     ALIPAY,
-
+    BANK_TRANSFER;
+    
 }

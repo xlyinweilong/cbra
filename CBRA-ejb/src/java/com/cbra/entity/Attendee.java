@@ -70,14 +70,17 @@ public class Attendee implements Serializable {
     private String city;
     @ManyToOne
     @JoinColumn(name = "user_account_id", referencedColumnName = "id")
-    private UserAccount userAccount;
+    private Account userAccount;
     @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "attendee", fetch = FetchType.LAZY)
     private FundCollectionTicket fundCollectionTicket;
     @OneToOne(cascade = {CascadeType.ALL}, mappedBy = "attendee", fetch = FetchType.LAZY)
     private OrderCollectionItem orderCollectionItem;
     @ManyToOne
     @JoinColumn(name = "fund_collection_id", referencedColumnName = "id")
-    private FundCollectionTicket fundCollection;
+    private FundCollection fundCollection;
+    @ManyToOne
+    @JoinColumn(name = "order_collection_id", referencedColumnName = "id")
+    private OrderCollection orderCollection;
     @Basic(optional = false)
     @NotNull
     @Column(name = "deleted", nullable = false)
@@ -170,11 +173,11 @@ public class Attendee implements Serializable {
         this.city = city;
     }
 
-    public UserAccount getUserAccount() {
+    public Account getUserAccount() {
         return userAccount;
     }
 
-    public void setUserAccount(UserAccount userAccount) {
+    public void setUserAccount(Account userAccount) {
         this.userAccount = userAccount;
     }
 
@@ -186,11 +189,11 @@ public class Attendee implements Serializable {
         this.fundCollectionTicket = fundCollectionTicket;
     }
 
-    public FundCollectionTicket getFundCollection() {
+    public FundCollection getFundCollection() {
         return fundCollection;
     }
 
-    public void setFundCollection(FundCollectionTicket fundCollection) {
+    public void setFundCollection(FundCollection fundCollection) {
         this.fundCollection = fundCollection;
     }
 
@@ -200,6 +203,14 @@ public class Attendee implements Serializable {
 
     public void setOrderCollectionItem(OrderCollectionItem orderCollectionItem) {
         this.orderCollectionItem = orderCollectionItem;
+    }
+
+    public OrderCollection getOrderCollection() {
+        return orderCollection;
+    }
+
+    public void setOrderCollection(OrderCollection orderCollection) {
+        this.orderCollection = orderCollection;
     }
 
     @Override

@@ -14,16 +14,14 @@
             <table width="1000" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                     <td valign="top" class="fl-nav">
-
                         <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="2" /></jsp:include>
-
                         </td>
-
                         <td valign="top" class="fr-c-1">
-
-                            <div class="tit-cz">会　费<input type="button" class="anniu" value="缴纳会费" onclick="location.href = 'gr-hfcz.asp'" ></div>
+                        <c:if test="${user.status == 'ASSOCIATE_MEMBER' && user.type != 'SUB_COMPANY'}">
+                            <div class="tit-cz">会　费<input type="button" class="anniu" value="缴纳会费" onclick="location.href = '/account/pay_membership'" ></div>
+                            </c:if>
                             <c:choose>
-                                <c:when test="${empty ticketList}">
+                                <c:when test="${empty resultList}">
                                 <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">
                                     <tr>
                                         <td width="120" height="40"><h3 class="nolist">暂无信息</h3></td>
@@ -37,33 +35,29 @@
                                         <td bgcolor="efefef" class="biaog-bt"><strong>缴纳方式</strong></td>
                                         <td width="200" bgcolor="efefef" class="biaog-bt"><strong>筑誉确认</strong></td>
                                     </tr>
-                                    <c:forEach begin="1" end="3" step="1">
+                                    <c:forEach var="order" items="${resultList}" varStatus="varStatus">
                                         <tr>
-                                            <td height="30" bgcolor="#FFFFFF" class="biaog-bt">2015-02-04</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt">现金</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt"><span class="chengz">待确认</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td height="30" bgcolor="#FFFFFF" class="biaog-bt">2015-02-03</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt">个人网银转账</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt"><span class="luz">已到帐</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td height="30" bgcolor="#FFFFFF" class="biaog-bt">2015-02-02</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt">公司网银转账</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt"><span class="chengz">确认中</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td height="30" bgcolor="#FFFFFF" class="biaog-bt">2015-02-01</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt">在线支付</td>
-                                            <td bgcolor="#FFFFFF" class="biaog-bt"><span class="hongz">失败</span></td>
+                                            <td height="30" bgcolor="#FFFFFF" class="biaog-bt"><fmt:formatDate value='${order.createDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></td>
+                                            <td bgcolor="#FFFFFF" class="biaog-bt">
+                                                <c:choose>
+                                                    <c:when test="${order.lastGatewayPayment.gatewayType == 'ALIPAY'}">支付宝</c:when>
+                                                    <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}">银行转账</c:when>
+                                                </c:choose>
+                                            </td>
+                                            <td bgcolor="#FFFFFF" class="biaog-bt">
+                                                <c:choose>
+                                                    <c:when test="${order.status == 'SUCCESS'}"><span class="luz">已到帐</span></c:when>
+                                                    <c:when test="${order.status == 'FAILURE' || order.status == 'INVALID'}"><span class="hongz">失败</span></c:when>
+                                                    <c:otherwise><span class="chengz">确认中</span></c:otherwise>
+                                                </c:choose>
+                                            </td>
                                         </tr>
                                     </c:forEach>
                                 </table>
                                 <jsp:include page="/WEB-INF/public/z_paging.jsp">
-                                    <jsp:param name="totalCount" value="200" />
-                                    <jsp:param name="maxPerPage" value="15" />
-                                    <jsp:param name="pageIndex" value="1" />
+                                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
                                 </jsp:include>
                             </c:otherwise>
                         </c:choose>
@@ -73,8 +67,6 @@
             <div style="clear:both;"></div>
         </div>
         <!-- 主体 end -->
-
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
-
     </body>
 </html>

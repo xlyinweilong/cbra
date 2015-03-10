@@ -8,10 +8,13 @@ package com.cbra.web;
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.Attendee;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
+import com.cbra.entity.GatewayManualBankTransfer;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
+import com.cbra.entity.OrderCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
 import com.cbra.entity.ReplyMessage;
@@ -21,6 +24,8 @@ import com.cbra.entity.SysUser;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
+import com.cbra.service.GatewayService;
+import com.cbra.service.OrderService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.ResultList;
@@ -33,6 +38,7 @@ import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
 import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageSecretLevelEnum;
+import com.cbra.support.enums.OrderStatusEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
@@ -68,13 +74,17 @@ import org.json.simple.JSONObject;
  *
  * @author yin
  */
-@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/message/*", "/admin/account/*", "/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
+@WebServlet(name = "AdminServlet", urlPatterns = {"/admin/order/*", "/admin/message/*", "/admin/account/*", "/admin/auth/*", "/admin/plate/*", "/admin/datadict/*", "/admin/common/*", "/admin/organization/*", "/admin/*"})
 public class AdminServlet extends BaseServlet {
 
     @EJB
     private AdminService adminService;
     @EJB
     private AccountService accountService;
+    @EJB
+    private OrderService orderService;
+    @EJB
+    private GatewayService gatewayService;
 
     /// <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
     @Override
@@ -142,7 +152,8 @@ public class AdminServlet extends BaseServlet {
         PLATE_AUTH_CREATE_OR_UPDATE,
         MESSAGE_DELETE, MESSAGE_CREATE_OR_UPDATE,
         ACCOUNT_APPROVAL, ACCOUNT_DELETE,
-        UPDATE_USER_ACCOUNT, UPDATE_COMPANY_ACCOUNT
+        UPDATE_USER_ACCOUNT, UPDATE_COMPANY_ACCOUNT,
+        ORDER_APPROVAL, BANK_TRANSFER_CONFIRM, BANK_TRANSFER_DELETE, BANK_TRANSFER_SERVICE_CONFIRM
     }
 
     @Override
@@ -235,6 +246,14 @@ public class AdminServlet extends BaseServlet {
                 return doUpdateUserAccount(request, response);
             case UPDATE_COMPANY_ACCOUNT:
                 return doUpdateCompanyAccount(request, response);
+            case ORDER_APPROVAL:
+                return doOrderApproval(request, response);
+            case BANK_TRANSFER_DELETE:
+                return doBankTransferDelete(request, response);
+            case BANK_TRANSFER_CONFIRM:
+                return doBankTransferConfirm(request, response);
+            case BANK_TRANSFER_SERVICE_CONFIRM:
+                return doBankTransferServiceConfirm(request, response);
             default:
                 throw new BadPostActionException();
         }
@@ -254,6 +273,8 @@ public class AdminServlet extends BaseServlet {
         MESSAGE_INFO, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
+        ORDER_LIST, ORDER_INFO,
+        BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST
 
     }
 
@@ -347,6 +368,14 @@ public class AdminServlet extends BaseServlet {
                 return loadEventInfo(request, response);
             case EVENT_LIST:
                 return loadEventList(request, response);
+            case ORDER_LIST:
+                return loadOrderList(request, response);
+            case ORDER_INFO:
+                return loadOrderInfo(request, response);
+            case BANK_TRANSFER_LIST:
+                return loadBankTransferList(request, response);
+            case BANK_TRANSFER_SERVICE_LIST:
+                return loadBankTransferServiceList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -1261,6 +1290,78 @@ public class AdminServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 订单审批
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doOrderApproval(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        String status = super.getRequestString(request, "type");
+        String message = super.getRequestString(request, "message");
+        OrderStatusEnum orderStatusEnum = null;
+        try {
+            orderStatusEnum = OrderStatusEnum.valueOf(status);
+        } catch (Exception e) {
+            setErrorResult("保存失败，参数异常！", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        OrderCollection order = accountService.approvalOrder(id, orderStatusEnum, message);
+        request.setAttribute("order", order);
+        request.setAttribute("oid", order.getId());
+        setSuccessResult("操作成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 删除银行转账
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doBankTransferDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String[] ids = request.getParameterValues("ids");
+        accountService.deleteBankTransferByIds(ids);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 银行转账确认
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean doBankTransferConfirm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        gatewayService.confirmBankTransfer(id);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 银行转账确认
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean doBankTransferServiceConfirm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "id");
+        gatewayService.confirmBankTransfer(id);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -1672,6 +1773,89 @@ public class AdminServlet extends BaseServlet {
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载订单列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载订单详细页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadOrderInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = super.getRequestLong(request, "oid");
+        if (id == null) {
+            id = (Long) request.getAttribute("oid");
+        }
+        OrderCollection orderCollection = orderService.findOrderCollectionById(id);
+        List<Attendee> attendeeList = orderService.findAttendeeByOrder(orderCollection.getId());
+        request.setAttribute("orderCollection", orderCollection);
+        request.setAttribute("attendeeList", attendeeList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 银行转账未确认列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadBankTransferList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+    
+    /**
+     * 银行转账未确认列表
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean loadBankTransferServiceList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("serviceStatus", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

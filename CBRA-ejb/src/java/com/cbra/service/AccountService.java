@@ -7,7 +7,10 @@ package com.cbra.service;
 
 import com.cbra.Config;
 import com.cbra.entity.Account;
+import com.cbra.entity.Attendee;
 import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.GatewayManualBankTransfer;
+import com.cbra.entity.OrderCollection;
 import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.support.FileUploadItem;
@@ -17,11 +20,13 @@ import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.OrderStatusEnum;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +57,8 @@ public class AccountService {
 
     @EJB
     private EmailService emailService;
+    @EJB
+    private OrderService orderService;
 
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
@@ -117,6 +124,22 @@ public class AccountService {
             Account account = em.find(Account.class, Long.parseLong(id));
             account.setDeleted(Boolean.TRUE);
             em.merge(account);
+        }
+    }
+
+    /**
+     * 删除银行转账
+     *
+     * @param ids
+     */
+    public void deleteBankTransferByIds(String... ids) {
+        for (String id : ids) {
+            if (id == null) {
+                continue;
+            }
+            GatewayManualBankTransfer bankTransfer = em.find(GatewayManualBankTransfer.class, Long.parseLong(id));
+            bankTransfer.setDeleted(Boolean.TRUE);
+            em.merge(bankTransfer);
         }
     }
 
@@ -340,7 +363,7 @@ public class AccountService {
      */
     public void changePasswd(Long id, String newpasswd) {
         Account account = this.findById(id);
-        account.setPasswd(newpasswd);
+        account.setPasswd(Tools.md5(newpasswd));
         em.merge(account);
     }
 
@@ -625,6 +648,37 @@ public class AccountService {
     }
 
     /**
+     * 审批订单
+     *
+     * @param id
+     * @param status
+     * @param message
+     * @return
+     */
+    public OrderCollection approvalOrder(Long id, OrderStatusEnum status, String message) {
+        OrderCollection order = orderService.findOrderCollectionById(id);
+        order.setStatus(status);
+        if (OrderStatusEnum.APPROVAL_REJECT.equals(status)) {
+            //发送拒绝邮件
+            this.sendOrderApprovalFail(order, message);
+        } else if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {
+            if (order.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+                order.setEndDate(new Date());
+                order.setStatus(OrderStatusEnum.SUCCESS);
+                //生成票
+                orderService.createFundCollectionTicketByOrder(order);
+                //发送门票邮件
+                orderService.sendOrderSuccessEmail(order);
+            } else {
+                //发送审批成功邮件
+                this.sendOrderApprovalSuccess(order);
+            }
+        }
+        em.merge(order);
+        return order;
+    }
+
+    /**
      * 根据账户获取账户
      *
      * @param account
@@ -656,12 +710,12 @@ public class AccountService {
         //发送邮件
         this.sendRepasswd(account, language);
     }
-    
+
     /**
      * 密码重置
-     * 
+     *
      * @param account
-     * @param passwd 
+     * @param passwd
      */
     public void resetPassword(Account account, String passwd) {
         account.setPasswd(Tools.md5(passwd));
@@ -669,7 +723,6 @@ public class AccountService {
         account.setRepasswdDate(new Date());
         em.merge(account);
     }
-    
 
     /**
      * 根据验证URL获取用户
@@ -746,9 +799,9 @@ public class AccountService {
 
     /**
      * 生成唯一的验证URL（算法有待提高）
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     private String getUniqueAccountRepasswdUrl(Long id) {
         int maxCount = 10;
@@ -807,8 +860,8 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
-        String fromEmail = "withdraw@yoopay.cn";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromEmail = "yinweilong.com@163.com";
         String templateFile = "account_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -829,12 +882,85 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "友付" : "Yoopay";
-        String fromEmail = "withdraw@yoopay.cn";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromEmail = "yinweilong.com@163.com";
         String templateFile = "account_approval_fail_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
+        if (Tools.isNotBlank(message)) {
+            model.put("message", message);
+            model.put("showMessage", true);
+        }
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
+
+    /**
+     * 发送订单审批成功邮件
+     *
+     * @param account
+     */
+    private void sendOrderApprovalSuccess(OrderCollection order) {
+        String language = null;
+        String toEmail = null;
+        String name = null;
+        if (order.getOwner() == null) {
+            language = order.getFundCollection().getEventLanguage().toString();
+            Attendee attendee = orderService.findAttendeeByOrder(order.getId()).get(0);
+            toEmail = attendee.getEmail();
+            name = attendee.getName();
+        } else {
+            language = order.getOwner().getUserLanguage().toString();
+            toEmail = order.getOwner().getEmail();
+            name = order.getOwner().getName();
+        }
+        if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
+            language = "zh";
+        }
+        language = language.toLowerCase();
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromEmail = "yinweilong.com@163.com";
+        String templateFile = "order_approval_success_" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        Map model = new HashMap();
+        model.put("order", order);
+        model.put("baseLink", Config.HTTP_URL_BASE);
+        model.put("name", name);
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+    }
+
+    /**
+     * 发送订单审批拒绝邮件
+     *
+     * @param account
+     * @param message
+     */
+    private void sendOrderApprovalFail(OrderCollection order, String message) {
+        String language = null;
+        String toEmail = null;
+        String name = null;
+        if (order.getOwner() == null) {
+            language = order.getFundCollection().getEventLanguage().toString();
+            Attendee attendee = orderService.findAttendeeByOrder(order.getId()).get(0);
+            toEmail = attendee.getEmail();
+            name = attendee.getName();
+        } else {
+            language = order.getOwner().getUserLanguage().toString();
+            toEmail = order.getOwner().getEmail();
+            name = order.getOwner().getName();
+        }
+        if (language == null || (!language.equalsIgnoreCase("zh") && !language.equalsIgnoreCase("en"))) {
+            language = "zh";
+        }
+        language = language.toLowerCase();
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
+        String fromEmail = "yinweilong.com@163.com";
+        String templateFile = "order_approval_fail_" + language + ".html";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        Map model = new HashMap();
+        model.put("order", order);
+        model.put("name", name);
+        model.put("baseLink", Config.HTTP_URL_BASE);
         if (Tools.isNotBlank(message)) {
             model.put("message", message);
             model.put("showMessage", true);
@@ -853,13 +979,13 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "Cbra" : "Cbra";
-        String fromEmail = "yinweilong@163.com";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Cbra";
+        String fromEmail = "yinweilong.com@163.com";
         String templateFile = "account_reset_passwd" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【密码找回通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
-        model.put("linkUrl", Config.HTTP_URL_BASE +"account/reset_passwd?key="+ account.getRepasswdUrl());
+        model.put("linkUrl", Config.HTTP_URL_BASE + "account/reset_passwd?key=" + account.getRepasswdUrl());
         emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 }

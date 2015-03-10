@@ -6,25 +6,37 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.CompanyAccount;
+import com.cbra.entity.FundCollection;
+import com.cbra.entity.GatewayPayment;
+import com.cbra.entity.Offer;
+import com.cbra.entity.OrderCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.service.CbraService;
+import com.cbra.service.GatewayService;
+import com.cbra.service.OrderService;
 import com.cbra.support.NoPermException;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.GatewayPaymentSourceEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.OrderStatusEnum;
+import com.cbra.support.enums.PaymentGatewayTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.exception.AccountNotExistException;
+import static com.cbra.web.BaseServlet.FORWARD_TO_ANOTHER_URL;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
-import static com.cbra.web.BaseServlet.REQUEST_ATTRIBUTE_PAGE_ENUM;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import flexjson.JSONSerializer;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -40,12 +52,12 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 新闻WEB层
+ * 订单WEB层
  *
  * @author yin.weilong
  */
-@WebServlet(name = "NewServlet", urlPatterns = {"/news/*"})
-public class NewsServlet extends BaseServlet {
+@WebServlet(name = "GatewayServlet", urlPatterns = {"/paygate/*"})
+public class GatewayServlet extends BaseServlet {
 
     @EJB
     private AccountService accountService;
@@ -53,6 +65,10 @@ public class NewsServlet extends BaseServlet {
     private AdminService adminService;
     @EJB
     private CbraService cbraService;
+    @EJB
+    private OrderService orderService;
+    @EJB
+    private GatewayService gatewayService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -109,14 +125,12 @@ public class NewsServlet extends BaseServlet {
 
     enum ActionEnum {
 
-        LOGIN_AJAX;
     }
 
     @Override
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
         switch (action) {
-            case LOGIN_AJAX:
             default:
                 throw new BadPostActionException();
         }
@@ -124,18 +138,15 @@ public class NewsServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        NEWS_LIST, INDUSTRY_LIST, DETAILS;
+        BANK_TRANSFER, LIPAY, ALIPAY_RETURN, ALIPAY_NOTIFY;
     }
 
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
-            case NEWS_LIST:
-            case INDUSTRY_LIST:
-                return loadPagePlate(request, response);
-            case DETAILS:
-                return loadDetails(request, response);
+            case BANK_TRANSFER:
+                return doSetBankTransfer(request, response);
             default:
                 throw new BadPageException();
         }
@@ -144,13 +155,8 @@ public class NewsServlet extends BaseServlet {
     // ************************************************************************
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
-
-    // ************************************************************************
-    // *************** PAGE RANDER处理的相关函数，放在这下面
-    // ************************************************************************
-    //*********************************************************************
     /**
-     * 加载PLATE页面
+     * 银行转账
      *
      * @param request
      * @param response
@@ -158,60 +164,74 @@ public class NewsServlet extends BaseServlet {
      * @throws ServletException
      * @throws IOException
      */
-    private boolean loadPagePlate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        NewsServlet.PageEnum page = (NewsServlet.PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
-        ServletContext application = this.getServletContext();
-        List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
-        Plate pagePlate = null;
-        for (Plate plate : list) {
-            if (page.name().equalsIgnoreCase(plate.getPage())) {
-                pagePlate = plate;
-                request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
-                break;
-            }
-        }
-        Integer pageIndex = super.getRequestInteger(request, "page");
-        if (pageIndex == null) {
-            pageIndex = 1;
-        }
-        int maxPerPage = 5;
-        Map< String, Object> map = new HashMap<>();
-        map.put("plateId", pagePlate.getId());
-        ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, pageIndex, maxPerPage, null, true);
-        request.setAttribute("resultList", resultList);
-        //加载左侧点击高的
-        map.put("plateId", pagePlate.getId());
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5));
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 加载详细
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long id = super.getRequestLong(request, "id");
-        PlateInformation plateInfo = adminService.findPlateInformationByIdFetchContent(id);
-        //异步增加数量
-        cbraService.addPlateVisitCount(id);
-        //因为异步运算返回的结果慢，这里做数据修正
-        plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
-        //set data
-        request.setAttribute("plateInfo", plateInfo);
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(plateInfo.getPlate(), 5));
-        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
-            super.forward("/public/no_authorization", request, response);
+    private boolean doSetBankTransfer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment gatewayPayment = this.getGatewayPayment(request);
+        if (gatewayPayment == null) {
+            forwardWithError("Param Invalid", "/public/error_page", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        request.setAttribute("plateAuth", auth);
-        request.setAttribute("messageList", cbraService.findMessageList(plateInfo, super.getUserFromSessionNoException(request)));
-        return KEEP_GOING_WITH_ORIG_URL;
+        PaymentGatewayTypeEnum gType = gatewayPayment.getGatewayType();
+        if (gType.equals(PaymentGatewayTypeEnum.BANK_TRANSFER)) {
+            //保存银行转账信息 
+            gatewayService.createBankTransfer(gatewayPayment);
+        }
+        this.redirectResult(gatewayPayment, request, response);
+        return FORWARD_TO_ANOTHER_URL;
     }
+
+    // ************************************************************************
+    // ***************PRIVATE处理的相关函数，放在这下面
+    // ************************************************************************
+    /**
+     * 获取支付网关
+     *
+     * @param request
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private GatewayPayment getGatewayPayment(HttpServletRequest request) throws ServletException, IOException {
+        GatewayPayment gatewayPayment = (GatewayPayment) request.getAttribute("gatewayPayment");
+        if (null == gatewayPayment) {
+            Long gatewayPaymentId = super.getPathInfoLongAt(request, 1);
+            gatewayPayment = gatewayService.findGatewayPaymentById(gatewayPaymentId);
+        }
+        return gatewayPayment;
+    }
+
+    /**
+     * 转发结果
+     *
+     * @param gatewayPayment
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     */
+    private void redirectResult(GatewayPayment gatewayPayment, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        PaymentGatewayTypeEnum gatewayType = gatewayPayment.getGatewayType();
+        String url = null;
+        if (gatewayPayment.getOrderCollection() != null) {
+            //收款支付
+            String baseUrl = "/order/result/";
+            GatewayPaymentSourceEnum source = gatewayPayment.getSource();
+            if (gatewayPayment.isSuccess()) {
+                super.removeCookie(request, response, COOKIE_PAYMENT_REF_URL);
+            }
+            OrderCollection orderCollection = gatewayPayment.getOrderCollection();
+            url = baseUrl + orderCollection.getSerialId();
+            redirect(url, request, response);
+        }else if(gatewayPayment.getOrderCbraService() != null){
+            String baseUrl = "/account/result/";
+            url = baseUrl + gatewayPayment.getOrderCbraService().getSerialId();
+            redirect(url, request, response);
+        }
+        if (!gatewayType.equals(PaymentGatewayTypeEnum.ALIPAY)) {
+            //Output json
+            super.outputSuccessAjax("Redirect success result page...", url, response);
+        } else {
+            redirect(url, request, response);
+        }
+    }
+
 }

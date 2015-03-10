@@ -317,7 +317,7 @@
                             <div id="List1">
                                 <!-- 图片列表 begin -->
                                 <%
-                                     for (PlateInformation info : Config.homeExpert) {
+                                     for (PlateInformation info : Config.homeStyle) {
                                 %>
                                         <div class="pic"><a href="<%=info.getNavUrl()%>" target="_blank"><img src="<%=info.getPicUrl()%>" width="220" height="150"  /></a></div> 
                                 <%

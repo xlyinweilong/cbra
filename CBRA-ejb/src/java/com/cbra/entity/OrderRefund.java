@@ -80,7 +80,7 @@ public class OrderRefund implements Serializable {
     private UserAccount owner;
     @JoinColumn(name = "target_order_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private OrderService targetOrder;
+    private OrderCbraService targetOrder;
     @JoinColumn(name = "target_user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private UserAccount targetUser;

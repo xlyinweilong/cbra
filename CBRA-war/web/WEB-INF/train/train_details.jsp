@@ -25,7 +25,9 @@
                     <p style=" line-height:32px; color:#666;">
                         ${fundCollection.detailDescHtml}
                     </p>
-                    <p><input type="button" class="rev-an" value="报名" onclick="location.href = 'hd-bm.asp'"></p>
+                    <c:if test="${isSignUpEvent}">
+                    <p><input type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
+                    </c:if>
                     <!-- 分享 -->
                     <div class="bshare-custom Share"><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div>
                     <!-- 评论 -->
@@ -58,12 +60,14 @@
                         </c:forEach>
                         <!-- 评论内容 end -->
                         <c:if test="${plateAuth == 'VIEW_AND_REPAY'}">
-                            <form action="" method="post">
-                                <input type="hidden" name="a" value="LEAVE_A_MESSAGE" />
-                                <input type="hidden" name="id" value="${plateInfo.id}" />
+                            <form id="message_form" action="/message/send_message" method="post">
+                                <input type="hidden" name="a" value="SEND_MESSAGE" />
+                                <input type="hidden" name="plateInfoId" value="${plateInfo.id}" />
+                                <input type="hidden" name="plateId" value="${plateInfo.plate.id}" />
+                                <input type="hidden" name="forwardUrl" value="/train/train_details?id=${plateInfo.id}" />
                                 <div class="review-k">
-                                    <textarea class="rev-k"></textarea>
-                                    <input type="button" class="rev-an" value="评论">
+                                    <textarea id="content" name="content" class="rev-k"></textarea>
+                                    <input type="button" id="message_button" class="rev-an" value="评论" />
                                 </div>
                             </form>
                         </c:if>
@@ -87,5 +91,16 @@
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
         <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#message_button").click(function () {
+                    if (CBRAValid.checkFormValueNull($("#content"))) {
+                        alert("请输入评论内容");
+                        return;
+                    }
+                    $("#message_form").submit();
+                });
+            })
+        </script>
     </body>
 </html>

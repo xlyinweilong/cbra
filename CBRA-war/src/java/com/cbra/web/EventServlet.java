@@ -5,14 +5,19 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.entity.Account;
+import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.entity.SubCompanyAccount;
+import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.service.CbraService;
 import com.cbra.support.NoPermException;
 import com.cbra.support.ResultList;
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
@@ -281,12 +286,13 @@ public class EventServlet extends BaseServlet {
         request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
         request.setAttribute("fundCollection", fundCollection);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+        if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
         request.setAttribute("plateAuth", auth);
         request.setAttribute("messageList", cbraService.findMessageList(fundCollection, MessageTypeEnum.PUBLISH_FROM_USER, super.getUserFromSessionNoException(request)));
+        request.setAttribute("isSignUpEvent", cbraService.getAccountCanSignUpEvent(fundCollection, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

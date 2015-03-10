@@ -9,6 +9,7 @@ import cn.yoopay.support.exception.ImageConvertException;
 import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.FundCollection;
+import com.cbra.entity.GatewayManualBankTransfer;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
@@ -180,6 +181,70 @@ public class AdminService {
                     resultList.setMaxPerPage(maxPerPage);
                 }
                 List<SysUser> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
+    }
+
+    /**
+     * 获取银行转账列表
+     * 
+     * @param map
+     * @param pageIndex
+     * @param maxPerPage
+     * @param list
+     * @param page
+     * @return 
+     */
+    public ResultList<GatewayManualBankTransfer> findGatewayManualBankTransferList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<GatewayManualBankTransfer> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<GatewayManualBankTransfer> query = builder.createQuery(GatewayManualBankTransfer.class);
+        Root root = query.from(GatewayManualBankTransfer.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("status")) {
+            criteria.add(builder.equal(root.get("orderCollection").get("status"), map.get("status")));
+        }
+        if (map.containsKey("serviceStatus")) {
+            criteria.add(builder.equal(root.get("orderCbraService").get("status"), map.get("serviceStatus")));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("createDate")));
+                TypedQuery<GatewayManualBankTransfer> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<GatewayManualBankTransfer> dataList = typeQuery.getResultList();
                 resultList.addAll(dataList);
             }
         } catch (NoResultException ex) {
@@ -1001,12 +1066,12 @@ public class AdminService {
     public Message findMessageById(Long id) {
         return em.find(Message.class, id);
     }
-    
+
     /**
      * 根据ID获取信息回复
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public ReplyMessage findReplyMessageById(Long id) {
         return em.find(ReplyMessage.class, id);

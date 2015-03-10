@@ -19,6 +19,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -74,14 +76,24 @@ public class GatewayPayment implements Serializable {
     @Size(max = 2048)
     @Column(name = "payment_gateway_msg", length = 2048)
     private String paymentGatewayMsg;
-//    @JoinColumn(name = "order_id", referencedColumnName = "id")
-//    @ManyToOne
-//    private OrderMain orderMain;
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @ManyToOne
+    private OrderCollection orderCollection;
+    @JoinColumn(name = "order_service_id", referencedColumnName = "id")
+    @ManyToOne
+    private OrderCbraService orderCbraService;
     @Basic(optional = false)
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
-    
+
+    public boolean isSuccess() {
+        if (status.equals(GatewayPaymentStatusEnum.PAYMENT_SUCCESS)) {
+            return true;
+        }
+        return false;
+    }
+
     public Long getId() {
         return id;
     }
@@ -104,6 +116,14 @@ public class GatewayPayment implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public OrderCbraService getOrderCbraService() {
+        return orderCbraService;
+    }
+
+    public void setOrderCbraService(OrderCbraService orderCbraService) {
+        this.orderCbraService = orderCbraService;
     }
 
     public GatewayPayment() {
@@ -183,6 +203,14 @@ public class GatewayPayment implements Serializable {
 
     public void setPaymentGatewayMsg(String paymentGatewayMsg) {
         this.paymentGatewayMsg = paymentGatewayMsg;
+    }
+
+    public OrderCollection getOrderCollection() {
+        return orderCollection;
+    }
+
+    public void setOrderCollection(OrderCollection orderCollection) {
+        this.orderCollection = orderCollection;
     }
 
     @Override

@@ -68,7 +68,7 @@
                         CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入确认原密码", $("#repasswd"));
                         return;
                     }
-                    if ($("#repasswd").val() !== $("#oldpasswd").val()) {
+                    if ($("#repasswd").val() !== $("#newpasswd").val()) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "两次密码输入不一致", $("#repasswd"));
                         return;
                     }

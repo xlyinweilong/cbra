@@ -12,7 +12,6 @@ package com.cbra.support.enums;
  */
 public enum GatewayPaymentStatusEnum {
 
-    PAYMENT_PENDING,
-    
+    PAYMENT_PENDING, PAYMENT_SUCCESS, PAYMENT_CANCELED;
 
 }
