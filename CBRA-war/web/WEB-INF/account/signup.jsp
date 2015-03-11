@@ -250,7 +250,7 @@
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入其他职务", $("#others"));
                                 return;
                             }
-                            if ($("input[name=icPositions]:checked").length < 1) {
+                            if ($("input[name='icPositions']:checked").length < 1) {
                                 CBRAMessage.showMessage($("#signup_msg_1"), "请选择产业链位置");
                                 return;
                             }
@@ -307,6 +307,7 @@
                     $("#reg_back").click();
                 });
                 $("#reg_front_submit").click(function () {
+                    $("#signup_msg_2").html("");
                     if ($("#reg_front").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_front"));
                         return;
@@ -314,6 +315,7 @@
                     $("#reg_front_form").submit();
                 });
                 $("#reg_back_submit").click(function () {
+                    $("#signup_msg_2").html("");
                     if ($("#reg_back").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_back"));
                         return;

@@ -182,7 +182,7 @@
                 <div class="nav-menu clearfix" id="HJ_Menu_6" style="left: auto;  width: 410px; left: -138px;  display: none;">
                     <ul class="fl nav-channel">
                         <li><a href="/team/director">理事成员</a></li>
-                        <li><a href="/team/committee">委员会</a></li>
+                        <%--<li><a href="/team/committee">委员会</a></li>--%>
                         <li><a href="/team/branch">各地分会</a></li>
                         <li><a href="/team/expert">领域专家</a></li>
                         <li><a href="/team/style">部分会员风采</a></li>

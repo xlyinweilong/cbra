@@ -249,7 +249,7 @@
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入邮寄", $("#zipCode"));
                                 return;
                             }
-                            if ($("input[name=icPositions]:checked").length < 1) {
+                            if ($("input[name='icPositions']:checked").length < 1) {
                                 CBRAMessage.showMessage($("#signup_msg_1"), "请选择产业链位置");
                                 return;
                             }
@@ -315,6 +315,7 @@
                     $("#reg_qc").click();
                 });
                 $("#reg_bl_submit").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($("#reg_bl").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_3"), "请选择图片路径", $("#reg_bl"));
                         return;
@@ -322,6 +323,7 @@
                     $("#reg_bl_form").submit();
                 });
                 $("#reg_qc_submit").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($("#reg_qc").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_3"), "请选择文件路径", $("#reg_qc"));
                         return;

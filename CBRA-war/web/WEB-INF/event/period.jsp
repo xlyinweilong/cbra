@@ -9,13 +9,13 @@
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
-        <jsp:include page="/WEB-INF/event/z_event_banner.jsp"><jsp:param name="page" value="2" /></jsp:include>
+        <jsp:include page="/WEB-INF/event/z_event_banner.jsp"><jsp:param name="page" value="1" /></jsp:include>
             <!-- 主体 -->
             <div class="two-main">
-                <form id="form1" action="/event/period" method="post">
+                <form id="form1" action="/event/near_future" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                 <div class="news-list">
-                    <div class="title"><span><a href="/event/near_future" >近期活动</a></span><span><a href="/event/period" id="title-span">往期活动</a></span></div>
+                    <div class="title"><span><a href="/event/near_future">近期活动</a></span><span><a href="/event/period" id="title-span">往期活动</a></span></div>
                     <ul>
                         <c:forEach var="fundCollection" items="${resultList}">
                             <li>
@@ -39,21 +39,20 @@
                     </jsp:include>
                 </div>
             </form>
-        </div>
-        <div class="news-fr">
-            <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
-            <h1>合作伙伴活动</h1>
-            <div class="top-hits">
-                <ul>
+            <div class="news-fr">
+                <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
+                <h1>合作伙伴活动</h1>
+                <div class="top-hits">
+                    <ul>
                         <c:forEach var="event" items="${hotEventList}">
                             <li><a target="_blank" href="/event/event_details?id=${event.id}">${event.title}</a></li>
-                        </c:forEach>
+                            </c:forEach>
                     </ul>
+                </div>
             </div>
+            <div style="clear:both;"></div>
         </div>
-        <div style="clear:both;"></div>
-    </div>
-    <!-- 主体 end -->
-    <jsp:include page="/WEB-INF/public/z_end.jsp"/>
-</body>
+        <!-- 主体 end -->
+        <jsp:include page="/WEB-INF/public/z_end.jsp"/>
+    </body>
 </html>

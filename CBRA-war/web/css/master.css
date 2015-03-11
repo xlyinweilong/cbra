@@ -524,3 +524,6 @@ a.green{text-decoration:underline}
 /*-- 提示颜色 --*/
 .hongs { color:#F30; font-size:12px;}
 .lvs { color:#090;  font-size:12px;}
+
+select{font-family:"微软雅黑"}
+option{font-family:"微软雅黑"}

@@ -12,18 +12,18 @@
             <body style="background:url(/images/Reg-bac.jpg) no-repeat top center">
                 <div class="xgmm">
                     <div class="tit">重置密码</div>
-                    <form action="/account/reset_passwd" method="post" id="reset_passwd_form">
+                    <form action="/account/reset_passwd/" method="post" id="reset_passwd_form">
                         <input type="hidden" name="a" value="RESET_PASSWD" />
                         <input type="hidden" name="key" value="${key}">
                         <table width="400" border="0" cellspacing="0" cellpadding="0">
                             <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                                 <tr>
                                     <td width="100" height="44" align="right">新密码：</td>
-                                    <td><input id="passwd" name="passwd" type="text" class="shuru" /></td>
+                                    <td><input id="passwd" name="passwd" type="password" class="shuru" /></td>
                                 </tr>
                                 <tr>
                                     <td height="44" align="right">重复密码：</td>
-                                    <td><input id="repasswd" name="repasswd" type="text" class="shuru" /></td>
+                                    <td><input id="repasswd" name="repasswd" type="password" class="shuru" /></td>
                                 </tr>
                                 <tr>
                                     <td height="44" align="right"></td>

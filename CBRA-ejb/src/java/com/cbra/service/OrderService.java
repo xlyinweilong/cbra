@@ -196,7 +196,11 @@ public class OrderService {
      */
     public OrderCbraService createOrderService(Account account) {
         OrderCbraService oc = new OrderCbraService();
-        oc.setAmount(Config.MEMBERSHIP_FEE);
+        if (account instanceof UserAccount) {
+            oc.setAmount(Config.MEMBERSHIP_FEE);
+        } else {
+            oc.setAmount(Config.MEMBERSHIP_FEE_COMPANY);
+        }
         oc.setSerialId(this.getUniqueServiceSerialId());
         oc.setStatus(OrderStatusEnum.PENDING_FOR_APPROVAL);
         oc.setOwner(account);

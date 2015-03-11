@@ -118,8 +118,6 @@ public class AccountServlet extends BaseServlet {
             case SIGNUP_C:
             case FORGET_PASSWD:
             case RESET_PASSWD:
-                setLogoutOnly(request);
-                break;
             case LOGOUT:
             case VERIFY:
             case LOAD_ACCOUNT_BY_AJAX:
@@ -606,6 +604,7 @@ public class AccountServlet extends BaseServlet {
         }
         accountService.resetPassword(account, password);
         setSuccessResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_密码激活成功，请登录"), request);
+        request.setAttribute("success", true);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -743,7 +742,7 @@ public class AccountServlet extends BaseServlet {
             } catch (Exception e) {
                 scale = null;
             }
-            accountService.updateCompanyAccount(account.getId(), item, scale, address, zipCode, icPosition);
+            account = accountService.updateCompanyAccount(account.getId(), item, scale, address, zipCode, icPosition);
         } else {
             UserPosition up = null;
             try {
@@ -759,8 +758,9 @@ public class AccountServlet extends BaseServlet {
                 setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition);
+            account = accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition);
         }
+        super.setSessionUser(request, account);
         setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -885,7 +885,12 @@ public class AccountServlet extends BaseServlet {
             forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE);
+        if (account instanceof UserAccount) {
+            request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE);
+        } else {
+            request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE_COMPANY);
+        }
+
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -979,6 +984,9 @@ public class AccountServlet extends BaseServlet {
             forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
+        if (key == null) {
+            key = (String) request.getAttribute("key");
+        }
         request.setAttribute("key", key);
         Account account = accountService.findByRepasswdUrl(key);
         if (account == null) {
@@ -989,8 +997,6 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        request.setAttribute("success", true);
-        super.setSuccessResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

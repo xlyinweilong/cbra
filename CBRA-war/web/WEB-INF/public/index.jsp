@@ -177,9 +177,9 @@
                         <div class="Title-3"><a href="#">更多</a></div>
                     </div>
                     <ul>
-                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="images/ico-bmz.png"></li>
-                        <li><a href="#">[01-02]筑誉建筑联合会成立大会</a><img src="images/ico-bmz.png"></li>
-                        <li><a href="#">[01-02]筑誉建筑联合会第二届理事会</a><img src="images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="/images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉建筑联合会成立大会</a><img src="/images/ico-bmz.png"></li>
+                        <li><a href="#">[01-02]筑誉建筑联合会第二届理事会</a><img src="/images/ico-bmz.png"></li>
                         <li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴</a></li>
                         <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a></li>
                     </ul>

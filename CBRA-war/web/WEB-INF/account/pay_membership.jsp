@@ -23,7 +23,7 @@
                                 <div class="tit-cz">会　费</div>
                                 <div class="hfcz">
                                     <h1>支付金额：<span>¥${membership_fee}元</span></h1>
-                                <p>收款方：筑誉建筑联合会　　类型：缴费</p>
+                                <%--<p>收款方：筑誉建筑联合会　　类型：缴费</p>--%>
                                 <%--<p><input type="checkbox" class="fuxk">是否开发票</p>--%>
                             </div>
                             <div class="xzyh">

@@ -860,10 +860,10 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
         String fromEmail = "yinweilong.com@163.com";
         String templateFile = "account_approval_success_" + language + ".html";
-        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
         model.put("passwd", passwd);
@@ -882,10 +882,10 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
         String fromEmail = "yinweilong.com@163.com";
         String templateFile = "account_approval_fail_" + language + ".html";
-        String subject = "zh".equalsIgnoreCase(language) ? " 【账户注册失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
+        String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
         if (Tools.isNotBlank(message)) {
@@ -918,7 +918,7 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Yoopay";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
         String fromEmail = "yinweilong.com@163.com";
         String templateFile = "order_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
@@ -979,9 +979,9 @@ public class AccountService {
             language = "zh";
         }
         language = language.toLowerCase();
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "Cbra";
+        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
         String fromEmail = "yinweilong.com@163.com";
-        String templateFile = "account_reset_passwd" + language + ".html";
+        String templateFile = "account_reset_passwd_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【密码找回通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
         model.put("account", account);
