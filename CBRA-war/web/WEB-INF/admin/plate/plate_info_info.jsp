@@ -93,6 +93,7 @@
                         <li>
                             <label>图片</label>
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
+                            <c:if test="${not empty plateInfo.picUrl}"><a href="${plateInfo.picUrl}" target="_blank">查看</a></c:if>
                         </li>
                         <li>
                             <label>链接</label>
@@ -106,6 +107,7 @@
                         <li>
                             <label>介绍图片</label>
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
+                            <c:if test="${not empty plateInfo.picUrl}"><a href="${plateInfo.picUrl}" target="_blank">查看</a></c:if>
                         </li>  
                     </c:if>
                     <c:if test="${plate.plateKey == 'HOME_ABOUT' || plate.plateKey == 'TOP_INTO' || plate.plateKey == 'TOP_EVENT' || plate.plateKey == 'TOP_TRAIN' || plate.plateKey == 'TOP_STYLE' || plate.plateKey == 'TOP_JOIN'}">

@@ -11,7 +11,7 @@
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
         <div class="two-loc">
-            <div class="two-loc-c">当前位置：<a href="index.asp">筑誉首页</a> > 搜索</div>
+            <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 搜索</div>
         </div>
 
         <!-- 主体 -->

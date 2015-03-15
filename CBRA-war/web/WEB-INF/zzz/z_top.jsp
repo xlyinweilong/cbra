@@ -28,7 +28,7 @@
     <!--页眉 end-->
     <!--logo-->
     <div class="LOGO">
-        <div class="LOGO-l"><a href="index.asp"><img src="images/logo.png"></a></div>
+        <div class="LOGO-l"><a href="/public/index"><img src="images/logo.png"></a></div>
         <div class="LOGO-r">
             <p>咨询热线：021-61550302</p>
             <input type="text" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="location.href = 'Search.asp'">
@@ -41,7 +41,7 @@
     <div class="nav-wrap">
         <ul id="HJ_Nav" class="nav">
             <!--首页-->
-            <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 1)"  href="index.asp">筑誉首页</a></li>
+            <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 1)"  href="/public/index">筑誉首页</a></li>
             <!--首页 end-->
 
             <!--走进筑誉-->

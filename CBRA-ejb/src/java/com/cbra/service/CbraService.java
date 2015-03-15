@@ -104,10 +104,10 @@ public class CbraService {
         sb.delete(sb.length() - 1, sb.length());
         sb.append(")");
         ResultList<SearchInfo> resultList = new ResultList<>();
-        Query countQuery = em.createNativeQuery("SELECT SUM(t.id) FROM (SELECT COUNT(plateInfo.id) as id FROM plate_information plateInfo WHERE plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(fundCollection.id) as id FROM fund_collection fundCollection WHERE fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(o.id) as id FROM offer o WHERE o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%') AS t");
+        Query countQuery = em.createNativeQuery("SELECT SUM(t.id) FROM (SELECT COUNT(plateInfo.id) as id FROM plate_information plateInfo WHERE plateInfo.deleted = 0 AND  plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(fundCollection.id) as id FROM fund_collection fundCollection WHERE fundCollection.deleted = 0 AND fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT COUNT(o.id) as id FROM offer o WHERE o.deleted = 0 AND o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%') AS t");
         Long totalCount = ((BigDecimal) countQuery.getSingleResult()).longValue();
         resultList.setTotalCount(totalCount.intValue());
-        Query query = em.createNativeQuery("SELECT plateInfo.id as id,plateInfo.title as title,plateInfo.plate_id as plateId,plateInfo.introduction as introduction FROM plate_information plateInfo WHERE plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT fundCollection.id as id,fundCollection.title as title,fundCollection.plate_id as plateId,fundCollection.event_location as introduction FROM fund_collection fundCollection WHERE fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT o.id as id,o.position as title,o.plate_id as plateId,o.city as introduction FROM offer o WHERE o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%'");
+        Query query = em.createNativeQuery("SELECT plateInfo.id as id,plateInfo.title as title,plateInfo.plate_id as plateId,plateInfo.introduction as introduction FROM plate_information plateInfo WHERE plateInfo.deleted = 0 AND plateInfo.plate_id IN " + sb.toString() + " AND plateInfo.title LIKE '%" + searchText + "%' UNION ALL SELECT fundCollection.id as id,fundCollection.title as title,fundCollection.plate_id as plateId,fundCollection.event_location as introduction FROM fund_collection fundCollection WHERE fundCollection.deleted = 0 AND fundCollection.plate_id IN " + sb.toString() + " AND fundCollection.title LIKE '%" + searchText + "%' UNION ALL SELECT o.id as id,o.position as title,o.plate_id as plateId,o.city as introduction FROM offer o WHERE o.deleted = 0 AND o.plate_id IN " + sb.toString() + " AND o.position LIKE '%" + searchText + "%'");
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
@@ -420,5 +420,76 @@ public class CbraService {
         PlateInformation plateInfo = adminService.findPlateInformationById(plateInfoId);
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         em.merge(plateInfo);
+    }
+    
+    /**
+     * 加载配置
+     */
+    public void loadConfig() {
+        List<PlateTypeEnum> types = new LinkedList<>();
+        types.add(PlateTypeEnum.MENU);
+        List<Plate> list = this.getPlateList4Web(types);
+        for (Plate plate : list) {
+            if ("news_list".equalsIgnoreCase(plate.getPage())) {
+                Config.newsList = this.getPlateInformationList4Index(plate, 3);
+                Config.newsList5 = this.getPlateInformationList4Index(plate, 5);
+            }
+            if ("industry_list".equalsIgnoreCase(plate.getPage())) {
+                Config.industryList = this.getPlateInformationList4Index(plate, 3);
+            }
+            if ("three_party_offer".equalsIgnoreCase(plate.getPage())) {
+                Config.offerListIndex = this.findOfferList4Hot(plate, 5);
+            }
+            if ("material".equalsIgnoreCase(plate.getPage())) {
+                Config.materialListIndex = this.getPlateInformationList4Index(plate, 3);
+            }
+            if ("industrialization".equalsIgnoreCase(plate.getPage())) {
+                Config.industrializationListIndex = this.getPlateInformationList4Index(plate, 3);
+            }
+            if ("green".equalsIgnoreCase(plate.getPage())) {
+                Config.greenListIndex = this.getPlateInformationList4Index(plate, 3);
+            }
+            if ("bim".equalsIgnoreCase(plate.getPage())) {
+                Config.bimListIndex = this.getPlateInformationList4Index(plate, 3);
+            }
+        }
+        Config.homeSAD = this.getPlateInformationList4Index(PlateKeyEnum.HOME_SHUFFLING_AD_MENU, Integer.MAX_VALUE);
+        List<PlateInformation> inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_AD_MENU, 1);
+        if (inforList != null && !inforList.isEmpty()) {
+            Config.homeAd = inforList.get(0);
+        } else {
+            Config.homeAd = new PlateInformation();
+            Config.homeAd.setPicUrl("/ls/ls-2.jpg");
+        }
+        inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_ABOUT, 1);
+        if (inforList != null && !inforList.isEmpty()) {
+            Config.homeAbout = inforList.get(0);
+        } else {
+            Config.homeAbout = new PlateInformation();
+            Config.homeAbout.setPicUrl("/ls/ls-1.jpg");
+            Config.homeAbout.setIntroduction("我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会愿景以及为了体现诚实守信，平等互助和透明规范的协会价值，在21世纪全球聚焦中国迅速发展的今天成立我们的专业行业协会，任重而道远回顾过去的建筑发展历程， 中国建筑无论从设计理念的创新，建筑设计的优化，施工工艺的改良，新材料的应用以及建筑质量的维护都有了重大的突破！");
+        }
+        Config.homeStyle = this.getPlateInformationList4Index(PlateKeyEnum.HOME_STYLE, 6);
+        Config.homeExpert = this.getPlateInformationList4Index(PlateKeyEnum.HOME_EXPERT, 6);
+
+        inforList = this.getPlateInformationList4Index(PlateKeyEnum.TOP_INTO, 1);
+        if (inforList != null && !inforList.isEmpty()) {
+            Config.topInto = inforList.get(0);
+        } else {
+            Config.topInto = new PlateInformation();
+            Config.topInto.setPicUrl("/ls/3591G05OQF_m.jpg");
+            Config.topInto.setIntroduction(" 和君集团的基本业务格局为：和君咨询+和君资本+和君商学，即以管理咨询为主体，以资本和商学教育为两翼的“一体两翼”模式。");
+        }
+        inforList = this.getPlateInformationList4Index(PlateKeyEnum.TOP_STYLE, 1);
+        if (inforList != null && !inforList.isEmpty()) {
+            Config.topStyle = inforList.get(0);
+        } else {
+            Config.topStyle = new PlateInformation();
+            Config.topStyle.setPicUrl("/ls/201409121234mjj8.jpg");
+            Config.topStyle.setIntroduction("实现党建工作与企业经营管理的互动，努力为集团各项工作的健康发展提供坚强的组织保证");
+        }
+        Config.topEvent = this.getPlateInformationList4Index(PlateKeyEnum.TOP_EVENT, 2);
+        Config.topTrain = this.getPlateInformationList4Index(PlateKeyEnum.TOP_TRAIN, 2);
+        Config.topJoin = this.getPlateInformationList4Index(PlateKeyEnum.TOP_JOIN, 2);
     }
 }

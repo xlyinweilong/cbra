@@ -63,6 +63,35 @@ public class AccountService {
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
     // **********************************************************************
+    public Account findByLoginCode(String loginCode) {
+        Account user = null;
+        try {
+            TypedQuery<Account> query = em.createQuery("SELECT a FROM Account a WHERE a.loginCode = :loginCode and a.deleted = false", Account.class);
+            query.setParameter("loginCode", loginCode);
+            user = query.getSingleResult();
+        } catch (NoResultException ex) {
+            user = null;
+        }
+        return user;
+    }
+
+    private String createLoginCode(Long id) {
+        return Tools.md5(id + "_" + System.currentTimeMillis() + "_" + Tools.generateRandom8Chars());
+    }
+
+    public String getUniqueLoginCode(Long id) {
+        int maxCount = 10;
+        String loginCode = this.createLoginCode(id);
+        int i = 1;
+        for (; i < maxCount && findByLoginCode(loginCode) != null; i++) {
+            loginCode = this.createLoginCode(id);
+        }
+        if (i >= 10) {
+            throw new RuntimeException("System Error");
+        }
+        return loginCode;
+    }
+
     /**
      * 登录
      *

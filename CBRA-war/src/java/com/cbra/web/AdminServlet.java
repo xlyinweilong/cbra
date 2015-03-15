@@ -24,6 +24,8 @@ import com.cbra.entity.SysUser;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
+import com.cbra.service.CbraService;
+import com.cbra.service.ConfigService;
 import com.cbra.service.GatewayService;
 import com.cbra.service.OrderService;
 import com.cbra.support.FileUploadItem;
@@ -85,6 +87,8 @@ public class AdminServlet extends BaseServlet {
     private OrderService orderService;
     @EJB
     private GatewayService gatewayService;
+    @EJB
+    private CbraService cbraService;
 
     /// <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
     @Override
@@ -142,7 +146,7 @@ public class AdminServlet extends BaseServlet {
 
     public static enum ActionEnum {
 
-        LOGIN, LOGOUT, REPASSWD,
+        LOGIN, LOGOUT, REPASSWD, RELOAD_CONFIG,
         MENU_DELETE, MENU_SORT, MENU_CREATE_OR_UPDATE,
         ROLE_DELETE, ROLE_SORT, ROLE_CREATE_OR_UPDATE,
         USER_DELETE, USER_CREATE_OR_UPDATE,
@@ -192,6 +196,8 @@ public class AdminServlet extends BaseServlet {
                 return doLogin(request, response);
             case LOGOUT:
                 return doLogout(request, response);
+            case RELOAD_CONFIG:
+                return reloadConfig(request, response);
             case MENU_DELETE:
                 return doDeleteMenu(request, response);
             case MENU_SORT:
@@ -274,7 +280,8 @@ public class AdminServlet extends BaseServlet {
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
         ORDER_LIST, ORDER_INFO,
-        BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST
+        BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST,
+        LOAD_CONFIG;
 
     }
 
@@ -293,6 +300,7 @@ public class AdminServlet extends BaseServlet {
             case PLATE_INFO_MANAGE:
             case PLATE_AUTH_MANAGE:
             case MY_INFO:
+            case LOAD_CONFIG:
                 return KEEP_GOING_WITH_ORIG_URL;
             case TOP:
                 return loadTopPage(request, response);
@@ -400,6 +408,21 @@ public class AdminServlet extends BaseServlet {
     }
 
     /**
+     * 重载配置文件
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean reloadConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        cbraService.loadConfig();
+        super.setSuccessResult("重置成功！", request);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
      * 登录
      *
      * @param request
@@ -412,7 +435,6 @@ public class AdminServlet extends BaseServlet {
         String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");
         SysUser su = null;
-        adminService.sendFundAddFundNoticeEmail();
         try {
             su = adminService.login(account, passwd);
         } catch (AccountNotExistException | EjbMessageException ex) {
@@ -423,7 +445,6 @@ public class AdminServlet extends BaseServlet {
         }
         request.getSession().setAttribute(SESSION_ATTRIBUTE_ADMIN, su);
         redirect("/admin/main", request, response);
-
         return REDIRECT_TO_ANOTHER_URL;
     }
 
@@ -1346,22 +1367,22 @@ public class AdminServlet extends BaseServlet {
         gatewayService.confirmBankTransfer(id);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 银行转账确认
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean doBankTransferServiceConfirm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long id = super.getRequestLong(request, "id");
         gatewayService.confirmBankTransfer(id);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     // ************************************************************************
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
@@ -1837,15 +1858,15 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 银行转账未确认列表
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadBankTransferServiceList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer page = super.getRequestInteger(request, "page");

@@ -22,7 +22,8 @@ public enum AccountIcPosition {
     H("H", "材料供应商（只供材料）"),
     I("I", "材料加服务"),
     J("J", "信息化企业"),
-    K("K", "运营商");
+    K("K", "运营商"),
+    Z("Z", "其他");
 
     private String key;
     private String name;

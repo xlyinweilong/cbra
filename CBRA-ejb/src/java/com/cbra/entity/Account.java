@@ -120,6 +120,9 @@ public abstract class Account implements Serializable {
     @Column(name = "re_passwd_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date repasswdDate;
+    //loginCode
+    @Column(name = "login_code")
+    private String loginCode;
     
 
     public String getIcPositionString() {
@@ -325,6 +328,14 @@ public abstract class Account implements Serializable {
 
     public void setRepasswdDate(Date repasswdDate) {
         this.repasswdDate = repasswdDate;
+    }
+
+    public String getLoginCode() {
+        return loginCode;
+    }
+
+    public void setLoginCode(String loginCode) {
+        this.loginCode = loginCode;
     }
 
     @Override

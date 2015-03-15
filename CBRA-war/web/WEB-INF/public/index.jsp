@@ -174,7 +174,7 @@
                 <div class="One-Row-fr">
                     <div class="Title">
                         <div class="Title-1">近期活动</div>
-                        <div class="Title-3"><a href="#">更多</a></div>
+                        <div class="Title-3"><a href="/event/near_future">更多</a></div>
                     </div>
                     <ul>
                         <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="/images/ico-bmz.png"></li>
@@ -296,7 +296,7 @@
                     </div>
                     <ul>
                         <c:forEach var="offer" items="<%=Config.offerListIndex%>">
-                            <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
+                            <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}[${offer.city}]</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
                         </c:forEach> 
                     </ul>
                 </div>

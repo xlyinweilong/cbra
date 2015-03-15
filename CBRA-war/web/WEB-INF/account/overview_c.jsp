@@ -13,7 +13,7 @@
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
 
         <div class="two-loc">
-            <div class="two-loc-c">当前位置：<a href="index.asp">筑誉首页</a> > 个人会员中心</div>
+            <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 个人会员中心</div>
         </div>
 
         <!-- 主体 -->

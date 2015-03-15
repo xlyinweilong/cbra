@@ -18,34 +18,35 @@
                 <input id="back_hidden" type="hidden" name="back" value="" />
                 <div class="Title"><a href="/account/signup" id="ind-reg-b">个人入会申请</a><a href="/account/signup_c">企业入会申请</a></div>
                 <div id="step1">
-                    <div class="Title-reg">基本信息<a style=" margin-left:10px; font-size:12px; color:#e8a29a; font-weight:normal;">(基本信息全部为必填项)</a></div>
+                    <div class="Title-reg">基本信息<a style=" margin-left:10px; font-size:12px; color:#e8a29a; font-weight:normal;">(*为必填项)</a></div>
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
-                            <td class="reg-1">中文姓名</td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>中文姓名</td>
                             <td class="reg-2"><input type="text" name="accountName" id="accountName" class="Input-1" /></td>
                             <td class="reg-1">英文姓名</td>
                             <td><input type="text" name="accountEnName" id="accountEnName" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">手机</td>
-                            <td class="reg-2"><input type="text" name="account" id="account" class="Input-1" /></td>
-                            <td class="reg-1">EMAIL</td>
-                            <td><input type="text" name="email" id="email" class="Input-1" /></td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>手机
+                            </td>
+                            <td class="reg-2" style="line-height:10px"><input type="text" name="account" id="account" class="Input-1" /><br/><span style="font-size:10px">作为账户登录，请使用有效号码</span></td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>EMAIL</td>
+                            <td style="line-height:10px"><input type="text" name="email" id="email" class="Input-1" /><br/><span style="font-size:10px">邮箱作为接收筑誉建活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">从业年限</td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>从业年限</td>
                             <td class="reg-2"><input type="text" name="workingYear" id="workingYear" class="Input-1" />（年）</td>
                             <td class="reg-1">目前就职公司</td>
                             <td><input type="text" name="company" id="company" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">邮寄地址</td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>邮寄地址</td>
                             <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" /></td>
-                            <td class="reg-1">邮编</td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>邮编</td>
                             <td><input type="text" name="zipCode" id="zipCode" class="Input-1" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">职务</td>
+                            <td class="reg-1"><b style="color:#e8a29a;">*</b>职务</td>
                             <td class="reg-2" style="line-height: 22px;">
                                 <span style="padding-right: 15px;">
                                     <select id="position" name="position" class="Input-1">
@@ -200,10 +201,6 @@
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入中文姓名", $("#accountName"));
                         return;
                     }
-                    if (CBRAValid.checkFormValueNull($("#accountEnName"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入英文姓名", $("#accountEnName"));
-                        return;
-                    }
                     if (!CBRAValid.checkFormValueMobile($("#account"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入合法手机", $("#account"));
                         return;
@@ -230,10 +227,6 @@
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "从业年限必须是数字", $("#workingYear"));
                                 return;
                             }
-                            if (CBRAValid.checkFormValueNull($("#company"))) {
-                                CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入就职公司", $("#company"));
-                                return;
-                            }
                             if (CBRAValid.checkFormValueNull($("#address"))) {
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入邮寄地址", $("#address"));
                                 return;
@@ -248,10 +241,6 @@
                             }
                             if ($("#position").val() == 'others' && CBRAValid.checkFormValueNull($("#others"))) {
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入其他职务", $("#others"));
-                                return;
-                            }
-                            if ($("input[name='icPositions']:checked").length < 1) {
-                                CBRAMessage.showMessage($("#signup_msg_1"), "请选择产业链位置");
                                 return;
                             }
                             $("#step1").hide();

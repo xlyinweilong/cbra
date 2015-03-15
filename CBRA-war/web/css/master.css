@@ -211,7 +211,7 @@ a.green{text-decoration:underline}
 .two-main .fl-nav { width:180px; height:auto; float:left;}
 .two-main .fl-nav h1 { width:180px; height:58px; background:url(../images/fl-tit-bac.png) no-repeat top; text-align:center; line-height:58px; font-size:14px; color:#FFF; font-weight:bold; margin-bottom:1px;}
 .two-main .fl-nav ul li { width:180px; height:42px; color:#979797;}
-.two-main .fl-nav ul li a { width:180px; height:42px; line-height:42px; text-align:center; color:#979797;  background:#ececec; float:left;}
+.two-main .fl-nav ul li a { width:180px; height:42px; line-height:42px; text-align:center; color:#525252;  background:#ececec; float:left;}
 .two-main .fl-nav ul li a:hover { width:180px; height:42px; line-height:42px; text-align:center; color:#525252; background:url(../images/fl-nav-bac.png) no-repeat; float:left; }
 #fl-nav-hover { width:180px; height:42px; line-height:42px; text-align:center; color:#525252; background:url(../images/fl-nav-bac.png) no-repeat; float:left; }
 

@@ -122,8 +122,8 @@ public class PlateInformation implements Serializable {
     }
 
     public String getTitleIndexStr() {
-        if (title.length() > 15) {
-            return title.substring(0, 14) + "...";
+        if (title.length() > 25) {
+            return title.substring(0, 24) + "...";
         }
         return title;
     }

@@ -17,7 +17,7 @@
             <!--微信下拉二维码-->
             <div id="WeixinMenu" class="weixin-menu" style="display: none;">
                 <div class="weixin-bd">
-                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> 扫一扫，关注<span style="color:#e53333;">筑誉微信</span>，共同分享有建设性价值的商业思索、见闻和感悟</span></p>
+                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> 关注<span style="color:#e53333;">筑誉建筑联合会</span>官方微信，第一时间分享精彩活动与行业咨询。</span></p>
                 </div>
             </div>
             <!--登录/注册/会员中心/中英文-->
@@ -41,7 +41,7 @@
     <!--页眉 end-->
     <!--logo-->
     <div class="LOGO">
-        <div class="LOGO-l"><a href="index.asp"><img src="/images/logo.png"></a></div>
+        <div class="LOGO-l"><a href="/public/index"><img src="/images/logo.png"></a></div>
         <div class="LOGO-r">
             <p>咨询热线：021-61550302</p>
             <input type="text" id="search_text" value="${searchText}" onkeypress="mykeypress13(event);" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="search($('#search_text').val())">

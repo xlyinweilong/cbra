@@ -26,9 +26,9 @@
                         </tr>
                         <tr>
                             <td class="reg-1">营业执照注册号</td>
-                            <td class="reg-2"><input type="text" class="Input-1" id="account" name="account" /></td>
+                            <td class="reg-2" style="line-height:10px"><input type="text" class="Input-1" id="account" name="account" /><br/><span style="font-size:10px">作为账户登录</span></td>
                             <td class="reg-1">企业邮箱</td>
-                            <td><input type="text" class="Input-1" id="email" name="email" /></td>
+                            <td style="line-height:10px"><input type="text" class="Input-1" id="email" name="email" /><br/><span style="font-size:10px">邮箱作为接收筑誉建活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
                             <td class="reg-1">创立时间</td>
@@ -247,10 +247,6 @@
                             }
                             if (CBRAValid.checkFormValueNull($("#zipCode"))) {
                                 CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入邮寄", $("#zipCode"));
-                                return;
-                            }
-                            if ($("input[name='icPositions']:checked").length < 1) {
-                                CBRAMessage.showMessage($("#signup_msg_1"), "请选择产业链位置");
                                 return;
                             }
                             $("#step1").hide();

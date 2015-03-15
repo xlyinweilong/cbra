@@ -1622,23 +1622,6 @@ public class AdminService {
         return replyMessage;
     }
 
-    public void sendFundAddFundNoticeEmail() {
-        String language = "zh";
-        String fromDisplayName = "zh".equalsIgnoreCase(language) ? "大隆" : "Yoopay";
-        String fromEmail = "yinweilong.com@163.com";
-        String templateFile = "fund_add_fund_notice_" + language + ".html";
-        String toEmail = "xlyinweilong1@163.com";
-        String amountStr = "￥100";
-        String subjectSuf = amountStr;
-        String subject = "zh".equalsIgnoreCase(language) ? "【充值成功】" + subjectSuf : "【Add Fund Success】" + subjectSuf;
-        Map model = new HashMap();
-//        model.put("orderOwner", owner);
-//        model.put("amountStr", amountStr);
-//        model.put("addFundOrder", addFundOrder);
-//        model.put("gatewayPayment", addFundOrder.getLastGatewayPayment());
-        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
-    }
-
     // **********************************************************************
     // ************* PRIVATE METHODS *****************************************
     // **********************************************************************
