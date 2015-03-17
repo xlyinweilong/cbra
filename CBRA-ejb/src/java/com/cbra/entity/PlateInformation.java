@@ -129,6 +129,20 @@ public class PlateInformation implements Serializable {
         return title;
     }
 
+    public String getTitleIndexStr2() {
+        if (title.length() > 20) {
+            return title.substring(0, 19) + "...";
+        }
+        return title;
+    }
+    
+    public String getTitleIndexStr3() {
+        if (title.length() > 18) {
+            return title.substring(0, 17) + "...";
+        }
+        return title;
+    }
+
     public boolean isNewPushDate() {
         Calendar cal = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
@@ -182,7 +196,7 @@ public class PlateInformation implements Serializable {
     public Date getPushDate() {
         return pushDate;
     }
-    
+
     public String getPushDateString() {
         return Tools.formatDate(pushDate, "yyyy年MM月dd日");
     }

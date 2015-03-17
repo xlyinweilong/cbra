@@ -6,15 +6,18 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.Offer;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.entity.SubCompanyAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
 import com.cbra.service.CbraService;
 import com.cbra.support.NoPermException;
 import com.cbra.support.ResultList;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.PlateAuthEnum;
@@ -259,7 +262,7 @@ public class AboutServlet extends BaseServlet {
         Offer offer = adminService.findOfferById(id);
         request.setAttribute("offer", offer);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(offer.getPlate(), super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+        if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
@@ -324,7 +327,7 @@ public class AboutServlet extends BaseServlet {
         //set data
         request.setAttribute("plateInfo", plateInfo);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+        if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
@@ -362,6 +365,16 @@ public class AboutServlet extends BaseServlet {
             }
             if ("bim".equalsIgnoreCase(plate.getPage())) {
                 plateIds.add(plate.getId());
+            }
+        }
+        Account account = super.getUserFromSessionNoException(request);
+        if (account instanceof CompanyAccount && account.getStatus().equals(AccountStatus.MEMBER)) {
+            request.setAttribute("isCompany", true);
+        }
+        if (account instanceof SubCompanyAccount) {
+            SubCompanyAccount sub = (SubCompanyAccount) account;
+            if (sub.getCompanyAccount().getStatus().equals(AccountStatus.MEMBER)) {
+                request.setAttribute("isCompany", true);
             }
         }
         request.setAttribute("offerList", cbraService.findOfferList4Hot(pagePlate, 5));

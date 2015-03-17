@@ -1487,6 +1487,7 @@ public class AdminService {
             isCreare = false;
             fundCollection = em.find(FundCollection.class, id);
         }
+        fundCollection.setIntroduction(mobileIntroduction);
         fundCollection.setAllowAttendee(allowAttendee);
         fundCollection.setCheckinDate(checkinDate);
         fundCollection.setCompanyAuth(companyAuth);

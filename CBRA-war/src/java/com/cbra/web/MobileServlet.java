@@ -213,6 +213,7 @@ public class MobileServlet extends BaseServlet {
         }
         if (user != null) {
             map.put("responsecode", 0);
+            map.put("msg", null);
             map.put("data", user.getLoginCode());
             return super.outputObjectAjax(map, response);
         }
@@ -242,19 +243,19 @@ public class MobileServlet extends BaseServlet {
             map.put("msg", "请重新登录");
             return super.outputObjectAjax(map, response);
         }
+        map.put("msg", null);
         map.put("responsecode", 0);
-        Map subMap = new HashMap();
         if (user instanceof SubCompanyAccount) {
 //            subMap.put("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
-            subMap.put("user", ((SubCompanyAccount) user).getCompanyAccount());
-            map.put("data", subMap);
+            map.put("data", ((SubCompanyAccount) user).getCompanyAccount());
+            map.put("type", "SUB");
         } else if (user instanceof CompanyAccount) {
-            subMap.put("user", user);
 //            subMap.put("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
-            map.put("data", subMap);
+            map.put("data", user);
+            map.put("type", "COMPANY");
         } else {
-            subMap.put("user", user);
-            map.put("data", subMap);
+            map.put("data", user);
+            map.put("type", "USER");
         }
         return super.outputObjectAjax(map, response);
     }

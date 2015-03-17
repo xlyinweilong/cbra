@@ -1013,7 +1013,7 @@ public class AdminServlet extends BaseServlet {
                 if ("image".equals(item.getFieldName())) {
                     fileUploadItem = item;
                 }
-                if ("mobileIntroduction".equals(item.getFieldName())) {
+                if ("mobileImage".equals(item.getFieldName())) {
                     fileUploadItem2 = item;
                 }
             }

@@ -23,33 +23,35 @@
                         <ul>
                         <c:forEach var="offer" items="${offerList}">
                             <li><a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city} ${offer.education}</span><span class="span-3">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]</span></a></li>
-                            </c:forEach> 
+                                    </c:forEach> 
                     </ul>
                 </div>
                 <div class="info-fr">
                     <p><img src="/pic/ad.jpg"></p>
-                    <a href="/into/our_offer"><img src="/images/a-rck.jpg"></a>
-                </div>
-                <div style="clear:both;"></div>
-            </div>
-            <!-- 一排 end-->
-            <!-- 广告 -->
-            <div class="info-ad"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
-            <!-- 广告 end -->
-            <!-- 资源信息 -->
-            <div class="info-r">
-                <div class="Title">
-                    <div class="Title-1">资源信息</div>
-                    <div class="Title-3"><a href="/into/purchase">更多</a></div>
-                </div>
-                <div class="info" style="height: 120px;">
-                    <div class="info-mk"><a href="/into/purchase" id="fl-nav-hover"><img src="/images/info-mk-1.jpg"></a></div>
-                    <div class="info-mk"><a href="/into/overseas" id="fl-nav-hover"><img src="/images/info-mk-2.jpg"></a></div>
-                    <div class="info-mk"><a href="/into/building" id="fl-nav-hover"><img src="/images/info-mk-3.jpg"></a></div>
-                    <div class="info-mk"><a href="/into/pension" id="fl-nav-hover"><img src="/images/info-mk-4.jpg"></a></div>
+                    <c:if test="${not empty isCompany}"><a href="/into/our_offer"><img src="/images/a-rck.jpg"></a></c:if>
+                    </div>
                     <div style="clear:both;"></div>
                 </div>
-            </div>
+                <!-- 一排 end-->
+                <!-- 广告 -->
+                <div class="info-ad"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
+            <!-- 广告 end -->
+            <!-- 资源信息 -->
+            <c:if test="${not empty isCompany}">
+                <div class="info-r">
+                    <div class="Title">
+                        <div class="Title-1">资源信息</div>
+                        <div class="Title-3"><a href="/into/purchase">更多</a></div>
+                    </div>
+                    <div class="info" style="height: 120px;">
+                        <div class="info-mk"><a href="/into/purchase" id="fl-nav-hover"><img src="/images/info-mk-1.jpg"></a></div>
+                        <div class="info-mk"><a href="/into/overseas" id="fl-nav-hover"><img src="/images/info-mk-2.jpg"></a></div>
+                        <div class="info-mk"><a href="/into/building" id="fl-nav-hover"><img src="/images/info-mk-3.jpg"></a></div>
+                        <div class="info-mk"><a href="/into/pension" id="fl-nav-hover"><img src="/images/info-mk-4.jpg"></a></div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </c:if>
             <!-- 资源信息 -->
             <!-- 前沿领域 -->
             <div class="info-area">

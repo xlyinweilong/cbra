@@ -21,6 +21,7 @@ import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import com.cbra.web.support.PostResult;
 import flexjson.JSONSerializer;
+import flexjson.transformer.DateTransformer;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -1393,6 +1394,15 @@ public abstract class BaseServlet extends HttpServlet {
     Boolean outputObjectAjax(Object o, HttpServletResponse response) throws IOException {
         JSONSerializer serializer = new JSONSerializer();
         String serialize = serializer.deepSerialize(o);
+        serialize = serialize.replaceAll(":null", ":\"\"");
+        outputText(response, serialize);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    Boolean outputObjectAjax(Object o, List<String> list, HttpServletResponse response) throws IOException {
+        JSONSerializer serializer = new JSONSerializer().include((String[]) list.toArray());
+        String serialize = serializer.deepSerialize(o);
+        serialize = serialize.replaceAll(":null", ":\"\"");
         outputText(response, serialize);
         return FORWARD_TO_ANOTHER_URL;
     }

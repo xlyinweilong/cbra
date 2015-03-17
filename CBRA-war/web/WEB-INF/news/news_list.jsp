@@ -45,7 +45,7 @@
                 <div class="top-hits">
                     <ul>
                         <c:forEach var="palteInfo" items="${plateInfoHots}">
-                            <li><a href="/news/details?id=${palteInfo.id}" target="_blank">${palteInfo.title}</a></li>
+                            <li><a href="/news/details?id=${palteInfo.id}" target="_blank">${palteInfo.titleIndexStr3}</a></li>
                             </c:forEach>
                     </ul>
                 </div>

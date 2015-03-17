@@ -220,6 +220,19 @@ public class FundCollection implements Serializable {
     public String getTitle() {
         return title;
     }
+    public String getTitleIndex() {
+        if (title.length() > 11) {
+            return title.substring(0, 10) + "...";
+        }
+        return title;
+    }
+    
+    public String getTitleIndexStr3() {
+        if (title.length() > 15) {
+            return title.substring(0, 14) + "...";
+        }
+        return title;
+    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -236,9 +249,13 @@ public class FundCollection implements Serializable {
     public Date getEventBeginDate() {
         return eventBeginDate;
     }
-    
+
     public String getEventBeginDateString() {
         return Tools.formatDate(eventBeginDate, "yyyy年MM月dd日");
+    }
+    
+    public String getEventBeginDateIndexString() {
+        return Tools.formatDate(eventBeginDate, "yyyy-MM-dd");
     }
 
     public void setEventBeginDate(Date eventBeginDate) {

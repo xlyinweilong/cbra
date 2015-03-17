@@ -5,6 +5,7 @@
  */
 package com.cbra;
 
+import com.cbra.entity.FundCollection;
 import com.cbra.entity.Offer;
 import com.cbra.entity.PlateInformation;
 import com.cbra.support.PathUtil;
@@ -44,6 +45,9 @@ public class Config {
 
     public static final String HTTP_URL_BASE = "http://www.cbra.com/";
     //持久信息
+    
+    public static List<FundCollection> eventListIndex = null;
+    
     public static List<PlateInformation> newsList = null;
 
     public static List<PlateInformation> newsList5 = null;

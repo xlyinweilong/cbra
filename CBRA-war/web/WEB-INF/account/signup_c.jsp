@@ -198,6 +198,9 @@
                         $("#natureOthers_td_2").hide();
                     }
                 });
+                $.ajaxSetup({//ie中防止加载缓存中内容
+                    cache: false
+                });
                 $("#step1_next").click(function () {
                     if (CBRAValid.checkFormValueNull($("#accountName"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入企业全称", $("#accountName"));

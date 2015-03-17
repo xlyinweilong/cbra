@@ -80,7 +80,7 @@
                 <div class="top-hits">
                     <ul>
                             <c:forEach var="event" items="${hotEventList}">
-                            <li><a target="_blank" href="/train/train_details?id=${event.id}">${event.title}</a></li>
+                            <li><a target="_blank" href="/train/train_details?id=${event.id}">${event.titleIndexStr3}</a></li>
                             </c:forEach>
                     </ul>
                 </div>

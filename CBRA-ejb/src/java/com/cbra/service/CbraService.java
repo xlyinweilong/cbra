@@ -393,19 +393,19 @@ public class CbraService {
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
         if (account == null) {
-            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.type = :type AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("offer", offer).setParameter("type", type).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
+            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("offer", offer).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
         } else if (account instanceof CompanyAccount) {
             secretLevel.add(MessageSecretLevelEnum.PUBLIC);
             secretLevel.add(MessageSecretLevelEnum.ALL_USER);
             secretLevel.add(MessageSecretLevelEnum.ONLY_COMPANY);
-            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.type = :type AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("offer", offer).setParameter("type", type).setParameter("secretLevelList", secretLevel).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
+            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("offer", offer).setParameter("secretLevelList", secretLevel).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
         } else {
             secretLevel.add(MessageSecretLevelEnum.PUBLIC);
             secretLevel.add(MessageSecretLevelEnum.ALL_USER);
-            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.type = :type AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("offer", offer).setParameter("type", type).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
+            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.deleted = false AND (message.secretLevel IN :secretLevelList OR (message.secretLevel =:secretLevel AND message.account = :account)) ORDER BY message.createDate DESC", Message.class);
+            query.setParameter("offer", offer).setParameter("secretLevel", MessageSecretLevelEnum.PRIVATE).setParameter("account", account);
         }
         return query.getResultList();
     }
@@ -451,6 +451,9 @@ public class CbraService {
             }
             if ("bim".equalsIgnoreCase(plate.getPage())) {
                 Config.bimListIndex = this.getPlateInformationList4Index(plate, 3);
+            }
+            if ("event".equalsIgnoreCase(plate.getPage())) {
+                Config.eventListIndex = this.getFundCollectionList4Web(plate, 3);
             }
         }
         Config.homeSAD = this.getPlateInformationList4Index(PlateKeyEnum.HOME_SHUFFLING_AD_MENU, Integer.MAX_VALUE);

@@ -196,6 +196,9 @@
                         $("#others_td_2").hide();
                     }
                 });
+                $.ajaxSetup({//ie中防止加载缓存中内容
+                    cache: false
+                });
                 $("#step1_next").click(function () {
                     if (CBRAValid.checkFormValueNull($("#accountName"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入中文姓名", $("#accountName"));
@@ -211,7 +214,7 @@
                         account: $("#account").val()
                     }, function (json) {
                         if (!json.success) {
-                            CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), json.singleErrorMsg,$("#account"));
+                            CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), json.singleErrorMsg, $("#account"));
                         }
                         else {
                             //call back

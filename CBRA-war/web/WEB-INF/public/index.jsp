@@ -143,11 +143,11 @@
                         <ul class="rslides f426x240">
                         <%
                             for (PlateInformation info : Config.homeSAD) {
-                                %>
-                                <li><a href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="1423" height="320" /></a></li>
-                                <%
-                            }
                         %>
+                        <li><a href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="1423" height="320" /></a></li>
+                                <%
+                                    }
+                                %>
                     </ul>
                 </div>
             </div>
@@ -177,11 +177,9 @@
                         <div class="Title-3"><a href="/event/near_future">更多</a></div>
                     </div>
                     <ul>
-                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家圆</a><img src="/images/ico-bmz.png"></li>
-                        <li><a href="#">[01-02]筑誉建筑联合会成立大会</a><img src="/images/ico-bmz.png"></li>
-                        <li><a href="#">[01-02]筑誉建筑联合会第二届理事会</a><img src="/images/ico-bmz.png"></li>
-                        <li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴</a></li>
-                        <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a></li>
+                            <c:forEach var="event" items="<%=Config.eventListIndex%>">
+                            <li><a href="/event/event_details?id=${event.id}">[${event.eventBeginDateIndexString}]${event.titleIndex}</a><c:if test="${event.statusBoolean}"><img src="/images/ico-bmz.png"></c:if></li>
+                            </c:forEach>
                     </ul>
                 </div>
                 <div style=" clear:both;"></div>
@@ -207,9 +205,9 @@
                             <div class="xxys">
                                 <h1>新材料新技术</h1>
                                 <ul>
-                                    <c:forEach var="info" items="<%=Config.industryList%>">
-                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
-                                    </c:forEach>
+                                    <c:forEach var="info" items="<%=Config.materialListIndex%>">
+                                        <li><a href="/into/details?id=${info.id}">${info.titleIndexStr2}</a></li>
+                                        </c:forEach>
                                 </ul>
                             </div>
                         </div>
@@ -220,7 +218,7 @@
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.industrializationListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
-                                    </c:forEach>
+                                        </c:forEach>
                                 </ul>
                             </div>
                         </div>
@@ -231,7 +229,7 @@
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.greenListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
-                                    </c:forEach>
+                                        </c:forEach>
                                 </ul>
                             </div>
                         </div>
@@ -242,7 +240,7 @@
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.bimListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
-                                    </c:forEach>
+                                        </c:forEach>
                                 </ul>
                             </div>
                         </div>
@@ -260,11 +258,11 @@
                             int i = 0;
                             for (PlateInformation info : Config.homeExpert) {
                                 i++;
-                                %>
-                                <li <%if(i==2 || i == 5){%>class="m-lr"<%}%>><a  href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="88" height="88" /></a></li>
-                                <%
-                            }
                         %>
+                        <li <%if (i == 2 || i == 5) {%>class="m-lr"<%}%>><a  href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="88" height="88" /></a></li>
+                                <%
+                                    }
+                                %>
                     </ul>
                 </div>
                 <div style=" clear:both;"></div>
@@ -283,8 +281,8 @@
                         <div class="img"><img src="/ls/ls-1.jpg"></div>
                         <ul>
                             <c:forEach var="news" items="<%=Config.newsList5%>">
-                                <li><a href="/news/news_list?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
-                            </c:forEach>
+                                <li><a href="/news/details?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
+                                </c:forEach>
                         </ul>
                     </div>
                 </div>
@@ -297,7 +295,7 @@
                     <ul>
                         <c:forEach var="offer" items="<%=Config.offerListIndex%>">
                             <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}[${offer.city}]</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
-                        </c:forEach> 
+                            </c:forEach> 
                     </ul>
                 </div>
                 <div style=" clear:both;"></div>
@@ -317,12 +315,12 @@
                             <div id="List1">
                                 <!-- 图片列表 begin -->
                                 <%
-                                     for (PlateInformation info : Config.homeStyle) {
+                                    for (PlateInformation info : Config.homeStyle) {
                                 %>
-                                        <div class="pic"><a href="<%=info.getNavUrl()%>" target="_blank"><img src="<%=info.getPicUrl()%>" width="220" height="150"  /></a></div> 
-                                <%
-                                    }
-                                %>
+                                <div class="pic"><a href="<%=info.getNavUrl()%>" target="_blank"><img src="<%=info.getPicUrl()%>" width="220" height="150"  /></a></div> 
+                                        <%
+                                            }
+                                        %>
                                 <!-- 图片列表 end -->
                             </div>
                             <div id="List2"></div>
