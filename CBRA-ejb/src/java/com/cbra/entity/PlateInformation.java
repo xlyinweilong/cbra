@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
@@ -180,6 +181,10 @@ public class PlateInformation implements Serializable {
 
     public Date getPushDate() {
         return pushDate;
+    }
+    
+    public String getPushDateString() {
+        return Tools.formatDate(pushDate, "yyyy年MM月dd日");
     }
 
     public void setPushDate(Date pushDate) {

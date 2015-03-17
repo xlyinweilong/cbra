@@ -1008,9 +1008,13 @@ public class AdminServlet extends BaseServlet {
             fileUploadObj = super.uploadFile(request, 10.0, null, null, null);
             List<FileUploadItem> list = fileUploadObj.getFileList();
             FileUploadItem fileUploadItem = null;
+            FileUploadItem fileUploadItem2 = null;
             for (FileUploadItem item : list) {
                 if ("image".equals(item.getFieldName())) {
                     fileUploadItem = item;
+                }
+                if ("mobileIntroduction".equals(item.getFieldName())) {
+                    fileUploadItem2 = item;
                 }
             }
             Long plateId = fileUploadObj.getLongFormField("plateId");
@@ -1032,6 +1036,7 @@ public class AdminServlet extends BaseServlet {
             String allowAttendee = fileUploadObj.getFormField("allowAttendee");
             String languageType = fileUploadObj.getFormField("languageType");
             String detailDescHtml = fileUploadObj.getFormField("detailDescHtml");
+            String mobileIntroduction = fileUploadObj.getFormField("mobileIntroduction");
             FundCollectionLanaguageEnum languageTypeEnum = null;
             PlateAuthEnum touristAuthEnum = null;
             PlateAuthEnum userAuthEnum = null;
@@ -1053,7 +1058,7 @@ public class AdminServlet extends BaseServlet {
                 companyAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
                 allowAttendeeEnum = FundCollectionAllowAttendeeEnum.PUBLIC;
             }
-            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, title, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum, fileUploadItem);
+            FundCollection fundCollection = adminService.createOrUpdateFundCollection(id, plateId, statusBeginDate, statusEndDate, eventBeginDate, eventEndDate, checkinDate, title, detailDescHtml, allowAttendeeEnum, languageTypeEnum, eventLocation, touristPrice, userPrice, companyPrice, eachCompanyFreeCount, touristAuthEnum, userAuthEnum, companyAuthEnum, mobileIntroduction,fileUploadItem,fileUploadItem2);
             request.setAttribute("fundCollection", fundCollection);
             request.setAttribute("id", fundCollection.getId());
             request.setAttribute("plateId", plateId);

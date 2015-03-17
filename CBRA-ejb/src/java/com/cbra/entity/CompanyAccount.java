@@ -81,11 +81,11 @@ public class CompanyAccount extends Account {
     @Column(name = "qualification_certificate", length = 255)
     //资质证书打包文件
     private String qualificationCertificateUrl;
-    
-    public String getNatureString(){
-        if(CompanyNatureEnum.OTHERS.equals(nature)){
+
+    public String getNatureString() {
+        if (CompanyNatureEnum.OTHERS.equals(nature)) {
             return natureOthers;
-        }else{
+        } else {
             return nature.getMean();
         }
     }
@@ -108,6 +108,10 @@ public class CompanyAccount extends Account {
 
     public CompanyScaleEnum getScale() {
         return scale;
+    }
+
+    public String getScaleString() {
+        return scale.getMean();
     }
 
     public void setScale(CompanyScaleEnum scale) {
@@ -193,7 +197,6 @@ public class CompanyAccount extends Account {
     public void setQualificationCertificateUrl(String qualificationCertificateUrl) {
         this.qualificationCertificateUrl = qualificationCertificateUrl;
     }
-
 
     @Override
     public int hashCode() {

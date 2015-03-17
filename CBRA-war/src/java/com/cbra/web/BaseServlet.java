@@ -103,43 +103,43 @@ public abstract class BaseServlet extends HttpServlet {
             List<Long> trainids = new LinkedList<>();
             List<Long> consultids = new LinkedList<>();
             for (Plate plate : list) {
-                if("news_list".equalsIgnoreCase(plate.getPage())){
+                if ("news_list".equalsIgnoreCase(plate.getPage())) {
                     newsids.add(plate.getId());
                 }
-                if("industry_list".equalsIgnoreCase(plate.getPage())){
+                if ("industry_list".equalsIgnoreCase(plate.getPage())) {
                     newsids.add(plate.getId());
                 }
-                if("event".equalsIgnoreCase(plate.getPage())){
+                if ("event".equalsIgnoreCase(plate.getPage())) {
                     eventids.add(plate.getId());
                 }
-                if("partners".equalsIgnoreCase(plate.getPage())){
+                if ("partners".equalsIgnoreCase(plate.getPage())) {
                     eventids.add(plate.getId());
                 }
-                if("train".equalsIgnoreCase(plate.getPage())){
+                if ("train".equalsIgnoreCase(plate.getPage())) {
                     trainids.add(plate.getId());
                 }
-                if("purchase".equalsIgnoreCase(plate.getPage())){
+                if ("purchase".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("overseas".equalsIgnoreCase(plate.getPage())){
+                if ("overseas".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("building".equalsIgnoreCase(plate.getPage())){
+                if ("building".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("pension".equalsIgnoreCase(plate.getPage())){
+                if ("pension".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("material".equalsIgnoreCase(plate.getPage())){
+                if ("material".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("industrialization".equalsIgnoreCase(plate.getPage())){
+                if ("industrialization".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("green".equalsIgnoreCase(plate.getPage())){
+                if ("green".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
-                if("bim".equalsIgnoreCase(plate.getPage())){
+                if ("bim".equalsIgnoreCase(plate.getPage())) {
                     consultids.add(plate.getId());
                 }
             }
@@ -1379,6 +1379,21 @@ public abstract class BaseServlet extends HttpServlet {
      */
     Boolean outputAjax(HttpServletRequest request, HttpServletResponse response) throws IOException {
         outputText(response, toJSON(request));
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 发送json
+     *
+     * @param o
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    Boolean outputObjectAjax(Object o, HttpServletResponse response) throws IOException {
+        JSONSerializer serializer = new JSONSerializer();
+        String serialize = serializer.deepSerialize(o);
+        outputText(response, serialize);
         return FORWARD_TO_ANOTHER_URL;
     }
 

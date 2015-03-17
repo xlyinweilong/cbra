@@ -190,13 +190,13 @@ public class AdminService {
 
     /**
      * 获取银行转账列表
-     * 
+     *
      * @param map
      * @param pageIndex
      * @param maxPerPage
      * @param list
      * @param page
-     * @return 
+     * @return
      */
     public ResultList<GatewayManualBankTransfer> findGatewayManualBankTransferList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
         ResultList<GatewayManualBankTransfer> resultList = new ResultList<>();
@@ -929,6 +929,26 @@ public class AdminService {
         return resultList;
     }
 
+    public ResultList<PlateInformation> findPlateInformationList(Map<String, Object> map, int pageIndex, int maxPerPage) {
+        ResultList<PlateInformation> resultList = new ResultList<>();
+        String hql = "SELECT COUNT(c) FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        TypedQuery<Long> countQuery = em.createQuery(hql, Long.class);
+        countQuery.setParameter("ids", map.get("ids"));
+        Long totalCount = countQuery.getSingleResult();
+        resultList.setTotalCount(totalCount.intValue());
+        hql = "SELECT c FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        TypedQuery<PlateInformation> query = em.createQuery(hql, PlateInformation.class);
+        query.setParameter("ids", map.get("ids"));
+        int startIndex = (pageIndex - 1) * maxPerPage;
+        query.setFirstResult(startIndex);
+        query.setMaxResults(maxPerPage);
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        resultList.addAll(query.getResultList());
+        return resultList;
+    }
+
     /**
      * 获取招聘列表
      *
@@ -1015,6 +1035,16 @@ public class AdminService {
         }
         if (map.containsKey("period")) {
             criteria.add(builder.lessThan(root.get("statusEndDate"), (Date) map.get("period")));
+        }
+        if (map.containsKey("mobile")) {
+            criteria.add(builder.isNotNull(root.get("introduction")));
+        }
+        if (map.containsKey("baomingzhong")) {
+            criteria.add(builder.lessThan(root.get("statusBeginDate"), (Date) map.get("baomingzhong")));
+            criteria.add(builder.greaterThan(root.get("statusEndDate"), (Date) map.get("baomingzhong")));
+        }
+        if (map.containsKey("weikaishi")) {
+            criteria.add(builder.greaterThan(root.get("statusBeginDate"), (Date) map.get("weikaishi")));
         }
         try {
             if (list == null || !list) {
@@ -1443,12 +1473,14 @@ public class AdminService {
      * @param touristAuth
      * @param userAuth
      * @param companyAuth
+     * @param mobileIntroduction
      * @param fileUploadItem
+     * @param fileUploadItem2
      * @return
      */
     public FundCollection createOrUpdateFundCollection(Long id, Long plateId, Date statusBeginDate, Date statusEndDate, Date eventBeginDate, Date eventEndDate, Date checkinDate, String title,
             String detailDescHtml, FundCollectionAllowAttendeeEnum allowAttendee, FundCollectionLanaguageEnum eventLanguage, String eventLocation, BigDecimal touristPrice, BigDecimal userPrice, BigDecimal companyPrice, int eachCompanyFreeCount,
-            PlateAuthEnum touristAuth, PlateAuthEnum userAuth, PlateAuthEnum companyAuth, FileUploadItem fileUploadItem) {
+            PlateAuthEnum touristAuth, PlateAuthEnum userAuth, PlateAuthEnum companyAuth, String mobileIntroduction, FileUploadItem fileUploadItem, FileUploadItem fileUploadItem2) {
         FundCollection fundCollection = new FundCollection();
         boolean isCreare = true;
         if (id != null) {
@@ -1480,6 +1512,15 @@ public class AdminService {
             String iamgeName = System.currentTimeMillis() + "_" + Tools.generateRandomNumber(3) + fileUploadItem.getOrigFileExtName();
             Tools.setUploadFile(fileUploadItem, Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE + "/", iamgeName);
             fundCollection.setImageUrl("/" + Config.FILE_UPLOAD_PLATE + "/" + iamgeName);
+        }
+        if (fileUploadItem2 != null) {
+            File saveDirFile = new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE);
+            if (!saveDirFile.exists()) {
+                saveDirFile.mkdirs();
+            }
+            String iamgeName = System.currentTimeMillis() + "_" + Tools.generateRandomNumber(3) + fileUploadItem2.getOrigFileExtName();
+            Tools.setUploadFile(fileUploadItem2, Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE + "/", iamgeName);
+            fundCollection.setIntroductionImageUrl("/" + Config.FILE_UPLOAD_PLATE + "/" + iamgeName);
         }
         if (plateId != null && isCreare) {
             fundCollection.setPlate(this.findPlateById(plateId));

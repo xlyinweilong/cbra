@@ -66,11 +66,19 @@
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
                     <li>
-                        <label>介绍图片</label>
-                        <input type="file" class="dfinput" style="width: 350px;" name="image" />
+                        <label>手机介绍图片</label>
+                        <input type="file" class="dfinput" style="width: 350px;" name="mobileImage" /><c:if test="${not empty fundCollection.introductionImageUrl}"><a href="${fundCollection.introductionImageUrl}"  target="_blank">查看</a></c:if>
                     </li> 
-                    <li><label>标题<b>*</b></label>
-                        <input type="text" class="dfinput" style="width: 350px;" name="title" value="${fundCollection.title}" maxlength="100" />
+                    <li>
+                        <label>手机介绍简介</label>
+                        <textarea name="mobileIntroduction" class="dfinput"  style="width: 350px;height: 150px">${fundCollection.introduction}</textarea>
+                    </li>
+                    <li>
+                        <label>介绍图片</label>
+                        <input type="file" class="dfinput" style="width: 350px;" name="image" /><c:if test="${not empty fundCollection.imageUrl}"><a href="${fundCollection.imageUrl}"  target="_blank">查看</a></c:if>
+                        </li> 
+                        <li><label>标题<b>*</b></label>
+                            <input type="text" class="dfinput" style="width: 350px;" name="title" value="${fundCollection.title}" maxlength="100" />
                     </li>
                     <li><label>报名开始时间<b>*</b></label>
                         <input type="text" class="dfinput" style="width: 350px;" name="statusBeginDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${fundCollection.statusBeginDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" />

@@ -10,13 +10,18 @@ import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.GatewayPayment;
+import com.cbra.entity.Offer;
 import com.cbra.entity.OrderCbraService;
 import com.cbra.entity.OrderCollection;
+import com.cbra.entity.Plate;
+import com.cbra.entity.PlateInformation;
 import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
+import com.cbra.service.AdminService;
 import com.cbra.service.CbraService;
 import com.cbra.service.GatewayService;
+import com.cbra.service.MobileService;
 import com.cbra.service.OrderService;
 import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
@@ -64,13 +69,17 @@ import org.json.simple.JSONObject;
 public class MobileServlet extends BaseServlet {
 
     @EJB
-    private AccountService accountService;
+    private MobileService mobileService;
     @EJB
     private OrderService orderService;
     @EJB
     private GatewayService gatewayService;
     @EJB
     private CbraService cbraService;
+    @EJB
+    private AccountService accountService;
+    @EJB
+    private AdminService adminService;
     // <editor-fold defaultstate="collapsed" desc="重要但不常修改的函数. Click on the + sign on the left to edit the code.">
 
     @Override
@@ -91,7 +100,7 @@ public class MobileServlet extends BaseServlet {
         }
 
         String[] pathArray = StringUtils.split(pathInfo, "/");
-        PageEnum page = PageEnum.OVERVIEW;
+        PageEnum page = PageEnum.LOGIN;
         try {
             page = PageEnum.valueOf(pathArray[0].toUpperCase());
         } catch (Exception ex) {
@@ -145,48 +154,30 @@ public class MobileServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, LOAD_ACCOUNT_BY_AJAX,
-        MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD, PAY_MEMBERSHIP, RESULT;
+        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST
+
     }
 
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
-            case Z_LOGIN_DIALOG:
-            case Z_SIGNUP_DIALOG:
             case LOGIN:
-                return loadLogin(request, response);
-            case LOGOUT:
-            case SIGNUP:
-                return loadSignup(request, response);
-            case SIGNUP_C:
-                return loadSignupCompany(request, response);
-            case OVERVIEW:
-                return loadOverview(request, response);
-            case OVERVIEW_C:
-                return loadOverviewCompany(request, response);
-            case RESET_USER_INFO:
-                return loadResetUserInfo(request, response);
-            case MODIFY_PASSWD:
-                return KEEP_GOING_WITH_ORIG_URL;
-            case RESET_PASSWD:
-                return loadResetPassword(request, response);
-            case FORGET_PASSWD:
-                return KEEP_GOING_WITH_ORIG_URL;
-            case MEMBERSHIP_FEE:
-                return loadMembershipFee(request, response);
-            case MY_EVENT:
-                return loadMyEventList(request, response);
-            case AGENT:
-                return loadAgent(request, response);
-            case PAY_MEMBERSHIP:
-                return loadPayMembership(request, response);
-            case RESULT:
-                return loadResult(request, response);
-            case Z_IFRAME_UPLOAD_PC:
-            case SIGNUP_SUCCESS:
-                return KEEP_GOING_WITH_ORIG_URL;
+                return login(request, response);
+            case USER_INFO:
+                return userInfo(request, response);
+            case INDEX:
+                return index(request, response);
+            case EVENT_LIST:
+                return eventList(request, response);
+            case PARTNERS_LIST:
+                return partnersList(request, response);
+            case NEWS_INDEX:
+                return newsIndex(request, response);
+            case NEWS_LIST:
+                return newsList(request, response);
+            case INFO_INDEX:
+                return infoIndex(request, response);
             default:
                 throw new BadPageException();
         }
@@ -196,307 +187,281 @@ public class MobileServlet extends BaseServlet {
     // *************** PAGE RANDER处理的相关函数，放在这下面
     // ************************************************************************
     /**
-     * 会员费
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadMembershipFee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        Account user = account;
-        if (account instanceof SubCompanyAccount) {
-            user = ((SubCompanyAccount) account).getCompanyAccount();
-        }
-        Integer pageIndex = super.getRequestInteger(request, "page");
-        if (pageIndex == null) {
-            pageIndex = 1;
-        }
-        int maxPerPage = 15;
-        ResultList<OrderCbraService> resultList = orderService.findOrderCbraServiceList(user, pageIndex, maxPerPage);
-        request.setAttribute("resultList", resultList);
-        request.setAttribute("user", account);
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 参与的活动
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadMyEventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        Account user = account;
-        if (account instanceof SubCompanyAccount) {
-            user = ((SubCompanyAccount) account).getCompanyAccount();
-        }
-        Integer pageIndex = super.getRequestInteger(request, "page");
-        if (pageIndex == null) {
-            pageIndex = 1;
-        }
-        int maxPerPage = 15;
-        Map<String, Object> map = new HashMap<>();
-        map.put("owner", user);
-        ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(map, pageIndex, maxPerPage, null, true);
-        request.setAttribute("resultList", resultList);
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 加载代理人页面
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadAgent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        Account user = account;
-        if (account instanceof SubCompanyAccount) {
-            user = ((SubCompanyAccount) account).getCompanyAccount();
-        }
-        List<SubCompanyAccount> list = accountService.getSubCompanyAccountList((CompanyAccount) accountService.findById(user.getId()));
-        int i = 0;
-        for (SubCompanyAccount sub : list) {
-            i++;
-            request.setAttribute("id" + i, sub.getId());
-            request.setAttribute("account" + i, sub.getAccount());
-        }
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     *
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadPayMembership(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        if (!account.getStatus().equals(AccountStatus.ASSOCIATE_MEMBER)) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
-        if (account instanceof UserAccount) {
-            request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE);
-        } else {
-            request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE_COMPANY);
-        }
-
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 订单支付结果
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadResult(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String serialId = super.getPathInfoStringAt(request, 1);
-        OrderCbraService order = orderService.findOrderCbraServiceSerialId(serialId);
-        request.setAttribute("order", order);
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 个人用户首页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadOverview(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        request.setAttribute("user", account);
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 公司用户首页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadOverviewCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        Account user = account;
-        if (account instanceof SubCompanyAccount) {
-            user = ((SubCompanyAccount) account).getCompanyAccount();
-        }
-        request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
-        request.setAttribute("company", user);
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 修改个人信息页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadResetUserInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Account account = super.getUserFromSessionNoException(request);
-        account = accountService.findById(account.getId());
-        if (account instanceof CompanyAccount) {
-            request.setAttribute("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) account)));
-        }
-        request.setAttribute("user", account);
-        request.setAttribute("positions", UserPosition.values());
-        request.setAttribute("icPositions", AccountIcPosition.values());
-        request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
-        request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
-        request.setAttribute("positionList", Arrays.asList(account.getIcPosition().split("_")));
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 加载重置密码页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadResetPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String key = super.getRequestString(request, "key");
-        if (key == null) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
-        if (key == null) {
-            key = (String) request.getAttribute("key");
-        }
-        request.setAttribute("key", key);
-        Account account = accountService.findByRepasswdUrl(key);
-        if (account == null) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
-        if (Tools.addHour(account.getRepasswdDate(), 1).before(new Date())) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 登录页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("p", super.getRequestString(request, "p"));
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 普通用户注册页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("positions", UserPosition.values());
-        request.setAttribute("icPositions", AccountIcPosition.values());
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    /**
-     * 公司用户注册页
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws ServletException
-     * @throws IOException
-     */
-    private boolean loadSignupCompany(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("positions", UserPosition.values());
-        request.setAttribute("icPositions", AccountIcPosition.values());
-        request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
-        request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
-        return KEEP_GOING_WITH_ORIG_URL;
-    }
-
-    // ************************************************************************
-    // *************** 支持性函数、共用函数等非直接功能函数，放在这下面
-    // ************************************************************************
-    /**
      * 登录
      *
-     * @param account
-     * @param formSignup
      * @param request
      * @param response
      * @return
      * @throws ServletException
      * @throws IOException
      */
-    private boolean login(Account account, boolean formSignup, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //Save language
-        if (account.getUserLanguage() == null) {
-            account = accountService.setLanguage(account.getId(), bundle.getLocale().getLanguage());
+    private boolean login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        map.put("responsecode", 1);
+        String account = super.getRequestString(request, "username");
+        String passwd = super.getRequestString(request, "password");
+        if (account == null || passwd == null) {
+            map.put("msg", "参数异常");
+            return super.outputObjectAjax(map, response);
         }
-        HttpSession session = request.getSession();
-        // bundle是JSTL用到的session数据，用来在JSP中显示不同语言，
-        // 在Login时去掉这个bundle，然后会在z_heander中被重新生成，这样可以实现登录之后使用用户自定义的语言的功能。
-        session.removeAttribute("bundle");
-        // 设置user到session里，这是登录与否的标志
-        session.setAttribute(SESSION_ATTRIBUTE_USER, account);
-        if (account.getUserLanguage() != null) {
-            super.setLanguage(account.getUserLanguage().toString(), request, response);
+        Account user = null;
+        try {
+            user = mobileService.getAccountForLoginMobile(account, passwd);
+        } catch (AccountNotExistException ex) {
+            map.put("msg", "帐号不存在");
+            return super.outputObjectAjax(map, response);
         }
-        // ******************************************************************
-        // 这个url是login之后跳转的页面，缺省是overview
-        String jump = "/account/overview";
-        if (account instanceof CompanyAccount || account instanceof SubCompanyAccount) {
-            jump = "/account/overview_c";
+        if (user != null) {
+            map.put("responsecode", 0);
+            map.put("data", user.getLoginCode());
+            return super.outputObjectAjax(map, response);
         }
-        String url = (String) request.getParameter("urlUserWantToAccess");
-        if (!StringUtils.isBlank(url)) {
-            jump = url;
-        } else if (formSignup) {
-            //check cookie get the redirect url
-            String curl = getCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT);
-            if (Tools.isNotBlank(curl)) {
-                jump = curl;
-                //delete COOKIE_LOGIN_URL_REDIRECT cookie
-                removeCookie(request, response, COOKIE_LOGIN_URL_REDIRECT);
+        map.put("msg", "密码错误");
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 用户信息
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean userInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        map.put("responsecode", 1);
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "参数异常");
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = mobileService.findByLoginCode(logincode);
+        if (user == null) {
+            map.put("msg", "请重新登录");
+            return super.outputObjectAjax(map, response);
+        }
+        map.put("responsecode", 0);
+        Map subMap = new HashMap();
+        if (user instanceof SubCompanyAccount) {
+//            subMap.put("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
+            subMap.put("user", ((SubCompanyAccount) user).getCompanyAccount());
+            map.put("data", subMap);
+        } else if (user instanceof CompanyAccount) {
+            subMap.put("user", user);
+//            subMap.put("subCompanyAccountList", accountService.getSubCompanyAccountList(((CompanyAccount) user)));
+            map.put("data", subMap);
+        } else {
+            subMap.put("user", user);
+            map.put("data", subMap);
+        }
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 首页
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Plate plate = mobileService.findPlateByPage("mobile_event");
+        Map<String, Object> searchMap = new HashMap<>();
+        Map map = new HashMap();
+        searchMap.put("plateId", plate.getId());
+        Map submap = new HashMap();
+        ResultList<PlateInformation> resultList = adminService.findPlateInformationList(searchMap, 1, 1, true, false);
+        if (resultList != null && resultList.size() > 0) {
+            PlateInformation pif = resultList.get(0);
+            Map scmap = new HashMap();
+            scmap.put("url", pif.getPicUrl());
+            scmap.put("link", pif.getNavUrl());
+            submap.put("ad", scmap);
+        } else {
+            submap.put("ad", null);
+        }
+        map.put("responsecode", 0);
+        //获取筑誉活动
+        plate = mobileService.findPlateByPage("event");
+        searchMap.clear();
+        searchMap.put("plateId", plate.getId());
+        searchMap.put("mobile", true);
+        searchMap.put("baomingzhong", new Date());
+        ResultList<FundCollection> list = adminService.findCollectionList(searchMap, 1, 5, true, false);
+        if (list.size() < 5) {
+            int next = 5 - list.size();
+            searchMap.clear();
+            searchMap.put("plateId", plate.getId());
+            searchMap.put("weikaishi", new Date());
+            searchMap.put("mobile", true);
+            list.addAll(adminService.findCollectionList(searchMap, 1, next, true, false));
+            if (list.size() < 5) {
+                int last = 5 - list.size();
+                searchMap.clear();
+                searchMap.put("plateId", plate.getId());
+                searchMap.put("period", new Date());
+                searchMap.put("mobile", true);
+                list.addAll(adminService.findCollectionList(searchMap, 1, last, true, false));
             }
         }
-        log("Login Success, Redirect to: " + jump);
-        redirect(jump, request, response);
-        return REDIRECT_TO_ANOTHER_URL;
+        for (FundCollection fc : list) {
+            fc.setDetailDescHtml(null);
+        }
+        list.setTotalCount(list.size());
+        submap.put("eventList", list);
+        searchMap.put("mobile", true);
+        //获取合作伙伴活动
+        plate = mobileService.findPlateByPage("partners");
+        searchMap.clear();
+        searchMap.put("plateId", plate.getId());
+        searchMap.put("mobile", true);
+        ResultList<FundCollection> partnersList = adminService.findCollectionList(searchMap, 1, 5, true, false);
+        submap.put("partnersList", partnersList);
+        map.put("data", submap);
+        return super.outputObjectAjax(map, response);
     }
+
+    private boolean eventList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int type = super.getRequestInteger(request, "type");
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map<String, Object> searchMap = new HashMap<>();
+        Map map = new HashMap();
+        map.put("responsecode", 0);
+        //获取筑誉活动
+        Plate plate = mobileService.findPlateByPage("event");
+        searchMap.put("plateId", plate.getId());
+        searchMap.put("mobile", true);
+        if (type == 1) {
+            searchMap.put("plateId", plate.getId());
+            searchMap.put("mobile", true);
+            ResultList<FundCollection> list = adminService.findCollectionList(searchMap, page, maxcount, null, true);
+            for (FundCollection fc : list) {
+                fc.setDetailDescHtml(null);
+            }
+            map.put("data", list);
+        } else {
+            if (type == 2) {
+                searchMap.put("baomingzhong", new Date());
+            } else if (type == 3) {
+                searchMap.put("weikaishi", new Date());
+            } else if (type == 4) {
+                searchMap.put("period", new Date());
+            }
+            ResultList<FundCollection> list = adminService.findCollectionList(searchMap, page, maxcount, null, true);
+            for (FundCollection fc : list) {
+                fc.setDetailDescHtml(null);
+            }
+            map.put("data", list);
+        }
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean partnersList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map<String, Object> searchMap = new HashMap<>();
+        Map map = new HashMap();
+        map.put("responsecode", 0);
+        //获取筑誉活动
+        Plate plate = mobileService.findPlateByPage("partners");
+        searchMap.put("plateId", plate.getId());
+        searchMap.put("mobile", true);
+        ResultList<FundCollection> partnersList = adminService.findCollectionList(searchMap, page, maxcount, null, true);
+        map.put("data", partnersList);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean newsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int type = super.getRequestInteger(request, "type");
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map<String, Object> searchMap = new HashMap<>();
+        Map map = new HashMap();
+        map.put("responsecode", 0);
+        Plate plate = mobileService.findPlateByPage("news_list");
+        if (type == 2) {
+            plate = mobileService.findPlateByPage("industry_list");
+        }
+        searchMap.put("plateId", plate.getId());
+        ResultList<PlateInformation> newsList = adminService.findPlateInformationList(searchMap, page, maxcount, null, true);
+        for (PlateInformation pif : newsList) {
+            pif.setPlateInformationContent(null);
+        }
+        map.put("data", newsList);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean newsIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map<String, Object> searchMap = new HashMap<>();
+        Map map = new HashMap();
+        Map submap = new HashMap();
+        map.put("responsecode", 0);
+        Plate plate = mobileService.findPlateByPage("news_list");
+        searchMap.put("plateId", plate.getId());
+        ResultList<PlateInformation> newsList = adminService.findPlateInformationList(searchMap, 1, 3, null, true);
+        for (PlateInformation pif : newsList) {
+            pif.setPlateInformationContent(null);
+        }
+        submap.put("newsList", newsList);
+        plate = mobileService.findPlateByPage("industry_list");
+        searchMap.clear();
+        searchMap.put("plateId", plate.getId());
+        ResultList<PlateInformation> newsList2 = adminService.findPlateInformationList(searchMap, 1, 3, null, true);
+        for (PlateInformation pif : newsList2) {
+            pif.setPlateInformationContent(null);
+        }
+        submap.put("industryList", newsList2);
+        map.put("data", submap);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean infoIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Map map = new HashMap();
+        Map submap = new HashMap();
+        submap.put("isCompany", 0);
+        if (Tools.isNotBlank(logincode)) {
+            Account user = mobileService.findByLoginCode(logincode);
+            if (user instanceof CompanyAccount && user.getStatus().equals(AccountStatus.MEMBER)) {
+                submap.put("isCompany", 1);
+            }
+            if (user instanceof SubCompanyAccount) {
+                CompanyAccount u = ((SubCompanyAccount) user).getCompanyAccount();
+                if (u.getStatus().equals(AccountStatus.MEMBER)) {
+                    submap.put("isCompany", 1);
+                }
+            }
+        }
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        Plate plate = mobileService.findPlateByPage("three_party_offer");
+        searchMap.put("plateId", plate.getId());
+        ResultList<Offer> offerList = adminService.findOfferList(searchMap, 1, 3, null, true);
+        for (Offer offer : offerList) {
+            offer.setCompetence(null);
+            offer.setDescription(null);
+            offer.setDuty(null);
+        }
+        submap.put("offerList", offerList);
+        searchMap.clear();
+        List<Long> ids = new ArrayList<>();
+        ids.add(mobileService.findPlateByPage("material").getId());
+        ids.add(mobileService.findPlateByPage("industrialization").getId());
+        ids.add(mobileService.findPlateByPage("green").getId());
+        ids.add(mobileService.findPlateByPage("bim").getId());
+        searchMap.put("ids", ids);
+        ResultList<PlateInformation> newsList2 = adminService.findPlateInformationList(searchMap, 1, 5);
+        for (PlateInformation pif : newsList2) {
+            pif.setPlateInformationContent(null);
+        }
+        submap.put("frontList", newsList2);
+        map.put("data", submap);
+        return super.outputObjectAjax(map, response);
+    }
+
 }

@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.Tools;
 import com.cbra.support.enums.FundCollectionAllowAttendeeEnum;
 import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.PlateAuthEnum;
@@ -130,6 +131,14 @@ public class FundCollection implements Serializable {
     private Plate plate = null;
     @Column(name = "image_url", length = 255)
     private String imageUrl;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "introduction")
+    //手机端简介
+    private String introduction;
+    @Column(name = "introduction_image_url")
+    //手机端简介图片
+    private String introductionImageUrl;
 
     public String getStatus() {
         Date now = new Date();
@@ -226,6 +235,10 @@ public class FundCollection implements Serializable {
 
     public Date getEventBeginDate() {
         return eventBeginDate;
+    }
+    
+    public String getEventBeginDateString() {
+        return Tools.formatDate(eventBeginDate, "yyyy年MM月dd日");
     }
 
     public void setEventBeginDate(Date eventBeginDate) {
@@ -398,6 +411,37 @@ public class FundCollection implements Serializable {
 
     public void setEachCompanyFreeCount(int eachCompanyFreeCount) {
         this.eachCompanyFreeCount = eachCompanyFreeCount;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public String getIntroductionString() {
+        if (introduction != null) {
+            if (introductionImageUrl == null) {
+                if (introduction.length() > 100) {
+                    return introduction.substring(0, 99) + "...";
+                }
+            } else {
+                if (introduction.length() > 50) {
+                    return introduction.substring(0, 49) + "...";
+                }
+            }
+        }
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public String getIntroductionImageUrl() {
+        return introductionImageUrl;
+    }
+
+    public void setIntroductionImageUrl(String introductionImageUrl) {
+        this.introductionImageUrl = introductionImageUrl;
     }
 
     @Override
