@@ -122,7 +122,7 @@
                     <li><label>个人会员权限</label>
                         <select name="userAuth" class="dfinput" style="width: 354px;">
                             <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
-                                <option value="${allowAttendeeEnum.name()}" <c:if test="${plateAuthEnum == fundCollection.userAuth}">selected="selected"</c:if>>
+                                <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == fundCollection.userAuth}">selected="selected"</c:if>>
                                     ${plateAuthEnum.authMean}
                                 </option>
                             </c:forEach>
