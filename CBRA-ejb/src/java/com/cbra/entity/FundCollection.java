@@ -221,8 +221,8 @@ public class FundCollection implements Serializable {
         return title;
     }
     public String getTitleIndex() {
-        if (title.length() > 11) {
-            return title.substring(0, 10) + "...";
+        if (title.length() > 15) {
+            return title.substring(0, 14) + "...";
         }
         return title;
     }
@@ -255,7 +255,7 @@ public class FundCollection implements Serializable {
     }
     
     public String getEventBeginDateIndexString() {
-        return Tools.formatDate(eventBeginDate, "yyyy-MM-dd");
+        return Tools.formatDate(eventBeginDate, "MM-dd");
     }
 
     public void setEventBeginDate(Date eventBeginDate) {
