@@ -304,7 +304,7 @@
             <!-- 四 排 -->
             <div class="Four-Row">
                 <div class="Title">
-                    <div class="Title-1">会员风采</div>
+                    <div class="Title-1"> 活动风采</div>
                     <div class="Title-3"><a href="/team/style">更多</a></div>
                 </div>
 

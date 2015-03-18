@@ -26,9 +26,9 @@
                         </tr>
                         <tr>
                             <td class="reg-1">营业执照注册号</td>
-                            <td class="reg-2" style="line-height:10px"><input type="text" class="Input-1" id="account" name="account" /><br/><span style="font-size:10px">作为账户登录</span></td>
+                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="account" name="account" /><br/><br/><span style="font-size:11px">作为账户登录</span></td>
                             <td class="reg-1">企业邮箱</td>
-                            <td style="line-height:10px"><input type="text" class="Input-1" id="email" name="email" /><br/><span style="font-size:10px">邮箱作为接收筑誉建活动渠道，请填写常用邮箱</span></td>
+                            <td style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="email" name="email" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
                             <td class="reg-1">创立时间</td>
@@ -202,6 +202,7 @@
                     cache: false
                 });
                 $("#step1_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if (CBRAValid.checkFormValueNull($("#accountName"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入企业全称", $("#accountName"));
                         return;
@@ -259,6 +260,7 @@
                     }, "json");
                 });
                 $("#step2_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if (CBRAValid.checkFormValueNull($("#webSide"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入企业网址", $("#webSide"));
                         return;
@@ -288,6 +290,7 @@
                     $("#signup_msg_2").html("");
                 });
                 $("#step3_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($.trim($("#bl_hidden").val()) == "") {
                         CBRAMessage.showMessage($("#signup_msg_3"), "请上传企业营业执照副本");
                         return;

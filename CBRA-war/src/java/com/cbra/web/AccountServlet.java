@@ -415,9 +415,9 @@ public class AccountServlet extends BaseServlet {
     private boolean doSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestEmail(request, "email");
         String mobile = getRequestString(request, "account");
-        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "accountName", "accountEnName", "account", "email", "workingYear", "company", "address", "zipCode", "position", "front", "back", "workExperience", "projectExperience", "icPositions")) {
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
+//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "accountName", "accountEnName", "account", "email", "workingYear", "company", "address", "zipCode", "position", "front", "back", "workExperience", "projectExperience", "icPositions")) {
+//            return KEEP_GOING_WITH_ORIG_URL;
+//        }
         String name = getRequestString(request, "accountName");
         String enName = getRequestString(request, "accountEnName");
         String address = getRequestString(request, "address");
@@ -443,10 +443,10 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         String[] icPositions = request.getParameterValues("icPositions");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
+//        if (icPositions.length < 1) {
+//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+//            return KEEP_GOING_WITH_ORIG_URL;
+//        }
         UserPosition up = null;
         try {
             up = UserPosition.valueOf(position);
@@ -459,9 +459,11 @@ public class AccountServlet extends BaseServlet {
         }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         UserAccount userAccount = null;
@@ -480,11 +482,11 @@ public class AccountServlet extends BaseServlet {
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestEmail(request, "email");
         String account = getRequestString(request, "account");
-        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "account", "accountName", "companyCreateDate", "address",
-                "zipCode", "enterpriseQalityGrading", "authenticationDate", "productionLicenseNumber", "productionLicenseValidDate", "field", "bl",
-                "qc", "webSide", "companyNature", "legalPerson", "companyScale")) {
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
+//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "email", "account", "accountName", "companyCreateDate", "address",
+//                "zipCode", "enterpriseQalityGrading", "authenticationDate", "productionLicenseNumber", "productionLicenseValidDate", "field", "bl",
+//                "qc", "webSide", "companyNature", "legalPerson", "companyScale")) {
+//            return KEEP_GOING_WITH_ORIG_URL;
+//        }
         String name = getRequestString(request, "accountName");
         String companyCreateDate = getRequestString(request, "companyCreateDate");
         String address = getRequestString(request, "address");
@@ -510,10 +512,10 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         String[] icPositions = request.getParameterValues("icPositions");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
+//        if (icPositions.length < 1) {
+//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+//            return KEEP_GOING_WITH_ORIG_URL;
+//        }
         Date companyCreate = Tools.parseDate(companyCreateDate, "yyyy-MM-dd");
         Date authentication = Tools.parseDate(authenticationDate, "yyyy-MM-dd");
         Date productionLicenseValid = Tools.parseDate(productionLicenseValidDate, "yyyy-MM-dd");
@@ -535,9 +537,11 @@ public class AccountServlet extends BaseServlet {
         }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         CompanyAccount companyAccount = null;
@@ -588,7 +592,7 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         String key = getRequestString(request, "key");
-        if (key == null) {
+        if (Tools.isBlank(key)) {
             setErrorResult(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
@@ -605,6 +609,7 @@ public class AccountServlet extends BaseServlet {
         accountService.resetPassword(account, password);
         setSuccessResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_密码激活成功，请登录"), request);
         request.setAttribute("success", true);
+        request.setAttribute("key", key);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -980,12 +985,12 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadResetPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String key = super.getRequestString(request, "key");
+        if (Tools.isBlank(key)) {
+            key = (String) request.getAttribute("key");
+        }
         if (key == null) {
             forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
             return FORWARD_TO_ANOTHER_URL;
-        }
-        if (key == null) {
-            key = (String) request.getAttribute("key");
         }
         request.setAttribute("key", key);
         Account account = accountService.findByRepasswdUrl(key);

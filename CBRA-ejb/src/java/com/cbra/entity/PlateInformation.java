@@ -119,9 +119,9 @@ public class PlateInformation implements Serializable {
     }
 
     public String getTitle() {
-        return title;
+        return Tools.getEscapedHtml(title);
     }
-
+    
     public String getTitleIndexStr() {
         if (title.length() > 25) {
             return title.substring(0, 24) + "...";

@@ -720,7 +720,6 @@ public class AccountService {
      */
     public void resetPassword(Account account, String passwd) {
         account.setPasswd(Tools.md5(passwd));
-        account.setRepasswdUrl(null);
         account.setRepasswdDate(new Date());
         em.merge(account);
     }

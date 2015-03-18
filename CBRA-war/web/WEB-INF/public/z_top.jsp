@@ -17,7 +17,7 @@
             <!--微信下拉二维码-->
             <div id="WeixinMenu" class="weixin-menu" style="display: none;">
                 <div class="weixin-bd">
-                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> 关注<span style="color:#e53333;">筑誉建筑联合会</span>官方微信，第一时间分享精彩活动与行业咨询。</span></p>
+                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> 关注<span style="color:#e53333;">筑誉建筑联合会</span>官方微信，第一时间分享精彩活动与行业资讯。</span></p>
                 </div>
             </div>
             <!--登录/注册/会员中心/中英文-->
@@ -240,7 +240,7 @@
                         <li><a href="/join/recruit" >专家招募</a></li>
                         <li><a href="/join/cooperation" >合作伙伴招募</a></li>
                     </ul>
-                    <c:forEach var="info" items="<%=Config.topTrain%>">
+                    <c:forEach var="info" items="<%=Config.topJoin%>">
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
                     <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
                         <p><a href="${info.navUrl}" target="_blank"><img src="${info.picUrl}" style="width: 249px; height: 151px;"></a></p>

@@ -28,30 +28,28 @@
                 </div>
                 <div class="info-fr">
                     <p><img src="/pic/ad.jpg"></p>
-                    <c:if test="${not empty isCompany}"><a href="/into/our_offer"><img src="/images/a-rck.jpg"></a></c:if>
-                    </div>
-                    <div style="clear:both;"></div>
+                    <a href="/into/our_offer"><img src="/images/a-rck.jpg"></a>
                 </div>
-                <!-- 一排 end-->
-                <!-- 广告 -->
-                <div class="info-ad"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
+                <div style="clear:both;"></div>
+            </div>
+            <!-- 一排 end-->
+            <!-- 广告 -->
+            <div class="info-ad"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
             <!-- 广告 end -->
             <!-- 资源信息 -->
-            <c:if test="${not empty isCompany}">
-                <div class="info-r">
-                    <div class="Title">
-                        <div class="Title-1">资源信息</div>
-                        <div class="Title-3"><a href="/into/purchase">更多</a></div>
-                    </div>
-                    <div class="info" style="height: 120px;">
-                        <div class="info-mk"><a href="/into/purchase" id="fl-nav-hover"><img src="/images/info-mk-1.jpg"></a></div>
-                        <div class="info-mk"><a href="/into/overseas" id="fl-nav-hover"><img src="/images/info-mk-2.jpg"></a></div>
-                        <div class="info-mk"><a href="/into/building" id="fl-nav-hover"><img src="/images/info-mk-3.jpg"></a></div>
-                        <div class="info-mk"><a href="/into/pension" id="fl-nav-hover"><img src="/images/info-mk-4.jpg"></a></div>
-                        <div style="clear:both;"></div>
-                    </div>
+            <div class="info-r">
+                <div class="Title">
+                    <div class="Title-1">资源信息</div>
+                    <div class="Title-3"><a href="/into/purchase">更多</a></div>
                 </div>
-            </c:if>
+                <div class="info" style="height: 120px;">
+                    <div class="info-mk"><a href="/into/purchase" id="fl-nav-hover"><img src="/images/info-mk-1.jpg"></a></div>
+                    <div class="info-mk"><a href="/into/overseas" id="fl-nav-hover"><img src="/images/info-mk-2.jpg"></a></div>
+                    <div class="info-mk"><a href="/into/building" id="fl-nav-hover"><img src="/images/info-mk-3.jpg"></a></div>
+                    <div class="info-mk"><a href="/into/pension" id="fl-nav-hover"><img src="/images/info-mk-4.jpg"></a></div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
             <!-- 资源信息 -->
             <!-- 前沿领域 -->
             <div class="info-area">

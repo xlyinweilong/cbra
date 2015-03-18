@@ -172,7 +172,11 @@
                 </c:when>
             </c:choose>
         </form>
-        <div style="text-align:center; margin:10px auto;"><input id="submitFormButton" type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="提交"></div>
+        <div style="text-align:center; margin:10px auto;">
+            <input id="submitFormButton" type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="提交">
+        <c:if test="${user.type == 'USER'}"><input onclick="location.href='/account/overview'" type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="取消"></c:if>
+        <c:if test="${user.type != 'USER'}"><input onclick="location.href='/account/overview_c'" type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="取消"></c:if>
+        </div>
     </td>
 </tr>
 </table>

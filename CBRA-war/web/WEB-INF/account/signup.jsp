@@ -29,9 +29,9 @@
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>手机
                             </td>
-                            <td class="reg-2" style="line-height:10px"><input type="text" name="account" id="account" class="Input-1" /><br/><span style="font-size:10px">作为账户登录，请使用有效号码</span></td>
+                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" name="account" id="account" class="Input-1" /><br/><br/><span style="font-size:11px">作为账户登录，请使用有效号码</span></td>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>EMAIL</td>
-                            <td style="line-height:10px"><input type="text" name="email" id="email" class="Input-1" /><br/><span style="font-size:10px">邮箱作为接收筑誉建活动渠道，请填写常用邮箱</span></td>
+                            <td style="line-height:10px;height: 63px;"><input type="text" name="email" id="email" class="Input-1" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>从业年限</td>
@@ -200,6 +200,7 @@
                     cache: false
                 });
                 $("#step1_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if (CBRAValid.checkFormValueNull($("#accountName"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_1"), "请输入中文姓名", $("#accountName"));
                         return;
@@ -253,6 +254,7 @@
                     }, "json");
                 });
                 $("#step2_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($("#front_hidden").val() == "" || $("#back_hidden").val() == "") {
                         CBRAMessage.showMessage($("#signup_msg_2"), "请上传文件");
                         return;
@@ -262,6 +264,7 @@
                     $("#signup_msg_2").html("");
                 });
                 $("#step3_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($.trim($("#workExperience").val()) == "") {
                         CBRAMessage.showMessage($("#signup_msg_3"), "请输入内容");
                         return;
@@ -271,6 +274,7 @@
                     $("#signup_msg_3").html("");
                 });
                 $("#step4_next").click(function () {
+                    $("#signup_msg_3").html("");
                     if ($.trim($("#projectExperience").val()) == "") {
                         CBRAMessage.showMessage($("#signup_msg_4"), "请输入内容");
                         return;
@@ -299,6 +303,7 @@
                     $("#reg_back").click();
                 });
                 $("#reg_front_submit").click(function () {
+                    $("#signup_msg_3").html("");
                     $("#signup_msg_2").html("");
                     if ($("#reg_front").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_front"));
@@ -307,6 +312,7 @@
                     $("#reg_front_form").submit();
                 });
                 $("#reg_back_submit").click(function () {
+                    $("#signup_msg_3").html("");
                     $("#signup_msg_2").html("");
                     if ($("#reg_back").val() == '') {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_back"));

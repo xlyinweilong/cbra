@@ -17,12 +17,12 @@
                         <table width="400" border="0" cellspacing="0" cellpadding="0">
                             <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                                 <tr>
-                                    <td width="100" height="44" align="right">会员号：</td>
-                                    <td><input id="account" name="account" type="text" class="shuru" /></td>
+                                    <td width="100" height="44" align="right">登录帐号：</td>
+                                    <td><input id="account" name="account" type="text" placeholder="输入登录帐号" class="shuru" /></td>
                                 </tr>
                                 <tr>
                                     <td height="44" align="right">注册邮箱：</td>
-                                    <td><input id="email" name="email" type="text" class="shuru" /></td>
+                                    <td><input id="email" name="email" type="text" class="shuru" placeholder="输入注册邮箱" /></td>
                                 </tr>
                                 <tr>
                                     <td height="44" align="right"></td>

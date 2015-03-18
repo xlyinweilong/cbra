@@ -62,9 +62,9 @@
                         <c:if test="${plateAuth == 'VIEW_AND_REPAY'}">
                             <form id="message_form" action="/message/send_message" method="post">
                                 <input type="hidden" name="a" value="SEND_MESSAGE" />
-                                <input type="hidden" name="plateInfoId" value="${plateInfo.id}" />
-                                <input type="hidden" name="plateId" value="${plateInfo.plate.id}" />
-                                <input type="hidden" name="forwardUrl" value="/train/train_details?id=${plateInfo.id}" />
+                                <input type="hidden" name="fundCollectionId" value="${fundCollection.id}" />
+                                <input type="hidden" name="plateId" value="${fundCollection.plate.id}" />
+                                <input type="hidden" name="forwardUrl" value="/train/train_details?id=${fundCollection.id}" />
                                 <div class="review-k">
                                     <textarea id="content" name="content" class="rev-k"></textarea>
                                     <input type="button" id="message_button" class="rev-an" value="评论" />

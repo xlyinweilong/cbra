@@ -211,7 +211,7 @@ a.green{text-decoration:underline}
 .two-main .fl-nav { width:180px; height:auto; float:left;}
 .two-main .fl-nav h1 { width:180px; height:58px; background:url(../images/fl-tit-bac.png) no-repeat top; text-align:center; line-height:58px; font-size:14px; color:#FFF; font-weight:bold; margin-bottom:1px;}
 .two-main .fl-nav ul li { width:180px; height:42px; color:#979797;}
-.two-main .fl-nav ul li a { width:180px; height:42px; line-height:42px; text-align:center; color:#525252;  background:#ececec; float:left;}
+.two-main .fl-nav ul li a { width:180px; height:42px; line-height:42px; text-align:center; color:#979797;  background:#ececec; float:left;}
 .two-main .fl-nav ul li a:hover { width:180px; height:42px; line-height:42px; text-align:center; color:#525252; background:url(../images/fl-nav-bac.png) no-repeat; float:left; }
 #fl-nav-hover { width:180px; height:42px; line-height:42px; text-align:center; color:#525252; background:url(../images/fl-nav-bac.png) no-repeat; float:left; }
 
@@ -262,7 +262,7 @@ a.green{text-decoration:underline}
 /*-- 右侧 --*/
 .two-main .news-fr { width:236px; height:auto; float:right;}
 .two-main .news-fr .ad-fr { width:236px; height:auto; border-bottom:4px #efefef solid; padding-bottom:12px;}
-.two-main .news-fr h1 { font-size:14px; margin:20px auto 6px auto; font-weight:bold; color:#585858;}
+.two-main .news-fr h1 { font-size:14px; margin:20px auto 6px 13px; font-weight:bold; color:#585858;}
 .two-main .news-fr .top-hits { width:236px; height:auto;}
 .two-main .news-fr .top-hits ul li { background:url(../images/ico-news.jpg) no-repeat 1px; line-height:30px; padding-left:14px; color:#969696;}
 
@@ -286,7 +286,7 @@ a.green{text-decoration:underline}
 .hd-detailed .Share { margin:20px auto; border-bottom:1px #efefef solid; padding-bottom:20px;}
 .hd-detailed p { line-height:28px; color:#333; }
 #juhong { color:#F60;}
-.hd-detailed  .rev-an { width:100px; height:32px; background:#157a00; margin-top:10px; border:0; color:#FFF; font-weight:bold; cursor:pointer;}
+.hd-detailed  .rev-an { width:100px; height:32px; background:#157a00; margin-top:10px; border:0; color:#FFF; font-weight:bold; cursor:pointer; border-radius:5px;}
 
 /*-- 详细页 评论 --*/
 .review { width:750px; height:auto; float:left;}
@@ -312,7 +312,7 @@ a.green{text-decoration:underline}
 /*-- 详细页 评论框 --*/
 .review .review-k { width:750px; height:auto; margin:0 auto; padding:10px 0;}
 .review .review-k .rev-k { width:734px; height:80px; padding:5px; border:1px #dfdfdf solid; margin-bottom:5px;}
-.review .review-k .rev-an { width:64px; height:28px; background:#157a00; border:0; color:#FFF; font-weight:bold; cursor:pointer;}
+.review .review-k .rev-an { width:64px; height:28px; background:#157a00; border:0; color:#FFF; font-weight:bold; cursor:pointer; border-radius:5px;}
 
 
 /*-- 图文列表 --*/
@@ -417,7 +417,7 @@ a.green{text-decoration:underline}
 .xgmm { width:400px; height: auto; background:url(../images/toum.png) right; margin:200px auto; padding-bottom:20px;}
 .xgmm .shuru { width:220px; height:26px; border:1px #999 solid; margin-left:10px; padding:0 5px;}
 .xgmm .shuru1 { width:80px; height:26px; border:1px #999 solid; margin-left:10px; padding:0 5px;}
-.xgmm .rev-an { width:100px; height:32px; background:#157a00; margin-top:10px; border:0; color:#FFF; font-weight:bold; cursor:pointer; margin-left:10px;}
+.xgmm .rev-an { width:100px; height:32px; background:#157a00; margin-top:10px; border:0; color:#FFF; font-weight:bold; cursor:pointer; margin-left:10px; border-radius:5px;}
 .xgmm .tit { width:400px; height:70px; background:#157a00 url(../images/banner-e.png) no-repeat; margin-bottom:20px; line-height:70px; text-align:center; color:#FFF; font-size:24px; font-family:"微软雅黑";}
 /*-- 会员中心 --*/
 .mc-main { width:1000px; height:auto; margin:0 auto;}

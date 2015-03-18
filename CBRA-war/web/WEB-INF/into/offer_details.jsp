@@ -66,12 +66,14 @@
                                 </c:forEach>
                                 <!-- 评论内容 end -->
                                 <c:if test="${plateAuth == 'VIEW_AND_REPAY'}">
-                                    <form action="" method="post">
-                                        <input type="hidden" name="a" value="LEAVE_A_MESSAGE" />
-                                        <input type="hidden" name="id" value="${plateInfo.id}" />
+                                    <form id="message_form" action="/message/send_message" method="post">
+                                        <input type="hidden" name="a" value="SEND_MESSAGE" />
+                                        <input type="hidden" name="offerId" value="${offer.id}" />
+                                        <input type="hidden" name="plateId" value="${offer.plate.id}" />
+                                        <input type="hidden" name="forwardUrl" value="/into/offer_details?id=${offer.id}" />
                                         <div class="review-k">
-                                            <textarea class="rev-k"></textarea>
-                                            <input type="button" class="rev-an" value="评论">
+                                            <textarea id="content" name="content" class="rev-k"></textarea>
+                                            <input type="button" id="message_button" class="rev-an" value="评论" />
                                         </div>
                                     </form>
                                 </c:if>
@@ -87,5 +89,16 @@
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
         <script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#message_button").click(function () {
+                    if (CBRAValid.checkFormValueNull($("#content"))) {
+                        alert("请输入评论内容");
+                        return;
+                    }
+                    $("#message_form").submit();
+                });
+            })
+        </script>
     </body>
 </html>
