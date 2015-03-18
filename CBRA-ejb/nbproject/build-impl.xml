@@ -833,6 +833,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.log4j-1.2.16.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.oro-2.0.8.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.velocity-1.7.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-codec-1.6.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.commons-httpclient-3.0.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.dom4j-1.6.1.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.jaxen-1.1-beta-6.jar}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${file.reference.cb_md5.jar}" property="manifest.file.reference.cb_md5.jar"/>
@@ -850,8 +854,12 @@ exists or setup the property manually. For example like this:
         <basename file="${file.reference.log4j-1.2.16.jar}" property="manifest.file.reference.log4j-1.2.16.jar"/>
         <basename file="${file.reference.oro-2.0.8.jar}" property="manifest.file.reference.oro-2.0.8.jar"/>
         <basename file="${file.reference.velocity-1.7.jar}" property="manifest.file.reference.velocity-1.7.jar"/>
+        <basename file="${file.reference.commons-codec-1.6.jar}" property="manifest.file.reference.commons-codec-1.6.jar"/>
+        <basename file="${file.reference.commons-httpclient-3.0.1.jar}" property="manifest.file.reference.commons-httpclient-3.0.1.jar"/>
+        <basename file="${file.reference.dom4j-1.6.1.jar}" property="manifest.file.reference.dom4j-1.6.1.jar"/>
+        <basename file="${file.reference.jaxen-1.1-beta-6.jar}" property="manifest.file.reference.jaxen-1.1-beta-6.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 jar-13 jar-14 jar-15 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 jar-13 jar-14 jar-15 jar-16 jar-17 jar-18 jar-19 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.cb_md5.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.file.reference.commons-collections-3.2.1.jar}"/>
             <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.commons-configuration-1.6.jar}"/>
@@ -867,6 +875,10 @@ exists or setup the property manually. For example like this:
             <attribute name="jar-13-Extension-Name" value="${manifest.file.reference.log4j-1.2.16.jar}"/>
             <attribute name="jar-14-Extension-Name" value="${manifest.file.reference.oro-2.0.8.jar}"/>
             <attribute name="jar-15-Extension-Name" value="${manifest.file.reference.velocity-1.7.jar}"/>
+            <attribute name="jar-16-Extension-Name" value="${manifest.file.reference.commons-codec-1.6.jar}"/>
+            <attribute name="jar-17-Extension-Name" value="${manifest.file.reference.commons-httpclient-3.0.1.jar}"/>
+            <attribute name="jar-18-Extension-Name" value="${manifest.file.reference.dom4j-1.6.1.jar}"/>
+            <attribute name="jar-19-Extension-Name" value="${manifest.file.reference.jaxen-1.1-beta-6.jar}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
@@ -885,6 +897,10 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.log4j-1.2.16.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.oro-2.0.8.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.velocity-1.7.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-codec-1.6.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.commons-httpclient-3.0.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.dom4j-1.6.1.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.jaxen-1.1-beta-6.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

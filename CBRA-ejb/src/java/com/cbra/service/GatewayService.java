@@ -197,6 +197,35 @@ public class GatewayService {
         }
     }
 
+    public GatewayPayment setPaymentResult(String gatewayId, boolean result, String msg) {
+        GatewayPayment gatewayPayment = this.findGatewayPaymentById(Long.parseLong(gatewayId));
+        gatewayPayment.setPaymentDate(new Date());
+        gatewayPayment.setPaymentGatewayMsg(msg);
+        OrderCollection orderCollection = gatewayPayment.getOrderCollection();
+        OrderCbraService orderCbraService = gatewayPayment.getOrderCbraService();
+        if (result) {
+            gatewayPayment.setStatus(GatewayPaymentStatusEnum.PAYMENT_SUCCESS);
+            if (orderCollection != null) {
+                orderCollection.setEndDate(new Date());
+                orderCollection.setStatus(OrderStatusEnum.SUCCESS);
+            }
+            if (orderCbraService != null) {
+                orderCbraService.setEndDate(new Date());
+                orderCbraService.setStatus(OrderStatusEnum.SUCCESS);
+            }
+        } else {
+            gatewayPayment.setStatus(GatewayPaymentStatusEnum.PAYMENT_CANCELED);
+            if (orderCollection != null) {
+                orderCollection.setStatus(OrderStatusEnum.FAILURE);
+            }
+            if (orderCbraService != null) {
+                orderCbraService.setStatus(OrderStatusEnum.FAILURE);
+            }
+        }
+        em.merge(gatewayPayment);
+        return gatewayPayment;
+    }
+
     // **********************************************************************
     // ************* SEND EMAIL METHODS *****************************************
     // **********************************************************************

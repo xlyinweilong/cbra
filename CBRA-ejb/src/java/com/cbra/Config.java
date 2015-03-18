@@ -22,11 +22,14 @@ public class Config {
     private Config() {
     }
     public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("800");
-    
-    public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("1000");
-    
-//    public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
 
+    public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("1000");
+
+    public static final String PAYGATE_ALIPAY_NOTIFY_URL = "http://www.cbra.com/paygate/alipay_notify";
+
+    public static final String PAYGATE_ALIPAY_RETURN_URL = "http://www.cbra.com/paygate/alipay_return";
+
+//    public static final String FILE_UPLOAD_DIR = "f:/cbrd/";
     public static final String FILE_UPLOAD_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/";
     public static final String HTML_EDITOR_UPLOAD = "html_editor_upload";
 
@@ -39,15 +42,14 @@ public class Config {
     public static final String FILE_UPLOAD_ACCOUNT_HEAD_IMAGE = "account_head_image";
 
 //    public static final String FILE_UPLOAD_TEMP_DIR = "f:/test";
-
     public static final String FILE_UPLOAD_TEMP_DIR = "/home/cbra/glassfish4/glassfish/domains/domain1/cbra/test/";
 //    public static final String HTTP_URL_BASE = "http://127.0.0.1:8080/";
 
     public static final String HTTP_URL_BASE = "http://www.cbra.com/";
     //持久信息
-    
+
     public static List<FundCollection> eventListIndex = null;
-    
+
     public static List<PlateInformation> newsList = null;
 
     public static List<PlateInformation> newsList5 = null;

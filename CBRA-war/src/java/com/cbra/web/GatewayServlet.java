@@ -5,6 +5,8 @@
 package com.cbra.web;
 
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.alipay.config.AlipayConfig;
+import com.alipay.util.AlipayNotify;
 import com.cbra.entity.Account;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
@@ -36,6 +38,7 @@ import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import flexjson.JSONSerializer;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
@@ -138,13 +141,19 @@ public class GatewayServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        BANK_TRANSFER, LIPAY, ALIPAY_RETURN, ALIPAY_NOTIFY;
+        BANK_TRANSFER, ALIPAY, ALIPAY_RETURN, ALIPAY_NOTIFY;
     }
 
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
+            case ALIPAY:
+                return loadAlipay(request, response);
+            case ALIPAY_RETURN:
+                return loadAlipayReturn(request, response);
+            case ALIPAY_NOTIFY:
+                return loadAlipayNotify(request, response);
             case BANK_TRANSFER:
                 return doSetBankTransfer(request, response);
             default:
@@ -176,6 +185,160 @@ public class GatewayServlet extends BaseServlet {
             gatewayService.createBankTransfer(gatewayPayment);
         }
         this.redirectResult(gatewayPayment, request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    private boolean loadAlipay(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment gatewayPayment = this.getGatewayPayment(request);
+        if (gatewayPayment == null) {
+            forwardWithError("Param Invalid", "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("gatewayPayment", gatewayPayment);
+        String itemSubject = null;
+        String itemBody = null;
+        String showUrl = "http://www.cbra.com";
+        if (gatewayPayment.getOrderCollection() != null) {
+            FundCollection fundCollection = gatewayPayment.getOrderCollection().getFundCollection();
+            itemSubject = fundCollection.getTitle();
+//            showUrl = "http://www.cbra.com/" + "/" + fundCollection.getWebId();
+            itemBody = "筑誉建筑联合会";
+        } else if (gatewayPayment.getOrderCbraService() != null) {
+            itemSubject = "会员费";
+//            showUrl = "http://www.cbra.com";
+            itemBody = "筑誉建筑联合会";
+        }
+        request.setAttribute("showUrl", showUrl);
+        request.setAttribute("itemSubject", itemSubject);
+        request.setAttribute("itemBody", itemBody);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    private boolean loadAlipayReturn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment setPaymentResult = null;
+        //**********************************************************************************
+        Map<String, String> params = new HashMap<String, String>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            //乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+            valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
+            params.put(name, valueStr);
+        }
+
+        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+        //商户订单号
+        String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
+
+        //支付宝交易号
+        String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
+
+        //交易状态
+        String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
+
+        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+        //计算得出通知验证结果
+        boolean verify_result = AlipayNotify.verify(params);
+
+        if (verify_result) {//验证成功
+            //////////////////////////////////////////////////////////////////////////////////////////
+            //请在这里加上商户的业务逻辑程序代码
+
+            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+            if (trade_status.equals("TRADE_FINISHED") || trade_status.equals("TRADE_SUCCESS")) {
+                //判断该笔订单是否在商户网站中已经做过处理
+                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+                //如果有做过处理，不执行商户的业务程序
+            }
+
+            //该页面可做页面美工编辑
+            setPaymentResult = gatewayService.setPaymentResult(out_trade_no, true, "支付宝支付成功");
+            //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+            //////////////////////////////////////////////////////////////////////////////////////////
+        } else {
+            //该页面可做页面美工编辑
+            String msg = "数据校验错误，支付失败。";
+            setPaymentResult = gatewayService.setPaymentResult(out_trade_no, false, msg);
+        }
+        //**********************************************************************************
+        //**********************************************************************************
+        redirectResult(setPaymentResult, request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    private boolean loadAlipayNotify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        GatewayPayment setPaymentResult = null;
+        try {
+            //**********************************************************************************
+            //获取支付宝POST过来反馈信息
+            Map<String, String> params = new HashMap<String, String>();
+            Map requestParams = request.getParameterMap();
+            for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+                String name = (String) iter.next();
+                String[] values = (String[]) requestParams.get(name);
+                String valueStr = "";
+                for (int i = 0; i < values.length; i++) {
+                    valueStr = (i == values.length - 1) ? valueStr + values[i]
+                            : valueStr + values[i] + ",";
+                }
+		//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+                //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+                params.put(name, valueStr);
+            }
+
+	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+            //商户订单号
+            String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
+
+            //支付宝交易号
+            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
+
+            //交易状态
+            String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
+
+	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+            if (AlipayNotify.verify(params)) {//验证成功
+                //////////////////////////////////////////////////////////////////////////////////////////
+                //请在这里加上商户的业务逻辑程序代码
+
+		//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+                if (trade_status.equals("TRADE_FINISHED")) {
+			//判断该笔订单是否在商户网站中已经做过处理
+                    //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+                    //如果有做过处理，不执行商户的业务程序
+
+			//注意：
+                    //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
+                } else if (trade_status.equals("TRADE_SUCCESS")) {
+			//判断该笔订单是否在商户网站中已经做过处理
+                    //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+                    //如果有做过处理，不执行商户的业务程序
+
+			//注意：
+                    //付款完成后，支付宝系统发送该交易状态通知
+                }
+
+		//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+                setPaymentResult = gatewayService.setPaymentResult(out_trade_no, true, "支付宝支付成功");
+                out.println("success");	//请不要修改或删除
+
+                //////////////////////////////////////////////////////////////////////////////////////////
+            } else {//验证失败
+                out.println("fail");
+            }
+        } catch (Exception x) {
+            out.println("fail");
+        } finally {
+            out.close();
+        }
         return FORWARD_TO_ANOTHER_URL;
     }
 
@@ -221,7 +384,7 @@ public class GatewayServlet extends BaseServlet {
             OrderCollection orderCollection = gatewayPayment.getOrderCollection();
             url = baseUrl + orderCollection.getSerialId();
             redirect(url, request, response);
-        }else if(gatewayPayment.getOrderCbraService() != null){
+        } else if (gatewayPayment.getOrderCbraService() != null) {
             String baseUrl = "/account/result/";
             url = baseUrl + gatewayPayment.getOrderCbraService().getSerialId();
             redirect(url, request, response);

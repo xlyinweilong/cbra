@@ -1,16 +1,14 @@
-<%-- 
-    Document   : alipay_submit
-    Created on : Sep 3, 2010, 11:01:35 AM
-    Author     : Neo Hu
 
---%>
+<%@page import="com.cbra.Config"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Map"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="com.alipay.config.*"%>
 <%@ page import="com.alipay.util.*"%>
-<%@ page import="cn.yoopay.entity.*" %>
-<%@ page import="cn.yoopay.*" %>
+<%@page import="com.cbra.entity.GatewayPayment"%>
 
 <%
     GatewayPayment payment = (GatewayPayment) request.getAttribute("gatewayPayment");
@@ -20,23 +18,20 @@
     String show_url = (String) request.getAttribute("showUrl");
     String notify_url = Config.PAYGATE_ALIPAY_NOTIFY_URL;
     String return_url = Config.PAYGATE_ALIPAY_RETURN_URL;
-    String gatewayPaymentSource = payment.getSource().toString();
-    pageContext.setAttribute("gatewayPaymentSource", gatewayPaymentSource);
+
     //System.err.println("return_url="+return_url);
 %>
 
-<%
-
-    String get_order = payment.getId().toString();
+<%    String get_order = payment.getId().toString();
 
     String paygateway = "https://www.alipay.com/cooperate/gateway.do?"; //支付接口（不可以修改）
     String service = "create_direct_pay_by_user";//快速付款交易服务（不可以修改）
     String payment_type = "1";//支付宝类型.1代表商品购买（目前填写1即可，不可以修改）
     //AlipyConfig.java中配置信息（不可以修改）
-    String input_charset = AlipayConfig.CharSet;
+    String input_charset = AlipayConfig.input_charset;
     String sign_type = AlipayConfig.sign_type;
-    String seller_email = AlipayConfig.sellerEmail;
-    String partner = AlipayConfig.partnerID;
+    String seller_email = AlipayConfig.seller_email;
+    String partner = AlipayConfig.partner;
     String key = AlipayConfig.key;
 
     //订单支付信息
@@ -45,7 +40,7 @@
     String out_trade_no = get_order;//请与贵网站订单系统中的唯一订单号匹配
     String subject = itemSubject; //订单名称，显示在支付宝收银台里的“商品名称”里，显示在支付宝的交易管理的“商品名称”的列表里。
     String body = itemBody; //订单描述、订单详细、订单备注，显示在支付宝收银台里的“商品描述”里
-    String total_fee = String.valueOf(payment.getCNYGatewayAmount()); //订单总金额，显示在支付宝收银台里的“应付总额”里
+    String total_fee = String.valueOf(payment.getGatewayAmount()); //订单总金额，显示在支付宝收银台里的“应付总额”里
     /*
      * 以下两个参数paymethod和defaultbank可以选择不使用，如果不使用需要注销，并在Payment类的方法中也要注销
      */
@@ -57,63 +52,48 @@
     String buyer_account_name = buyer_email;
     //System.out.println("buyer_account_name : " + buyer_account_name);
     //POST方式提交支付请求 
-    String sign = AlipayService.createPostUrl(paygateway, service,
-            sign_type, out_trade_no, input_charset, partner, key,
-            show_url, body, total_fee, payment_type, seller_email,
-            subject, notify_url, return_url, paymethod, defaultbank, null, buyer_account_name);
-    subject = subject.replaceAll("\"","&quot;");
-    System.out.println(subject);
+    subject = subject.replaceAll("\"", "&quot;");
 %>
-<c:choose>
-    <c:when test="${not empty gatewayPaymentSource && gatewayPaymentSource eq 'SOURCE_WIDGET'}">
-        <jsp:include page="/WEB-INF/public/z_header_widget.jsp"/>
-    </c:when>
-    <c:otherwise>
+<!doctype html>
+<html>
+    <head>
         <jsp:include page="/WEB-INF/public/z_header.jsp"/>
-    </c:otherwise>
-</c:choose>
+    </head>
+    <body>
+        <%
+            ////////////////////////////////////请求参数//////////////////////////////////////
+            //防钓鱼时间戳
+            String anti_phishing_key = "";
+            //若要使用请调用类文件submit中的query_timestamp函数
+            //客户端的IP地址
+            String exter_invoke_ip = "";
+                        //非局域网的外网IP地址，如：221.0.0.1
 
-<form id="alipay_submit_form" method="post" 
-      action="https://www.alipay.com/cooperate/gateway.do?_input_charset=<%=AlipayConfig.CharSet%>" <c:if test="${not empty requestFromPage && requestFromPage eq 'widget'}">target="_top"</c:if>>
-    <input type=hidden name="body" value="<%=body%>">
-    <input type=hidden name="notify_url" value="<%=notify_url%>">
-    <input type=hidden name="out_trade_no" value="<%=out_trade_no%>">
-    <input type=hidden name="partner" value="<%=partner%>">
-    <input type=hidden name="payment_type" value="<%=payment_type%>">
-    <input type=hidden name="seller_email" value="<%=seller_email%>">
-    <input type=hidden name="service" value="<%=service%>">
-    <input type=hidden name="sign" value="<%=sign%>">
-    <input type=hidden name="sign_type" value="MD5">
-    <input type=hidden name="subject" value="<%=subject%>">
-    <input type=hidden name="total_fee" value="<%=total_fee%>">
-    <input type=hidden name="show_url" value="<%=show_url%>">
-    <input type=hidden name="return_url" value="<%=return_url%>">
-    <input type=hidden name="paymethod" value="<%=paymethod%>">
-    <input type=hidden name="defaultbank" value="<%=defaultbank%>">
-    <% if (buyer_account_name != null && !buyer_account_name.equals("")) {%>
-    <input type=hidden name="buyer_account_name" value="<%=buyer_account_name%>">
-    <% }%>
-</form>
-<div style="text-align: center"><fmt:message key="GLOBAL_MSG_LOADING" bundle="${bundle}"/> <img src="/images/032.gif" width="100" height="9" /> </div>
-    <c:choose>
-        <c:when  test="${not empty gatewayPaymentSource && gatewayPaymentSource eq 'SOURCE_WIDGET'}">
-            <jsp:include page="/WEB-INF/public/z_footer_widget.jsp"/>
+            //////////////////////////////////////////////////////////////////////////////////
+            //把请求参数打包成数组
+            Map<String, String> sParaTemp = new HashMap<String, String>();
+            sParaTemp.put("service", "create_direct_pay_by_user");
+            sParaTemp.put("partner", AlipayConfig.partner);
+            sParaTemp.put("seller_email", AlipayConfig.seller_email);
+            sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+            sParaTemp.put("payment_type", payment_type);
+            sParaTemp.put("notify_url", notify_url);
+            sParaTemp.put("return_url", return_url);
+            sParaTemp.put("out_trade_no", out_trade_no);
+            sParaTemp.put("subject", subject);
+            sParaTemp.put("total_fee", total_fee);
+            sParaTemp.put("body", body);
+            sParaTemp.put("show_url", show_url);
+            sParaTemp.put("anti_phishing_key", anti_phishing_key);
+            //建立请求
+            String sHtmlText = AlipaySubmit.buildRequest(sParaTemp, "get", "确认");
+            out.println(sHtmlText);
+        %>
+        <div style="text-align: center"><fmt:message key="GLOBAL_MSG_LOADING" bundle="${bundle}"/> <img src="/images/032.gif" width="100" height="9" /> </div>
         <script type="text/javascript">
-            window.onload = function(){
-                document.getElementById("alipay_submit_form").submit();
-                resizeIframeHeight();
-            }
-        </script>
-    </c:when>
-    <c:otherwise>
-        <jsp:include page="/WEB-INF/public/z_footer.jsp"/> 
-        <script type="text/javascript">
-            window.onload = function(){
+            window.onload = function () {
                 document.getElementById("alipay_submit_form").submit();
             }
         </script>
-        <%@include file="/WEB-INF/public/z_footer_close.html" %> 
-    </c:otherwise>
-</c:choose>
-
-
+    </body>
+</html>
