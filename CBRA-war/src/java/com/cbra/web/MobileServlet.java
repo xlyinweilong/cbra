@@ -214,14 +214,16 @@ public class MobileServlet extends BaseServlet {
         if (user != null) {
             map.put("responsecode", 0);
             map.put("msg", null);
-            map.put("data", user.getLoginCode());
+            Map subMap = new HashMap();
+            subMap.put("logincode", user.getLoginCode());
             if (user instanceof SubCompanyAccount) {
-                map.put("type", "SUB");
+                subMap.put("type", "SUB");
             } else if (user instanceof CompanyAccount) {
-                map.put("type", "COMPANY");
+                subMap.put("type", "COMPANY");
             } else {
-                map.put("type", "USER");
+                subMap.put("type", "USER");
             }
+            map.put("data", subMap);
             return super.outputObjectAjax(map, response);
         }
         map.put("msg", "密码错误");
