@@ -9,6 +9,7 @@ import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.Plate;
 import com.cbra.entity.SysUser;
+import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.CbraService;
 import com.cbra.support.FileUploadItem;
@@ -475,10 +476,20 @@ public abstract class BaseServlet extends HttpServlet {
         Boolean pageViewLogoutAllowed = (Boolean) request.getAttribute("pageViewLogoutAllowed");
         String requestURI = request.getRequestURI();
         HttpSession session = request.getSession();
-        Object user = session.getAttribute("user");
+        Object user = session.getAttribute(SESSION_ATTRIBUTE_USER);
         boolean userLogin = false;
         if (user != null) {
             userLogin = true;
+        }
+        if (!userLogin && !(!pageViewLoginAllowed && pageViewLogoutAllowed)) {
+            String url = null;
+            String queryString = request.getQueryString();
+            if (StringUtils.isBlank(queryString)) {
+                url = requestURI;
+            } else {
+                url = requestURI + "?" + queryString;
+            }
+            setCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT, url);
         }
         if (!userLogin && pageViewLoginAllowed && !pageViewLogoutAllowed) {
             //Access login only page
@@ -497,7 +508,11 @@ public abstract class BaseServlet extends HttpServlet {
             }
             return FORWARD_TO_ANOTHER_URL;
         } else if (userLogin && !pageViewLoginAllowed && pageViewLogoutAllowed) {
-            response.sendRedirect("/account/overview");
+            if (user instanceof UserAccount) {
+                response.sendRedirect("/account/overview");
+            } else {
+                response.sendRedirect("/account/overview_c");
+            }
             response.flushBuffer();
             if (debug) {
                 log("Access logout only page, redirect to home from: " + requestURI);

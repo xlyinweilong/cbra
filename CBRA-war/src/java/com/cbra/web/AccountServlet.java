@@ -111,9 +111,9 @@ public class AccountServlet extends BaseServlet {
     public boolean processLoginControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
         switch (page) {
-            case Z_LOGIN_DIALOG:
-            case Z_SIGNUP_DIALOG:
             case LOGIN:
+                setLogoutOnly(request);
+                break;
             case SIGNUP:
             case SIGNUP_C:
             case FORGET_PASSWD:
@@ -1081,16 +1081,16 @@ public class AccountServlet extends BaseServlet {
             jump = "/account/overview_c";
         }
         String url = (String) request.getParameter("urlUserWantToAccess");
-        if (!StringUtils.isBlank(url)) {
+        System.out.println(url);
+        if (StringUtils.isNotBlank(url)) {
             jump = url;
-        } else if (formSignup) {
-            //check cookie get the redirect url
-            String curl = getCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT);
-            if (Tools.isNotBlank(curl)) {
-                jump = curl;
-                //delete COOKIE_LOGIN_URL_REDIRECT cookie
-                removeCookie(request, response, COOKIE_LOGIN_URL_REDIRECT);
-            }
+        }
+        //check cookie get the redirect url
+        String curl = getCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT);
+        if (Tools.isNotBlank(curl)) {
+            jump = curl;
+            //delete COOKIE_LOGIN_URL_REDIRECT cookie
+            removeCookie(request, response, COOKIE_LOGIN_URL_REDIRECT);
         }
         log("Login Success, Redirect to: " + jump);
         redirect(jump, request, response);
