@@ -141,7 +141,7 @@ public class GatewayServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        BANK_TRANSFER, ALIPAY, ALIPAY_RETURN, ALIPAY_NOTIFY;
+        BANK_TRANSFER, ALIPAY, ALIPAY_BANK, ALIPAY_RETURN, ALIPAY_NOTIFY;
     }
 
     @Override
@@ -150,6 +150,8 @@ public class GatewayServlet extends BaseServlet {
         switch (page) {
             case ALIPAY:
                 return loadAlipay(request, response);
+            case ALIPAY_BANK:
+                return loadAlipayBank(request, response);
             case ALIPAY_RETURN:
                 return loadAlipayReturn(request, response);
             case ALIPAY_NOTIFY:
@@ -189,6 +191,32 @@ public class GatewayServlet extends BaseServlet {
     }
 
     private boolean loadAlipay(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment gatewayPayment = this.getGatewayPayment(request);
+        if (gatewayPayment == null) {
+            forwardWithError("Param Invalid", "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
+        request.setAttribute("gatewayPayment", gatewayPayment);
+        String itemSubject = null;
+        String itemBody = null;
+        String showUrl = "http://www.cbra.com";
+        if (gatewayPayment.getOrderCollection() != null) {
+            FundCollection fundCollection = gatewayPayment.getOrderCollection().getFundCollection();
+            itemSubject = fundCollection.getTitle();
+//            showUrl = "http://www.cbra.com/" + "/" + fundCollection.getWebId();
+            itemBody = "筑誉建筑联合会";
+        } else if (gatewayPayment.getOrderCbraService() != null) {
+            itemSubject = "会员费";
+//            showUrl = "http://www.cbra.com";
+            itemBody = "筑誉建筑联合会";
+        }
+        request.setAttribute("showUrl", showUrl);
+        request.setAttribute("itemSubject", itemSubject);
+        request.setAttribute("itemBody", itemBody);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    private boolean loadAlipayBank(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         GatewayPayment gatewayPayment = this.getGatewayPayment(request);
         if (gatewayPayment == null) {
             forwardWithError("Param Invalid", "/public/error_page", request, response);

@@ -230,6 +230,9 @@ public class OrderServlet extends BaseServlet {
             case BANK_TRANSFER:
                 forwardUrl = "/paygate/bank_transfer/";
                 break;
+            case ALIPAY_BANK:
+                forwardUrl = "/paygate/alipay_bank/";
+                break;
             case ALIPAY:
                 forwardUrl = "/paygate/alipay/";
                 break;

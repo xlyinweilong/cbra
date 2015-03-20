@@ -25,13 +25,13 @@
                     </div>
                     <div class="xzyh-fs">
                         <ul>
-                            <li><a href="javascript:void(0);" id="xzyh-fs-b">储蓄卡</a></li>
+                            <li><a href="javascript:void(0);" data="bank" id="xzyh-fs-b" onclick="changeTable(this, 'bank');">储蓄卡</a></li>
                             <li><a href="javascript:void(0);">信用卡</a></li>
                             <li><a href="javascript:void(0);" data="platform" onclick="changeTable(this, 'platform');">支付平台</a></li>
                             <li><a href="javascript:void(0);" data="bank_transfer" onclick="changeTable(this, 'bank_transfer');">银行转账</a></li>
                         </ul>
                     </div>
-                    <table id="savings_card_table" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
+                    <table id="bank_table" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                         <tr>
                             <td width="190" height="50"><input type="radio" class="xuanz"><img src="/images/yh/yh-1.jpg"></td>
                             <td width="190"><input type="radio" class="xuanz"><img src="/images/yh/yh-2.jpg"></td>
@@ -86,7 +86,7 @@
     <script type="text/javascript">
         function hideAllTable() {
             $("#xzyh-fs-b").removeAttr("id");
-            $("#savings_card_table").hide();
+            $("#bank_table").hide();
             $("#bank_transfer_table").hide();
             $("#platform_table").hide();
         }
@@ -98,6 +98,8 @@
             } else if (type === 'platform') {
                 $("#platform_table").show();
                 $("#zhifubao_radio").attr("checked", "checked");
+            }else if (type === 'bank') {
+                $("#bank_table").show();
             }
         }
         function doPanyment() {
@@ -107,7 +109,18 @@
                 $("#form1").submit();
             } else if (data == 'platform') {
                 $("#payment_type").val('ALIPAY');
-                $("#dialog-confirm").dialog({
+                showDialog();
+                $("#form1").attr("target", "_blank");
+                $("#form1").submit();
+            }else if(data == 'bank'){
+                $("#payment_type").val('ALIPAY_BANK');
+                showDialog();
+                $("#form1").attr("target", "_blank");
+                $("#form1").submit();
+            }
+        }
+        function showDialog(){
+            $("#dialog-confirm").dialog({
                     resizable: false,
                     height: 140,
                     modal: true,
@@ -120,9 +133,6 @@
                         }
                     }
                 });
-                $("#form1").attr("target", "_blank");
-                $("#form1").submit();
-            }
         }
     </script>
 </body>
