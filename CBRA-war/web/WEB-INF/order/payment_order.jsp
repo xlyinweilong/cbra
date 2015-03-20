@@ -113,7 +113,7 @@
                     modal: true,
                     buttons: {
                         "支付完成": function () {
-                            $(this).dialog("close");
+                            location.href = "/order/result/${order.serialId}";
                         },
                         "其他方式支付": function () {
                             $(this).dialog("close");

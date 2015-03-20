@@ -319,7 +319,7 @@ public class OrderServlet extends BaseServlet {
     private boolean loadPaymentOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String serialId = super.getPathInfoStringAt(request, 1);
         OrderCollection order = orderService.findOrderCollectionSerialId(serialId);
-        if (order == null || !(order.getStatus().equals(OrderStatusEnum.PENDING_PAYMENT)) || order.getStatus().equals(OrderStatusEnum.PAYMENT_TIMEOUT)) {
+        if (order == null || !(order.getStatus().equals(OrderStatusEnum.PENDING_PAYMENT)) || order.getStatus().equals(OrderStatusEnum.PAYMENT_TIMEOUT) || order.getStatus().equals(OrderStatusEnum.FAILURE)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }

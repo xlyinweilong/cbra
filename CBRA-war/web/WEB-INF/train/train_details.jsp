@@ -21,13 +21,13 @@
                     <p><strong>培训地点：</strong>${fundCollection.eventLocation}</p>
                     <p><strong>培训人员：</strong>${fundCollection.allowAttendee.mean}</p>
                     <p><strong>培训费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
+                    <c:if test="${isSignUpEvent}">
+                    <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
+                    </c:if>
                     <p><strong>培训内容介绍：</strong></p>
                     <p style=" line-height:32px; color:#666;">
                         ${fundCollection.detailDescHtml}
                     </p>
-                    <c:if test="${isSignUpEvent}">
-                    <p><input type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
-                    </c:if>
                     <!-- 分享 -->
                     <div class="bshare-custom Share"><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div>
                     <!-- 评论 -->
