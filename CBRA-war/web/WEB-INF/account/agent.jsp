@@ -28,7 +28,7 @@
                                 <input type="hidden" name="id" value="${id1}" />
                             <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">
                                 <tr>
-                                    <td width="120" height="40">代表登录帐号</td>
+                                    <td width="120" height="40">手机号</td>
                                     <td><input id="account1" type="text" name="account" value="${account1}" class="mmmmm"></td>
                                 </tr>
                                 <tr>
@@ -48,7 +48,7 @@
                             <input type="hidden" name="id" value="${id2}" />
                             <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">
                                 <tr>
-                                    <td width="120" height="40">代表登录帐号</td>
+                                    <td width="120" height="40">手机号</td>
                                     <td><input id="account2" type="text" name="account" value="${account2}" class="mmmmm"></td>
                                 </tr>
                                 <tr>

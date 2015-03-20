@@ -63,7 +63,6 @@ public class AccountService {
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
     // **********************************************************************
-
     /**
      * 登录
      *
@@ -491,6 +490,7 @@ public class AccountService {
      * @param enterpriseQalityGrading
      * @param authenticationDate
      * @param productionLicenseNumber
+     * @param productionLicenseValidDateStart
      * @param productionLicenseValidDate
      * @param field
      * @param businessLicenseUrl
@@ -501,7 +501,7 @@ public class AccountService {
      */
     public CompanyAccount signupCompany(String account, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale, String webSide, String enterpriseQalityGrading,
-            Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDate, String field,
+            Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDateStart, Date productionLicenseValidDate, String field,
             String businessLicenseUrl, String qualificationCertificateUrl) throws AccountAlreadyExistException, IOException {
         Account user = this.findByAccount(account);
         CompanyAccount company;
@@ -529,6 +529,7 @@ public class AccountService {
         company.setNature(nature);
         company.setNatureOthers(natureOthers);
         company.setProductionLicenseNumber(productionLicenseNumber);
+//        company.
         company.setProductionLicenseValidDate(productionLicenseValidDate);
         company.setScale(scale);
         company.setWebSide(webSide);
@@ -537,10 +538,12 @@ public class AccountService {
         FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + businessLicenseUrl), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + businessLicenseUrl));
         FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + businessLicenseUrl));
         company.setBusinessLicenseUrl("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + businessLicenseUrl);
-        qualificationCertificateUrl = qualificationCertificateUrl.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
-        FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl));
-        FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl));
-        company.setQualificationCertificateUrl("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl);
+        if (Tools.isNotBlank(qualificationCertificateUrl)) {
+            qualificationCertificateUrl = qualificationCertificateUrl.substring(Config.HTTP_URL_BASE.length() + Config.FILE_UPLOAD_TEMP.length() + 1);
+            FileUtils.copyFile(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl), new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl));
+            FileUtils.deleteQuietly(new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_TEMP + "/" + qualificationCertificateUrl));
+            company.setQualificationCertificateUrl("/" + Config.FILE_UPLOAD_ACCOUNT + "/" + qualificationCertificateUrl);
+        }
         String verifyUrl = getUniqueAccountVerifyUrl();
         company.setVerifyUrl(verifyUrl);
         em.persist(company);

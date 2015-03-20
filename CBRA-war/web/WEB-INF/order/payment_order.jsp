@@ -5,6 +5,7 @@
 <html>
     <head>
         <jsp:include page="/WEB-INF/public/z_header.jsp"/>
+
     </head>
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
@@ -26,7 +27,7 @@
                         <ul>
                             <li><a href="javascript:void(0);" id="xzyh-fs-b">储蓄卡</a></li>
                             <li><a href="javascript:void(0);">信用卡</a></li>
-                            <li><a href="javascript:void(0);">支付平台</a></li>
+                            <li><a href="javascript:void(0);" data="platform" onclick="changeTable(this, 'platform');">支付平台</a></li>
                             <li><a href="javascript:void(0);" data="bank_transfer" onclick="changeTable(this, 'bank_transfer');">银行转账</a></li>
                         </ul>
                     </div>
@@ -44,6 +45,14 @@
                             <td width="190"><input type="radio" class="xuanz"><img src="/images/yh/yh-4.jpg"></td>
                         </tr>
                     </table>
+                    <table id="platform_table" style="display: none" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
+                        <tr>
+                            <td width="190" height="50"><input type="radio" id="zhifubao_radio" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
+                            <td width="190" height="50"></td>
+                            <td width="190" height="50"></td>
+                            <td width="190" height="50"></td>
+                        </tr>
+                    </table>
                     <table id="bank_transfer_table" style="display: none" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                         <tr>
                             <td width="190" height="50">1.银行转账是个人工流程，这意味这您需要到银行来进行操作。
@@ -53,7 +62,7 @@
                             <td width="190" height="50">2.您可以从任何银行进行转账。</td>
                         </tr>
                     </table>
-                    <div class="xiayy"><input type="button" class="xiayy-an" value="下一步" onclick="doPanyment()"></div>
+                    <div class="xiayy"><input type="button" class="xiayy-an" value="下一步" onclick="doPanyment()" style="margin-left: 600px;"></div>
             </div>
         </form>
         <div class="news-fr">
@@ -71,23 +80,47 @@
     </div>
     <!-- 主体 end -->
     <jsp:include page="/WEB-INF/public/z_end.jsp"/>
+    <div style="display: none" id="dialog-confirm" title="支付结果">
+        <p>支付已经完成？</p>
+    </div>
     <script type="text/javascript">
         function hideAllTable() {
             $("#xzyh-fs-b").removeAttr("id");
             $("#savings_card_table").hide();
             $("#bank_transfer_table").hide();
+            $("#platform_table").hide();
         }
         function changeTable(obj, type) {
             hideAllTable();
             $(obj).attr("id", "xzyh-fs-b");
             if (type === 'bank_transfer') {
                 $("#bank_transfer_table").show();
+            } else if (type === 'platform') {
+                $("#platform_table").show();
+                $("#zhifubao_radio").attr("checked", "checked");
             }
         }
-        function doPanyment(){
+        function doPanyment() {
             var data = $("#xzyh-fs-b").attr("data");
-            if(data == 'bank_transfer'){
+            if (data == 'bank_transfer') {
                 $("#payment_type").val('BANK_TRANSFER');
+                $("#form1").submit();
+            } else if (data == 'platform') {
+                $("#payment_type").val('ALIPAY');
+                $("#dialog-confirm").dialog({
+                    resizable: false,
+                    height: 140,
+                    modal: true,
+                    buttons: {
+                        "支付完成": function () {
+                            $(this).dialog("close");
+                        },
+                        "其他方式支付": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#form1").attr("target", "_blank");
                 $("#form1").submit();
             }
         }

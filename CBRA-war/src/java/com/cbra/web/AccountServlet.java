@@ -494,6 +494,7 @@ public class AccountServlet extends BaseServlet {
         String enterpriseQalityGrading = getRequestString(request, "enterpriseQalityGrading");
         String authenticationDate = getRequestString(request, "authenticationDate");
         String productionLicenseNumber = getRequestString(request, "productionLicenseNumber");
+        String productionLicenseValidDateStart = getRequestString(request, "productionLicenseValidDateStart");
         String productionLicenseValidDate = getRequestString(request, "productionLicenseValidDate");
         String field = getRequestString(request, "field");
         String bl = getRequestString(request, "bl");
@@ -518,6 +519,7 @@ public class AccountServlet extends BaseServlet {
 //        }
         Date companyCreate = Tools.parseDate(companyCreateDate, "yyyy-MM-dd");
         Date authentication = Tools.parseDate(authenticationDate, "yyyy-MM-dd");
+        Date productionLicenseValidStart = Tools.parseDate(productionLicenseValidDateStart, "yyyy-MM-dd");
         Date productionLicenseValid = Tools.parseDate(productionLicenseValidDate, "yyyy-MM-dd");
         CompanyScaleEnum companyScaleEnum = null;
         try {
@@ -546,7 +548,7 @@ public class AccountServlet extends BaseServlet {
         icPosition = sb.toString();
         CompanyAccount companyAccount = null;
         try {
-            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValid, field, bl, qc);
+            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValidStart,productionLicenseValid, field, bl, qc);
         } catch (AccountAlreadyExistException ex) {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
         } catch (IOException ex) {

@@ -17,7 +17,9 @@
                         <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="5" /></jsp:include>
                         </td>
                         <td valign="top" class="fr-c-1">
-                            <div class="tit-cz">修改密码</div>
+                            <div class="tit-cz">
+                                修改密码<c:if test="${sessionScope.user.type == 'COMPANY'}">(此处修改的密码为营业执照注册号主账户密码)</c:if>
+                            </div>
                             <div class="noticeMessage">
                                 <div id="successMessage" class="successMessage"><c:if test="${not empty postResult.singleSuccessMsg}">${postResult.singleSuccessMsg}</c:if></div>
                                 <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>

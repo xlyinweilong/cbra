@@ -340,6 +340,9 @@ public class Tools {
     }
 
     public static Date parseDate(String dStr, String style) {
+        if (Tools.isBlank(dStr)) {
+            return null;
+        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(style);
             return sdf.parse(dStr);

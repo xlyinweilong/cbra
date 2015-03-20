@@ -12,7 +12,9 @@
 <meta name="description" content="友付 是会议及活动的线上报名、推广、票务、收款一站式平台。20,000多个会议及活动，在使用友付，包括大型国内及国际行业会议会展、企业内部培训、经销商、供应商会议，及各种社交、聚会、文体、培训、演出活动。Yoopay is China's first event online management platform for event publishing, promotion, registration, and ticketing. Event organizers can also collect payments online in advance easily with dual currencies (RMB/USD) and dual languages (Chinese/English) via China Union Pay, Alipay, Visa, Mastercard, and Paypal. More than 20,000 domestic and international events, including conferences, exihibitions, forums, corporate and social events are using Yoopay for their events in China."/> 
 <link rel="shortcut icon" href="/favicon.ico" /> 
 <link href="/css/master.css" rel="stylesheet" type="text/css"><!--top-->
-<script type="text/javascript" src="/scripts/jquery-1.8.2.min.js"></script>
+<link href="/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="/jquery-ui/js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="/jquery-ui/js/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="/js/base.js"></script><!--导航 -->
 <script type="text/javascript" src="/js/common.js"></script>
 <script type="text/javascript" src="/background/js/My97DatePicker/WdatePicker.js"></script>

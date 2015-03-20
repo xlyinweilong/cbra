@@ -106,7 +106,13 @@
                             <tr>
                                 <td class="reg-3">安全生产许可证编号</td>
                                 <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseNumber" name="productionLicenseNumber" /></td>
-                                <td class="reg-3">安全生产许可证有效期</td>
+                                <td class="reg-3"></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="reg-3">安全生产许可证有效期(起始)</td>
+                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseValidDateStart" name="productionLicenseValidDateStart" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
+                                <td class="reg-3">安全生产许可证有效期(结束)</td>
                                 <td><input type="text" class="Input-1" id="productionLicenseValidDate" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
                             </tr>
                             <tr>
@@ -158,6 +164,7 @@
                                     <div id="reg_qc_div"><br/><br/>
                                         <p>上传企业资质证书</p><p>加多个请打包成文件<br>上传图片大小不得超过20MB</p>
                                     </div>
+                                    <img id="reg_qc_img" src="" width="300" height="190" style="display: none" />
                                     <input id="reg_qc_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
                                     <p id="reg_qc_result"></p>
                                 </div>
@@ -261,26 +268,30 @@
                 });
                 $("#step2_next").click(function () {
                     $("#signup_msg_3").html("");
-                    if (CBRAValid.checkFormValueNull($("#webSide"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入企业网址", $("#webSide"));
-                        return;
-                    }
-                    if (CBRAValid.checkFormValueNull($("#enterpriseQalityGrading"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入企业资质等级", $("#enterpriseQalityGrading"));
-                        return;
-                    }
-                    if (CBRAValid.checkFormValueNull($("#authenticationDate"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入主项资质发证时间", $("#authenticationDate"));
-                        return;
-                    }
-                    if (CBRAValid.checkFormValueNull($("#productionLicenseNumber"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证编号", $("#productionLicenseNumber"));
-                        return;
-                    }
-                    if (CBRAValid.checkFormValueNull($("#productionLicenseValidDate"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证有效期", $("#productionLicenseValidDate"));
-                        return;
-                    }
+//                    if (CBRAValid.checkFormValueNull($("#webSide"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入企业网址", $("#webSide"));
+//                        return;
+//                    }
+//                    if (CBRAValid.checkFormValueNull($("#enterpriseQalityGrading"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入企业资质等级", $("#enterpriseQalityGrading"));
+//                        return;
+//                    }
+//                    if (CBRAValid.checkFormValueNull($("#authenticationDate"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入主项资质发证时间", $("#authenticationDate"));
+//                        return;
+//                    }
+//                    if (CBRAValid.checkFormValueNull($("#productionLicenseNumber"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证编号", $("#productionLicenseNumber"));
+//                        return;
+//                    }
+//                    if (CBRAValid.checkFormValueNull($("#productionLicenseValidDateStart"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证有效期(起始时间)", $("#productionLicenseValidDateStart"));
+//                        return;
+//                    }
+//                    if (CBRAValid.checkFormValueNull($("#productionLicenseValidDate"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证有效期(结束时间)", $("#productionLicenseValidDate"));
+//                        return;
+//                    }
                     if (CBRAValid.checkFormValueNull($("#field"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入目标客户或擅长领域", $("#field"));
                         return;
@@ -293,10 +304,6 @@
                     $("#signup_msg_3").html("");
                     if ($.trim($("#bl_hidden").val()) == "") {
                         CBRAMessage.showMessage($("#signup_msg_3"), "请上传企业营业执照副本");
-                        return;
-                    }
-                    if ($.trim($("#qc_hidden").val()) == "") {
-                        CBRAMessage.showMessage($("#signup_msg_3"), "请上传企业资质证书");
                         return;
                     }
                     //submit

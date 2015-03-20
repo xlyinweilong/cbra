@@ -64,6 +64,10 @@ public class CompanyAccount extends Account {
     @Column(name = "production_license_number", length = 255)
     //产许可证编号
     private String productionLicenseNumber;
+    @Column(name = "production_license_valid_date_start")
+    @Temporal(TemporalType.TIMESTAMP)
+    //安全生产许可证有效期
+    private Date productionLicenseValidDateStart;
     @Column(name = "production_license_valid_date")
     @Temporal(TemporalType.TIMESTAMP)
     //安全生产许可证有效期
@@ -156,6 +160,14 @@ public class CompanyAccount extends Account {
 
     public void setProductionLicenseValidDate(Date productionLicenseValidDate) {
         this.productionLicenseValidDate = productionLicenseValidDate;
+    }
+
+    public Date getProductionLicenseValidDateStart() {
+        return productionLicenseValidDateStart;
+    }
+
+    public void setProductionLicenseValidDateStart(Date productionLicenseValidDateStart) {
+        this.productionLicenseValidDateStart = productionLicenseValidDateStart;
     }
 
     public String getField() {

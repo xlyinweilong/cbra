@@ -30,7 +30,7 @@ public class AlipayConfig {
 	// 收款支付宝账号
 	public static String seller_email = "cbra@cbra.com";
 	// 商户的私钥
-	public static String key = "";
+	public static String key = "t54lamfhxjvqz4wivf9uqh8b4vy6k0rq";
 
 	//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 	
