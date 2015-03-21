@@ -5,8 +5,10 @@
 package com.cbra.service;
 
 import com.cbra.Config;
+import com.cbra.entity.Account;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import java.lang.management.ManagementFactory;
@@ -49,6 +51,8 @@ public class ConfigService {
 
     @EJB
     private CbraService cbraService;
+    @EJB
+    private AccountService accountService;
 
     @PostConstruct
     public void init() {
@@ -59,6 +63,5 @@ public class ConfigService {
     public void reload() {
         cbraService.loadConfig();
     }
-
 
 }

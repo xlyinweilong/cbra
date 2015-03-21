@@ -30,6 +30,10 @@
                   <c:if test="${sessionScope.user.type == 'COMPANY' || sessionScope.user.type == 'SUB_COMPANY'}">
                   <a href="/account/overview_c" >企业会员中心</a>
                   </c:if>
+                  <c:choose>
+                      <c:when test="${sessionScope.userStatus == 'ASSOCIATE_MEMBER'}">(级别：<a href="/account/membership_fee">准会员</a>)</c:when>
+                      <c:when test="${sessionScope.userStatus == 'MEMBER'}">(级别：会员)</c:when>
+                  </c:choose>
                 </c:if>
                   &nbsp;&nbsp;<a href="#">English</a>   |   <a href="#">中文</a>   
                   <%--|   <a href="error-c.asp">报错页面连接，知道后程序去掉</a>--%>

@@ -107,6 +107,7 @@ public class GatewayService {
         gatewayPayment.setOrderCollection(orderCollection);
         gatewayPayment.setSource(source);
         em.persist(gatewayPayment);
+        em.flush();
         return gatewayPayment;
     }
 
@@ -125,6 +126,9 @@ public class GatewayService {
         gatewayPayment.setSource(source);
         gatewayPayment.setOrderCbraService(orderCbraService);
         em.persist(gatewayPayment);
+        em.flush();
+        orderCbraService.setLastGatewayPayment(gatewayPayment);
+        em.merge(orderCbraService);
         em.flush();
         return gatewayPayment;
     }
@@ -211,6 +215,10 @@ public class GatewayService {
             }
             if (orderCbraService != null) {
                 orderCbraService.setEndDate(new Date());
+                Account account = orderCbraService.getOwner();
+                account.setPayDate(Tools.addYear(new Date(), 1));
+                account.setStatus(AccountStatus.MEMBER);
+                em.merge(account);
                 orderCbraService.setStatus(OrderStatusEnum.SUCCESS);
             }
         } else {
@@ -222,6 +230,8 @@ public class GatewayService {
                 orderCbraService.setStatus(OrderStatusEnum.FAILURE);
             }
         }
+        em.merge(orderCollection);
+        em.merge(orderCbraService);
         em.merge(gatewayPayment);
         return gatewayPayment;
     }

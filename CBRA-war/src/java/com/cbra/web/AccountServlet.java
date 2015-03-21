@@ -267,6 +267,9 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean doPaymentOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
+        if (account instanceof SubCompanyAccount) {
+            account = ((SubCompanyAccount) account).getCompanyAccount();
+        }
         OrderCbraService orderCbraService = orderService.createOrderService(account);
         String paymentType = super.getRequestString(request, "payment_type");
         PaymentGatewayTypeEnum gateway = null;
@@ -283,6 +286,12 @@ public class AccountServlet extends BaseServlet {
         switch (gateway) {
             case BANK_TRANSFER:
                 forwardUrl = "/paygate/bank_transfer/";
+                break;
+            case ALIPAY_BANK:
+                forwardUrl = "/paygate/alipay_bank/";
+                break;
+            case ALIPAY:
+                forwardUrl = "/paygate/alipay/";
                 break;
             default:
                 forwardWithError(bundle.getString("PAYMENT_SELECT_GATEWAY_INVALID_无效的选择"), "/public/error_page", request, response);
@@ -548,7 +557,7 @@ public class AccountServlet extends BaseServlet {
         icPosition = sb.toString();
         CompanyAccount companyAccount = null;
         try {
-            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValidStart,productionLicenseValid, field, bl, qc);
+            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValidStart, productionLicenseValid, field, bl, qc);
         } catch (AccountAlreadyExistException ex) {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
         } catch (IOException ex) {
@@ -888,16 +897,15 @@ public class AccountServlet extends BaseServlet {
      */
     private boolean loadPayMembership(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Account account = super.getUserFromSessionNoException(request);
-        if (!account.getStatus().equals(AccountStatus.ASSOCIATE_MEMBER)) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
         if (account instanceof UserAccount) {
             request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE);
         } else {
             request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE_COMPANY);
         }
-
+        if (!request.getSession().getAttribute(SESSION_ATTRIBUTE_USER_STATUS).equals(AccountStatus.ASSOCIATE_MEMBER)) {
+            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -1086,6 +1094,11 @@ public class AccountServlet extends BaseServlet {
         String jump = "/account/overview";
         if (account instanceof CompanyAccount || account instanceof SubCompanyAccount) {
             jump = "/account/overview_c";
+        }
+        if (account instanceof SubCompanyAccount) {
+            session.setAttribute(SESSION_ATTRIBUTE_USER_STATUS, ((SubCompanyAccount) account).getCompanyAccount().getStatus());
+        } else {
+            session.setAttribute(SESSION_ATTRIBUTE_USER_STATUS, account.getStatus());
         }
         String url = (String) request.getParameter("urlUserWantToAccess");
         System.out.println(url);

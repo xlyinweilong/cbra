@@ -12,9 +12,11 @@ import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.GatewayPayment;
 import com.cbra.entity.Offer;
+import com.cbra.entity.OrderCbraService;
 import com.cbra.entity.OrderCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
+import com.cbra.entity.SubCompanyAccount;
 import com.cbra.entity.UserAccount;
 import com.cbra.service.AccountService;
 import com.cbra.service.AdminService;
@@ -33,6 +35,7 @@ import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.exception.AccountNotExistException;
 import static com.cbra.web.BaseServlet.FORWARD_TO_ANOTHER_URL;
 import static com.cbra.web.BaseServlet.KEEP_GOING_WITH_ORIG_URL;
+import static com.cbra.web.BaseServlet.SESSION_ATTRIBUTE_USER_STATUS;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
@@ -207,7 +210,7 @@ public class GatewayServlet extends BaseServlet {
             itemBody = "筑誉建筑联合会";
         } else if (gatewayPayment.getOrderCbraService() != null) {
             itemSubject = "会员费";
-//            showUrl = "http://www.cbra.com";
+            showUrl = "http://www.cbra.com/account/membership_fee";
             itemBody = "筑誉建筑联合会";
         }
         request.setAttribute("showUrl", showUrl);
@@ -415,6 +418,9 @@ public class GatewayServlet extends BaseServlet {
         } else if (gatewayPayment.getOrderCbraService() != null) {
             String baseUrl = "/account/result/";
             url = baseUrl + gatewayPayment.getOrderCbraService().getSerialId();
+            //刷新用户状态
+            Account account = gatewayPayment.getOrderCbraService().getOwner();
+            request.getSession().setAttribute(SESSION_ATTRIBUTE_USER_STATUS, account.getStatus());
             redirect(url, request, response);
         }
         if (!gatewayType.equals(PaymentGatewayTypeEnum.ALIPAY)) {

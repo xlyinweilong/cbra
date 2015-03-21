@@ -77,6 +77,7 @@ public abstract class BaseServlet extends HttpServlet {
     public static final String COOKIE_TRANSFER_FORM_EMAIL = "COOKIE_TRANSFER_FORM_EMAIL";
     public static final String COOKIE_GATEWAYPAYMENT_ID = "COOKIE_GATEWAYPAYMENT_ID";
     public static final String SESSION_ATTRIBUTE_USER = "user";
+    public static final String SESSION_ATTRIBUTE_USER_STATUS = "userStatus";
     public static final String SESSION_ATTRIBUTE_ADMIN = "admin";
     public static final String SESSION_ATTRIBUTE_LOCALE = "SESSION_ATTRIBUTE_LOCALE";
     public static final String REQUEST_ATTRIBUTE_ACTION_ENUM = "ATTRIBUTE_ACTION_ENUM";

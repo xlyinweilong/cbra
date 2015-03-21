@@ -83,6 +83,17 @@ public class AccountService {
     }
 
     /**
+     * 获取到期的用户
+     *
+     * @return
+     */
+    public List<Account> findAccountExpireList() {
+        TypedQuery<Account> query = em.createQuery("SELECT a FROM Account a WHERE a.status = :status AND a.payDate < :nowDate and a.deleted = false", Account.class);
+        query.setParameter("nowDate", new Date()).setParameter("status", AccountStatus.MEMBER);
+        return query.getResultList();
+    }
+
+    /**
      * 通过公司账户获取子账户
      *
      * @param companyAccount

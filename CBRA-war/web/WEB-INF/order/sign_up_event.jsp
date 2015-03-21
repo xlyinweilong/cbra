@@ -22,7 +22,7 @@
                             <span>
                                 <input checked="checked" type="radio" id="danx">
                                 <c:choose>
-                                    <c:when test="${userType == 0}">非会员</c:when>
+                                    <c:when test="${userType == 0}">非会员(准会员)</c:when>
                                     <c:when test="${userType == 1}">个人会员</c:when>
                                     <c:when test="${userType == 2}">企业会员</c:when>
                                 </c:choose>

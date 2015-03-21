@@ -13,8 +13,6 @@
         <c:if test="${sessionScope.user.type == 'COMPANY'}">
         <li><a href="/account/agent" <c:if test="${param.page == '4'}">id="mc-nav"</c:if>>设置登录代表</a></li>
         </c:if>
-        <c:if test="${sessionScope.user.type != 'SUB_COMPANY'}">
         <li><a href="/account/modify_passwd" <c:if test="${param.page == '5'}">id="mc-nav"</c:if>>修改密码</a></li>
-        </c:if>
     <li><a href="/account/logout?a=logout">退出</a></li>
 </ul>

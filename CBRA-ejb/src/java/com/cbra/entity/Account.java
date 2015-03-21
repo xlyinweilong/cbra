@@ -64,6 +64,9 @@ public abstract class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     //状态
     private AccountStatus status = AccountStatus.PENDING_FOR_APPROVAL;
+    @Column(name = "pay_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date payDate;
     @Column(name = "passwd")
     //密码
     private String passwd;
@@ -123,7 +126,6 @@ public abstract class Account implements Serializable {
     //loginCode
     @Column(name = "login_code")
     private String loginCode;
-    
 
     public String getIcPositionString() {
         StringBuilder sb = new StringBuilder();
@@ -283,7 +285,7 @@ public abstract class Account implements Serializable {
     public String getHeadImageUrl() {
         return headImageUrl;
     }
-    
+
     public String getHeadImageUrlWithDefault() {
         return headImageUrl;
     }
@@ -336,6 +338,14 @@ public abstract class Account implements Serializable {
 
     public void setLoginCode(String loginCode) {
         this.loginCode = loginCode;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
     }
 
     @Override

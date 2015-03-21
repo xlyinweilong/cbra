@@ -69,6 +69,8 @@ public class CbraService {
     private EmailService emailService;
     @EJB
     private AdminService adminService;
+    @EJB
+    private AccountService accountService;
 
     // **********************************************************************
     // ************* PUBLIC METHODS *****************************************
@@ -322,8 +324,8 @@ public class CbraService {
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
 //        if (account == null) {
-            query = em.createQuery("SELECT message FROM Message message WHERE message.plateInformation = :plateInfo AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("plateInfo", plateInfo).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
+        query = em.createQuery("SELECT message FROM Message message WHERE message.plateInformation = :plateInfo AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
+        query.setParameter("plateInfo", plateInfo).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
 //        } else if (account instanceof CompanyAccount) {
 //            secretLevel.add(MessageSecretLevelEnum.PUBLIC);
 //            secretLevel.add(MessageSecretLevelEnum.ALL_USER);
@@ -359,8 +361,8 @@ public class CbraService {
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
 //        if (account == null) {
-            query = em.createQuery("SELECT message FROM Message message WHERE message.fundCollection = :fundCollection AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("fundCollection", fundCollection).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
+        query = em.createQuery("SELECT message FROM Message message WHERE message.fundCollection = :fundCollection AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
+        query.setParameter("fundCollection", fundCollection).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
 //        } else if (account instanceof CompanyAccount) {
 //            secretLevel.add(MessageSecretLevelEnum.PUBLIC);
 //            secretLevel.add(MessageSecretLevelEnum.ALL_USER);
@@ -393,8 +395,8 @@ public class CbraService {
         List<MessageSecretLevelEnum> secretLevel = new LinkedList<>();
         TypedQuery<Message> query;
 //        if (account == null) {
-            query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
-            query.setParameter("offer", offer).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
+        query = em.createQuery("SELECT message FROM Message message WHERE message.offer = :offer AND message.deleted = false AND message.secretLevel =:secretLevel ORDER BY message.createDate DESC", Message.class);
+        query.setParameter("offer", offer).setParameter("secretLevel", MessageSecretLevelEnum.PUBLIC);
 //        } else if (account instanceof CompanyAccount) {
 //            secretLevel.add(MessageSecretLevelEnum.PUBLIC);
 //            secretLevel.add(MessageSecretLevelEnum.ALL_USER);
@@ -421,7 +423,7 @@ public class CbraService {
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         em.merge(plateInfo);
     }
-    
+
     /**
      * 加载配置
      */
@@ -494,5 +496,9 @@ public class CbraService {
         Config.topEvent = this.getPlateInformationList4Index(PlateKeyEnum.TOP_EVENT, 2);
         Config.topTrain = this.getPlateInformationList4Index(PlateKeyEnum.TOP_TRAIN, 2);
         Config.topJoin = this.getPlateInformationList4Index(PlateKeyEnum.TOP_JOIN, 2);
+        for (Account account : accountService.findAccountExpireList()) {
+            account.setStatus(AccountStatus.ASSOCIATE_MEMBER);
+            em.merge(account);
+        }
     }
 }

@@ -29,31 +29,34 @@
                                     </table>
                                 </c:when>
                                 <c:otherwise>
-                                    <table width="760" border="0" cellspacing="1" cellpadding="0" class="biaog" >
-                                        <tr>
-                                            <td width="120" height="42" bgcolor="efefef" class="biaog-bt"><strong>活动主题</strong></td>
-                                            <td bgcolor="efefef" class="biaog-bt"><strong>活动日期</strong></td>
-                                            <td bgcolor="efefef" class="biaog-bt"><strong>地点</strong></td>
-                                            <td bgcolor="efefef" class="biaog-bt"><strong>费用</strong></td>
-                                            <td bgcolor="efefef" class="biaog-bt"><strong>报名状态</strong></td>
-                                            <td width="200" bgcolor="efefef" class="biaog-bt"><strong>活动状态</strong></td>
-                                        </tr>
-                                        <c:forEach var="order" items="${resultList}" varStatus="varStatus">
+                                    <form id="form1" action="/account/membership_fee" method="post">
+                                        <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
+                                        <table width="760" border="0" cellspacing="1" cellpadding="0" class="biaog" >
                                             <tr>
-                                                <td height="30" <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.fundCollection.title}</td>
-                                                <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><fmt:formatDate value='${order.fundCollection.eventBeginDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></td>
-                                                <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.fundCollection.eventLocation}</td>
-                                                <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.amount}</td>
-                                                <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><c:choose><c:when test="${order.status == 'SUCCESS'}">已支付</c:when><c:otherwise>已报名</c:otherwise></c:choose></td>
-                                                <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><span <c:choose><c:when test="${order.fundCollection.statusBoolean}">class="luz"</c:when><c:otherwise>class="chengz"</c:otherwise></c:choose>>${order.fundCollection.status}</span></td>
-                                                    </tr>
-                                        </c:forEach>
-                                    </table>
-                                    <jsp:include page="/WEB-INF/public/z_paging.jsp">
-                                        <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
-                                        <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
-                                        <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
-                                    </jsp:include>
+                                                <td width="120" height="42" bgcolor="efefef" class="biaog-bt"><strong>活动主题</strong></td>
+                                                <td bgcolor="efefef" class="biaog-bt"><strong>活动日期</strong></td>
+                                                <td bgcolor="efefef" class="biaog-bt"><strong>地点</strong></td>
+                                                <td bgcolor="efefef" class="biaog-bt"><strong>费用</strong></td>
+                                                <td bgcolor="efefef" class="biaog-bt"><strong>报名状态</strong></td>
+                                                <td width="200" bgcolor="efefef" class="biaog-bt"><strong>活动状态</strong></td>
+                                            </tr>
+                                            <c:forEach var="order" items="${resultList}" varStatus="varStatus">
+                                                <tr>
+                                                    <td height="30" <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.fundCollection.title}</td>
+                                                    <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><fmt:formatDate value='${order.fundCollection.eventBeginDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></td>
+                                                    <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.fundCollection.eventLocation}</td>
+                                                    <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt">${order.amount}</td>
+                                                    <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><c:choose><c:when test="${order.status == 'SUCCESS'}">已支付</c:when><c:otherwise>已报名</c:otherwise></c:choose></td>
+                                                    <td <c:choose><c:when test="${status.count%2==0}">bgcolor="#FFFFFF"</c:when><c:otherwise>bgcolor="#f8f8f8"</c:otherwise></c:choose> class="biaog-bt"><span <c:choose><c:when test="${order.fundCollection.statusBoolean}">class="luz"</c:when><c:otherwise>class="chengz"</c:otherwise></c:choose>>${order.fundCollection.status}</span></td>
+                                                        </tr>
+                                            </c:forEach>
+                                        </table>
+                                        <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                                            <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                                            <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                                            <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                                        </jsp:include>
+                                    </form>
                                 </c:otherwise>
                             </c:choose>
                         </td>
