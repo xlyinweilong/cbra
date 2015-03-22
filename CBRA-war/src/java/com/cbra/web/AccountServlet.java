@@ -719,7 +719,7 @@ public class AccountServlet extends BaseServlet {
         Account account = super.getUserFromSessionNoException(request);
         FileUploadObj fileUploadObj = null;
         String[] icPositions;
-        String address, zipCode, scaleCompany, workExperience, projectExperience, position, others, company, enName;
+        String address, zipCode, scaleCompany, workExperience, projectExperience, position, others, company, enName,email;
         Integer workingYear;
         FileUploadItem item;
         try {
@@ -727,6 +727,7 @@ public class AccountServlet extends BaseServlet {
             item = fileUploadObj.getFileField("headImage");
             icPositions = fileUploadObj.getFormFieldArray("icPositions");
             address = fileUploadObj.getFormField("address");
+            email = fileUploadObj.getFormField("email");
             zipCode = fileUploadObj.getFormField("zipCode");
             scaleCompany = fileUploadObj.getFormField("scaleCompany");
             workExperience = fileUploadObj.getFormField("workExperience");
@@ -774,7 +775,7 @@ public class AccountServlet extends BaseServlet {
                 setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            account = accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition);
+            account = accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition,email);
         }
         super.setSessionUser(request, account);
         setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);

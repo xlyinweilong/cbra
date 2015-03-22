@@ -51,7 +51,7 @@
                                         <td class="hyzl-1">手机</td>
                                         <td class="hyzl-2">${user.account}</td>
                                         <td class="hyzl-1">EMAIL</td>
-                                        <td class="hyzl-2">${user.email}</td>
+                                        <td class="hyzl-2"><input id="email" class="Input-1" type="text" value="${user.email}" name="email" style="height: 30px; width: 200px;" /></td>
                                     </tr>
                                     <tr>
                                         <td class="hyzl-1">行业从业时间</td>
@@ -120,7 +120,7 @@
                                     </tr>
                                     <tr>
                                         <td class="hyzl-1">企业邮箱</td>
-                                        <td class="hyzl-2">${user.email}</td>
+                                        <td class="hyzl-2"><input id="email" class="Input-1" type="text" value="${user.email}" name="email" style="height: 30px; width: 200px;" /></td>
                                         <td class="hyzl-1">创立时间</td>
                                         <td class="hyzl-2"><fmt:formatDate value="${user.companyCreateDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></td>
                                     </tr>
@@ -199,8 +199,8 @@
                 $("#submitFormButton").click(function () {
                     $("#successMessage").html("");
                     $("#wrongMessage").html("");
-                    if (CBRAValid.checkFormValueNull($("#enName"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入英文姓名", $("#enName"));
+                    if (CBRAValid.checkFormValueNull($("#email"))) {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入邮箱", $("#email"));
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#workingYear"))) {
@@ -231,11 +231,6 @@
                         CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入邮编", $("#zipCode"));
                         return;
                     }
-                    if ($("input[name=icPositions]:checked").length < 1) {
-                        CBRAMessage.showMessage($("#wrongMessage"), "请选择产业链位置");
-                        $("html,body").animate({scrollTop: 0});
-                        return;
-                    }
                     if ($.trim($("#workExperience").val()) == "") {
                         CBRAMessage.showMessage($("#wrongMessage"), "请输入工作履历");
                         return;
@@ -253,17 +248,16 @@
                 $("#submitFormButton").click(function () {
                     $("#successMessage").html("");
                     $("#wrongMessage").html("");
+                    if (CBRAValid.checkFormValueNull($("#email"))) {
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入邮箱", $("#email"));
+                        return;
+                    }
                     if (CBRAValid.checkFormValueNull($("#address"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入企业地址", $("#address"));
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#zipCode"))) {
                         CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入邮编", $("#zipCode"));
-                        return;
-                    }
-                    if ($("input[name=icPositions]:checked").length < 1) {
-                        CBRAMessage.showMessage($("#wrongMessage"), "请选择产业链位置");
-                        $("html,body").animate({scrollTop: 0});
                         return;
                     }
                     $("#infoform").submit();

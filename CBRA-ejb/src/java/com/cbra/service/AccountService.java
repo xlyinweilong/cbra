@@ -205,9 +205,10 @@ public class AccountService {
      * @param address
      * @param zipCode
      * @param icPosition
+     * @param email
      * @return
      */
-    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition) {
+    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition,String email) {
         UserAccount user = (UserAccount) this.findById(id);
         user.setCompany(company);
         user.setEnName(enName);
@@ -219,6 +220,7 @@ public class AccountService {
         user.setIcPosition(icPosition);
         user.setAddress(address);
         user.setZipCode(zipCode);
+        user.setEmail(email);
         //上传文件
         if (item != null) {
             String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE;
