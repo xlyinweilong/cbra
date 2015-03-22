@@ -212,6 +212,8 @@ public class GatewayService {
             if (orderCollection != null) {
                 orderCollection.setEndDate(new Date());
                 orderCollection.setStatus(OrderStatusEnum.SUCCESS);
+                orderService.createFundCollectionTicketByOrder(orderCollection);
+                orderService.sendOrderSuccessEmail(orderCollection);
             }
             if (orderCbraService != null) {
                 orderCbraService.setEndDate(new Date());
@@ -230,8 +232,12 @@ public class GatewayService {
                 orderCbraService.setStatus(OrderStatusEnum.FAILURE);
             }
         }
-        em.merge(orderCollection);
-        em.merge(orderCbraService);
+        if (orderCollection != null) {
+            em.merge(orderCollection);
+        }
+        if (orderCbraService != null) {
+            em.merge(orderCbraService);
+        }
         em.merge(gatewayPayment);
         return gatewayPayment;
     }
