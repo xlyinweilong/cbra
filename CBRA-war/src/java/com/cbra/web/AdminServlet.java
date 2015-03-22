@@ -894,6 +894,7 @@ public class AdminServlet extends BaseServlet {
                 if (id != null) {
                     pi = adminService.findPlateInformationById(id);
                 }
+                String navUrl = fileUploadObj.getFormField("navUrl");
                 String content = fileUploadObj.getFormField("content");
                 String title = fileUploadObj.getFormField("title");
                 String introduction = fileUploadObj.getFormField("introduction");
@@ -905,7 +906,7 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl,fileUploadItem);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())

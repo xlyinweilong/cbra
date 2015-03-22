@@ -20,7 +20,7 @@
                 <div class="title"><span><a id="title-span">介绍</a></span></div>
                 <div class="jsjs">
                     <div class="img">
-                        <img style="width: 140px; height: 100px; margin-left: 35px;" src="<c:if test="${not empty plateInfo.picUrl}">${plateInfo.picUrl}</c:if><c:if test="${empty plateInfo.picUrl}">/ls/ls-123.jpg</c:if>">
+                        <img style="width: 140px; margin-left: 35px;" src="<c:if test="${not empty plateInfo.picUrl}">${plateInfo.picUrl}</c:if><c:if test="${empty plateInfo.picUrl}">/ls/ls-123.jpg</c:if>">
                     </div>
                     <div class="detailed"><h1>${plateInfo.title}</h1>
                         ${plateInfo.plateInformationContent.content}

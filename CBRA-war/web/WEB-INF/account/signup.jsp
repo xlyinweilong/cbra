@@ -5,6 +5,53 @@
 <html>
     <head>
         <jsp:include page="/WEB-INF/public/z_header.jsp"/>
+        <style>
+            .new-contentarea {
+                width: 100%;
+                overflow:hidden;
+                margin: 0 auto;
+                position:relative;
+            }
+            .new-contentarea label {
+                width:100%;
+                height:100%;
+                display:block;
+            }
+            .new-contentarea input[type=file] {
+                width:98px;
+                height:26px;
+                background:#333;
+                margin: 0 auto;
+                position:absolute;
+                right:50%;
+                margin-right:-94px;
+                top:0;
+                right/*\**/:0px\9;
+                margin-right/*\**/:0px\9;
+                width/*\**/:10px\9;
+                opacity:0;
+                filter:alpha(opacity=0);
+                z-index:2;
+            }
+            a.upload-img{
+                width:98px;
+                display: inline-block;
+                margin-bottom: 10px;
+                height:26px;
+                line-height: 26px;
+                font-size: 20px;
+                color: #FFFFFF;
+                background-color: #f38e81;
+                border-radius: 3px;
+                text-decoration:none;
+                cursor:pointer;
+            }
+            a.upload-img:hover{
+                background-color: #ec7e70;
+            }
+
+            .tc{text-align:center;}
+        </style>
     </head>
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp"></jsp:include>
@@ -31,7 +78,8 @@
                             </td>
                             <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" name="account" id="account" class="Input-1" /><br/><br/><span style="font-size:11px">作为账户登录，请使用有效号码</span></td>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>EMAIL</td>
-                            <td style="line-height:10px;height: 63px;"><input type="text" name="email" id="email" class="Input-1" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
+                            <td style="line-height:10px;height: 63px;">
+                                <input type="text" name="email" id="email" class="Input-1" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>从业年限</td>
@@ -99,6 +147,10 @@
                                             支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_front_img" src="" width="300" height="190" style="display: none" />
+<!--                                    <div class="new-contentarea tc">
+                                        <a href="javascript:void(0)" class="upload-img"><label for="upload-file">上传图像</label></a>
+                                        <input type="file" class="" name="upload-file" id="upload-file" />
+                                    </div>-->
                                     <input id="reg_front_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
                                     <p id="reg_front_result"></p>
                                 </div>

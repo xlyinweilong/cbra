@@ -23,7 +23,7 @@
                     <ul>
                         <c:forEach var="plateInformation" items="${resultList}">
                             <li>
-                                <div class="img"><a href="/team/team_details?id=${plateInformation.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty plateInformation.picUrl}">${plateInformation.picUrl}</c:if><c:if test="${empty plateInformation.picUrl}">/ls/ls-123.jpg</c:if>"><p>${plateInformation.title}</p></a></div>
+                                <div class="img"><a href="/team/team_details?id=${plateInformation.id}" target="_blank"><img style="width: 140px;" src="<c:if test="${not empty plateInformation.picUrl}">${plateInformation.picUrl}</c:if><c:if test="${empty plateInformation.picUrl}">/ls/ls-123.jpg</c:if>"><p>${plateInformation.title}</p></a></div>
                                 <div class="con"><a href="/team/team_details?id=${plateInformation.id}" target="_blank">
                                         <p class="p1">${plateInformation.title}</p>
                                         <p class="p2">${plateInformation.introduction}</p></a>

@@ -1304,7 +1304,7 @@ public class AdminService {
      * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, FileUploadItem item) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum,String navUrl, FileUploadItem item) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -1314,6 +1314,7 @@ public class AdminService {
         plateInfo.setLanguage(languageTypeEnum);
         plateInfo.setPushDate(pushDate);
         plateInfo.setTitle(title);
+        plateInfo.setNavUrl(navUrl);
         plateInfo.setIntroduction(introduction);
         if (item != null) {
             File saveDirFile = new File(Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_PLATE);

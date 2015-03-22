@@ -76,6 +76,8 @@ public class PlateInformation implements Serializable {
     @Size(max = 65535)
     @Column(name = "introduction")
     private String introduction;
+    @Column(name = "link_url")
+    private String linkUrl;
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plate plate = null;
@@ -108,6 +110,14 @@ public class PlateInformation implements Serializable {
 
     public void setVisitCount(long visitCount) {
         this.visitCount = visitCount;
+    }
+
+    public String getLinkUrl() {
+        return linkUrl;
+    }
+
+    public void setLinkUrl(String linkUrl) {
+        this.linkUrl = linkUrl;
     }
 
     public boolean isIsTop() {
