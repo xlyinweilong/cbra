@@ -187,7 +187,6 @@ public class GatewayService {
             order.setStatus(OrderStatusEnum.SUCCESS);
             em.merge(order);
             //生成票
-            orderService.createFundCollectionTicketByOrder(order);
             orderService.sendOrderSuccessEmail(order);
         } else if (bankTransfer.getOrderCbraService() != null) {
             OrderCbraService order = bankTransfer.getOrderCbraService();
@@ -212,7 +211,6 @@ public class GatewayService {
             if (orderCollection != null) {
                 orderCollection.setEndDate(new Date());
                 orderCollection.setStatus(OrderStatusEnum.SUCCESS);
-                orderService.createFundCollectionTicketByOrder(orderCollection);
                 orderService.sendOrderSuccessEmail(orderCollection);
             }
             if (orderCbraService != null) {

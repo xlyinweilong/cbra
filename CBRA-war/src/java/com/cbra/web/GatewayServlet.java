@@ -231,7 +231,7 @@ public class GatewayServlet extends BaseServlet {
         String showUrl = "http://www.cbra.com";
         if (gatewayPayment.getOrderCollection() != null) {
             FundCollection fundCollection = gatewayPayment.getOrderCollection().getFundCollection();
-            itemSubject = fundCollection.getTitle();
+            itemSubject = Tools.getEscapedHtml(fundCollection.getTitle());
 //            showUrl = "http://www.cbra.com/" + "/" + fundCollection.getWebId();
             itemBody = "筑誉建筑联合会";
         } else if (gatewayPayment.getOrderCbraService() != null) {
@@ -248,7 +248,7 @@ public class GatewayServlet extends BaseServlet {
     private boolean loadAlipayReturn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         GatewayPayment setPaymentResult = null;
         //**********************************************************************************
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         Map requestParams = request.getParameterMap();
         for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
             String name = (String) iter.next();
@@ -263,20 +263,20 @@ public class GatewayServlet extends BaseServlet {
             params.put(name, valueStr);
         }
 
-        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
         //商户订单号
-        String out_trade_no = request.getParameter("out_trade_no");
+        String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
 
         //支付宝交易号
-        String trade_no = request.getParameter("trade_no");
+        String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
 
         //交易状态
-        String trade_status = request.getParameter("trade_status");
+        String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
 
-        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
         //计算得出通知验证结果
         boolean verify_result = AlipayNotify.verify(params);
-
+        System.out.println(out_trade_no);
         if (verify_result) {//验证成功
             //////////////////////////////////////////////////////////////////////////////////////////
             //请在这里加上商户的业务逻辑程序代码

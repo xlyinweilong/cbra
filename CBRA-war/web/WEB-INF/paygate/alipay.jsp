@@ -85,6 +85,7 @@
             sParaTemp.put("body", body);
             sParaTemp.put("show_url", show_url);
             sParaTemp.put("anti_phishing_key", anti_phishing_key);
+            sParaTemp.put("exter_invoke_ip", exter_invoke_ip);
             //建立请求
             String sHtmlText = AlipaySubmit.buildRequest(sParaTemp, "get", "确认");
             out.println(sHtmlText);

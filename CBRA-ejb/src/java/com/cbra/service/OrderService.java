@@ -335,6 +335,7 @@ public class OrderService {
      *
      * @param order
      */
+    @Asynchronous
     public void createFundCollectionTicketByOrder(OrderCollection order) {
         List<Attendee> attendeeList = this.findAttendeeByOrder(order.getId());
         FundCollection fundCollection = order.getFundCollection();
@@ -392,6 +393,7 @@ public class OrderService {
      * @param order
      */
     public void sendOrderSuccessEmail(OrderCollection order) {
+        this.createFundCollectionTicketByOrder(order);
         String language = null;
         String toEmail = null;
         String name = null;
