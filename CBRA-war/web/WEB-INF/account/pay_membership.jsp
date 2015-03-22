@@ -31,13 +31,13 @@
                             </div>
                             <div class="xzyh-fs">
                                 <ul>
-                                    <li><a href="javascript:void(0);" data="bank" id="xzyh-fs-b" onclick="changeTable(this, 'bank');">储蓄卡</a></li>
-                                    <li><a href="javascript:void(0);">信用卡</a></li>
-                                    <li><a href="javascript:void(0);" data="platform" onclick="changeTable(this, 'platform');">支付平台</a></li>
+<!--                                    <li><a href="javascript:void(0);" data="bank" id="xzyh-fs-b" onclick="changeTable(this, 'bank');">储蓄卡</a></li>
+                                    <li><a href="javascript:void(0);">信用卡</a></li>-->
+                                    <li><a href="javascript:void(0);" data="platform" id="xzyh-fs-b" onclick="changeTable(this, 'platform');">支付平台</a></li>
                                     <li><a href="javascript:void(0);" data="bank_transfer" onclick="changeTable(this, 'bank_transfer');">银行转账</a></li>
                                 </ul>
                             </div>
-                            <table id="bank_table" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
+                            <table id="bank_table" style="display: none" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                                 <tr>
                                     <td width="190" height="50"><input type="radio" class="xuanz"><img src="/images/yh/yh-1.jpg"></td>
                                     <td width="190"><input type="radio" class="xuanz"><img src="/images/yh/yh-2.jpg"></td>
@@ -51,7 +51,7 @@
                                     <td width="190"><input type="radio" class="xuanz"><img src="/images/yh/yh-4.jpg"></td>
                                 </tr>
                             </table>
-                            <table id="platform_table" style="display: none" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
+                            <table id="platform_table"  width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                                 <tr>
                                     <td width="190" height="50"><input type="radio" id="zhifubao_radio" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
                                     <td width="190" height="50"></td>
