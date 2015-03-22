@@ -68,7 +68,7 @@
                                     <td width="190" height="50">2.您可以从任何银行进行转账。</td>
                                 </tr>
                             </table>
-                            <div class="xiayy"><input type="button" class="xiayy-an" value="下一步" onclick="doPanyment()"></div>
+                            <div class="xiayy"><input type="button" class="xiayy-an" value="下一步" onclick="doPanyment()" style="margin-left: 600px;"></div>
                         </td>
                     </tr>
                 </table>

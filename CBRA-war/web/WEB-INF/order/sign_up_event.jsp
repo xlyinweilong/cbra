@@ -61,7 +61,7 @@
                                 </h1>
                                                     <p><strong>费用说明：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
                         </div>
-                        <div class="xiayy"><input type="button" id="next_button" class="xiayy-an" value="提交申请"></div>
+                        <div class="xiayy"><input type="button" id="next_button" class="xiayy-an" value="提交申请" style="margin-left: 600px;"></div>
                 </div>
             </form>
             <div class="news-fr">
