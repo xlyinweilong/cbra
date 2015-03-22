@@ -154,7 +154,7 @@ public class MobileServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST
+        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT;
 
     }
 
@@ -178,6 +178,12 @@ public class MobileServlet extends BaseServlet {
                 return newsList(request, response);
             case INFO_INDEX:
                 return infoIndex(request, response);
+            case RESOURCE:
+                return loadResource(request, response);
+            case OFFER:
+                return loadOffer(request, response);
+            case FRONT:
+                return loadFront(request, response);
             default:
                 throw new BadPageException();
         }
@@ -471,6 +477,89 @@ public class MobileServlet extends BaseServlet {
         }
         submap.put("frontList", newsList2);
         map.put("data", submap);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean loadResource(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Integer type = super.getRequestInteger(request, "type");
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map map = new HashMap();
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        Plate plate = null;
+        if (type == 1) {
+            plate = mobileService.findPlateByPage("purchase");
+        } else if (type == 2) {
+            plate = mobileService.findPlateByPage("overseas");
+        } else if (type == 3) {
+            plate = mobileService.findPlateByPage("building");
+        } else if (type == 4) {
+            plate = mobileService.findPlateByPage("pension");
+        }
+        searchMap.put("plateId", plate.getId());
+        ResultList<PlateInformation> list = adminService.findPlateInformationList(searchMap, page, maxcount, null, true);
+        for (PlateInformation pif : list) {
+            pif.setPlateInformationContent(null);
+        }
+        map.put("data", list);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean loadOffer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map map = new HashMap();
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        List<Long> ids = new ArrayList<>();
+        ids.add(mobileService.findPlateByPage("three_party_offer").getId());
+        ids.add(mobileService.findPlateByPage("our_offer").getId());
+        searchMap.put("ids", ids);
+        ResultList<Offer> list = adminService.findOfferList(searchMap, page, maxcount);
+        for (Offer offer : list) {
+            offer.setCompetence(null);
+            offer.setDescription(null);
+            offer.setDuty(null);
+        }
+        map.put("data", list);
+        return super.outputObjectAjax(map, response);
+    }
+
+    private boolean loadFront(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Integer type = super.getRequestInteger(request, "type");
+        int page = super.getRequestInteger(request, "page");
+        int maxcount = super.getRequestInteger(request, "maxcount");
+        Map map = new HashMap();
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        Plate plate = null;
+        List<Long> ids = new ArrayList<>();
+        if (type == 1) {
+            ids.add(mobileService.findPlateByPage("material").getId());
+            ids.add(mobileService.findPlateByPage("industrialization").getId());
+            ids.add(mobileService.findPlateByPage("green").getId());
+            ids.add(mobileService.findPlateByPage("bim").getId());
+        } else if (type == 2) {
+            ids.add(mobileService.findPlateByPage("material").getId());
+        } else if (type == 3) {
+            ids.add(mobileService.findPlateByPage("industrialization").getId());
+        } else if (type == 4) {
+            ids.add(mobileService.findPlateByPage("green").getId());
+        } else if (type == 5) {
+            ids.add(mobileService.findPlateByPage("bim").getId());
+        }
+        searchMap.put("ids", ids);
+        ResultList<PlateInformation> list = adminService.findPlateInformationList(searchMap, page, maxcount);
+        for (PlateInformation pif : list) {
+            pif.setPlateInformationContent(null);
+            pif.setIntroduction(null);
+            pif.setPlate(null);
+        }
+        map.put("data", list);
         return super.outputObjectAjax(map, response);
     }
 

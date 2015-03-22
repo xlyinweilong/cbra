@@ -1010,6 +1010,26 @@ public class AdminService {
         return resultList;
     }
 
+    public ResultList<Offer> findOfferList(Map<String, Object> map, int pageIndex, int maxPerPage) {
+        ResultList<Offer> resultList = new ResultList<>();
+        String hql = "SELECT COUNT(c) FROM Offer c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        TypedQuery<Long> countQuery = em.createQuery(hql, Long.class);
+        countQuery.setParameter("ids", map.get("ids"));
+        Long totalCount = countQuery.getSingleResult();
+        resultList.setTotalCount(totalCount.intValue());
+        hql = "SELECT c FROM Offer c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        TypedQuery<Offer> query = em.createQuery(hql, Offer.class);
+        query.setParameter("ids", map.get("ids"));
+        int startIndex = (pageIndex - 1) * maxPerPage;
+        query.setFirstResult(startIndex);
+        query.setMaxResults(maxPerPage);
+        resultList.setPageIndex(pageIndex);
+        resultList.setStartIndex(startIndex);
+        resultList.setMaxPerPage(maxPerPage);
+        resultList.addAll(query.getResultList());
+        return resultList;
+    }
+
     /**
      * 获取活动列表
      *
@@ -1304,7 +1324,7 @@ public class AdminService {
      * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum,String navUrl, FileUploadItem item) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, String navUrl, FileUploadItem item) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
