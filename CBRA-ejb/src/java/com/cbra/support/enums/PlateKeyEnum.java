@@ -21,6 +21,7 @@ public enum PlateKeyEnum {
     HOME_ABOUT,//首页关于
     HOME_STYLE,//首页会员风采
     HOME_EXPERT,//首页专家
+    HOME_NEWS,//首页新闻
     TOP_INTO,//走进
     TOP_EVENT,//讲座
     TOP_TRAIN,//培训

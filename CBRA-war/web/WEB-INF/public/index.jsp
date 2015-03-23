@@ -278,7 +278,7 @@
                         <div class="Title-3"><a href="/news/news_list">更多</a></div>
                     </div>
                     <div class="Content">
-                        <div class="img"><img src="/ls/ls-1.jpg"></div>
+                        <div class="img"><img src="<%=Config.homeNews.getPicUrl()%>"></div>
                         <ul>
                             <c:forEach var="news" items="<%=Config.newsList5%>">
                                 <li><a href="/news/details?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>

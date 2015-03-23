@@ -76,6 +76,7 @@ public class Config {
 
     public static List<PlateInformation> homeExpert = null;
 
+    public static PlateInformation homeNews = null;
     //top持久信息
     public static PlateInformation topInto = null;
 

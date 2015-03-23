@@ -466,6 +466,13 @@ public class CbraService {
             Config.homeAd = new PlateInformation();
             Config.homeAd.setPicUrl("/ls/ls-2.jpg");
         }
+         inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_NEWS, 1);
+        if (inforList != null && !inforList.isEmpty()) {
+            Config.homeNews = inforList.get(0);
+        } else {
+            Config.homeNews = new PlateInformation();
+            Config.homeNews.setPicUrl("/ls/ls-1.jpg");
+        }
         inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_ABOUT, 1);
         if (inforList != null && !inforList.isEmpty()) {
             Config.homeAbout = inforList.get(0);
