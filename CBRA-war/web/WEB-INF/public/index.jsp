@@ -278,7 +278,7 @@
                         <div class="Title-3"><a href="/news/news_list">更多</a></div>
                     </div>
                     <div class="Content">
-                        <div class="img"><img src="<%=Config.homeNews.getPicUrl()%>"></div>
+                        <div class="img"><img src="<%=Config.homeNews.getPicUrl()%>"  style="width: 250px;"></div>
                         <ul>
                             <c:forEach var="news" items="<%=Config.newsList5%>">
                                 <li><a href="/news/details?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
@@ -363,7 +363,7 @@
             <!--//--><![CDATA[//><!--
         //图片滚动列表 5icool.org
             var Speed = 8; //速度(毫秒)
-            var Space = 5; //每次移动(px)
+            var Space = 2; //每次移动(px)
             var PageWidth = 1040; //翻页宽度
             var fill = 0; //整体移位
             var MoveLock = false;
