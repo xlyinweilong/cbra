@@ -36,7 +36,7 @@
                                         <td><input id="newpasswd" name="newpasswd" type="password" class="mmmmm"/></td>
                                     </tr>
                                     <tr>
-                                        <td width="120" height="40">确认原密码</td>
+                                        <td width="120" height="40">确认密码</td>
                                         <td><input id="repasswd" name="repasswd" type="password" class="mmmmm"/></td>
                                     </tr>
                                 </table>
@@ -67,7 +67,7 @@
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#repasswd"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入确认原密码", $("#repasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入确认密码", $("#repasswd"));
                         return;
                     }
                     if ($("#repasswd").val() !== $("#newpasswd").val()) {
