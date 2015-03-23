@@ -362,7 +362,7 @@
         <script language="javascript" type="text/javascript">
             <!--//--><![CDATA[//><!--
         //图片滚动列表 5icool.org
-            var Speed = 5; //速度(毫秒)
+            var Speed = 8; //速度(毫秒)
             var Space = 5; //每次移动(px)
             var PageWidth = 1040; //翻页宽度
             var fill = 0; //整体移位

@@ -188,7 +188,7 @@
                         <li><a href="/team/director">理事成员</a></li>
                         <%--<li><a href="/team/committee">委员会</a></li>--%>
                         <li><a href="/team/branch">各地分会</a></li>
-                        <li><a href="/team/expert">领域专家</a></li>
+                        <li><a href="/team/expert">专家顾问</a></li>
                         <li><a href="/team/style">部分会员风采</a></li>
                     </ul>
                     <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
