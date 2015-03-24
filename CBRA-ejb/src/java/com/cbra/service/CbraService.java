@@ -166,7 +166,7 @@ public class CbraService {
      * @return
      */
     public List<FundCollection> getFundCollectionList4Web(Plate plate, int maxResults) {
-        TypedQuery<FundCollection> query = em.createQuery("SELECT fundCollection FROM FundCollection fundCollection WHERE fundCollection.plate = :plate AND fundCollection.deleted = false ORDER BY fundCollection.statusBeginDate DESC", FundCollection.class);
+        TypedQuery<FundCollection> query = em.createQuery("SELECT f FROM FundCollection f WHERE f.plate = :plate AND f.deleted = false ORDER BY f.statusBeginDate DESC", FundCollection.class);
         query.setParameter("plate", plate);
         query.setMaxResults(maxResults);
         return query.getResultList();

@@ -154,7 +154,6 @@ public class OrderService {
             em.persist(attendee);
             account.setEnrolledCount(account.getEnrolledCount() + 1);
             em.merge(account);
-            em.flush();
             oc.setAmount(fundCollection.getUserPrice());
         } else if (account instanceof CompanyAccount || account instanceof SubCompanyAccount) {
             if (account instanceof SubCompanyAccount) {
@@ -162,7 +161,6 @@ public class OrderService {
             }
             account.setEnrolledCount(account.getEnrolledCount() + 1);
             em.merge(account);
-            em.flush();
             if (attendeeeObjs != null) {
                 for (Map.Entry<String, Object> itemEntry : attendeeeObjs.entrySet()) {
                     Attendee attendee = (Attendee) itemEntry.getValue();

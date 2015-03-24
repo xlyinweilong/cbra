@@ -189,7 +189,7 @@ public class EventServlet extends BaseServlet {
             if ("event".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
             }
-            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+            if ("partners".equalsIgnoreCase(plate.getPage())) {
                 request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
             }
         }
@@ -223,7 +223,7 @@ public class EventServlet extends BaseServlet {
             if ("event".equalsIgnoreCase(plate.getPage())) {
                 platePage = plate;
             }
-            if ("pariners".equalsIgnoreCase(plate.getPage())) {
+            if ("partners".equalsIgnoreCase(plate.getPage())) {
                 request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
             }
         }

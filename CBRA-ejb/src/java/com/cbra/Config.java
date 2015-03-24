@@ -23,7 +23,7 @@ public class Config {
     }
     public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("800");
 
-    public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("1000");
+    public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("10000");
 
     public static final String PAYGATE_ALIPAY_NOTIFY_URL = "http://www.cbra.com/paygate/alipay_notify";
 
