@@ -364,7 +364,7 @@
         //图片滚动列表 5icool.org
             var Speed = 8; //速度(毫秒)
             var Space = 2; //每次移动(px)
-            var PageWidth = 1040; //翻页宽度
+            var PageWidth = 260; //翻页宽度
             var fill = 0; //整体移位
             var MoveLock = false;
             var MoveTimeObj;

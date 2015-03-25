@@ -154,7 +154,11 @@ public class OrderService {
             em.persist(attendee);
             account.setEnrolledCount(account.getEnrolledCount() + 1);
             em.merge(account);
-            oc.setAmount(fundCollection.getUserPrice());
+            if (user.getStatus().equals(AccountStatus.MEMBER)) {
+                oc.setAmount(fundCollection.getUserPrice());
+            } else {
+                oc.setAmount(fundCollection.getTouristPrice());
+            }
         } else if (account instanceof CompanyAccount || account instanceof SubCompanyAccount) {
             if (account instanceof SubCompanyAccount) {
                 account = ((SubCompanyAccount) account).getCompanyAccount();
@@ -171,12 +175,17 @@ public class OrderService {
                     attendee.setOrderCollection(oc);
                     em.persist(attendee);
                 }
-                int size = attendeeeObjs.keySet().size();
-                if (fundCollection.getEachCompanyFreeCount() - size >= 0) {
-                    oc.setAmount(BigDecimal.ZERO);
+                if (account.getStatus().equals(AccountStatus.MEMBER)) {
+                    int size = attendeeeObjs.keySet().size();
+                    if (fundCollection.getEachCompanyFreeCount() - size >= 0) {
+                        oc.setAmount(BigDecimal.ZERO);
+                    } else {
+                        int payCount = size - fundCollection.getEachCompanyFreeCount();
+                        oc.setAmount(fundCollection.getCompanyPrice().multiply(new BigDecimal(payCount)));
+                    }
+                    oc.setAmount(fundCollection.getUserPrice());
                 } else {
-                    int payCount = size - fundCollection.getEachCompanyFreeCount();
-                    oc.setAmount(fundCollection.getCompanyPrice().multiply(new BigDecimal(payCount)));
+                    oc.setAmount(fundCollection.getTouristPrice());
                 }
             }
         } else {
