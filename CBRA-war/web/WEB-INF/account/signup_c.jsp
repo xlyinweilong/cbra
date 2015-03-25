@@ -5,6 +5,53 @@
 <html>
     <head>
         <jsp:include page="/WEB-INF/public/z_header.jsp"/>
+        <style>
+            .new-contentarea {
+                width: 100%;
+                overflow:hidden;
+                margin: 0 auto;
+                position:relative;
+            }
+            .new-contentarea label {
+                width:100%;
+                height:100%;
+                display:block;
+            }
+            .new-contentarea input[type=file] {
+                width:98px;
+                height:26px;
+                background:#333;
+                margin: 0 auto;
+                position:absolute;
+                right:50%;
+                margin-right:-94px;
+                top:0;
+                right/*\**/:0px\9;
+                margin-right/*\**/:0px\9;
+                width/*\**/:10px\9;
+                opacity:0;
+                filter:alpha(opacity=0);
+                z-index:2;
+            }
+            a.upload-img{
+                width:98px;
+                display: inline-block;
+                margin-bottom: 10px;
+                height:26px;
+                line-height: 26px;
+                font-size: 13px;
+                color: #FFFFFF;
+                background-color: #bbbbbb;
+                border-radius: 3px;
+                text-decoration:none;
+                cursor:pointer;
+            }
+            a.upload-img:hover{
+                background-color: #52853d;
+            }
+
+            .tc{text-align:center;}
+        </style>
     </head>
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
@@ -150,11 +197,13 @@
                                         <p>彩色加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_bl_img" src="" width="300" height="190" style="display: none" />
-                                    <input id="reg_bl_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <div class="new-contentarea tc">
+                                        <a href="javascript:void(0)" class="upload-img"><label for="reg_bl">选择图片路径</label></a>
+                                        <input id="reg_bl" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_bl_result').innerHTML = this.value" />
+                                    </div>
                                     <p id="reg_bl_result"></p>
                                 </div>
                                 <input id="reg_bl_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
-                                <input style="display: none" id="reg_bl" type="file" name="reg_bl_file" onchange="document.getElementById('reg_bl_result').innerHTML = this.value" />
                             </td>
                         </form>
                         <form id="reg_qc_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=qc">
@@ -165,11 +214,13 @@
                                         <p>上传企业资质证书</p><p>加多个请打包成文件<br>上传图片大小不得超过20MB</p>
                                     </div>
                                     <img id="reg_qc_img" src="" width="300" height="190" style="display: none" />
-                                    <input id="reg_qc_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <div class="new-contentarea tc">
+                                        <a href="javascript:void(0)" class="upload-img"><label for="reg_qc">选择图片路径</label></a>
+                                        <input id="reg_qc" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_qc_result').innerHTML = this.value" />
+                                    </div>
                                     <p id="reg_qc_result"></p>
                                 </div>
                                 <input id="reg_qc_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传文件">
-                                <input style="display: none" id="reg_qc" type="file" name="reg_qc_file" onchange="document.getElementById('reg_qc_result').innerHTML = this.value" />
                             </td>
                         </form>
                         </tr>
@@ -316,12 +367,6 @@
                 $("#step3_before").click(function () {
                     $("#step3").hide();
                     $("#step2").show();
-                });
-                $("#reg_bl_button").click(function () {
-                    $("#reg_bl").click();
-                });
-                $("#reg_qc_button").click(function () {
-                    $("#reg_qc").click();
                 });
                 $("#reg_bl_submit").click(function () {
                     $("#signup_msg_3").html("");

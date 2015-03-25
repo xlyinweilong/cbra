@@ -39,15 +39,15 @@
                 margin-bottom: 10px;
                 height:26px;
                 line-height: 26px;
-                font-size: 20px;
+                font-size: 13px;
                 color: #FFFFFF;
-                background-color: #f38e81;
+                background-color: #bbbbbb;
                 border-radius: 3px;
                 text-decoration:none;
                 cursor:pointer;
             }
             a.upload-img:hover{
-                background-color: #ec7e70;
+                background-color: #52853d;
             }
 
             .tc{text-align:center;}
@@ -147,15 +147,13 @@
                                             支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_front_img" src="" width="300" height="190" style="display: none" />
-<!--                                    <div class="new-contentarea tc">
-                                        <a href="javascript:void(0)" class="upload-img"><label for="upload-file">上传图像</label></a>
-                                        <input type="file" class="" name="upload-file" id="upload-file" />
-                                    </div>-->
-                                    <input id="reg_front_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <div class="new-contentarea tc">
+                                        <a href="javascript:void(0)" class="upload-img"><label for="reg_front">选择图片路径</label></a>
+                                        <input id="reg_front" type="file" class="" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value" />
+                                    </div>
                                     <p id="reg_front_result"></p>
                                 </div>
                                 <input id="reg_front_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
-                                <input style="display: none" id="reg_front" type="file" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value" />
                             </td>
                         </form>
                         <form id="reg_back_form" method="post" enctype="multipart/form-data" target="iframe1" action="/account/z_iframe_upload_pc?type=back">
@@ -167,11 +165,13 @@
                                             支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_back_img" src="" width="300" height="190" style="display: none" />
-                                    <input id="reg_back_button" type="button" style=" width:98px; height:26px; background:#bbbbbb; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="选择图片路径">
+                                    <div class="new-contentarea tc">
+                                        <a href="javascript:void(0)" class="upload-img"><label for="reg_back">选择图片路径</label></a>
+                                        <input id="reg_back" type="file" class="" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value" />
+                                    </div>
                                     <p id="reg_back_result"></p>
                                 </div>
                                 <input id="reg_back_submit" type="button" style=" width:110px; height:32px; background:#52853d; color:#FFF; border:0; border-radius:5px; cursor:pointer;" value="上传图片">
-                                <input style="display: none" id="reg_back" type="file" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value" />
                             </td>
                         </form>
                         </tr>
@@ -348,17 +348,11 @@
                     $("#step4").hide();
                     $("#step3").show();
                 });
-                $("#reg_front_button").click(function () {
-                    $("#reg_front").click();
-                });
-                $("#reg_back_button").click(function () {
-                    $("#reg_back").click();
-                });
                 $("#reg_front_submit").click(function () {
                     $("#signup_msg_3").html("");
                     $("#signup_msg_2").html("");
                     if ($("#reg_front").val() == '') {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_front"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请选择图片路径", $("#reg_back"));
                         return;
                     }
                     $("#reg_front_form").submit();
