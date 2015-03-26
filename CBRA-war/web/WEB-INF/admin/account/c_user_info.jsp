@@ -125,7 +125,10 @@
                                 </ul>   
                             </div>
                             <div class="infoleft" style="width:330px;height:220px;">
-                                <div class="listtitle"><a href="${companyAccount.qualificationCertificateUrl}" class="more1" target="_blank">下载文件</a>资质证书打包文件</div>    
+                                <div class="listtitle"><a href="/admin/download/${companyAccount.qualificationCertificateUrl}" class="more1" target="_blank">下载文件</a>资质证书打包文件</div>   
+                                <ul class="newlist">
+                                    <img align="center" width="300px" height="150px" src="${pageContent.request.contextPath}${companyAccount.qualificationCertificateUrl}" />
+                                </ul>
                             </div>
                     </li>
                     <li style="margin-top: 15px;">
@@ -135,7 +138,6 @@
                         <textarea name="field" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${companyAccount.field}</textarea>
                     </li>
                 </ul>
-                <c:if test="${companyAccount.status == 'PENDING_FOR_APPROVAL'}">
                     <ul class="forminfo">
                         <li>
                             <labe style="height:20px;">&nbsp;</label>
@@ -153,7 +155,6 @@
                             <i></i>
                         </li>
                     </ul>
-                </c:if>
                 <li><label>&nbsp;</label>
                     <input id="saveBtn" name="saveBtn" type="button" class="btn" value="修改"/>
                     <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

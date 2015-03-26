@@ -135,7 +135,6 @@
                         <textarea name="userAccount.projectExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
                     </li>
                 </ul>
-                <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
                     <ul class="forminfo">
                         <li>
                             <labe style="height:20px;">&nbsp;</label>
@@ -153,7 +152,6 @@
                             <i></i>
                         </li>
                     </ul>
-                </c:if>
                 <li><label>&nbsp;</label>
                     <input id="saveBtn" name="saveBtn" type="button" class="btn" value="修改"/>
                     <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

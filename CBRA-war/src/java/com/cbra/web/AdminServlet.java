@@ -7,6 +7,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.Attendee;
 import com.cbra.entity.CompanyAccount;
@@ -281,7 +282,8 @@ public class AdminServlet extends BaseServlet {
         O_USER_LIST, O_USER_INFO,
         ORDER_LIST, ORDER_INFO,
         BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST,
-        LOAD_CONFIG;
+        LOAD_CONFIG,
+        DOWNLOAD;
 
     }
 
@@ -384,6 +386,8 @@ public class AdminServlet extends BaseServlet {
                 return loadBankTransferList(request, response);
             case BANK_TRANSFER_SERVICE_LIST:
                 return loadBankTransferServiceList(request, response);
+            case DOWNLOAD:
+                return loadDownload(request, response);
             default:
                 throw new BadPageException();
         }
@@ -906,7 +910,7 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl,fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
@@ -1897,6 +1901,22 @@ public class AdminServlet extends BaseServlet {
         ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadDownload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path1 = super.getPathInfoStringAt(request, 1);
+        String path2 = super.getPathInfoStringAt(request, 2);
+        Tools.download(Config.FILE_UPLOAD_DIR + path1 + "/" + path2, response);
+        return FORWARD_TO_ANOTHER_URL;
     }
 
     /**

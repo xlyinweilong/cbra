@@ -62,7 +62,7 @@ import org.json.simple.JSONObject;
  */
 @WebServlet(name = "UserAccountServlet", urlPatterns = {"/account/*", "/v/*", "/user/*", "/company/*"})
 public class AccountServlet extends BaseServlet {
-
+    
     @EJB
     private AccountService accountService;
     @EJB
@@ -81,7 +81,7 @@ public class AccountServlet extends BaseServlet {
         if (servletPath.equalsIgnoreCase("/v")) {
             String url = String.format("/account/verify%s", pathInfo);
             forward(url, request, response);
-
+            
             return FORWARD_TO_ANOTHER_URL;
         }
         // PROCESS ROOT PAGE.
@@ -89,7 +89,7 @@ public class AccountServlet extends BaseServlet {
             forward("/account/overview", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-
+        
         String[] pathArray = StringUtils.split(pathInfo, "/");
         PageEnum page = PageEnum.OVERVIEW;
         try {
@@ -106,7 +106,7 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute(REQUEST_ATTRIBUTE_PATHINFO_ARRAY, pathArray);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     @Override
     public boolean processLoginControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -128,10 +128,10 @@ public class AccountServlet extends BaseServlet {
             default:
                 setLoginOnly(request);
         }
-
+        
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     @Override
     boolean processActionEnum(String actionString, HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException {
         ActionEnum action = null;
@@ -146,11 +146,11 @@ public class AccountServlet extends BaseServlet {
     }// </editor-fold>
 
     enum ActionEnum {
-
+        
         LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
         UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST, RESET_USER_INFO, SET_AGENT, PAYMENT_ORDER;
     }
-
+    
     @Override
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
@@ -185,13 +185,13 @@ public class AccountServlet extends BaseServlet {
                 throw new BadPostActionException();
         }
     }
-
+    
     private enum PageEnum {
-
+        
         Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, LOAD_ACCOUNT_BY_AJAX,
         MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD, PAY_MEMBERSHIP, RESULT;
     }
-
+    
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -317,7 +317,7 @@ public class AccountServlet extends BaseServlet {
             if ("bl".equalsIgnoreCase(type)) {
                 fileUploadObj = super.uploadFile(request, 5.0, null, null, null);
             } else if ("qc".equalsIgnoreCase(type)) {
-                fileUploadObj = super.uploadFile(request, 20.0, null, null, null);
+                fileUploadObj = super.uploadFile(request, 5.0, null, null, null);
             } else {
                 fileUploadObj = super.uploadFile(request, 2.0, null, null, null);
             }
@@ -371,7 +371,7 @@ public class AccountServlet extends BaseServlet {
         // 设置user到session里，跳转到相应的登录后页面。
         return login(user, false, request, response);
     }
-
+    
     private boolean doChangeRegInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
 //        UserAccount user = getUserFromSession(request);
 //        try {
@@ -487,7 +487,7 @@ public class AccountServlet extends BaseServlet {
         forward("/account/signup_success", request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
-
+    
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestEmail(request, "email");
         String account = getRequestString(request, "account");
@@ -504,6 +504,7 @@ public class AccountServlet extends BaseServlet {
         String authenticationDate = getRequestString(request, "authenticationDate");
         String productionLicenseNumber = getRequestString(request, "productionLicenseNumber");
         String productionLicenseValidDateStart = getRequestString(request, "productionLicenseValidDateStart");
+        String qalityCode = getRequestString(request, "qalityCode");
         String productionLicenseValidDate = getRequestString(request, "productionLicenseValidDate");
         String field = getRequestString(request, "field");
         String bl = getRequestString(request, "bl");
@@ -557,7 +558,7 @@ public class AccountServlet extends BaseServlet {
         icPosition = sb.toString();
         CompanyAccount companyAccount = null;
         try {
-            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValidStart, productionLicenseValid, field, bl, qc);
+            companyAccount = accountService.signupCompany(account, name, email, super.getLanguage(request).getLanguage().toUpperCase(), address, zipCode, icPosition, legalPerson, companyCreate, companyNatureEnum, natureOthers, companyScaleEnum, webSide, enterpriseQalityGrading, authentication, productionLicenseNumber, productionLicenseValidStart, productionLicenseValid, field, bl, qc, qalityCode);
         } catch (AccountAlreadyExistException ex) {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
         } catch (IOException ex) {
@@ -597,7 +598,7 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute("success", true);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     private boolean doResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "passwd", "key")) {
             return KEEP_GOING_WITH_ORIG_URL;
@@ -656,7 +657,7 @@ public class AccountServlet extends BaseServlet {
         setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     private boolean doVerifyEmail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        String verifyUrl = super.getPathInfoStringAt(request, 1);
 //        UserAccount userAccount = accountService.findByVerifyUrl(verifyUrl);
@@ -673,7 +674,7 @@ public class AccountServlet extends BaseServlet {
 //        setSuccessResult(bundle.getString("ACCOUNT_VERIFY_MSG_您的邮箱地址已验证成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     private boolean doSendVerifyEmail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        UserAccount user = null;
 //        try {
@@ -699,7 +700,7 @@ public class AccountServlet extends BaseServlet {
     private boolean doAccountIsExist(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accountName = super.getRequestString(request, "account");
         Account account = accountService.findByAccount(accountName);
-        if (account == null) {
+        if (account == null || account.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
             return super.outputSuccessAjax(null, null, response);
         } else {
             return super.outputErrorAjax(bundle.getString("ACCOUNT_已经存在"), null, response);
@@ -719,7 +720,7 @@ public class AccountServlet extends BaseServlet {
         Account account = super.getUserFromSessionNoException(request);
         FileUploadObj fileUploadObj = null;
         String[] icPositions;
-        String address, zipCode, scaleCompany, workExperience, projectExperience, position, others, company, enName,email;
+        String address, zipCode, scaleCompany, workExperience, projectExperience, position, others, company, enName, email;
         Integer workingYear;
         FileUploadItem item;
         try {
@@ -775,7 +776,7 @@ public class AccountServlet extends BaseServlet {
                 setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            account = accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition,email);
+            account = accountService.updateUserAccount(account.getId(), item, enName, up, others, company, workingYear, workExperience, projectExperience, address, zipCode, icPosition, email);
         }
         super.setSessionUser(request, account);
         setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
@@ -1042,6 +1043,14 @@ public class AccountServlet extends BaseServlet {
     private boolean loadSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("positions", UserPosition.values());
         request.setAttribute("icPositions", AccountIcPosition.values());
+        //加载用户信息
+        String code = super.getRequestString(request, "code");
+        Account account = accountService.findByAccount(code);
+        if (account != null && account.getStatus().equals(AccountStatus.APPROVAL_REJECT) && account instanceof UserAccount) {
+            UserAccount user = (UserAccount) account;
+            request.setAttribute("positionList", Arrays.asList(user.getIcPosition().split("_")));
+            request.setAttribute("userAccount", user);
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -1059,6 +1068,14 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute("icPositions", AccountIcPosition.values());
         request.setAttribute("companyNatureEnums", CompanyNatureEnum.values());
         request.setAttribute("companyScaleEnums", CompanyScaleEnum.values());
+        //加载用户信息
+        String code = super.getRequestString(request, "code");
+        Account account = accountService.findByAccount(code);
+        if (account != null && account.getStatus().equals(AccountStatus.APPROVAL_REJECT) && account instanceof CompanyAccount) {
+            CompanyAccount ca = (CompanyAccount) account;
+            request.setAttribute("positionList", Arrays.asList(ca.getIcPosition().split("_")));
+            request.setAttribute("companyAccount", ca);
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

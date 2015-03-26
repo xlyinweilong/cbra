@@ -69,29 +69,29 @@
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>中文姓名</td>
-                            <td class="reg-2"><input type="text" name="accountName" id="accountName" class="Input-1" /></td>
+                            <td class="reg-2"><input type="text" name="accountName" id="accountName" value="${userAccount.name}" class="Input-1" /></td>
                             <td class="reg-1">英文姓名</td>
-                            <td><input type="text" name="accountEnName" id="accountEnName" class="Input-1" /></td>
+                            <td><input type="text" name="accountEnName" id="accountEnName" value="${userAccount.enName}" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>手机
                             </td>
-                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" name="account" id="account" class="Input-1" /><br/><br/><span style="font-size:11px">作为账户登录，请使用有效号码</span></td>
+                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" name="account" value="${userAccount.account}" id="account" class="Input-1" /><br/><br/><span style="font-size:11px">作为账户登录，请使用有效号码</span></td>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>EMAIL</td>
                             <td style="line-height:10px;height: 63px;">
-                                <input type="text" name="email" id="email" class="Input-1" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
+                                <input type="text" name="email" id="email" value="${userAccount.email}" class="Input-1" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>从业年限</td>
-                            <td class="reg-2"><input type="text" name="workingYear" id="workingYear" class="Input-1" />（年）</td>
+                            <td class="reg-2"><input type="text" name="workingYear" value="${userAccount.workingYear}" id="workingYear" class="Input-1" />（年）</td>
                             <td class="reg-1">目前就职公司</td>
-                            <td><input type="text" name="company" id="company" class="Input-1" /></td>
+                            <td><input type="text" name="company" value="${userAccount.company}" id="company" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>邮寄地址</td>
-                            <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" /></td>
+                            <td class="reg-2"><input type="text" name="address" value="${userAccount.address}" id="address" class="Input-1" /></td>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>邮编</td>
-                            <td><input type="text" name="zipCode" id="zipCode" class="Input-1" /></td>
+                            <td><input type="text" name="zipCode" id="zipCode" value="${userAccount.zipCode}" class="Input-1" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1"><b style="color:#e8a29a;">*</b>职务</td>
@@ -100,20 +100,20 @@
                                     <select id="position" name="position" class="Input-1">
                                         <option value="">请选择</option>
                                         <c:forEach var="position" items="${positions}">
-                                            <option value="${position.name()}">${position.mean}</option>
+                                            <option <c:if test="${position == userAccount.position}">selected="selected"</c:if> value="${position.name()}">${position.mean}</option>
                                         </c:forEach>
-                                        <option value="others">其他</option>
+                                        <option <c:if test="${not empty userAccount.positionOthers}">selected="selected"</c:if> value="others">其他</option>
                                     </select>
                                 </span>   
                             </td>
-                            <td class="reg-1" id="others_td_1" style="display: none">其他</td>
-                            <td id="others_td_2" style="display: none"><input type="text" name="others" id="others" class="Input-1"/></td>
+                            <td class="reg-1" id="others_td_1" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>">其他</td>
+                            <td id="others_td_2" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>"><input type="text" name="others" id="others"  value="${userAccount.positionOthers}" class="Input-1"/></td>
                         </tr>
                         <tr>
                             <td class="reg-1">产业链位置</td>
                             <td class="reg-2" colspan="3" style="line-height: 22px;">
                                 <c:forEach var="icPosition" items="${icPositions}">
-                                    <input type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
+                                    <input <c:if test="${positionList.contains(icPosition.key)}">checked="checked"</c:if> type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
                                 </c:forEach>
                             </td>
                         </tr>
@@ -195,7 +195,7 @@
 
                     <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
-                            <td align="center" ><textarea id="workExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
+                            <td align="center" ><textarea id="workExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;">${userAccount.workExperience}</textarea></td>
                         </tr>
                     </table>
                     <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
@@ -216,7 +216,7 @@
                     <div class="Title-reg">项目经验</div>
                     <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
-                            <td align="center" ><textarea id="projectExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;"></textarea></td>
+                            <td align="center" ><textarea id="projectExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;">${userAccount.projectExperience}</textarea></td>
                         </tr>
                     </table>
                     <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">

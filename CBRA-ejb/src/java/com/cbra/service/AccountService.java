@@ -208,7 +208,7 @@ public class AccountService {
      * @param email
      * @return
      */
-    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition,String email) {
+    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition, String email) {
         UserAccount user = (UserAccount) this.findById(id);
         user.setCompany(company);
         user.setEnName(enName);
@@ -298,6 +298,8 @@ public class AccountService {
         UserAccount user;
         if (ua == null) {
             user = new UserAccount();
+        } else if (ua.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
+            user = (UserAccount) ua;
         } else {
             throw new AccountAlreadyExistException();
         }
@@ -508,6 +510,7 @@ public class AccountService {
      * @param field
      * @param businessLicenseUrl
      * @param qualificationCertificateUrl
+     * @param qalityCode
      * @return
      * @throws AccountAlreadyExistException
      * @throws IOException
@@ -515,14 +518,17 @@ public class AccountService {
     public CompanyAccount signupCompany(String account, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDateStart, Date productionLicenseValidDate, String field,
-            String businessLicenseUrl, String qualificationCertificateUrl) throws AccountAlreadyExistException, IOException {
+            String businessLicenseUrl, String qualificationCertificateUrl, String qalityCode) throws AccountAlreadyExistException, IOException {
         Account user = this.findByAccount(account);
         CompanyAccount company;
         if (user == null) {
             company = new CompanyAccount();
+        } else if (user.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
+            company = (CompanyAccount) user;
         } else {
             throw new AccountAlreadyExistException();
         }
+        company.setQalityCode(qalityCode);
         company.setAccount(account);
         company.setName(name);
         company.setAddress(address);
@@ -650,6 +656,7 @@ public class AccountService {
     public Account approvalAccount(Long id, AccountStatus status, String message) {
         Account account = this.findById(id);
         account.setStatus(status);
+        account.setApprovalInformation(message);
         if (AccountStatus.APPROVAL_REJECT.equals(status)) {
             //发送拒绝邮件
             this.sendAccountApprovalFail(account, message);
