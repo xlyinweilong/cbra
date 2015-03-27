@@ -62,7 +62,7 @@ import org.json.simple.JSONObject;
  */
 @WebServlet(name = "UserAccountServlet", urlPatterns = {"/account/*", "/v/*", "/user/*", "/company/*"})
 public class AccountServlet extends BaseServlet {
-    
+
     @EJB
     private AccountService accountService;
     @EJB
@@ -81,7 +81,7 @@ public class AccountServlet extends BaseServlet {
         if (servletPath.equalsIgnoreCase("/v")) {
             String url = String.format("/account/verify%s", pathInfo);
             forward(url, request, response);
-            
+
             return FORWARD_TO_ANOTHER_URL;
         }
         // PROCESS ROOT PAGE.
@@ -89,7 +89,7 @@ public class AccountServlet extends BaseServlet {
             forward("/account/overview", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
-        
+
         String[] pathArray = StringUtils.split(pathInfo, "/");
         PageEnum page = PageEnum.OVERVIEW;
         try {
@@ -106,7 +106,7 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute(REQUEST_ATTRIBUTE_PATHINFO_ARRAY, pathArray);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     @Override
     public boolean processLoginControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -128,10 +128,10 @@ public class AccountServlet extends BaseServlet {
             default:
                 setLoginOnly(request);
         }
-        
+
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     @Override
     boolean processActionEnum(String actionString, HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException {
         ActionEnum action = null;
@@ -146,11 +146,11 @@ public class AccountServlet extends BaseServlet {
     }// </editor-fold>
 
     enum ActionEnum {
-        
+
         LOGIN_AJAX, SIGNUP_AJAX, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, RESET_PASSWD, REGINFO, MODIFY_PASSWD, CHANGE_REGINFO, SEND_RESET_PASSWD,
         UPLOAD_PERSON_CARD, ACCOUNT_IS_EXIST, RESET_USER_INFO, SET_AGENT, PAYMENT_ORDER;
     }
-    
+
     @Override
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
@@ -185,13 +185,13 @@ public class AccountServlet extends BaseServlet {
                 throw new BadPostActionException();
         }
     }
-    
+
     private enum PageEnum {
-        
+
         Z_LOGIN_DIALOG, Z_SIGNUP_DIALOG, LOGIN, LOGOUT, SIGNUP, SIGNUP_C, OVERVIEW, OVERVIEW_C, VERIFY, SEND_VERIFY_EMAIL, LOAD_ACCOUNT_BY_AJAX,
         MY_EVENT, MEMBERSHIP_FEE, MODIFY_PASSWD, RESET_PASSWD, Z_IFRAME_UPLOAD_PC, RESET_USER_INFO, AGENT, SIGNUP_SUCCESS, FORGET_PASSWD, PAY_MEMBERSHIP, RESULT;
     }
-    
+
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -371,7 +371,7 @@ public class AccountServlet extends BaseServlet {
         // 设置user到session里，跳转到相应的登录后页面。
         return login(user, false, request, response);
     }
-    
+
     private boolean doChangeRegInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
 //        UserAccount user = getUserFromSession(request);
 //        try {
@@ -487,7 +487,7 @@ public class AccountServlet extends BaseServlet {
         forward("/account/signup_success", request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
-    
+
     private boolean doSignupC(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestEmail(request, "email");
         String account = getRequestString(request, "account");
@@ -598,7 +598,7 @@ public class AccountServlet extends BaseServlet {
         request.setAttribute("success", true);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     private boolean doResetPasswd(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "passwd", "key")) {
             return KEEP_GOING_WITH_ORIG_URL;
@@ -657,34 +657,12 @@ public class AccountServlet extends BaseServlet {
         setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     private boolean doVerifyEmail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        String verifyUrl = super.getPathInfoStringAt(request, 1);
-//        UserAccount userAccount = accountService.findByVerifyUrl(verifyUrl);
-//        if (userAccount == null || !userAccount.isEnabled()) {
-//            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-//            return FORWARD_TO_ANOTHER_URL;
-//        }
-//        if (userAccount.isVerified()) {
-//            setErrorResult(bundle.getString("ACCOUNT_VERIFY_MSG_验证码无效,您的邮箱已通过验证"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
-//        UserAccount account = accountService.setVerified(userAccount.getId(), bundle.getLocale().getLanguage());
-//        super.setSessionUser(request, account);
-//        setSuccessResult(bundle.getString("ACCOUNT_VERIFY_MSG_您的邮箱地址已验证成功"), request);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     private boolean doSendVerifyEmail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//        UserAccount user = null;
-//        try {
-//            user = getUserFromSession(request);
-//        } catch (NoSessionException ex) {  // 需要对未登录做特殊处理
-//            setErrorResult(bundle.getString("GLOBAL_MSG_NO_LOGIN"), request);
-//        }
-//        accountService.sendVerifiedEmail(user.getId());
-//        setSuccessResult(bundle.getString("ACCOUNT_VERIFY_MSG_验证邮件发送成功，请检查您的邮箱"), request);
-//        outputText(response, toJSON(request));
         return FORWARD_TO_ANOTHER_URL;
     }
 
@@ -1000,19 +978,21 @@ public class AccountServlet extends BaseServlet {
         if (Tools.isBlank(key)) {
             key = (String) request.getAttribute("key");
         }
-        if (key == null) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
-        request.setAttribute("key", key);
-        Account account = accountService.findByRepasswdUrl(key);
-        if (account == null) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
-        if (Tools.addHour(account.getRepasswdDate(), 1).before(new Date())) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
+        if (request.getAttribute("success") == null) {
+            if (key == null) {
+                forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+                return FORWARD_TO_ANOTHER_URL;
+            }
+            request.setAttribute("key", key);
+            Account account = accountService.findByRepasswdUrl(key);
+            if (account == null) {
+                forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
+                return FORWARD_TO_ANOTHER_URL;
+            }
+            if (Tools.addHour(account.getRepasswdDate(), 1).before(new Date())) {
+                setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
+                return KEEP_GOING_WITH_ORIG_URL;
+            }
         }
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1120,16 +1100,16 @@ public class AccountServlet extends BaseServlet {
         }
         String url = (String) request.getParameter("urlUserWantToAccess");
         System.out.println(url);
-        if (StringUtils.isNotBlank(url)) {
+        if (StringUtils.isNotBlank(url) && !url.contains("reset_passwd")) {
             jump = url;
         }
         //check cookie get the redirect url
-        String curl = getCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT);
-        if (Tools.isNotBlank(curl)) {
-            jump = curl;
-            //delete COOKIE_LOGIN_URL_REDIRECT cookie
-            removeCookie(request, response, COOKIE_LOGIN_URL_REDIRECT);
-        }
+//        String curl = getCookieValue(request, response, COOKIE_LOGIN_URL_REDIRECT);
+//        if (Tools.isNotBlank(curl)) {
+//            jump = curl;
+//            //delete COOKIE_LOGIN_URL_REDIRECT cookie
+//            removeCookie(request, response, COOKIE_LOGIN_URL_REDIRECT);
+//        }
         log("Login Success, Redirect to: " + jump);
         redirect(jump, request, response);
         return REDIRECT_TO_ANOTHER_URL;

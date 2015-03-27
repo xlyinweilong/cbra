@@ -15,5 +15,18 @@ public enum PaymentGatewayTypeEnum {
     ALIPAY,
     ALIPAY_BANK,
     BANK_TRANSFER;
-    
+
+    public String getMean() {
+        switch (this) {
+            case ALIPAY:
+                return "支付宝";
+            case ALIPAY_BANK:
+                return "支付宝网银";
+            case BANK_TRANSFER:
+                return "银行转账";
+            default:
+                return null;
+        }
+    }
+
 }

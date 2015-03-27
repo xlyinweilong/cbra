@@ -40,4 +40,28 @@ public enum OrderStatusEnum {
         }
     }
 
+    public String getMeanNoPending() {
+        switch (this) {
+            case INIT:
+                return "初始化";
+            case APPROVAL_REJECT:
+                return "审批拒绝";
+            case PENDING_FOR_APPROVAL:
+            case PENDING_PAYMENT:
+                return "待支付";
+            case PENDING_PAYMENT_CONFIRM:
+                return "支付待确认";
+            case SUCCESS:
+                return "支付成功";
+            case FAILURE:
+                return "支付失败";
+            case INVALID:
+                return "失效(退款)";
+            case PAYMENT_TIMEOUT:
+                return "支付超时";
+            default:
+                return null;
+        }
+    }
+
 }

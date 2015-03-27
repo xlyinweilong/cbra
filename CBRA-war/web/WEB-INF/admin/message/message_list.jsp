@@ -82,6 +82,11 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
             </div>
         </form>
     </body>

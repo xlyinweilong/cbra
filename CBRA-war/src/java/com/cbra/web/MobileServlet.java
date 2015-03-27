@@ -298,7 +298,10 @@ public class MobileServlet extends BaseServlet {
             scmap.put("link", pif.getNavUrl());
             submap.put("ad", scmap);
         } else {
-            submap.put("ad", null);
+            Map scmap = new HashMap();
+            scmap.put("url", null);
+            scmap.put("link", null);
+            submap.put("ad", scmap);
         }
         map.put("responsecode", 0);
         //获取筑誉活动

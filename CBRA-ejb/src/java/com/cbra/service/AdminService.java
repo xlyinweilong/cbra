@@ -28,6 +28,7 @@ import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.OrderStatusEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
@@ -60,6 +61,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -208,8 +210,24 @@ public class AdminService {
         if (map.containsKey("status")) {
             criteria.add(builder.equal(root.get("orderCollection").get("status"), map.get("status")));
         }
+        if (map.containsKey("statuss")) {
+            In in = builder.in(root.get("orderCollection").get("status"));
+            List<OrderStatusEnum> statuss = (List<OrderStatusEnum>) map.get("statuss");
+            for (OrderStatusEnum status : statuss) {
+                in.value(status);
+            }
+            criteria.add(in);
+        }
         if (map.containsKey("serviceStatus")) {
             criteria.add(builder.equal(root.get("orderCbraService").get("status"), map.get("serviceStatus")));
+        }
+        if (map.containsKey("serviceStatuss")) {
+            In in = builder.in(root.get("orderCbraService").get("status"));
+            List<OrderStatusEnum> statuss = (List<OrderStatusEnum>) map.get("serviceStatuss");
+            for (OrderStatusEnum status : statuss) {
+                in.value(status);
+            }
+            criteria.add(in);
         }
         try {
             if (list == null || !list) {

@@ -108,6 +108,9 @@ public class GatewayService {
         gatewayPayment.setSource(source);
         em.persist(gatewayPayment);
         em.flush();
+        orderCollection.setGatewayPayment(gatewayPayment);
+        em.merge(orderCollection);
+        em.flush();
         return gatewayPayment;
     }
 

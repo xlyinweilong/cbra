@@ -15,6 +15,7 @@ import com.cbra.entity.FundCollection;
 import com.cbra.entity.GatewayManualBankTransfer;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
+import com.cbra.entity.OrderCbraService;
 import com.cbra.entity.OrderCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
@@ -280,7 +281,7 @@ public class AdminServlet extends BaseServlet {
         MESSAGE_INFO, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
-        ORDER_LIST, ORDER_INFO,
+        ORDER_LIST, ORDER_INFO,USER_ORDER_LIST,
         BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST,
         LOAD_CONFIG,
         DOWNLOAD;
@@ -388,6 +389,8 @@ public class AdminServlet extends BaseServlet {
                 return loadBankTransferServiceList(request, response);
             case DOWNLOAD:
                 return loadDownload(request, response);
+            case USER_ORDER_LIST:
+                return loadUserOrderList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -1835,8 +1838,44 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+        }
         ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
+        request.setAttribute("statusList", Arrays.asList(OrderStatusEnum.values()));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载用户订单
+     * 
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException 
+     */
+    private boolean loadUserOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+        }
+        ResultList<OrderCbraService> resultList = orderService.findOrderCbraServiceList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("statusList", Arrays.asList(OrderStatusEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -1876,7 +1915,17 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("status", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+            List<OrderStatusEnum> statuss = new ArrayList<>();
+            statuss.add(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            statuss.add(OrderStatusEnum.SUCCESS);
+            map.put("statuss", statuss);
+        }
         ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -1897,7 +1946,17 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("serviceStatus", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("serviceStatus", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("serviceStatus");
+            List<OrderStatusEnum> statuss = new ArrayList<>();
+            statuss.add(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            statuss.add(OrderStatusEnum.SUCCESS);
+            map.put("serviceStatuss", statuss);
+        }
         ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;

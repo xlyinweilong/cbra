@@ -35,7 +35,7 @@
                     <a href="#">订单管理</a>
                 </li>
                 <li>
-                    <a href="#">活动订单管理</a>
+                    <a href="#">用户订单管理</a>
                 </li>
             </ul>
         </div>
@@ -76,39 +76,27 @@
                                 最后支付网关
                             </th>
                             <th>
-                                购买者身份类型
-                            </th>
-                            <th>
-                                活动名称
-                            </th>
-                            <th>
-                                操作
+                                用户名称
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="orderCollection" items="${resultList}">
+                        <c:forEach var="order" items="${resultList}">
                             <tr>
                                 <td>
-                                    ${orderCollection.amount}
+                                    ${order.amount}
                                 </td>
                                 <td>
-                                    ${orderCollection.serialId}
+                                    ${order.serialId}
                                 </td>
                                 <td>
-                                    ${orderCollection.status.mean}
+                                    ${order.status.meanNoPending}
                                 </td>
                                 <td>
-                                    ${orderCollection.gatewayPayment.gatewayType.mean}
+                                    ${order.lastGatewayPayment.gatewayType.mean}
                                 </td>
                                 <td>
-                                    ${orderCollection.userStr}
-                                </td>
-                                <td>
-                                    <a target="_blank" href="/event/event_details?id=${orderCollection.fundCollection.id}">${orderCollection.fundCollection.title}</a>
-                                </td>
-                                <td>
-                                    <a href="javascript:$.fn.edit('${orderCollection.id}');" class="tablelink">详情</a>
+                                    ${order.owner.name}
                                 </td>
                             </tr>
                         </c:forEach>
