@@ -154,7 +154,7 @@ public class MobileServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT;
+        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS;
 
     }
 
@@ -184,6 +184,8 @@ public class MobileServlet extends BaseServlet {
                 return loadOffer(request, response);
             case FRONT:
                 return loadFront(request, response);
+            case EVENT_DETAILS:
+                return loadEventDetails(request, response);
             default:
                 throw new BadPageException();
         }
@@ -564,6 +566,14 @@ public class MobileServlet extends BaseServlet {
         }
         map.put("data", list);
         return super.outputObjectAjax(map, response);
+    }
+
+    private boolean loadEventDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Long id = super.getRequestLong(request, "id");
+        FundCollection fundCollection = adminService.findCollectionById(id);
+        request.setAttribute("fundCollection", fundCollection);
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
 }

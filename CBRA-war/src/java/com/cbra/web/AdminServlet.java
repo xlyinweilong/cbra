@@ -281,7 +281,7 @@ public class AdminServlet extends BaseServlet {
         MESSAGE_INFO, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
-        ORDER_LIST, ORDER_INFO,USER_ORDER_LIST,
+        ORDER_LIST, ORDER_INFO, USER_ORDER_LIST,
         BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST,
         LOAD_CONFIG,
         DOWNLOAD;
@@ -1241,15 +1241,13 @@ public class AdminServlet extends BaseServlet {
         String projectExperience = super.getRequestString(request, "userAccount.projectExperience");
         String others = super.getRequestString(request, "userAccount.others");
         String[] icPositions = request.getParameterValues("accountIcPosition");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         UserPosition up = null;
@@ -1298,15 +1296,13 @@ public class AdminServlet extends BaseServlet {
         Date productionLicenseValidDate = super.getRequestDate(request, "productionLicenseValidDate");
         String natureOthers = super.getRequestString(request, "natureOthers");
         String[] icPositions = request.getParameterValues("accountIcPosition");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         String nature = super.getRequestString(request, "nature");
@@ -1853,12 +1849,12 @@ public class AdminServlet extends BaseServlet {
 
     /**
      * 加载用户订单
-     * 
+     *
      * @param request
      * @param response
      * @return
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private boolean loadUserOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Integer page = super.getRequestInteger(request, "page");

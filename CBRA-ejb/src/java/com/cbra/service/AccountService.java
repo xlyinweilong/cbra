@@ -303,6 +303,8 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistException();
         }
+        user.setCreateDate(new Date());
+        user.setStatus(AccountStatus.PENDING_FOR_APPROVAL);
         user.setAccount(account);
         user.setName(name);
         user.setAddress(address);
@@ -528,6 +530,8 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistException();
         }
+        company.setCreateDate(new Date());
+        company.setStatus(AccountStatus.PENDING_FOR_APPROVAL);
         company.setQalityCode(qalityCode);
         company.setAccount(account);
         company.setName(name);

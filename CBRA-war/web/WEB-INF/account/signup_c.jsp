@@ -68,23 +68,23 @@
                     <div class="Title-reg">基本信息<a style=" margin-left:10px; font-size:12px; color:#e8a29a; font-weight:normal;">(必填项)</a></div>
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
-                            <td class="reg-1">企业全称</td>
+                            <td class="reg-1">企业全称<b style="color:#e8a29a;">*</b></td>
                             <td colspan="3" class="reg-2"><input type="text" class="Input-1" id="accountName" name="accountName" value="${companyAccount.name}" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">营业执照注册号</td>
+                            <td class="reg-1">营业执照注册号<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="account" name="account" value="${companyAccount.account}" /><br/><br/><span style="font-size:11px">作为账户登录</span></td>
-                            <td class="reg-1">企业邮箱</td>
+                            <td class="reg-1">企业邮箱<b style="color:#e8a29a;">*</b></td>
                             <td style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="email" name="email" value="${companyAccount.email}" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">创立时间</td>
+                            <td class="reg-1">创立时间<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2"><input type="text" class="Input-1" id="companyCreateDate" name="companyCreateDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.companyCreateDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
-                            <td class="reg-1">企业法人</td>
+                            <td class="reg-1">企业法人<b style="color:#e8a29a;">*</b></td>
                             <td><input type="text" class="Input-1" id="legalPerson" name="legalPerson" value="${companyAccount.legalPerson}" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业性质</td>
+                            <td class="reg-1">企业性质<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2">
                                 <select id="companyNature" name="companyNature" class="Input-1">
                                     <option value="">请选择</option>
@@ -99,7 +99,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业人数</td>
+                            <td class="reg-1">企业人数<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2" colspan="3">
                                 <select id="companyScale" name="companyScale" class="Input-1">
                                     <option value="">请选择</option>
@@ -110,9 +110,9 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业地址</td>
+                            <td class="reg-1">企业地址<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" value="${companyAccount.address}" /></td>
-                            <td class="reg-1">邮编</td>
+                            <td class="reg-1">邮编<b style="color:#e8a29a;">*</b></td>
                             <td><input type="text" name="zipCode" id="zipCode" class="Input-1" value="${companyAccount.zipCode}" /></td>
                         </tr>
                         <tr>
