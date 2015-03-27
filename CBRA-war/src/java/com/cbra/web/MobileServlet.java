@@ -592,7 +592,7 @@ public class MobileServlet extends BaseServlet {
         String logincode = super.getRequestString(request, "logincode");
         Long id = super.getRequestLong(request, "id");
         PlateInformation plateInformation = adminService.findPlateInformationByIdFetchContent(id);
-        request.setAttribute("plateInformation", plateInformation);
+        request.setAttribute("new", plateInformation);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
