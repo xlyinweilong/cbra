@@ -196,7 +196,7 @@
                                 <div class="reg-img">
                                     <div id="reg_bl_div"><br/><br/>
                                         <p>上传企业营业执照副本</p>
-                                        <p>彩色加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
+                                        <p>加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_bl_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">

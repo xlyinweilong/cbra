@@ -108,6 +108,7 @@ public class GatewayService {
         gatewayPayment.setSource(source);
         em.persist(gatewayPayment);
         em.flush();
+        orderCollection = em.find(OrderCollection.class, orderCollection.getId());
         orderCollection.setGatewayPayment(gatewayPayment);
         em.merge(orderCollection);
         em.flush();
@@ -130,6 +131,7 @@ public class GatewayService {
         gatewayPayment.setOrderCbraService(orderCbraService);
         em.persist(gatewayPayment);
         em.flush();
+        orderCbraService = em.find(OrderCbraService.class, orderCbraService.getId());
         orderCbraService.setLastGatewayPayment(gatewayPayment);
         em.merge(orderCbraService);
         em.flush();
@@ -156,18 +158,19 @@ public class GatewayService {
         GatewayManualBankTransfer bt = new GatewayManualBankTransfer();
         bt.setGatewayPayment(gatewayPayment);
         if (gatewayPayment.getOrderCollection() != null) {
-            bt.setOrderCollection(gatewayPayment.getOrderCollection());
+            OrderCollection oc = em.find(OrderCollection.class, gatewayPayment.getOrderCollection().getId());
+            bt.setOrderCollection(oc);
             em.persist(bt);
-            OrderCollection order = gatewayPayment.getOrderCollection();
-            order.setStatus(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
-            em.merge(order);
+            oc.setStatus(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            oc.setGatewayPayment(gatewayPayment);
+            em.merge(oc);
         } else if (gatewayPayment.getOrderCbraService() != null) {
-            bt.setOrderCbraService(gatewayPayment.getOrderCbraService());
+            OrderCbraService ocs = em.find(OrderCbraService.class, gatewayPayment.getOrderCbraService().getId());
+            bt.setOrderCbraService(ocs);
             em.persist(bt);
-            OrderCbraService order = gatewayPayment.getOrderCbraService();
-            order.setStatus(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
-            order.setLastGatewayPayment(gatewayPayment);
-            em.merge(order);
+            ocs.setStatus(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            ocs.setLastGatewayPayment(gatewayPayment);
+            em.merge(ocs);
         }
         return bt;
     }

@@ -119,7 +119,7 @@
                             &nbsp;
                             </label>
                             <div class="infoleft" style="width:330px;height:220px;">
-                                <div class="listtitle"><a href="${companyAccount.businessLicenseUrl}" class="more1" target="_blank">查看大图</a>上传企业营业执照副本（彩色加盖公章）</div>    
+                                <div class="listtitle"><a href="${companyAccount.businessLicenseUrl}" class="more1" target="_blank">查看大图</a>上传企业营业执照副本（加盖公章）</div>    
                                 <ul class="newlist">
                                     <img align="center" width="300px" height="150px" src="${pageContent.request.contextPath}${companyAccount.businessLicenseUrl}" />
                                 </ul>   
