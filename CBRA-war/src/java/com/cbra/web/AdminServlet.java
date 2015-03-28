@@ -914,7 +914,7 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem,orderIndex);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem, orderIndex);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
@@ -2164,6 +2164,11 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String searchName = super.getRequestString(request, "searchName");
+        if (Tools.isNotBlank(searchName)) {
+            map.put("searchName", searchName);
+        }
+        request.setAttribute("searchName", searchName);
         ResultList<CompanyAccount> resultList = accountService.findCompanyList(map, page, 15);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -2204,6 +2209,11 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String searchName = super.getRequestString(request, "searchName");
+        if (Tools.isNotBlank(searchName)) {
+            map.put("searchName", searchName);
+        }
+        request.setAttribute("searchName", searchName);
         ResultList<UserAccount> resultList = accountService.findUserList(map, page, 15);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;

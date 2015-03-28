@@ -601,10 +601,20 @@ public class AccountService {
      */
     public ResultList<CompanyAccount> findCompanyList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<CompanyAccount> resultList = new ResultList<>();
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", Long.class);
+        String sql = "FROM CompanyAccount c WHERE c.deleted = false ";
+        if (map.containsKey("searchName")) {
+            sql += "AND c.name LIKE :searchName";
+        }
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) " + sql + "ORDER BY c.createDate DESC", Long.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<CompanyAccount> query = em.createQuery("SELECT c FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", CompanyAccount.class);
+        TypedQuery<CompanyAccount> query = em.createQuery("SELECT c " + sql + " ORDER BY c.createDate DESC", CompanyAccount.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
@@ -625,10 +635,20 @@ public class AccountService {
      */
     public ResultList<UserAccount> findUserList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<UserAccount> resultList = new ResultList<>();
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", Long.class);
+        String sql = "FROM UserAccount u WHERE u.deleted = false ";
+        if (map.containsKey("searchName")) {
+            sql += "AND u.name LIKE :searchName";
+        }
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) " + sql + " ORDER BY u.createDate DESC", Long.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<UserAccount> query = em.createQuery("SELECT u FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", UserAccount.class);
+        TypedQuery<UserAccount> query = em.createQuery("SELECT u FROM " + sql + " ORDER BY u.createDate DESC", UserAccount.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);

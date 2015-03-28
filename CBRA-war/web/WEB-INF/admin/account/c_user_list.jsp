@@ -71,6 +71,8 @@
                         </li>
                     </ul>
                     <ul class="toolbar1">
+                        名称:<input type="text" class="dfinput" style="width: 350px;" name="searchName" value="${searchName}" maxlength="25" />
+                        <input type="submit"  class="btn" value="搜索" />
                     </ul>
                 </div>
                 <table class="tablelist">
