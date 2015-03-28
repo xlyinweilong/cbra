@@ -300,6 +300,10 @@ public class Offer implements Serializable {
         return pushDate;
     }
 
+    public String getPushDateString() {
+        return Tools.formatDate(pushDate, "yyyy年MM月dd日");
+    }
+
     public void setPushDate(Date pushDate) {
         this.pushDate = pushDate;
     }
