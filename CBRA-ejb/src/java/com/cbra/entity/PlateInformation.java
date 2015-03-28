@@ -95,9 +95,19 @@ public class PlateInformation implements Serializable {
     @NotNull
     @Column(name = "deleted", nullable = false)
     private Boolean deleted = false;
+    @Column(name = "order_index")
+    private Integer orderIndex = 0;
 
     public Long getId() {
         return id;
+    }
+
+    public Integer getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(Integer orderIndex) {
+        this.orderIndex = orderIndex;
     }
 
     public void setId(Long id) {
@@ -131,7 +141,7 @@ public class PlateInformation implements Serializable {
     public String getTitle() {
         return Tools.getEscapedHtml(title);
     }
-    
+
     public String getTitleIndexStr() {
         if (title.length() > 25) {
             return title.substring(0, 24) + "...";
@@ -145,7 +155,7 @@ public class PlateInformation implements Serializable {
         }
         return title;
     }
-    
+
     public String getTitleIndexStr3() {
         if (title.length() > 18) {
             return title.substring(0, 17) + "...";

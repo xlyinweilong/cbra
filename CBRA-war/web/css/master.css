@@ -222,6 +222,12 @@ a.green{text-decoration:underline}
 .two-main .fr-con .title span {  line-height:55px; margin-left:40px; float:left;}
 .two-main .fr-con .title span a { font-size:14px; font-weight:bold; color:#bebebe; line-height:55px; float:left; ;}
 .two-main .fr-con .title span a:hover { font-size:14px; font-weight:bold; color:#585858; line-height:55px; float:left; border-bottom:3px #e8a29a solid;}
+
+.two-main .fr-con .title .Search { width:202px; height:auto; float:right; background:#CCC; margin-top:16px; margin-right:20px;}
+.two-main .fr-con .title .Search .se-k { width:160px; height:20px; border:1px #CCC solid; float: left; }
+.two-main .fr-con .title .Search .se-a { width:40px; height:22px; border:1px #CCC solid; float:right;}
+
+
 .two-main .fr-con .con-single { width:808px; height:auto; line-height:40px; color:#767676; font-family:"微软雅黑";}
 .two-main .fr-con .con-lxwm { width:728px; height:auto; line-height:24px; color:#767676; font-family:"微软雅黑"; padding:0 40px;}
 .two-main .fr-con .con-lxwm h1 { font-family:"黑体"; margin-bottom:10px;}
@@ -233,6 +239,13 @@ a.green{text-decoration:underline}
 .two-main .fr-con .con-single .title-zw { width:806px; height:30px; line-height:30px; border-bottom:1px #ececec solid;}
 .two-main .fr-con .con-single .title-zw .span-1 { width:330px; margin-left:10px; float:left;}
 .two-main .fr-con .con-single .title-zw .span-2 { width:180px; margin-left:10px; float:left;}
+.two-main .fr-con .con-single .title-rc { width:806px; height:30px; line-height:30px; background:#f9f9f9; border:1px #ececec solid;}
+.two-main .fr-con .con-single .title-rc .span-1 { width:120px; margin-left:10px; float:left;}
+.two-main .fr-con .con-single .title-rc .span-2 { width:146px; margin-left:10px; float:left;}
+.two-main .fr-con .con-single .title-rcxx { width:806px; height:30px; line-height:30px; border-bottom:1px #ececec solid;}
+.two-main .fr-con .con-single .title-rcxx .span-1 { width:120px; margin-left:10px; float:left;}
+.two-main .fr-con .con-single .title-rcxx .span-2 { width:146px; margin-left:10px; float:left;}
+
 
 .two-main .fr-con .fenxiang {  height:auto; margin:20px auto;}
 

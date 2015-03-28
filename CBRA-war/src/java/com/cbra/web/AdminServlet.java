@@ -865,6 +865,7 @@ public class AdminServlet extends BaseServlet {
             Plate plate = adminService.findPlateById(plateId);
             String pushDateStr = fileUploadObj.getFormField("pushDate");
             Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            Integer orderIndex = fileUploadObj.getIntegerFormField("orderIndex");
             if (pushDate == null) {
                 setErrorResult("保存失败，参数异常！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
@@ -913,14 +914,13 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem,orderIndex);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
                     || PlateKeyEnum.HOME_EXPERT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_SHUFFLING_AD_MENU.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_STYLE.equals(plate.getPlateKey())
                     || PlateKeyEnum.TOP_INTO.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_EVENT.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_TRAIN.equals(plate.getPlateKey())
                     || PlateKeyEnum.TOP_STYLE.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_JOIN.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_NEWS.equals(plate.getPlateKey())) {
-                System.out.println("*********");
                 PlateInformation pi = new PlateInformation();
                 if (id != null) {
                     pi = adminService.findPlateInformationById(id);
@@ -932,7 +932,7 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, pushDate, navUrl, languageTypeEnum, fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, pushDate, navUrl, languageTypeEnum, fileUploadItem, orderIndex);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             }

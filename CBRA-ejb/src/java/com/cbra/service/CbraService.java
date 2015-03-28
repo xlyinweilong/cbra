@@ -138,7 +138,7 @@ public class CbraService {
      * @return
      */
     public List<PlateInformation> getPlateInformationList4Hot(Plate plate, int maxResults) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.visitCount DESC", PlateInformation.class);
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.orderIndex,plateInfo.pushDate DESC", PlateInformation.class);
         query.setParameter("plate", plate);
         query.setMaxResults(maxResults);
         return query.getResultList();
@@ -152,7 +152,7 @@ public class CbraService {
      * @return
      */
     public List<PlateInformation> getPlateInformationList4Index(Plate plate, int maxResults) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate = :plate AND plateInfo.deleted = false ORDER BY plateInfo.orderIndex,plateInfo.pushDate DESC", PlateInformation.class);
         query.setParameter("plate", plate);
         query.setMaxResults(maxResults);
         return query.getResultList();
@@ -180,7 +180,7 @@ public class CbraService {
      * @return
      */
     public List<PlateInformation> getPlateInformationList4Index(PlateKeyEnum plateKeyEnum, int maxResults) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.plateKey = :plateKeyEnum AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.plateKey = :plateKeyEnum AND plateInfo.deleted = false ORDER BY plateInfo.orderIndex,plateInfo.pushDate DESC", PlateInformation.class);
         query.setParameter("plateKeyEnum", plateKeyEnum);
         query.setMaxResults(maxResults);
         return query.getResultList();
@@ -208,7 +208,7 @@ public class CbraService {
      * @return
      */
     public List<PlateInformation> findPlateInformationList4Hot(List<Long> plateIds, int maxResults) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.id IN :plateIds AND plateInfo.deleted = false ORDER BY plateInfo.pushDate DESC", PlateInformation.class);
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT plateInfo FROM PlateInformation plateInfo WHERE plateInfo.plate.id IN :plateIds AND plateInfo.deleted = false ORDER BY plateInfo.orderIndex,plateInfo.pushDate DESC", PlateInformation.class);
         query.setParameter("plateIds", plateIds);
         query.setMaxResults(maxResults);
         return query.getResultList();

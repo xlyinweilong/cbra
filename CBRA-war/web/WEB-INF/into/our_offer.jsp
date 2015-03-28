@@ -17,25 +17,25 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">筑誉人才库</a></span></div>
-                    <div class="con-single">
-                        <div class="title-gw">
-                            <a href="/into/offer_details"><span class="span-1">职位名称</span><span class="span-2">工作地点</span><span class="span-2">部门</span><span>发布时间</span></a>
-                        </div>
-                        <c:forEach items="${resultList}" var="offer">
-                        <div class="title-zw">
-                            <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city}</span><span class="span-2">${offer.depart}</span><span><fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></span></a>
-                        </div>
-                    </c:forEach>
                     <form id="form1" action="/into/our_offer" method="post">
-                        <input type="hidden" name="page" id="page_num" value="${resultList.getPageIndex()}" />
-                        <jsp:include page="/WEB-INF/public/z_paging.jsp">
-                            <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
-                            <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
-                            <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
-                        </jsp:include>
-                    </form>
-                </div>
+                        <div class="title"><span><a id="title-span">筑誉人才库</a></span><div class="Search"><input type="text" class="se-k"><input type="button" class="se-a" value="搜索"></div></div>
+                        <div class="con-single">
+                            <div class="title-rc">
+                                <span class="span-1">姓名</span><span class="span-2">当前就职公司</span><span class="span-1">从业年限</span><span class="span-1">职务</span><span class="span-1">关键字</span><span class="span-1">创建时间</span>
+                            </div>
+                        <c:forEach items="${resultList}" var="offer">
+                            <div class="title-rcxx">
+                                <a href="/into/offer_details?id=${offer.id}"><span class="span-1">张小白</span><span class="span-2">吉林长春</span><span class="span-1">7年</span><span class="span-1">研发</span><span class="span-1">暂时不知道</span><span class="span-1">2014-05-01</span></a>
+                            </div>
+                        </c:forEach>
+                    </div>
+                    <input type="hidden" name="page" id="page_num" value="${resultList.getPageIndex()}" />
+                    <jsp:include page="/WEB-INF/public/z_paging.jsp">
+                        <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                        <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                        <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                    </jsp:include>
+                </form>
             </div>
             <!-- 右侧内容 end -->
             <div style="clear:both;"></div>
