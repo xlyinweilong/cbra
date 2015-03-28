@@ -605,7 +605,7 @@ public class AccountService {
         if (map.containsKey("searchName")) {
             sql += "AND c.name LIKE :searchName";
         }
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) " + sql + "ORDER BY c.createDate DESC", Long.class);
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) " + sql + " ORDER BY c.createDate DESC", Long.class);
         if (map.containsKey("searchName")) {
             countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
         }
@@ -613,7 +613,7 @@ public class AccountService {
         resultList.setTotalCount(totalCount.intValue());
         TypedQuery<CompanyAccount> query = em.createQuery("SELECT c " + sql + " ORDER BY c.createDate DESC", CompanyAccount.class);
         if (map.containsKey("searchName")) {
-            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+            query.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
         }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
@@ -645,9 +645,9 @@ public class AccountService {
         }
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<UserAccount> query = em.createQuery("SELECT u FROM " + sql + " ORDER BY u.createDate DESC", UserAccount.class);
+        TypedQuery<UserAccount> query = em.createQuery("SELECT u " + sql + " ORDER BY u.createDate DESC", UserAccount.class);
         if (map.containsKey("searchName")) {
-            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+            query.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
         }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
