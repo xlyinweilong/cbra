@@ -241,10 +241,15 @@ public class AboutServlet extends BaseServlet {
             pageIndex = 1;
         }
         int maxPerPage = 15;
+        String searchName = super.getRequestString(request, "searchName");
         Map< String, Object> map = new HashMap<>();
+        if (searchName != null) {
+            map.put("searchName", searchName);
+        }
         map.put("plateId", pagePlate.getId());
         ResultList<Offer> resultList = adminService.findOfferList(map, pageIndex, maxPerPage, null, true);
         request.setAttribute("resultList", resultList);
+        request.setAttribute("searchName", searchName);
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

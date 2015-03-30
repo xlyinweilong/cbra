@@ -59,6 +59,30 @@ public class Offer implements Serializable {
     @JoinColumn(name = "plate_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Plate plate = null;
+    @Column(name = "name", length = 255)
+    //名称
+    private String name;
+    @Column(name = "en_name", length = 255)
+    //英文名
+    private String enName;
+    @Column(name = "mobile", length = 255)
+    //手机
+    private String mobile;
+    @Column(name = "email", length = 255)
+    //email
+    private String email;
+    @Column(name = "obtain", length = 255)
+    //从来年限
+    private String obtain;
+    @Column(name = "company", length = 255)
+    //公司
+    private String company;
+    @Column(name = "address", length = 255)
+    //地址
+    private String address;
+    @Column(name = "zip_code", length = 255)
+    //邮编
+    private String zipCode;
     @Column(name = "position", length = 255)
     //职位
     private String position;
@@ -82,7 +106,7 @@ public class Offer implements Serializable {
     private String monthly;
     @Lob
     @Column(name = "description")
-    //描述
+    //描述,经验
     private String description;
     @Lob
     @Column(name = "duty")
@@ -314,6 +338,70 @@ public class Offer implements Serializable {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEnName() {
+        return enName;
+    }
+
+    public void setEnName(String enName) {
+        this.enName = enName;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getObtain() {
+        return obtain;
+    }
+
+    public void setObtain(String obtain) {
+        this.obtain = obtain;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     @Override

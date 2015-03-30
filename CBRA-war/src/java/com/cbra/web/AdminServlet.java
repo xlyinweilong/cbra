@@ -986,11 +986,19 @@ public class AdminServlet extends BaseServlet {
             String gender = fileUploadObj.getFormField("gender");
             String englishLevel = fileUploadObj.getFormField("englishLevel");
             String education = fileUploadObj.getFormField("education");
+            String name = fileUploadObj.getFormField("name");
+            String enName = fileUploadObj.getFormField("enName");
+            String mobile = fileUploadObj.getFormField("mobile");
+            String email = fileUploadObj.getFormField("email");
+            String obtain = fileUploadObj.getFormField("obtain");
+            String company = fileUploadObj.getFormField("company");
+            String address = fileUploadObj.getFormField("address");
+            String zipCode = fileUploadObj.getFormField("zipCode");
             if (position == null) {
                 setErrorResult("请填写内容！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum);
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode);
             request.setAttribute("offer", offer);
             request.setAttribute("id", offer.getId());
             request.setAttribute("plateId", plateId);
@@ -1788,9 +1796,14 @@ public class AdminServlet extends BaseServlet {
         if (page == null) {
             page = 1;
         }
+        String searchName = super.getRequestString(request, "searchName");
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", plateId);
+        if (searchName != null) {
+            map.put("searchName", searchName);
+        }
         ResultList<Offer> resultList = adminService.findOfferList(map, page, 15, null, true);
+        request.setAttribute("searchName", searchName);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
         return KEEP_GOING_WITH_ORIG_URL;

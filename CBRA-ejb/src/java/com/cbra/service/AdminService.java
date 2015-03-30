@@ -987,6 +987,9 @@ public class AdminService {
         if (map.containsKey("plateId")) {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
         }
+        if (map.containsKey("searchName")) {
+            criteria.add(builder.like(root.get("name"), "%" + map.get("searchName").toString() + "%"));
+        }
         try {
             if (list == null || !list) {
                 CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -1462,13 +1465,23 @@ public class AdminService {
      * @return
      */
     public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
-            String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum) {
+            String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum,
+            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode) {
         Offer offer = new Offer();
         boolean isCreare = true;
         if (id != null) {
             isCreare = false;
             offer = this.findOfferById(id);
         }
+        offer.setName(name);
+        offer.setEnName(enName);
+        offer.setMobile(mobile);
+        offer.setEmail(email);
+        offer.setCompany(company);
+        offer.setObtain(obtain);
+        offer.setCompany(company);
+        offer.setAddress(address);
+        offer.setZipCode(zipCode);
         offer.setLanguageType(languageTypeEnum);
         offer.setPushDate(pushDate);
         offer.setAge(age);

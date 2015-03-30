@@ -18,14 +18,14 @@
                 <!-- 右侧内容 -->
                 <div class="fr-con">
                     <form id="form1" action="/into/our_offer" method="post">
-                        <div class="title"><span><a id="title-span">筑誉人才库</a></span><div class="Search"><input type="text" class="se-k"><input type="button" class="se-a" value="搜索"></div></div>
+                        <div class="title"><span><a id="title-span">筑誉人才库</a></span><div class="Search"><input type="text" name="searchName" value="${searchName}" class="se-k"><input type="submit" class="se-a" value="搜索"></div></div>
                         <div class="con-single">
                             <div class="title-rc">
-                                <span class="span-1">姓名</span><span class="span-2">当前就职公司</span><span class="span-1">从业年限</span><span class="span-1">职务</span><span class="span-1">关键字</span><span class="span-1">创建时间</span>
+                                <span class="span-1">姓名</span><span class="span-2">当前就职公司</span><span class="span-1">从业年限</span><span class="span-1">职务</span><span class="span-1">手机</span><span class="span-1">创建时间</span>
                             </div>
                         <c:forEach items="${resultList}" var="offer">
                             <div class="title-rcxx">
-                                <a href="/into/offer_details?id=${offer.id}"><span class="span-1">张小白</span><span class="span-2">吉林长春</span><span class="span-1">7年</span><span class="span-1">研发</span><span class="span-1">暂时不知道</span><span class="span-1">2014-05-01</span></a>
+                                <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.name}</span><span class="span-2">${offer.company}</span><span class="span-1">${offer.obtain}年</span><span class="span-1">${offer.position}</span><span class="span-1">${offer.mobile}</span><span class="span-1"><fmt:formatDate value="${offer.createDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></span></a>
                             </div>
                         </c:forEach>
                     </div>
