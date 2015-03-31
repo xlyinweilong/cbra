@@ -238,6 +238,9 @@ public class OrderService {
         if (map.containsKey("owner")) {
             criteria.add(builder.equal(root.get("owner"), map.get("owner")));
         }
+        if (map.containsKey("status")) {
+            criteria.add(builder.equal(root.get("status"), map.get("status")));
+        }
         try {
             if (list == null || !list) {
                 CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -272,6 +275,60 @@ public class OrderService {
                     resultList.setMaxPerPage(maxPerPage);
                 }
                 List<OrderCollection> dataList = typeQuery.getResultList();
+                resultList.addAll(dataList);
+            }
+        } catch (NoResultException ex) {
+        }
+        return resultList;
+    }
+    
+    public ResultList<OrderCbraService> findOrderCbraServiceList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
+        ResultList<OrderCbraService> resultList = new ResultList<>();
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<OrderCbraService> query = builder.createQuery(OrderCbraService.class);
+        Root root = query.from(OrderCbraService.class);
+        List<Predicate> criteria = new ArrayList<>();
+        criteria.add(builder.equal(root.get("deleted"), false));
+        if (map.containsKey("owner")) {
+            criteria.add(builder.equal(root.get("owner"), map.get("owner")));
+        }
+        if (map.containsKey("status")) {
+            criteria.add(builder.equal(root.get("status"), map.get("status")));
+        }
+        try {
+            if (list == null || !list) {
+                CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+                countQuery.select(builder.count(root));
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    countQuery.where(criteria.get(0));
+                } else {
+                    countQuery.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                Long totalCount = em.createQuery(countQuery).getSingleResult();
+                resultList.setTotalCount(totalCount.intValue());
+            }
+            if (list == null || list) {
+                query = query.select(root);
+                if (criteria.isEmpty()) {
+                    throw new RuntimeException("no criteria");
+                } else if (criteria.size() == 1) {
+                    query.where(criteria.get(0));
+                } else {
+                    query.where(builder.and(criteria.toArray(new Predicate[0])));
+                }
+                query.orderBy(builder.desc(root.get("createDate")));
+                TypedQuery<OrderCbraService> typeQuery = em.createQuery(query);
+                if (page != null && page) {
+                    int startIndex = (pageIndex - 1) * maxPerPage;
+                    typeQuery.setFirstResult(startIndex);
+                    typeQuery.setMaxResults(maxPerPage);
+                    resultList.setPageIndex(pageIndex);
+                    resultList.setStartIndex(startIndex);
+                    resultList.setMaxPerPage(maxPerPage);
+                }
+                List<OrderCbraService> dataList = typeQuery.getResultList();
                 resultList.addAll(dataList);
             }
         } catch (NoResultException ex) {
@@ -422,7 +479,7 @@ public class OrderService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -447,7 +504,7 @@ public class OrderService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_service_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【会员费支付成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();

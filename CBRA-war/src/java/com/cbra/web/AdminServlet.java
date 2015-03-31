@@ -7,6 +7,7 @@ package com.cbra.web;
 
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
+import com.cbra.Config;
 import com.cbra.entity.Account;
 import com.cbra.entity.Attendee;
 import com.cbra.entity.CompanyAccount;
@@ -14,6 +15,7 @@ import com.cbra.entity.FundCollection;
 import com.cbra.entity.GatewayManualBankTransfer;
 import com.cbra.entity.Message;
 import com.cbra.entity.Offer;
+import com.cbra.entity.OrderCbraService;
 import com.cbra.entity.OrderCollection;
 import com.cbra.entity.Plate;
 import com.cbra.entity.PlateInformation;
@@ -279,9 +281,10 @@ public class AdminServlet extends BaseServlet {
         MESSAGE_INFO, MESSAGE_LIST,
         C_USER_LIST, C_USER_INFO,
         O_USER_LIST, O_USER_INFO,
-        ORDER_LIST, ORDER_INFO,
+        ORDER_LIST, ORDER_INFO, USER_ORDER_LIST,
         BANK_TRANSFER_LIST, BANK_TRANSFER_SERVICE_LIST,
-        LOAD_CONFIG;
+        LOAD_CONFIG,
+        DOWNLOAD;
 
     }
 
@@ -384,6 +387,10 @@ public class AdminServlet extends BaseServlet {
                 return loadBankTransferList(request, response);
             case BANK_TRANSFER_SERVICE_LIST:
                 return loadBankTransferServiceList(request, response);
+            case DOWNLOAD:
+                return loadDownload(request, response);
+            case USER_ORDER_LIST:
+                return loadUserOrderList(request, response);
             default:
                 throw new BadPageException();
         }
@@ -858,6 +865,7 @@ public class AdminServlet extends BaseServlet {
             Plate plate = adminService.findPlateById(plateId);
             String pushDateStr = fileUploadObj.getFormField("pushDate");
             Date pushDate = Tools.parseDate(pushDateStr, "yyyy-MM-dd HH:mm:ss");
+            Integer orderIndex = fileUploadObj.getIntegerFormField("orderIndex");
             if (pushDate == null) {
                 setErrorResult("保存失败，参数异常！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
@@ -906,14 +914,13 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl,fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem, orderIndex);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
                     || PlateKeyEnum.HOME_EXPERT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_SHUFFLING_AD_MENU.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_STYLE.equals(plate.getPlateKey())
                     || PlateKeyEnum.TOP_INTO.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_EVENT.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_TRAIN.equals(plate.getPlateKey())
                     || PlateKeyEnum.TOP_STYLE.equals(plate.getPlateKey()) || PlateKeyEnum.TOP_JOIN.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_NEWS.equals(plate.getPlateKey())) {
-                System.out.println("*********");
                 PlateInformation pi = new PlateInformation();
                 if (id != null) {
                     pi = adminService.findPlateInformationById(id);
@@ -925,7 +932,7 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, pushDate, navUrl, languageTypeEnum, fileUploadItem);
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, pushDate, navUrl, languageTypeEnum, fileUploadItem, orderIndex);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             }
@@ -979,11 +986,19 @@ public class AdminServlet extends BaseServlet {
             String gender = fileUploadObj.getFormField("gender");
             String englishLevel = fileUploadObj.getFormField("englishLevel");
             String education = fileUploadObj.getFormField("education");
+            String name = fileUploadObj.getFormField("name");
+            String enName = fileUploadObj.getFormField("enName");
+            String mobile = fileUploadObj.getFormField("mobile");
+            String email = fileUploadObj.getFormField("email");
+            String obtain = fileUploadObj.getFormField("obtain");
+            String company = fileUploadObj.getFormField("company");
+            String address = fileUploadObj.getFormField("address");
+            String zipCode = fileUploadObj.getFormField("zipCode");
             if (position == null) {
                 setErrorResult("请填写内容！", request);
                 return KEEP_GOING_WITH_ORIG_URL;
             }
-            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum);
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode);
             request.setAttribute("offer", offer);
             request.setAttribute("id", offer.getId());
             request.setAttribute("plateId", plateId);
@@ -1205,6 +1220,7 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean doAccountDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] ids = request.getParameterValues("ids");
+        System.out.println(ids[0]);
         accountService.deleteAccountByIds(ids);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -1234,15 +1250,13 @@ public class AdminServlet extends BaseServlet {
         String projectExperience = super.getRequestString(request, "userAccount.projectExperience");
         String others = super.getRequestString(request, "userAccount.others");
         String[] icPositions = request.getParameterValues("accountIcPosition");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         UserPosition up = null;
@@ -1291,15 +1305,13 @@ public class AdminServlet extends BaseServlet {
         Date productionLicenseValidDate = super.getRequestDate(request, "productionLicenseValidDate");
         String natureOthers = super.getRequestString(request, "natureOthers");
         String[] icPositions = request.getParameterValues("accountIcPosition");
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         String nature = super.getRequestString(request, "nature");
@@ -1785,9 +1797,14 @@ public class AdminServlet extends BaseServlet {
         if (page == null) {
             page = 1;
         }
+        String searchName = super.getRequestString(request, "searchName");
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", plateId);
+        if (searchName != null) {
+            map.put("searchName", searchName);
+        }
         ResultList<Offer> resultList = adminService.findOfferList(map, page, 15, null, true);
+        request.setAttribute("searchName", searchName);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -1831,8 +1848,44 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+        }
         ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
+        request.setAttribute("statusList", Arrays.asList(OrderStatusEnum.values()));
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 加载用户订单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadUserOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer page = super.getRequestInteger(request, "page");
+        if (page == null) {
+            page = 1;
+        }
+        Map<String, Object> map = new HashMap<>();
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+        }
+        ResultList<OrderCbraService> resultList = orderService.findOrderCbraServiceList(map, page, 15, null, true);
+        request.setAttribute("resultList", resultList);
+        request.setAttribute("statusList", Arrays.asList(OrderStatusEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -1872,7 +1925,17 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("status", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("status", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("status");
+            List<OrderStatusEnum> statuss = new ArrayList<>();
+            statuss.add(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            statuss.add(OrderStatusEnum.SUCCESS);
+            map.put("statuss", statuss);
+        }
         ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -1893,10 +1956,36 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("serviceStatus", OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+        String statusStr = super.getRequestString(request, "status");
+        try {
+            map.put("serviceStatus", OrderStatusEnum.valueOf(statusStr));
+            request.setAttribute("status", OrderStatusEnum.valueOf(statusStr));
+        } catch (Exception e) {
+            map.remove("serviceStatus");
+            List<OrderStatusEnum> statuss = new ArrayList<>();
+            statuss.add(OrderStatusEnum.PENDING_PAYMENT_CONFIRM);
+            statuss.add(OrderStatusEnum.SUCCESS);
+            map.put("serviceStatuss", statuss);
+        }
         ResultList<GatewayManualBankTransfer> resultList = adminService.findGatewayManualBankTransferList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadDownload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path1 = super.getPathInfoStringAt(request, 1);
+        String path2 = super.getPathInfoStringAt(request, 2);
+        Tools.download(Config.FILE_UPLOAD_DIR + path1 + "/" + path2, response);
+        return FORWARD_TO_ANOTHER_URL;
     }
 
     /**
@@ -2089,6 +2178,11 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String searchName = super.getRequestString(request, "searchName");
+        if (Tools.isNotBlank(searchName)) {
+            map.put("searchName", searchName);
+        }
+        request.setAttribute("searchName", searchName);
         ResultList<CompanyAccount> resultList = accountService.findCompanyList(map, page, 15);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -2129,6 +2223,11 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         Map<String, Object> map = new HashMap<>();
+        String searchName = super.getRequestString(request, "searchName");
+        if (Tools.isNotBlank(searchName)) {
+            map.put("searchName", searchName);
+        }
+        request.setAttribute("searchName", searchName);
         ResultList<UserAccount> resultList = accountService.findUserList(map, page, 15);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;

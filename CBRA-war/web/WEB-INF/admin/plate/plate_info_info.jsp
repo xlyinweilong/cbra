@@ -76,6 +76,9 @@
                 <input type="hidden" name="id" value="${plateInfo.id}" />
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
+                    <li><label>排序</label>
+                            <input type="text" class="dfinput" style="width: 350px;" name="orderIndex" value="${plateInfo.orderIndex}" maxlength="100" />
+                        </li>
                     <c:if test="${plate.plateKey == 'NEWS'}">
                         <li><label>标题<b>*</b></label>
                             <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />

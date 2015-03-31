@@ -127,7 +127,7 @@ public class AccountService {
      *
      * @param ids
      */
-    public void deleteAccountByIds(String... ids) {
+    public void deleteAccountByIds(String[] ids) {
         for (String id : ids) {
             if (id == null) {
                 continue;
@@ -208,7 +208,7 @@ public class AccountService {
      * @param email
      * @return
      */
-    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition,String email) {
+    public UserAccount updateUserAccount(Long id, FileUploadItem item, String enName, UserPosition up, String others, String company, Integer workingYear, String workExperience, String projectExperience, String address, String zipCode, String icPosition, String email) {
         UserAccount user = (UserAccount) this.findById(id);
         user.setCompany(company);
         user.setEnName(enName);
@@ -298,9 +298,13 @@ public class AccountService {
         UserAccount user;
         if (ua == null) {
             user = new UserAccount();
+        } else if (ua.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
+            user = (UserAccount) ua;
         } else {
             throw new AccountAlreadyExistException();
         }
+        user.setCreateDate(new Date());
+        user.setStatus(AccountStatus.PENDING_FOR_APPROVAL);
         user.setAccount(account);
         user.setName(name);
         user.setAddress(address);
@@ -508,6 +512,7 @@ public class AccountService {
      * @param field
      * @param businessLicenseUrl
      * @param qualificationCertificateUrl
+     * @param qalityCode
      * @return
      * @throws AccountAlreadyExistException
      * @throws IOException
@@ -515,14 +520,19 @@ public class AccountService {
     public CompanyAccount signupCompany(String account, String name, String email, String language, String address, String zipCode, String icPosition,
             String legalPerson, Date companyCreateDate, CompanyNatureEnum nature, String natureOthers, CompanyScaleEnum scale, String webSide, String enterpriseQalityGrading,
             Date authenticationDate, String productionLicenseNumber, Date productionLicenseValidDateStart, Date productionLicenseValidDate, String field,
-            String businessLicenseUrl, String qualificationCertificateUrl) throws AccountAlreadyExistException, IOException {
+            String businessLicenseUrl, String qualificationCertificateUrl, String qalityCode) throws AccountAlreadyExistException, IOException {
         Account user = this.findByAccount(account);
         CompanyAccount company;
         if (user == null) {
             company = new CompanyAccount();
+        } else if (user.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
+            company = (CompanyAccount) user;
         } else {
             throw new AccountAlreadyExistException();
         }
+        company.setCreateDate(new Date());
+        company.setStatus(AccountStatus.PENDING_FOR_APPROVAL);
+        company.setQalityCode(qalityCode);
         company.setAccount(account);
         company.setName(name);
         company.setAddress(address);
@@ -591,10 +601,20 @@ public class AccountService {
      */
     public ResultList<CompanyAccount> findCompanyList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<CompanyAccount> resultList = new ResultList<>();
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", Long.class);
+        String sql = "FROM CompanyAccount c WHERE c.deleted = false ";
+        if (map.containsKey("searchName")) {
+            sql += "AND c.name LIKE :searchName";
+        }
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(c) " + sql + " ORDER BY c.createDate DESC", Long.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<CompanyAccount> query = em.createQuery("SELECT c FROM CompanyAccount c WHERE c.deleted = false ORDER BY c.createDate DESC", CompanyAccount.class);
+        TypedQuery<CompanyAccount> query = em.createQuery("SELECT c " + sql + " ORDER BY c.createDate DESC", CompanyAccount.class);
+        if (map.containsKey("searchName")) {
+            query.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
@@ -615,10 +635,20 @@ public class AccountService {
      */
     public ResultList<UserAccount> findUserList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<UserAccount> resultList = new ResultList<>();
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", Long.class);
+        String sql = "FROM UserAccount u WHERE u.deleted = false ";
+        if (map.containsKey("searchName")) {
+            sql += "AND u.name LIKE :searchName";
+        }
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(u) " + sql + " ORDER BY u.createDate DESC", Long.class);
+        if (map.containsKey("searchName")) {
+            countQuery.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<UserAccount> query = em.createQuery("SELECT u FROM UserAccount u WHERE u.deleted = false ORDER BY u.createDate DESC", UserAccount.class);
+        TypedQuery<UserAccount> query = em.createQuery("SELECT u " + sql + " ORDER BY u.createDate DESC", UserAccount.class);
+        if (map.containsKey("searchName")) {
+            query.setParameter("searchName", "%" + map.get("searchName").toString() + "%");
+        }
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
@@ -650,6 +680,7 @@ public class AccountService {
     public Account approvalAccount(Long id, AccountStatus status, String message) {
         Account account = this.findById(id);
         account.setStatus(status);
+        account.setApprovalInformation(message);
         if (AccountStatus.APPROVAL_REJECT.equals(status)) {
             //发送拒绝邮件
             this.sendAccountApprovalFail(account, message);
@@ -877,7 +908,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -899,7 +930,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_approval_fail_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -935,7 +966,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -970,7 +1001,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_approval_fail_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -996,7 +1027,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_reset_passwd_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【密码找回通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();

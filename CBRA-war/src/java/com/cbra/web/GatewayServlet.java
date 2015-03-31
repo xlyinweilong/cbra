@@ -58,7 +58,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 订单WEB层
+ * 支付网关WEB层
  *
  * @author yin.weilong
  */

@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "order_collection")
 @XmlRootElement
-public class OrderCollection implements Serializable{
+public class OrderCollection implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +79,10 @@ public class OrderCollection implements Serializable{
     @JoinColumn(name = "collection_id", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private FundCollection fundCollection;
-    
+    @JoinColumn(name = "gataway_id", referencedColumnName = "id")
+    @ManyToOne
+    private GatewayPayment gatewayPayment;
+
     public Long getId() {
         return id;
     }
@@ -159,15 +162,23 @@ public class OrderCollection implements Serializable{
     public void setFundCollection(FundCollection fundCollection) {
         this.fundCollection = fundCollection;
     }
-    
-    public String getUserStr(){
-        if(owner == null){
+
+    public GatewayPayment getGatewayPayment() {
+        return gatewayPayment;
+    }
+
+    public void setGatewayPayment(GatewayPayment gatewayPayment) {
+        this.gatewayPayment = gatewayPayment;
+    }
+
+    public String getUserStr() {
+        if (owner == null) {
             return "游客";
-        }else if(owner instanceof UserAccount){
+        } else if (owner instanceof UserAccount) {
             return "个人用户";
-        }else if(owner instanceof CompanyAccount){
+        } else if (owner instanceof CompanyAccount) {
             return "企业用户";
-        }else{
+        } else {
             return "游客";
         }
     }

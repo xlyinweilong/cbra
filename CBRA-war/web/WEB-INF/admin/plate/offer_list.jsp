@@ -65,6 +65,10 @@
                         </li>
                     </ul>
                     <ul class="toolbar1">
+                        <c:if test="${plateId == 31}">
+                            名称:<input type="text" class="dfinput" style="width: 350px;" name="searchName" value="${searchName}" maxlength="25" />
+                            <input type="submit"  class="btn" value="搜索" />
+                        </c:if>
                     </ul>
                 </div>
                 <table class="tablelist">
@@ -74,26 +78,28 @@
                                 <input name="cbk_all" id="cbk_all" type="checkbox" value="0" />
                             </th>
                             <th>
-                                职位名称
-                            </th>
-                            <th>
-                                发布时间
-                            </th>
-                            <th>
-                                操作
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                                <c:if test="${plateId == 30}">职位名称</c:if>
+                                <c:if test="${plateId == 31}">姓名</c:if>
+                                </th>
+                                <th>
+                                    发布时间
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <c:forEach var="offer" items="${resultList}">
                             <tr>
                                 <td>
                                     <input name="ids" type="checkbox" value="${offer.id}" />
                                 </td>
                                 <td>
-                                    ${offer.position}
-                                </td>
-                                <td>
+                                    <c:if test="${plateId == 30}">${offer.position}</c:if>
+                                    <c:if test="${plateId == 31}">${offer.name}</c:if>
+                                    </td>
+                                    <td>
                                     <fmt:formatDate value="${offer.pushDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
                                 </td>
                                 <td>

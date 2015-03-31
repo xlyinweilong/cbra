@@ -155,17 +155,6 @@ public class EventServlet extends BaseServlet {
             return super.outputAjax(request, response);
         }
         String passwd = getRequestString(request, "passwd");
-
-        // ******************************************************************
-//        Account user = accountService.getUserForLogin(email, passwd);
-//        if (user == null) {
-//            return super.outputErrorAjax(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), null, response);
-//        }
-//
-//        super.setLogRequestUser(logRequest, user);
-        // ******************************************************************
-        // 设置user到session里，并设置显示数据。
-//        return loginAjax(user, request, response);
         return FORWARD_TO_ANOTHER_URL;
     }
 

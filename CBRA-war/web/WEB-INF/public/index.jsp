@@ -251,7 +251,7 @@
                 <div class="Two-Row-fr">
                     <div class="Title">
                         <div class="Title-1">专家顾问</div>
-                        <div class="Title-3"><a href="/train/lecturers">更多</a></div>
+                        <div class="Title-3"><a href="/team/expert">更多</a></div>
                     </div>
                     <ul>
                         <%

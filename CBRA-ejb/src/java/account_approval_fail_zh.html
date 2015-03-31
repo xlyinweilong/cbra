@@ -20,7 +20,13 @@
                         </tr>
                         <tr>
                             <td align="left">
-                                您注册的账户<b>${account.account}</b>,没有通过审批。
+                                您注册的账户<b>${account.account}</b>,没有通过审批。<br/>
+                                #if(${account.type} == 'USER')
+                                <a href="http://www.cbra.com/account/signup?code=${account.account}">请点击这里</a>，再次提交您的注册信息。
+                                #end
+                                #if(${account.type} == 'COMPANY')
+                                <a href="http://www.cbra.com/signup_c?code=${account.account}">请点击这里</a>，再次提交您的注册信息。
+                                #end
                             </td>
                         </tr>
                         <tr>

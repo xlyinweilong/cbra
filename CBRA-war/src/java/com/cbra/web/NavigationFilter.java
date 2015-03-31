@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author HUXIAOFENG
+ * @author yin.weilong
  */
 @WebFilter(filterName = "NavigationFilter",
         urlPatterns = {"/*"},

@@ -36,12 +36,14 @@
                 var rules = {
                     "userAccount.account": {required: true},
                     "userAccount.name": {required: true},
-                    "userAccount.email": {required: true}
+                    "userAccount.email": {required: true},
+                    "userAccount.workingYear":{required: true}
                 };
                 var messages = {
                     "userAccount.account": {required: "账户必须填写！"},
                     "userAccount.name": {required: "中文名称必须填写！"},
-                    "userAccount.email": {required: "邮箱必须填写！"}
+                    "userAccount.email": {required: "邮箱必须填写！"},
+                    "userAccount.workingYear":{required: "行业从业时间！"}
                 };
                 //初始化验证框架
                 FormSave("form1", rules, messages);
@@ -88,7 +90,7 @@
                     <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}" maxlength="25" /></li>
                     <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" maxlength="25" /></li>
                     <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" maxlength="50" /></li>
-                    <li><label>行业从业时间</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingYear" value="${userAccount.workingYear}" maxlength="25" />年</li>
+                    <li><label>行业从业时间<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingYear" value="${userAccount.workingYear}" maxlength="25" />年</li>
                     <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" maxlength="100" /></li>
                     <li><label>产业链位置</label>
                         <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
@@ -135,7 +137,6 @@
                         <textarea name="userAccount.projectExperience" style="border:1px solid #999;font-size:12px;padding:1px;overflow:auto;text-align:left; padding:5px;width: 700px; height: 120px;">${userAccount.projectExperience}</textarea>
                     </li>
                 </ul>
-                <c:if test="${userAccount.status == 'PENDING_FOR_APPROVAL'}">
                     <ul class="forminfo">
                         <li>
                             <labe style="height:20px;">&nbsp;</label>
@@ -153,7 +154,6 @@
                             <i></i>
                         </li>
                     </ul>
-                </c:if>
                 <li><label>&nbsp;</label>
                     <input id="saveBtn" name="saveBtn" type="button" class="btn" value="修改"/>
                     <input id="gobackBtn" name="gobackBtn" type="button" class="btn" value="返回"/>

@@ -67,34 +67,47 @@
         </div>
         <form id="form1" name="form1" method="post">
             <div class="rightinfo">
-<!--                <div class="tools">
+                <div class="tools">
                     <ul class="toolbar">
-                        <li class="click" id="deleteBtn">
-                            <span><img src="<%=path%>/background/images/t03.png" />
-                            </span>删除
-                        </li>
-                    </ul>
-                    <ul class="toolbar1">
-                    </ul>
-                </div>-->
-                <table class="tablelist">
-                    <thead>
-                        <tr>
-                            <th>
-                                金额
-                            </th>
-                            <th>
-                                订单号
-                            </th>
-                            <th>
-                                活动名称
-                            </th>
-                            <th>
-                                操作
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                        订单状态:
+                        <select name="status" class="dfinput" style="width: 154px;">
+                            <option value="">
+                                全部
+                            </option>
+                            <option <c:if test="${status == 'PENDING_PAYMENT_CONFIRM'}">selected="selected"</c:if> value="PENDING_PAYMENT_CONFIRM">
+                                    待确认
+                                </option>
+                                <option <c:if test="${status == 'SUCCESS'}">selected="selected"</c:if> value="SUCCESS">
+                                    已确认
+                                </option>
+                            </select>
+                            <input type="submit"  class="btn" value="筛选" />
+                        </ul>
+                        <ul class="toolbar1">
+
+                        </ul>
+                    </div>
+                    <table class="tablelist">
+                        <thead>
+                            <tr>
+                                <th>
+                                    金额
+                                </th>
+                                <th>
+                                    订单号
+                                </th>
+                                <th>
+                                    活动名称
+                                </th>
+                                <th>
+                                    状态
+                                </th>
+                                <th>
+                                    操作
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <c:forEach var="transfer" items="${resultList}">
                             <tr>
                                 <td>
@@ -104,7 +117,10 @@
                                     ${transfer.orderCollection.serialId}
                                 </td>
                                 <td>
-                                    <a target="_blank" href="/event/details_forword?fid=${transfer.orderCollection.fundCollection.id}">${transfer.orderCollection.fundCollection.title}</a>
+                                    <a target="_blank" href="/event/event_details?id=${transfer.orderCollection.fundCollection.id}">${transfer.orderCollection.fundCollection.title}</a>
+                                </td>
+                                <td>
+                                    ${transfer.orderCollection.status.mean}
                                 </td>
                                 <td>
                                     <a href="javascript:$.fn.edit('${transfer.id}');" class="tablelink">确认转账</a>
@@ -114,6 +130,11 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <jsp:include page="/WEB-INF/admin/common/z_paging.jsp" flush="true">
+                    <jsp:param name="totalCount" value="${resultList.getTotalCount()}" />
+                    <jsp:param name="maxPerPage" value="${resultList.getMaxPerPage()}" />
+                    <jsp:param name="pageIndex" value="${resultList.getPageIndex()}" />
+                </jsp:include>
             </div>
         </form>
     </body>

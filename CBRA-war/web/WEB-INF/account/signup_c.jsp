@@ -68,58 +68,58 @@
                     <div class="Title-reg">基本信息<a style=" margin-left:10px; font-size:12px; color:#e8a29a; font-weight:normal;">(必填项)</a></div>
                     <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
-                            <td class="reg-1">企业全称</td>
-                            <td colspan="3" class="reg-2"><input type="text" class="Input-1" id="accountName" name="accountName" /></td>
+                            <td class="reg-1">企业全称<b style="color:#e8a29a;">*</b></td>
+                            <td colspan="3" class="reg-2"><input type="text" class="Input-1" id="accountName" name="accountName" value="${companyAccount.name}" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">营业执照注册号</td>
-                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="account" name="account" /><br/><br/><span style="font-size:11px">作为账户登录</span></td>
-                            <td class="reg-1">企业邮箱</td>
-                            <td style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="email" name="email" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
+                            <td class="reg-1">营业执照注册号<b style="color:#e8a29a;">*</b></td>
+                            <td class="reg-2" style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="account" name="account" value="${companyAccount.account}" /><br/><br/><span style="font-size:11px">作为账户登录</span></td>
+                            <td class="reg-1">企业邮箱<b style="color:#e8a29a;">*</b></td>
+                            <td style="line-height:10px;height: 63px;"><input type="text" class="Input-1" id="email" name="email" value="${companyAccount.email}" /><br/><br/><span style="font-size:11px">邮箱作为接收筑誉活动渠道，请填写常用邮箱</span></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">创立时间</td>
-                            <td class="reg-2"><input type="text" class="Input-1" id="companyCreateDate" name="companyCreateDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
-                            <td class="reg-1">企业法人</td>
-                            <td><input type="text" class="Input-1" id="legalPerson" name="legalPerson" /></td>
+                            <td class="reg-1">创立时间<b style="color:#e8a29a;">*</b></td>
+                            <td class="reg-2"><input type="text" class="Input-1" id="companyCreateDate" name="companyCreateDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.companyCreateDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
+                            <td class="reg-1">企业法人<b style="color:#e8a29a;">*</b></td>
+                            <td><input type="text" class="Input-1" id="legalPerson" name="legalPerson" value="${companyAccount.legalPerson}" /></td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业性质</td>
+                            <td class="reg-1">企业性质<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2">
                                 <select id="companyNature" name="companyNature" class="Input-1">
                                     <option value="">请选择</option>
                                     <c:forEach var="companyNatureEnum" items="${companyNatureEnums}">
-                                        <option value="${companyNatureEnum.name()}">${companyNatureEnum.mean}</option>
+                                        <option <c:if test="${companyNatureEnum == companyAccount.nature}">selected="selected"</c:if>  value="${companyNatureEnum.name()}">${companyNatureEnum.mean}</option>
                                     </c:forEach>
                                 </select>
                             </td>
-                            <td id="natureOthers_td_1" style="display: none" class="reg-1">其他</td>
-                            <td id="natureOthers_td_2" style="display: none">
-                                <input type="text" class="Input-1" id="natureOthers" name="natureOthers" />
+                            <td id="natureOthers_td_1" style="<c:if test="${empty companyAccount.natureOthers}">display: none</c:if>" class="reg-1">其他</td>
+                            <td id="natureOthers_td_2" style="<c:if test="${empty companyAccount.natureOthers}">display: none</c:if>">
+                                <input type="text" class="Input-1" id="natureOthers" name="natureOthers" value="${companyAccount.natureOthers}" />
                             </td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业人数</td>
+                            <td class="reg-1">企业人数<b style="color:#e8a29a;">*</b></td>
                             <td class="reg-2" colspan="3">
                                 <select id="companyScale" name="companyScale" class="Input-1">
                                     <option value="">请选择</option>
                                     <c:forEach var="companyScaleEnum" items="${companyScaleEnums}">
-                                        <option value="${companyScaleEnum.name()}">${companyScaleEnum.mean}</option>
+                                        <option <c:if test="${companyScaleEnum == companyAccount.scale}">selected="selected"</c:if> value="${companyScaleEnum.name()}">${companyScaleEnum.mean}</option>
                                     </c:forEach>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td class="reg-1">企业地址</td>
-                            <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" /></td>
-                            <td class="reg-1">邮编</td>
-                            <td><input type="text" name="zipCode" id="zipCode" class="Input-1" /></td>
+                            <td class="reg-1">企业地址<b style="color:#e8a29a;">*</b></td>
+                            <td class="reg-2"><input type="text" name="address" id="address" class="Input-1" value="${companyAccount.address}" /></td>
+                            <td class="reg-1">邮编<b style="color:#e8a29a;">*</b></td>
+                            <td><input type="text" name="zipCode" id="zipCode" class="Input-1" value="${companyAccount.zipCode}" /></td>
                         </tr>
                         <tr>
                             <td class="reg-1">产业链位置</td>
                             <td class="reg-2" colspan="3" style="line-height: 22px;">
                                 <c:forEach var="icPosition" items="${icPositions}">
-                                    <input type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
+                                    <input <c:if test="${positionList.contains(icPosition.key)}">checked="checked"</c:if> type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
                                 </c:forEach>
                             </td>
                         </tr>
@@ -142,29 +142,31 @@
                         <table width="914" border="0" align="center" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                             <tr>
                                 <td class="reg-3">企业网址</td>
-                                <td colspan="3" class="reg-2"><input type="text" class="Input-1" id="webSide" name="webSide" /></td>
+                                <td class="reg-4"><input type="text" class="Input-1" id="webSide" name="webSide" value="${companyAccount.webSide}" /></td>
+                                <td class="reg-3">资质证书编号</td>
+                                <td><input type="text" class="Input-1" id="qalityCode" name="qalityCode" value="${companyAccount.qalityCode}" /></td>
                             </tr>
                             <tr>
                                 <td class="reg-3">企业资质等级</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="enterpriseQalityGrading" name="enterpriseQalityGrading" /></td>
+                                <td class="reg-4"><input type="text" class="Input-1" id="enterpriseQalityGrading" name="enterpriseQalityGrading" value="${companyAccount.enterpriseQalityGrading}" /></td>
                                 <td class="reg-3">主项资质发证时间</td>
-                                <td><input type="text" class="Input-1" id="authenticationDate" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
+                                <td><input type="text" class="Input-1" id="authenticationDate" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.authenticationDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
                             </tr>
                             <tr>
                                 <td class="reg-3">安全生产许可证编号</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseNumber" name="productionLicenseNumber" /></td>
+                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseNumber" name="productionLicenseNumber"  value="${companyAccount.productionLicenseNumber}" /></td>
                                 <td class="reg-3"></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td class="reg-3">安全生产许可证有效期(起始)</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseValidDateStart" name="productionLicenseValidDateStart" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
+                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseValidDateStart" name="productionLicenseValidDateStart" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDateStart}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
                                 <td class="reg-3">安全生产许可证有效期(结束)</td>
-                                <td><input type="text" class="Input-1" id="productionLicenseValidDate" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" /></td>
+                                <td><input type="text" class="Input-1" id="productionLicenseValidDate" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
                             </tr>
                             <tr>
                                 <td class="reg-3">目标客户或擅长领域</td>
-                                <td colspan="3" ><textarea style="width:600px; height:40px; margin-top:20px; border:1px #e6e6e6 solid;" id="field" name="field"></textarea></td>
+                                <td colspan="3" ><textarea style="width:600px; height:40px; margin-top:20px; border:1px #e6e6e6 solid;" id="field" name="field">${companyAccount.field}</textarea></td>
                             </tr>
                         </table>
                         <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
@@ -194,7 +196,7 @@
                                 <div class="reg-img">
                                     <div id="reg_bl_div"><br/><br/>
                                         <p>上传企业营业执照副本</p>
-                                        <p>彩色加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
+                                        <p>加盖公章<br>上传图片大小不得超过5MB，支持JPG、PNG图片格式</p>
                                     </div>
                                     <img id="reg_bl_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
@@ -211,7 +213,7 @@
                             <td id="reg_qc_td" align="center" style="width:457px;">
                                 <div class="reg-img">
                                     <div id="reg_qc_div"><br/><br/>
-                                        <p>上传企业资质证书</p><p>加多个请打包成文件<br>上传图片大小不得超过20MB</p>
+                                        <p>上传企业资质证书</p><p>加多个请打包成文件<br>上传图片大小不得超过5MB</p>
                                     </div>
                                     <img id="reg_qc_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
@@ -343,10 +345,10 @@
 //                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入安全生产许可证有效期(结束时间)", $("#productionLicenseValidDate"));
 //                        return;
 //                    }
-                    if (CBRAValid.checkFormValueNull($("#field"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入目标客户或擅长领域", $("#field"));
-                        return;
-                    }
+//                    if (CBRAValid.checkFormValueNull($("#field"))) {
+//                        CBRAMessage.showWrongMessageAndBorderEle($("#signup_msg_2"), "请输入目标客户或擅长领域", $("#field"));
+//                        return;
+//                    }
                     $("#step2").hide();
                     $("#step3").show();
                     $("#signup_msg_2").html("");

@@ -154,7 +154,7 @@ public class MobileServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT;
+        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS;
 
     }
 
@@ -184,6 +184,12 @@ public class MobileServlet extends BaseServlet {
                 return loadOffer(request, response);
             case FRONT:
                 return loadFront(request, response);
+            case EVENT_DETAILS:
+                return loadEventDetails(request, response);
+            case OFFER_DETAILS:
+                loadOfferDetails(request, response);
+            case NEWS_DETAILS:
+                loadNewsDetails(request, response);
             default:
                 throw new BadPageException();
         }
@@ -298,7 +304,10 @@ public class MobileServlet extends BaseServlet {
             scmap.put("link", pif.getNavUrl());
             submap.put("ad", scmap);
         } else {
-            submap.put("ad", null);
+            Map scmap = new HashMap();
+            scmap.put("url", null);
+            scmap.put("link", null);
+            submap.put("ad", scmap);
         }
         map.put("responsecode", 0);
         //获取筑誉活动
@@ -561,6 +570,30 @@ public class MobileServlet extends BaseServlet {
         }
         map.put("data", list);
         return super.outputObjectAjax(map, response);
+    }
+
+    private boolean loadEventDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Long id = super.getRequestLong(request, "id");
+        FundCollection fundCollection = adminService.findCollectionById(id);
+        request.setAttribute("fundCollection", fundCollection);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    private boolean loadOfferDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Long id = super.getRequestLong(request, "id");
+        Offer offer = adminService.findOfferById(id);
+        request.setAttribute("offer", offer);
+        return KEEP_GOING_WITH_ORIG_URL;
+    }
+
+    private boolean loadNewsDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String logincode = super.getRequestString(request, "logincode");
+        Long id = super.getRequestLong(request, "id");
+        PlateInformation plateInformation = adminService.findPlateInformationByIdFetchContent(id);
+        request.setAttribute("new", plateInformation);
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 
 }

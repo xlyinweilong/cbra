@@ -36,6 +36,8 @@ public class Config {
     public static final String FILE_UPLOAD_TEMP = "temp";
 
     public static final String FILE_UPLOAD_PLATE = "plate";
+    
+    public static final String FROM_EMAIL = "cbra@cbra.com";
 
     public static final String FILE_UPLOAD_ACCOUNT = "account_ic";
 
@@ -77,7 +79,7 @@ public class Config {
     public static List<PlateInformation> homeExpert = null;
 
     public static PlateInformation homeNews = null;
-    //top持久信息
+    
     public static PlateInformation topInto = null;
 
     public static PlateInformation topStyle = null;
@@ -87,4 +89,44 @@ public class Config {
     public static List<PlateInformation> topTrain = null;
 
     public static List<PlateInformation> topJoin = null;
+    
+    public static List<FundCollection> eventListIndexEn = null;
+
+    public static List<PlateInformation> newsListEn = null;
+
+    public static List<PlateInformation> newsList5En = null;
+
+    public static List<PlateInformation> industryListEn = null;
+
+    public static List<Offer> offerListIndexEn = null;
+
+    public static List<PlateInformation> materialListIndexEn = null;
+
+    public static List<PlateInformation> industrializationListIndexEn = null;
+
+    public static List<PlateInformation> greenListIndexEn = null;
+
+    public static List<PlateInformation> bimListIndexEn = null;
+
+    public static List<PlateInformation> homeSADEn = null;
+
+    public static PlateInformation homeAdEn = null;
+
+    public static PlateInformation homeAboutEn = null;
+
+    public static List<PlateInformation> homeStyleEn = null;
+
+    public static List<PlateInformation> homeExpertEn = null;
+
+    public static PlateInformation homeNewsEn = null;
+    
+    public static PlateInformation topIntoEn = null;
+
+    public static PlateInformation topStyleEn = null;
+
+    public static List<PlateInformation> topEventEn = null;
+
+    public static List<PlateInformation> topTrainEn = null;
+
+    public static List<PlateInformation> topJoinEn = null;
 }

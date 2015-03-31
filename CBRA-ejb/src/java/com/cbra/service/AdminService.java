@@ -28,6 +28,7 @@ import com.cbra.support.enums.FundCollectionLanaguageEnum;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
+import com.cbra.support.enums.OrderStatusEnum;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
@@ -60,6 +61,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -208,8 +210,24 @@ public class AdminService {
         if (map.containsKey("status")) {
             criteria.add(builder.equal(root.get("orderCollection").get("status"), map.get("status")));
         }
+        if (map.containsKey("statuss")) {
+            In in = builder.in(root.get("orderCollection").get("status"));
+            List<OrderStatusEnum> statuss = (List<OrderStatusEnum>) map.get("statuss");
+            for (OrderStatusEnum status : statuss) {
+                in.value(status);
+            }
+            criteria.add(in);
+        }
         if (map.containsKey("serviceStatus")) {
             criteria.add(builder.equal(root.get("orderCbraService").get("status"), map.get("serviceStatus")));
+        }
+        if (map.containsKey("serviceStatuss")) {
+            In in = builder.in(root.get("orderCbraService").get("status"));
+            List<OrderStatusEnum> statuss = (List<OrderStatusEnum>) map.get("serviceStatuss");
+            for (OrderStatusEnum status : statuss) {
+                in.value(status);
+            }
+            criteria.add(in);
         }
         try {
             if (list == null || !list) {
@@ -911,7 +929,7 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("pushDate")));
+                query.orderBy(builder.desc(root.get("orderIndex")));
                 TypedQuery<PlateInformation> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;
@@ -936,7 +954,7 @@ public class AdminService {
         countQuery.setParameter("ids", map.get("ids"));
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        hql = "SELECT c FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        hql = "SELECT c FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.orderIndex,c.createDate DESC";
         TypedQuery<PlateInformation> query = em.createQuery(hql, PlateInformation.class);
         query.setParameter("ids", map.get("ids"));
         int startIndex = (pageIndex - 1) * maxPerPage;
@@ -968,6 +986,9 @@ public class AdminService {
         criteria.add(builder.equal(root.get("deleted"), false));
         if (map.containsKey("plateId")) {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
+        }
+        if (map.containsKey("searchName")) {
+            criteria.add(builder.like(root.get("name"), "%" + map.get("searchName").toString() + "%"));
         }
         try {
             if (list == null || !list) {
@@ -1260,7 +1281,7 @@ public class AdminService {
      * @return
      */
     public PlateInformation findPlateInformationByPlateId(Long plateId, LanguageType language) {
-        TypedQuery<PlateInformation> query = em.createQuery("SELECT p FROM PlateInformation p WHERE p.plate.id = :plateId AND p.language = :language ORDER BY p.createDate DESC", PlateInformation.class);
+        TypedQuery<PlateInformation> query = em.createQuery("SELECT p FROM PlateInformation p WHERE p.plate.id = :plateId AND p.language = :language ORDER BY p.orderIndex,p.createDate DESC", PlateInformation.class);
         query.setParameter("plateId", plateId);
         query.setParameter("language", language);
         List<PlateInformation> list = query.getResultList();
@@ -1324,7 +1345,7 @@ public class AdminService {
      * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, String navUrl, FileUploadItem item) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, String navUrl, FileUploadItem item, Integer orderIndex) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -1332,6 +1353,10 @@ public class AdminService {
             plateInfo = this.findPlateInformationById(id);
         }
         plateInfo.setLanguage(languageTypeEnum);
+        if (orderIndex == null) {
+            orderIndex = 0;
+        }
+        plateInfo.setOrderIndex(orderIndex);
         plateInfo.setPushDate(pushDate);
         plateInfo.setTitle(title);
         plateInfo.setNavUrl(navUrl);
@@ -1380,7 +1405,7 @@ public class AdminService {
      * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, Date pushDate, String navUrl, LanguageType languageTypeEnum, FileUploadItem item) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, Date pushDate, String navUrl, LanguageType languageTypeEnum, FileUploadItem item, Integer orderIndex) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -1388,6 +1413,10 @@ public class AdminService {
             plateInfo = this.findPlateInformationById(id);
         }
         plateInfo.setLanguage(languageTypeEnum);
+        if (orderIndex == null) {
+            orderIndex = 0;
+        }
+        plateInfo.setOrderIndex(orderIndex);
         plateInfo.setPushDate(pushDate);
         plateInfo.setTitle(title);
         plateInfo.setIntroduction(introduction);
@@ -1436,13 +1465,23 @@ public class AdminService {
      * @return
      */
     public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
-            String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum) {
+            String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum,
+            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode) {
         Offer offer = new Offer();
         boolean isCreare = true;
         if (id != null) {
             isCreare = false;
             offer = this.findOfferById(id);
         }
+        offer.setName(name);
+        offer.setEnName(enName);
+        offer.setMobile(mobile);
+        offer.setEmail(email);
+        offer.setCompany(company);
+        offer.setObtain(obtain);
+        offer.setCompany(company);
+        offer.setAddress(address);
+        offer.setZipCode(zipCode);
         offer.setLanguageType(languageTypeEnum);
         offer.setPushDate(pushDate);
         offer.setAge(age);
