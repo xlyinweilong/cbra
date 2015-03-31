@@ -36,6 +36,8 @@ public class Config {
     public static final String FILE_UPLOAD_TEMP = "temp";
 
     public static final String FILE_UPLOAD_PLATE = "plate";
+    
+    public static final String FROM_EMAIL = "cbra@cbra.com";
 
     public static final String FILE_UPLOAD_ACCOUNT = "account_ic";
 

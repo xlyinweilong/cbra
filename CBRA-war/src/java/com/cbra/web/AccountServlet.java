@@ -348,24 +348,21 @@ public class AccountServlet extends BaseServlet {
     private boolean doLogin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");
-        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "account", "passwd")) {
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         request.setAttribute("account", account);
         request.setAttribute("p", getRequestString(request, "p"));
         Account user;
         try {
             user = accountService.getAccountForLogin(account, passwd);
         } catch (AccountNotExistException ex) {
-            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
+            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_账户密码错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
         if (user == null) {
-            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
+            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_账户密码错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        if (!(user instanceof SubCompanyAccount) && user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL)) {
-            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_FAIL"), request);
+        if (!(user instanceof SubCompanyAccount) && (user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL) || user.getStatus().equals(AccountStatus.APPROVAL_REJECT))) {
+            setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_账户密码错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
         // 设置user到session里，跳转到相应的登录后页面。
@@ -373,42 +370,6 @@ public class AccountServlet extends BaseServlet {
     }
 
     private boolean doChangeRegInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
-//        UserAccount user = getUserFromSession(request);
-//        try {
-//            FileUploadObj fileUploadObj = this.uploadFile(request, 10.0, "reginfo", null, null);
-//            String name = null;
-//            String company = null;
-//            String phone = null;
-//            String position = null;
-//            name = fileUploadObj.getFormField("name");
-//            if (user.isPermissionModified()) {
-//                if (StringUtils.isBlank(name)) {
-//                    setErrorResult(bundle.getString("ACCOUNT_REGINFO_MSG_请输入您的姓名"), request);
-//                    return KEEP_GOING_WITH_ORIG_URL;
-//                }
-//            }
-//            company = fileUploadObj.getFormField("company");
-//            phone = fileUploadObj.getFormField("phone");
-//            position = fileUploadObj.getFormField("position");
-//            if (user.getAccountType().equals(UserAccountTypeEnum.COMPANY)) {
-//                if (StringUtils.isBlank(position)) {
-//                    setErrorResult(bundle.getString("ACCOUNT_REGINFO_MSG_职位不能为空"), request);
-//                    return KEEP_GOING_WITH_ORIG_URL;
-//                }
-//            }
-//            try {
-//                accountService.updateUserRegInfo(user.getId(), name, position, company, phone, fileUploadObj.getFileField("logo"));
-//            } catch (ImageConvertException ex) {
-//                setErrorResult(bundle.getString("ACCOUNT_REGINFO_MSG_请上传正确的图片格式"), request);
-//                return KEEP_GOING_WITH_ORIG_URL;
-//            }
-////            refreshSessionUser(request, accountService);
-//            setSuccessResult(bundle.getString("ACCOUNT_REGINFO_MSG_修改成功"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        } catch (FileUploadException ex) {
-//            setErrorResult(ex.getMessage(), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -424,9 +385,6 @@ public class AccountServlet extends BaseServlet {
     private boolean doSignup(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = getRequestEmail(request, "email");
         String mobile = getRequestString(request, "account");
-//        if (!validateBlankParams(bundle.getString("GLOBAL_MSG_INPUT_NO_BLANK"), request, response, "accountName", "accountEnName", "account", "email", "workingYear", "company", "address", "zipCode", "position", "front", "back", "workExperience", "projectExperience", "icPositions")) {
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
         String name = getRequestString(request, "accountName");
         String enName = getRequestString(request, "accountEnName");
         String address = getRequestString(request, "address");
@@ -447,15 +405,7 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        if (workingYear == null) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
         String[] icPositions = request.getParameterValues("icPositions");
-//        if (icPositions.length < 1) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
         UserPosition up = null;
         try {
             up = UserPosition.valueOf(position);
@@ -523,10 +473,6 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         String[] icPositions = request.getParameterValues("icPositions");
-//        if (icPositions.length < 1) {
-//            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-//            return KEEP_GOING_WITH_ORIG_URL;
-//        }
         Date companyCreate = Tools.parseDate(companyCreateDate, "yyyy-MM-dd");
         Date authentication = Tools.parseDate(authenticationDate, "yyyy-MM-dd");
         Date productionLicenseValidStart = Tools.parseDate(productionLicenseValidDateStart, "yyyy-MM-dd");
@@ -591,7 +537,7 @@ public class AccountServlet extends BaseServlet {
         String account = getRequestString(request, "account");
         Account user = accountService.findByAccount(account);
         if (user == null || !user.getEmail().equals(email) || AccountStatus.APPROVAL_REJECT.equals(user.getStatus()) || AccountStatus.PENDING_FOR_APPROVAL.equals(user.getStatus())) {
-            setErrorResult(bundle.getString("ACCOUNT_SEND_RESET_PASSWD_该账号不存在，请重新输入"), request);
+            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
         accountService.sendResetPasswdURLEmail(user, bundle.getLocale().getLanguage());
@@ -681,7 +627,7 @@ public class AccountServlet extends BaseServlet {
         if (account == null || account.getStatus().equals(AccountStatus.APPROVAL_REJECT)) {
             return super.outputSuccessAjax(null, null, response);
         } else {
-            return super.outputErrorAjax(bundle.getString("ACCOUNT_已经存在"), null, response);
+            return super.outputErrorAjax(bundle.getString("ACCOUNT_SIGNUP_MSG_账户已经存在"), null, response);
         }
     }
 

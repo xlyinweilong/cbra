@@ -479,7 +479,7 @@ public class OrderService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -504,7 +504,7 @@ public class OrderService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_service_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【会员费支付成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();

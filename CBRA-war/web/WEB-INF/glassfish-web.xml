@@ -8,11 +8,9 @@
             <description>Keep a copy of the generated servlet class' java code.</description>
         </property>
     </jsp-config>
-<!--    <property name="alternatedocroot_1" value="from=/temp/* dir=f:/test"/>
-    <property name="alternatedocroot_2" value="from=/account_ic/* dir=F:\cbrd"/>-->
-<!--    <property name="alternatedocroot_1" value="from=/html_editor_upload/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
+    <property name="alternatedocroot_1" value="from=/html_editor_upload/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
     <property name="alternatedocroot_2" value="from=/temp/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
     <property name="alternatedocroot_3" value="from=/account_head_image/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
     <property name="alternatedocroot_4" value="from=/account_ic/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
-    <property name="alternatedocroot_5" value="from=/plate/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>-->
+    <property name="alternatedocroot_5" value="from=/plate/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
 </glassfish-web-app>

@@ -127,7 +127,7 @@ public class AccountService {
      *
      * @param ids
      */
-    public void deleteAccountByIds(String... ids) {
+    public void deleteAccountByIds(String[] ids) {
         for (String id : ids) {
             if (id == null) {
                 continue;
@@ -908,7 +908,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -930,7 +930,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_approval_fail_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【CBRA】筑誉建筑联合会入会申请审核结果通知 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -966,7 +966,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_approval_success_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批成功通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -1001,7 +1001,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "order_approval_fail_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【订单审批失败通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();
@@ -1027,7 +1027,7 @@ public class AccountService {
         }
         language = language.toLowerCase();
         String fromDisplayName = "zh".equalsIgnoreCase(language) ? "筑誉建筑联合会" : "CBRA";
-        String fromEmail = "yinweilong.com@163.com";
+        String fromEmail = Config.FROM_EMAIL;
         String templateFile = "account_reset_passwd_" + language + ".html";
         String subject = "zh".equalsIgnoreCase(language) ? " 【密码找回通知】 " : " Withdraw Request Processed - YUAN RMB ";
         Map model = new HashMap();

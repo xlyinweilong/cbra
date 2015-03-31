@@ -34,7 +34,6 @@ public class CompanyAccount extends Account {
     @Column(name = "legal_person", length = 255)
     //企业法人
     private String legalPerson;
-    @Size(max = 255)
     @Column(name = "nature", length = 255)
     @Enumerated(EnumType.STRING)
     //企业性质
@@ -43,16 +42,13 @@ public class CompanyAccount extends Account {
     @Column(name = "nature_others", length = 255)
     //企业性质其他
     private String natureOthers;
-    @Size(max = 255)
     @Column(name = "scale", length = 255)
     @Enumerated(EnumType.STRING)
     //规模(员工人数)
     private CompanyScaleEnum scale;
-    @Size(max = 255)
     @Column(name = "web_side", length = 255)
     //网站
     private String webSide;
-    @Size(max = 255)
     @Column(name = "enterprise_qality_grading", length = 255)
     //企业资质等级
     private String enterpriseQalityGrading;
@@ -60,7 +56,6 @@ public class CompanyAccount extends Account {
     @Temporal(TemporalType.TIMESTAMP)
     //主项资质发证时间
     private Date authenticationDate;
-    @Size(max = 255)
     @Column(name = "production_license_number", length = 255)
     //产许可证编号
     private String productionLicenseNumber;
@@ -77,11 +72,9 @@ public class CompanyAccount extends Account {
     @Column(name = "field")
     //目标客户或擅长领域
     private String field;
-    @Size(max = 255)
     @Column(name = "business_license", length = 255)
     //上传企业营业执照副本（彩色加盖公章）
     private String businessLicenseUrl;
-    @Size(max = 255)
     @Column(name = "qualification_certificate", length = 255)
     //资质证书打包文件
     private String qualificationCertificateUrl;

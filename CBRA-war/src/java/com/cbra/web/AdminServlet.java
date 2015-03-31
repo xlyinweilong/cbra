@@ -1220,6 +1220,7 @@ public class AdminServlet extends BaseServlet {
      */
     private boolean doAccountDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String[] ids = request.getParameterValues("ids");
+        System.out.println(ids[0]);
         accountService.deleteAccountByIds(ids);
         return KEEP_GOING_WITH_ORIG_URL;
     }
