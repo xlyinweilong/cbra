@@ -123,6 +123,14 @@ public class PublicServlet extends BaseServlet {
     // *************** ACTION处理的相关函数，放在这下面
     // ************************************************************************
     private boolean doSetLang(HttpServletRequest request, HttpServletResponse response) {
+        String lang = request.getParameter("lang");
+        super.setLanguage(lang, request, response);
+
+        String force = request.getParameter("force");
+        if (force != null) {
+            HttpSession session = request.getSession();
+            session.setAttribute("forceLanguage", force);
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -207,17 +215,17 @@ public class PublicServlet extends BaseServlet {
         List<Long> eventids = (List<Long>) application.getAttribute("eventids");
         List<Long> trainids = (List<Long>) application.getAttribute("trainids");
         List<Long> consultids = (List<Long>) application.getAttribute("consultids");
-        if(newsids.contains(plateId)){
-            super.forward("/news/details?id="+id, request, response);
+        if (newsids.contains(plateId)) {
+            super.forward("/news/details?id=" + id, request, response);
             return FORWARD_TO_ANOTHER_URL;
-        }else if(eventids.contains(plateId)){
-            super.forward("/event/event_details?id="+id, request, response);
+        } else if (eventids.contains(plateId)) {
+            super.forward("/event/event_details?id=" + id, request, response);
             return FORWARD_TO_ANOTHER_URL;
-        }else if(trainids.contains(plateId)){
-            super.forward("/train/train_details?id="+id, request, response);
+        } else if (trainids.contains(plateId)) {
+            super.forward("/train/train_details?id=" + id, request, response);
             return FORWARD_TO_ANOTHER_URL;
-        }else if(consultids.contains(plateId)){
-            super.forward("/into/details?id="+id, request, response);
+        } else if (consultids.contains(plateId)) {
+            super.forward("/into/details?id=" + id, request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
         return KEEP_GOING_WITH_ORIG_URL;

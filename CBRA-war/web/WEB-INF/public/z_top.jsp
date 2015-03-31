@@ -35,7 +35,7 @@
                       <c:when test="${sessionScope.userStatus == 'MEMBER'}">(级别：会员)</c:when>
                   </c:choose>
                 </c:if>
-                  &nbsp;&nbsp;<a href="#">English</a>   |   <a href="#">中文</a>   
+                  &nbsp;&nbsp;<a href="javascript:language.doSetEnglish()">English</a>   |   <a href="javascript:language.doSetChinese()">中文</a>   
                   <%--|   <a href="error-c.asp">报错页面连接，知道后程序去掉</a>--%>
             </div>
 
@@ -59,13 +59,13 @@
         <ul id="HJ_Nav" class="nav">
             <!--首页-->
             <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 1)"  href="/public/index">
-                    ${applicationScope.navigationPlates.get(0).getName()}
+                    <fmt:message key="INDEX_筑誉首页" bundle="${bundle}"/>
                 </a></li>
             <!--首页 end-->
 
             <!--走进筑誉-->
             <li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 2)" href="/into/idea">
-                    ${applicationScope.navigationPlates.get(1).getName()}
+                    <fmt:message key="INDEX_走进筑誉" bundle="${bundle}"/>
                 </a>
                 <div class="nav-menu clearfix" id="HJ_Menu_2" style="width: 630px; display: none;">
                     <ul class="fl nav-channel">

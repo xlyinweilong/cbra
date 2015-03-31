@@ -183,7 +183,32 @@ function keepSession(){
         }
     }); 
 }
-
+var language = {
+    doSetChinese:function(force){
+        $.post("/public/z_set_lang", 
+        {
+            a:"SET_LANG", 
+            lang:"zh",
+            force:force
+        } ,
+        function(response) {
+            redirectSelf();
+        }
+        );
+    },
+    doSetEnglish:function(force){
+        $.post("/public/z_set_lang", 
+        {
+            a:"SET_LANG", 
+            lang:"en",
+            force:force
+        } ,
+        function(response) {
+            redirectSelf();
+        }
+        );
+    }
+}
 var Lang = {
     _translate:function(string, args){
         if (typeof args == "string") {
