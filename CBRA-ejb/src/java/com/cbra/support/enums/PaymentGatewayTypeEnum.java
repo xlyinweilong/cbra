@@ -23,7 +23,7 @@ public enum PaymentGatewayTypeEnum {
             case ALIPAY_BANK:
                 return "支付宝网银";
             case BANK_TRANSFER:
-                return "银行转账";
+                return "其他支付方式";
             default:
                 return null;
         }

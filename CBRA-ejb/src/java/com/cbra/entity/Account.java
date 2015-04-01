@@ -128,6 +128,9 @@ public abstract class Account implements Serializable {
     private String loginCode;
 
     public String getIcPositionString() {
+        if (Tools.isBlank(icPosition)) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
         String[] ics = icPosition.split("_");
         for (String ic : ics) {

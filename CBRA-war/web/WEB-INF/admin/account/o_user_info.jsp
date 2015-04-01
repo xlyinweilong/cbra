@@ -85,13 +85,13 @@
                 <input id="form_action" type="hidden" name="a" value="" />
                 <input id="form_type" type="hidden" name="type" value="" />
                 <ul class="forminfo">
-                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.account" value="${userAccount.account}" maxlength="25" /></li>
-                    <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.passwd" value="" maxlength="25" />(不填写不修改)</li>
-                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}" maxlength="25" /></li>
-                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" maxlength="25" /></li>
-                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" maxlength="50" /></li>
-                    <li><label>行业从业时间<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingYear" value="${userAccount.workingYear}" maxlength="25" />年</li>
-                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" maxlength="100" /></li>
+                    <li><label>账户(手机)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.account" value="${userAccount.account}"  /></li>
+                    <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.passwd" value=""/>(不填写不修改)</li>
+                    <li><label>中文名称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.name" value="${userAccount.name}"/></li>
+                    <li><label>英文名称</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.enName" value="${userAccount.enName}" /></li>
+                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.email" value="${userAccount.email}" /></li>
+                    <li><label>行业从业时间<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.workingYear" value="${userAccount.workingYear}" />年</li>
+                    <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" /></li>
                     <li><label>产业链位置</label>
                         <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
                             <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
@@ -104,9 +104,9 @@
                                             <option <c:if test="${not empty userAccount.positionOthers}">selected="selected"</c:if> value="others">其他</option>
                                     </select>
                     </li>
-                    <li id="others" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.others" value="${userAccount.positionOthers}" maxlength="200" /></li>
-                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.address" value="${userAccount.address}" maxlength="200" /></li>
-                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.zipCode" value="${userAccount.zipCode}" maxlength="50" /></li>
+                    <li id="others" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.others" value="${userAccount.positionOthers}" /></li>
+                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.address" value="${userAccount.address}"  /></li>
+                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.zipCode" value="${userAccount.zipCode}" /></li>
                     <li style="height: 210px;">
                         <labe style="width:800px">
                             &nbsp;

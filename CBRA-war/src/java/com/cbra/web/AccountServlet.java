@@ -666,15 +666,14 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(ex.getMessage(), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        if (icPositions.length < 1) {
-            setErrorResult(bundle.getString("ACCOUNT_SIGNUP_MSG_注册失败手机错误"), request);
-            return KEEP_GOING_WITH_ORIG_URL;
-        }
+
         String icPosition;
         StringBuilder sb = new StringBuilder();
-        for (String ic : icPositions) {
-            sb.append(ic);
-            sb.append("_");
+        if (icPositions != null) {
+            for (String ic : icPositions) {
+                sb.append(ic);
+                sb.append("_");
+            }
         }
         icPosition = sb.toString();
         if (account instanceof CompanyAccount) {

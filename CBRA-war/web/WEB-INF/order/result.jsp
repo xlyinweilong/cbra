@@ -26,28 +26,39 @@
                         </div>
                         <table id="bank_transfer_table" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                             <tr>
+                                <td width="190" height="50"><b style="color: red">【银行转账】</b> </td>
+                            </tr>
+                            <tr>
                                 <td width="190" height="50"><b>注意：</b>您还没有完成付款 </td>
                             </tr>
                             <tr>
                                 <td width="190" height="50">
                                     请将${order.amount}元转到以下账户。请牢记您的转账ID(${order.serialId})，并将其填写在汇款的附加信息中。<br/>
-                                    我们将会在确认款项到账后，给您发送通知。 
+                                    并在转账完成后联系筑誉工作人员进行确认。
                                 </td>
                             </tr>
                             <tr>
                                 <td width="190" height="50"><b>金额</b>&nbsp;&nbsp;&nbsp;&nbsp;￥${order.amount}</td>
                             </tr>
                             <tr>
-                                <td width="190" height="50"><b>账户名称</b>&nbsp;&nbsp;&nbsp;&nbsp;上海筑誉建筑联合会科技有限公司</td>
+                                <td width="190" height="50"><b>账户名称</b>&nbsp;&nbsp;&nbsp;&nbsp;上海铸誉企业管理咨询有限公司</td>
                             </tr>
                             <tr>
-                                <td width="190" height="50"><b>银行账号</b>&nbsp;&nbsp;&nbsp;&nbsp;11090 62075 10801</td>
+                                <td width="190" height="50"><b>银行账号</b>&nbsp;&nbsp;&nbsp;&nbsp;03 4321 0004 0006 264</td>
                             </tr>
                             <tr>
-                                <td width="190" height="50"><b>开户银行</b>&nbsp;&nbsp;&nbsp;&nbsp;招商银行上海分行华贸中心支行</td>
+                                <td width="190" height="50"><b>开户银行</b>&nbsp;&nbsp;&nbsp;&nbsp;农业银行上海分行马当路支行</td>
                             </tr>
                             <tr>
-                                <td width="190" height="50"><b>补充信息</b>&nbsp;&nbsp;&nbsp;&nbsp;${order.serialId}</td>
+                                <td width="190" height="50"><b>补充信息</b>&nbsp;&nbsp;&nbsp;&nbsp;个人姓名或企业名称 + 转账ID(${order.serialId})</td>
+                            </tr>
+                        </table>
+                        <table width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
+                            <tr>
+                                <td width="190" height="50"><b style="color: red">【其他支付方式】</b> </td>
+                            </tr>
+                            <tr>
+                                <td width="190" height="50">请提前联系筑誉工作人员，联系电话：021-61550302</td>
                             </tr>
                         </table>
                     </c:when>

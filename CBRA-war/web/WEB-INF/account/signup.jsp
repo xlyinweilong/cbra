@@ -103,15 +103,15 @@
                                             <option <c:if test="${position == userAccount.position}">selected="selected"</c:if> value="${position.name()}">${position.mean}</option>
                                         </c:forEach>
                                         <option <c:if test="${not empty userAccount.positionOthers}">selected="selected"</c:if> value="others">其他</option>
-                                    </select>
-                                </span>   
-                            </td>
-                            <td class="reg-1" id="others_td_1" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>">其他</td>
+                                        </select>
+                                    </span>   
+                                </td>
+                                <td class="reg-1" id="others_td_1" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>">其他</td>
                             <td id="others_td_2" style="<c:if test="${empty userAccount.positionOthers}">display: none</c:if>"><input type="text" name="others" id="others"  value="${userAccount.positionOthers}" class="Input-1"/></td>
-                        </tr>
-                        <tr>
-                            <td class="reg-1">产业链位置</td>
-                            <td class="reg-2" colspan="3" style="line-height: 22px;">
+                            </tr>
+                            <tr>
+                                <td class="reg-1">产业链位置</td>
+                                <td class="reg-2" colspan="3" style="line-height: 22px;">
                                 <c:forEach var="icPosition" items="${icPositions}">
                                     <input <c:if test="${positionList.contains(icPosition.key)}">checked="checked"</c:if> type="checkbox" name="icPositions" value="${icPosition.key}" />${icPosition.name}&nbsp&nbsp&nbsp&nbsp
                                 </c:forEach>
@@ -149,7 +149,7 @@
                                     <img id="reg_front_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
                                         <a href="javascript:void(0)" class="upload-img"><label for="reg_front">选择图片路径</label></a>
-                                        <input id="reg_front" type="file" class="" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value" />
+                                        <input id="reg_front" type="file" class="" name="reg_front_file" onchange="document.getElementById('reg_front_result').innerHTML = this.value;checkImgType(this);" />
                                     </div>
                                     <p id="reg_front_result"></p>
                                 </div>
@@ -167,7 +167,7 @@
                                     <img id="reg_back_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
                                         <a href="javascript:void(0)" class="upload-img"><label for="reg_back">选择图片路径</label></a>
-                                        <input id="reg_back" type="file" class="" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value" />
+                                        <input id="reg_back" type="file" class="" name="reg_back_file" onchange="document.getElementById('reg_back_result').innerHTML = this.value;checkImgType(this);" />
                                     </div>
                                     <p id="reg_back_result"></p>
                                 </div>
@@ -196,12 +196,12 @@
                     <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
                             <td align="center" ><textarea id="workExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;">${userAccount.workExperience}</textarea></td>
-                        </tr>
-                    </table>
-                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                        <tr>
-                            <td style="width: 300px;" align="right">
-                                <div align="center" id="signup_msg_3" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                    </tr>
+                </table>
+                <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                    <tr>
+                        <td style="width: 300px;" align="right">
+                            <div align="center" id="signup_msg_3" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                             </td>
                             <td align="center" >
                                 <input id="step3_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
@@ -217,12 +217,12 @@
                     <table width="914" border="0" style="margin:0 auto; border-bottom:2px #dddddd solid; padding-bottom:20px;">
                         <tr>
                             <td align="center" ><textarea id="projectExperience" style="width:910px; height:150px; border:1px #e6e6e6 solid;">${userAccount.projectExperience}</textarea></td>
-                        </tr>
-                    </table>
-                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                        <tr>
-                            <td style="width: 300px;" align="right">
-                                <div align="center" id="signup_msg_4" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                    </tr>
+                </table>
+                <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                    <tr>
+                        <td style="width: 300px;" align="right">
+                            <div align="center" id="signup_msg_4" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                             </td>
                             <td align="center" >
                                 <input id="step4_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
@@ -367,6 +367,35 @@
                     $("#reg_back_form").submit();
                 });
             });
+            function checkImgType(this_) {
+                var filepath = $(this_).val();
+                var file_size = 0;
+                if ($.support.msie) {
+                    var img = new Image();
+                    img.src = filepath;
+                    if (img.fileSize > 0) {
+                        if (img.fileSize > 3 * 1024) {
+                            alert("图片不大于3MB。");
+                            $(this_).focus();
+                            this_.select();
+                            document.execCommand("delete");
+                            return false;
+                        }
+                    }
+                } else {
+                    file_size = this_.files[0].size;
+                    console.log(file_size / 1024 / 1024 + " MB");
+                    var size = file_size / 1024;
+                    alert(size);
+                    if (size > 3) {
+                        alert("上传的文件大小不能超过3M！");
+                        $(this_).focus();
+                        $(this_).val("");
+                        return false;
+                    }
+                }
+                return true;
+            }
         </script>
     </body>
 </html>

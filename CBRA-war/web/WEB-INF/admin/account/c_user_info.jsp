@@ -83,17 +83,17 @@
                 <input id="form_action" type="hidden" name="a" value="" />
                 <input id="form_type" type="hidden" name="type" value="" />
                 <ul class="forminfo">
-                    <li><label>账户(营业执照注册号)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="account" value="${companyAccount.account}" maxlength="25" /></li>
+                    <li><label>账户(营业执照注册号)<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="account" value="${companyAccount.account}" /></li>
                     <li><label>密码</label><input type="text" class="dfinput" style="width: 350px;" name="passwd" value="" maxlength="25" />(不填写不修改)</li>
-                    <li><label>企业全称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="name" value="${companyAccount.name}" maxlength="25" /></li>
-                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="email" value="${companyAccount.email}" maxlength="50" /></li>
-                    <li><label>创立时间</label><input type="text" class="dfinput" style="width: 350px;" name="companyCreateDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.companyCreateDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
-                    <li><label>企业法人</label><input type="text" class="dfinput" style="width: 350px;" name="legalPerson" value="${companyAccount.legalPerson}" maxlength="100" /></li>
-                    <li><label>企业网址</label><input type="text" class="dfinput" style="width: 350px;" name="webSide" value="${companyAccount.webSide}" maxlength="100" /></li>
-                    <li><label>企业资质等级</label><input type="text" class="dfinput" style="width: 350px;" name="enterpriseQalityGrading" value="${companyAccount.enterpriseQalityGrading}" maxlength="100" /></li>
-                    <li><label>主项资质发证时间</label><input type="text" class="dfinput" style="width: 350px;" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.authenticationDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
-                    <li><label>安全生产许可证编号</label><input type="text" class="dfinput" style="width: 350px;" name="productionLicenseNumber" value="${companyAccount.productionLicenseNumber}" maxlength="100" /></li>
-                    <li><label>安全生产许可证有效期</label><input type="text" class="dfinput" style="width: 350px;" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" maxlength="25" /></li>
+                    <li><label>企业全称<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="name" value="${companyAccount.name}"  /></li>
+                    <li><label>邮箱<b>*</b></label><input type="text" class="dfinput" style="width: 350px;" name="email" value="${companyAccount.email}"/></li>
+                    <li><label>创立时间</label><input type="text" class="dfinput" style="width: 350px;" name="companyCreateDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.companyCreateDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" /></li>
+                    <li><label>企业法人</label><input type="text" class="dfinput" style="width: 350px;" name="legalPerson" value="${companyAccount.legalPerson}"/></li>
+                    <li><label>企业网址</label><input type="text" class="dfinput" style="width: 350px;" name="webSide" value="${companyAccount.webSide}"  /></li>
+                    <li><label>企业资质等级</label><input type="text" class="dfinput" style="width: 350px;" name="enterpriseQalityGrading" value="${companyAccount.enterpriseQalityGrading}" /></li>
+                    <li><label>主项资质发证时间</label><input type="text" class="dfinput" style="width: 350px;" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.authenticationDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" /></li>
+                    <li><label>安全生产许可证编号</label><input type="text" class="dfinput" style="width: 350px;" name="productionLicenseNumber" value="${companyAccount.productionLicenseNumber}" /></li>
+                    <li><label>安全生产许可证有效期</label><input type="text" class="dfinput" style="width: 350px;" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" /></li>
                     <li><label>产业链位置</label>
                         <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
                             <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
@@ -105,15 +105,15 @@
                                         </c:forEach>
                                     </select>
                     </li>
-                    <li id="others" style="<c:if test="${empty companyAccount.natureOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="natureOthers" value="${companyAccount.natureOthers}" maxlength="200" /></li>
+                    <li id="others" style="<c:if test="${empty companyAccount.natureOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="natureOthers" value="${companyAccount.natureOthers}" /></li>
                     <li><label>企业人数</label><select id="scale" name="scale" class="dfinput">
                                         <c:forEach var="companyScaleEnum" items="${companyScaleEnums}">
                                             <option <c:if test="${companyScaleEnum == companyAccount.scale}">selected="selected"</c:if> value="${companyScaleEnum.name()}">${companyScaleEnum.mean}</option>
                                         </c:forEach>
                                     </select>
                     </li>
-                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="address" value="${companyAccount.address}" maxlength="200" /></li>
-                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="zipCode" value="${companyAccount.zipCode}" maxlength="50" /></li>
+                    <li><label>邮寄地址</label><input type="text" class="dfinput" style="width: 350px;" name="address" value="${companyAccount.address}" /></li>
+                    <li><label>邮编</label><input type="text" class="dfinput" style="width: 350px;" name="zipCode" value="${companyAccount.zipCode}" /></li>
                     <li style="height: 210px;">
                         <labe style="width:800px">
                             &nbsp;

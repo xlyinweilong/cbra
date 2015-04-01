@@ -173,13 +173,13 @@ public class OrderCollection implements Serializable {
 
     public String getUserStr() {
         if (owner == null) {
-            return "游客";
+            return "非会员";
         } else if (owner instanceof UserAccount) {
             return "个人用户";
         } else if (owner instanceof CompanyAccount) {
             return "企业用户";
         } else {
-            return "游客";
+            return "非会员";
         }
     }
 

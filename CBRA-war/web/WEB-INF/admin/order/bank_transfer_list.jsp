@@ -33,7 +33,7 @@
             //显示修改界面
             $.fn.edit = function (sid) {
                 var url = "/admin/order/bank_transfer_list?a=BANK_TRANSFER_CONFIRM&id=" + sid;
-                if (confirm("您确定要确认转账吗？")) {
+                if (confirm("您确定要确认到账吗？")) {
                     $.post(url, "", function (data) {
                         window.location.href = window.location.href;
                     });
@@ -61,7 +61,7 @@
                     <a href="#">订单管理</a>
                 </li>
                 <li>
-                    <a href="#">未处理的银行转账</a>
+                    <a href="#">活动其他支付管理</a>
                 </li>
             </ul>
         </div>
@@ -123,7 +123,7 @@
                                     ${transfer.orderCollection.status.mean}
                                 </td>
                                 <td>
-                                    <a href="javascript:$.fn.edit('${transfer.id}');" class="tablelink">确认转账</a>
+                                    <a href="javascript:$.fn.edit('${transfer.id}');" class="tablelink">确认到账</a>
                                     <a href="javascript:$.fn.deleteItem('${transfer.id}');" class="tablelink">删除</a>
                                 </td>
                             </tr>

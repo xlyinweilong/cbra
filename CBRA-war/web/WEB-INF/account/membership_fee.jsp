@@ -43,7 +43,7 @@
                                                 <td bgcolor="#FFFFFF" class="biaog-bt">
                                                     <c:choose>
                                                         <c:when test="${order.lastGatewayPayment.gatewayType == 'ALIPAY'}">支付宝</c:when>
-                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}">银行转账</c:when>
+                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}">其他支付方式</c:when>
                                                     </c:choose>
                                                 </td>
                                                 <td bgcolor="#FFFFFF" class="biaog-bt">

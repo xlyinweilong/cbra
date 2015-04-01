@@ -143,36 +143,36 @@
                             <tr>
                                 <td class="reg-3">企业网址</td>
                                 <td class="reg-4"><input type="text" class="Input-1" id="webSide" name="webSide" value="${companyAccount.webSide}" /></td>
-                                <td class="reg-3">资质证书编号</td>
-                                <td><input type="text" class="Input-1" id="qalityCode" name="qalityCode" value="${companyAccount.qalityCode}" /></td>
-                            </tr>
-                            <tr>
-                                <td class="reg-3">企业资质等级</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="enterpriseQalityGrading" name="enterpriseQalityGrading" value="${companyAccount.enterpriseQalityGrading}" /></td>
-                                <td class="reg-3">主项资质发证时间</td>
-                                <td><input type="text" class="Input-1" id="authenticationDate" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.authenticationDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
-                            </tr>
-                            <tr>
-                                <td class="reg-3">安全生产许可证编号</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseNumber" name="productionLicenseNumber"  value="${companyAccount.productionLicenseNumber}" /></td>
-                                <td class="reg-3"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="reg-3">安全生产许可证有效期(起始)</td>
-                                <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseValidDateStart" name="productionLicenseValidDateStart" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDateStart}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
-                                <td class="reg-3">安全生产许可证有效期(结束)</td>
-                                <td><input type="text" class="Input-1" id="productionLicenseValidDate" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
-                            </tr>
-                            <tr>
-                                <td class="reg-3">目标客户或擅长领域</td>
-                                <td colspan="3" ><textarea style="width:600px; height:40px; margin-top:20px; border:1px #e6e6e6 solid;" id="field" name="field">${companyAccount.field}</textarea></td>
-                            </tr>
-                        </table>
-                        <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
-                            <tr>
-                                <td style="width: 300px;" align="right">
-                                    <div align="center" id="signup_msg_2" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
+                            <td class="reg-3">资质证书编号</td>
+                            <td><input type="text" class="Input-1" id="qalityCode" name="qalityCode" value="${companyAccount.qalityCode}" /></td>
+                        </tr>
+                        <tr>
+                            <td class="reg-3">企业资质等级</td>
+                            <td class="reg-4"><input type="text" class="Input-1" id="enterpriseQalityGrading" name="enterpriseQalityGrading" value="${companyAccount.enterpriseQalityGrading}" /></td>
+                            <td class="reg-3">主项资质发证时间</td>
+                            <td><input type="text" class="Input-1" id="authenticationDate" name="authenticationDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.authenticationDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
+                        </tr>
+                        <tr>
+                            <td class="reg-3">安全生产许可证编号</td>
+                            <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseNumber" name="productionLicenseNumber"  value="${companyAccount.productionLicenseNumber}" /></td>
+                            <td class="reg-3"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="reg-3">安全生产许可证有效期(起始)</td>
+                            <td class="reg-4"><input type="text" class="Input-1" id="productionLicenseValidDateStart" name="productionLicenseValidDateStart" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDateStart}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
+                            <td class="reg-3">安全生产许可证有效期(结束)</td>
+                            <td><input type="text" class="Input-1" id="productionLicenseValidDate" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />" /></td>
+                        </tr>
+                        <tr>
+                            <td class="reg-3">目标客户或擅长领域</td>
+                            <td colspan="3" ><textarea style="width:600px; height:40px; margin-top:20px; border:1px #e6e6e6 solid;" id="field" name="field">${companyAccount.field}</textarea></td>
+                        </tr>
+                    </table>
+                    <table width="914" border="0" style="margin:20px auto; padding-bottom:20px;">
+                        <tr>
+                            <td style="width: 300px;" align="right">
+                                <div align="center" id="signup_msg_2" style="width: 120px;" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                                 </td>
                                 <td align="center" >
                                     <input id="step2_before" type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="上一步" />&nbsp&nbsp
@@ -201,7 +201,7 @@
                                     <img id="reg_bl_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
                                         <a href="javascript:void(0)" class="upload-img"><label for="reg_bl">选择图片路径</label></a>
-                                        <input id="reg_bl" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_bl_result').innerHTML = this.value" />
+                                        <input id="reg_bl" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_bl_result').innerHTML = this.value;checkImgType(this);" />
                                     </div>
                                     <p id="reg_bl_result"></p>
                                 </div>
@@ -218,7 +218,7 @@
                                     <img id="reg_qc_img" src="" width="300" height="190" style="display: none" />
                                     <div class="new-contentarea tc">
                                         <a href="javascript:void(0)" class="upload-img"><label for="reg_qc">选择图片路径</label></a>
-                                        <input id="reg_qc" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_qc_result').innerHTML = this.value" />
+                                        <input id="reg_qc" type="file" class="" name="reg_bl_file" onchange="document.getElementById('reg_qc_result').innerHTML = this.value;checkImgType(this);" />
                                     </div>
                                     <p id="reg_qc_result"></p>
                                 </div>
@@ -387,6 +387,35 @@
                     $("#reg_qc_form").submit();
                 });
             });
+            function checkImgType(this_) {
+                var filepath = $(this_).val();
+                var file_size = 0;
+                if ($.support.msie) {
+                    var img = new Image();
+                    img.src = filepath;
+                    if (img.fileSize > 0) {
+                        if (img.fileSize > 3 * 1024) {
+                            alert("图片不大于3MB。");
+                            $(this_).focus();
+                            this_.select();
+                            document.execCommand("delete");
+                            return false;
+                        }
+                    }
+                } else {
+                    file_size = this_.files[0].size;
+                    console.log(file_size / 1024 / 1024 + " MB");
+                    var size = file_size / 1024;
+                    alert(size);
+                    if (size > 3) {
+                        alert("上传的文件大小不能超过3M！");
+                        $(this_).focus();
+                        $(this_).val("");
+                        return false;
+                    }
+                }
+                return true;
+            }
         </script>
     </body>
 </html>

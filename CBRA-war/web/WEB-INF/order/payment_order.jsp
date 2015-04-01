@@ -25,10 +25,10 @@
                     </div>
                     <div class="xzyh-fs">
                         <ul>
-<!--                            <li><a href="javascript:void(0);" data="bank" id="xzyh-fs-b" onclick="changeTable(this, 'bank');">储蓄卡</a></li>
-                            <li><a href="javascript:void(0);">信用卡</a></li>-->
+                            <!--                            <li><a href="javascript:void(0);" data="bank" id="xzyh-fs-b" onclick="changeTable(this, 'bank');">储蓄卡</a></li>
+                                                        <li><a href="javascript:void(0);">信用卡</a></li>-->
                             <li><a href="javascript:void(0);" data="platform" id="xzyh-fs-b" onclick="changeTable(this, 'platform');">支付平台</a></li>
-                            <li><a href="javascript:void(0);" data="bank_transfer" onclick="changeTable(this, 'bank_transfer');">银行转账</a></li>
+                            <li><a href="javascript:void(0);" data="bank_transfer" onclick="changeTable(this, 'bank_transfer');">其他支付方式</a></li>
                         </ul>
                     </div>
                     <table id="bank_table" style="display: none"  width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
@@ -55,14 +55,23 @@
                     </table>
                     <table id="bank_transfer_table" style="display: none" width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                         <tr>
-                            <td width="190" height="50">1.银行转账是个人工流程，这意味这您需要到银行来进行操作。
-                                筑誉建筑联合会不会自动从您的银行帐户扣款。</td>
+                            <td width="190" height="50">1.其他支付方式是个人工流程。</td>
                         </tr>
                         <tr>
-                            <td width="190" height="50">2.您可以从任何银行进行转账。</td>
+                            <td width="190" height="50">2.您可以选择以下任意支付方式：<br/>
+                                网上银行转账<br/>
+                                到银行柜台办理转账<br/>
+                                缴纳现金<br/>
+                                微信转账<br/>
+                                其他支付方式（请事前联系筑誉工作人员）
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="190" height="50">3.选择其他方式支付完成后请主动联系筑誉工作人员进行到账确认。
+                            </td>
                         </tr>
                     </table>
-                    <div class="xiayy"><input type="button" class="xiayy-an" value="下一步" onclick="doPanyment()" style="margin-left: 600px;"></div>
+                    <div class="xiayy"><input type="button" class="xiayy-an" value="确认选择支付方式" onclick="doPanyment()" style="margin-left: 600px;"></div>
             </div>
         </form>
         <div class="news-fr">
@@ -98,7 +107,7 @@
             } else if (type === 'platform') {
                 $("#platform_table").show();
                 $("#zhifubao_radio").attr("checked", "checked");
-            }else if (type === 'bank') {
+            } else if (type === 'bank') {
                 $("#bank_table").show();
             }
         }
@@ -112,27 +121,27 @@
                 showDialog();
                 $("#form1").attr("target", "_blank");
                 $("#form1").submit();
-            }else if(data == 'bank'){
+            } else if (data == 'bank') {
                 $("#payment_type").val('ALIPAY_BANK');
                 showDialog();
                 $("#form1").attr("target", "_blank");
                 $("#form1").submit();
             }
         }
-        function showDialog(){
+        function showDialog() {
             $("#dialog-confirm").dialog({
-                    resizable: false,
-                    height: 140,
-                    modal: true,
-                    buttons: {
-                        "支付完成": function () {
-                            location.href = "/order/result/${order.serialId}";
-                        },
-                        "其他方式支付": function () {
-                            $(this).dialog("close");
-                        }
+                resizable: false,
+                height: 140,
+                modal: true,
+                buttons: {
+                    "支付完成": function () {
+                        location.href = "/order/result/${order.serialId}";
+                    },
+                    "其他方式支付": function () {
+                        $(this).dialog("close");
                     }
-                });
+                }
+            });
         }
     </script>
 </body>
