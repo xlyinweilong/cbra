@@ -487,7 +487,7 @@ public class OrderService {
         model.put("name", name);
         model.put("ticketList", this.findFundCollectionTicketListByOrderId(order.getId()));
         model.put("baseLink", Config.HTTP_URL_BASE);
-//        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 
     /**
@@ -510,7 +510,7 @@ public class OrderService {
         Map model = new HashMap();
         model.put("order", order);
         model.put("name", name);
-//        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
+        emailService.send(fromDisplayName, fromEmail, toEmail, subject, templateFile, model, null, null);
     }
 
     // **********************************************************************

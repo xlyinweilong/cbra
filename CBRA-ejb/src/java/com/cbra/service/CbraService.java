@@ -60,11 +60,11 @@ import org.apache.commons.io.FilenameUtils;
 @Stateless
 @LocalBean
 public class CbraService {
-
+    
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(CbraService.class.getName());
-
+    
     @EJB
     private EmailService emailService;
     @EJB
@@ -466,7 +466,7 @@ public class CbraService {
             Config.homeAd = new PlateInformation();
             Config.homeAd.setPicUrl("/ls/ls-2.jpg");
         }
-         inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_NEWS, 1);
+        inforList = this.getPlateInformationList4Index(PlateKeyEnum.HOME_NEWS, 1);
         if (inforList != null && !inforList.isEmpty()) {
             Config.homeNews = inforList.get(0);
         } else {
@@ -483,7 +483,7 @@ public class CbraService {
         }
         Config.homeStyle = this.getPlateInformationList4Index(PlateKeyEnum.HOME_STYLE, 6);
         Config.homeExpert = this.getPlateInformationList4Index(PlateKeyEnum.HOME_EXPERT, 6);
-
+        
         inforList = this.getPlateInformationList4Index(PlateKeyEnum.TOP_INTO, 1);
         if (inforList != null && !inforList.isEmpty()) {
             Config.topInto = inforList.get(0);

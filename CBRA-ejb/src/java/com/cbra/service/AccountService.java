@@ -88,8 +88,12 @@ public class AccountService {
      * @return
      */
     public List<Account> findAccountExpireList() {
+        return this.findAccountExpireList(new Date());
+    }
+
+    public List<Account> findAccountExpireList(Date date) {
         TypedQuery<Account> query = em.createQuery("SELECT a FROM Account a WHERE a.status = :status AND a.payDate < :nowDate and a.deleted = false", Account.class);
-        query.setParameter("nowDate", new Date()).setParameter("status", AccountStatus.MEMBER);
+        query.setParameter("nowDate", date).setParameter("status", AccountStatus.MEMBER);
         return query.getResultList();
     }
 

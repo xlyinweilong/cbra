@@ -929,7 +929,7 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("orderIndex")));
+                query.orderBy(builder.desc(root.get("pushDate")));
                 TypedQuery<PlateInformation> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;
@@ -949,12 +949,12 @@ public class AdminService {
 
     public ResultList<PlateInformation> findPlateInformationList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<PlateInformation> resultList = new ResultList<>();
-        String hql = "SELECT COUNT(c) FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
+        String hql = "SELECT COUNT(c) FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false";
         TypedQuery<Long> countQuery = em.createQuery(hql, Long.class);
         countQuery.setParameter("ids", map.get("ids"));
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        hql = "SELECT c FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.orderIndex,c.createDate DESC";
+        hql = "SELECT c FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.pushDate DESC";
         TypedQuery<PlateInformation> query = em.createQuery(hql, PlateInformation.class);
         query.setParameter("ids", map.get("ids"));
         int startIndex = (pageIndex - 1) * maxPerPage;

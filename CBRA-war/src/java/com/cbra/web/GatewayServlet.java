@@ -263,7 +263,7 @@ public class GatewayServlet extends BaseServlet {
             params.put(name, valueStr);
         }
 
-	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
         //商户订单号
         String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
 
@@ -273,10 +273,9 @@ public class GatewayServlet extends BaseServlet {
         //交易状态
         String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
 
-	//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+        //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
         //计算得出通知验证结果
         boolean verify_result = AlipayNotify.verify(params);
-        System.out.println(out_trade_no);
         if (verify_result) {//验证成功
             //////////////////////////////////////////////////////////////////////////////////////////
             //请在这里加上商户的业务逻辑程序代码

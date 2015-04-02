@@ -21,7 +21,7 @@
                         <div class="denglu">
                             <div id="login_msg_1" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                         <input type="text" id="login_account" name="account" value="${account}" class="shuk"
-                             <c:if test="${p != 'hy'}">  placeholder="输入帐号" </c:if>
+                             <c:if test="${p != 'hy'}">  placeholder="输入注册手机号" </c:if>
                              <c:if test="${p == 'hy'}">  placeholder="营业执照注册号或企业代表手机号" </c:if>
                                onkeypress="mykeypress(event);" />
                             <div id="login_msg_2" class="wrongMessage"></div><br/>
@@ -46,7 +46,7 @@
             }
             function login() {
                 if (CBRAValid.checkFormValueNull($("#login_account"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#login_msg_1"),"请输入帐号",$("#login_account"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#login_msg_1"),"请输入注册手机号",$("#login_account"));
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#login_passwd"))) {

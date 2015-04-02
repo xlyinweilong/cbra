@@ -21,7 +21,7 @@
                     <p><strong>培训地点：</strong>${fundCollection.eventLocation}</p>
                     <p><strong>培训人员：</strong>${fundCollection.allowAttendee.mean}</p>
                     <p><strong>培训费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
-                    <c:if test="${isSignUpEvent}">
+                    <c:if test="${isSignUpEvent && fundCollection.status=='报名中'}">
                     <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
                     </c:if>
                     <p><strong>培训内容介绍：</strong></p>

@@ -17,9 +17,7 @@
                         <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="2" /></jsp:include>
                         </td>
                         <td valign="top" class="fr-c-1">
-                        <c:if test="${sessionScope.userStatus == 'ASSOCIATE_MEMBER'}">
                             <div class="tit-cz">会　费<input type="button" class="anniu" value="缴纳会费" onclick="location.href = '/account/pay_membership'" ></div>
-                            </c:if>
                             <c:choose>
                                 <c:when test="${empty resultList}">
                                 <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">

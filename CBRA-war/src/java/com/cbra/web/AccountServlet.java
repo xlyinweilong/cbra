@@ -827,10 +827,6 @@ public class AccountServlet extends BaseServlet {
         } else {
             request.setAttribute("membership_fee", com.cbra.Config.MEMBERSHIP_FEE_COMPANY);
         }
-        if (!request.getSession().getAttribute(SESSION_ATTRIBUTE_USER_STATUS).equals(AccountStatus.ASSOCIATE_MEMBER)) {
-            forwardWithError(bundle.getString("GLOBAL_MSG_PARAM_INVALID"), "/public/error_page", request, response);
-            return FORWARD_TO_ANOTHER_URL;
-        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

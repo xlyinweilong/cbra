@@ -201,6 +201,11 @@ public class GatewayService {
             em.merge(order);
             orderService.sendOrderSuccessEmail(order);
             Account account = order.getOwner();
+            Date date = new Date();
+            if (account.getPayDate() != null && account.getPayDate().after(date)) {
+                date = account.getPayDate();
+            }
+            account.setPayDate(Tools.addYear(date, 1));
             account.setStatus(AccountStatus.MEMBER);
             em.merge(account);
         }
@@ -222,7 +227,11 @@ public class GatewayService {
             if (orderCbraService != null) {
                 orderCbraService.setEndDate(new Date());
                 Account account = orderCbraService.getOwner();
-                account.setPayDate(Tools.addYear(new Date(), 1));
+                Date date = new Date();
+                if (account.getPayDate() != null && account.getPayDate().after(date)) {
+                    date = account.getPayDate();
+                }
+                account.setPayDate(Tools.addYear(date, 1));
                 account.setStatus(AccountStatus.MEMBER);
                 em.merge(account);
                 orderCbraService.setStatus(OrderStatusEnum.SUCCESS);
