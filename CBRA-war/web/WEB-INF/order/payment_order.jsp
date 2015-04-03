@@ -47,8 +47,8 @@
                     </table>
                     <table id="platform_table"  width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                         <tr>
-                            <td width="190" height="50"><input type="radio" id="zhifubao_radio" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
-                            <td width="190" height="50"></td>
+                            <td width="190" height="50"><input type="radio" name="platform_zhifu" id="zhifubao_radio" value="ALIPAY" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
+                            <td width="190" height="50"><input type="radio" name="platform_zhifu" id="unionpay_radio" value="UNIONPAY" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
                             <td width="190" height="50"></td>
                             <td width="190" height="50"></td>
                         </tr>
@@ -117,7 +117,11 @@
                 $("#payment_type").val('BANK_TRANSFER');
                 $("#form1").submit();
             } else if (data == 'platform') {
-                $("#payment_type").val('ALIPAY');
+                var val = $('input:radio[name="platform_zhifu"]:checked').val();
+                if (val == null) {
+                    val = "ALIPAY";
+                }
+                $("#payment_type").val(val);
                 showDialog();
                 $("#form1").attr("target", "_blank");
                 $("#form1").submit();

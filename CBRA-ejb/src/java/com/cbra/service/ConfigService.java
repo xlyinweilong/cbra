@@ -12,6 +12,7 @@ import com.cbra.support.Tools;
 import com.cbra.support.enums.AccountStatus;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
+import com.unionpay.acp.sdk.SDKConfig;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
@@ -67,6 +68,8 @@ public class ConfigService {
     @PostConstruct
     public void init() {
         cbraService.loadConfig();
+        //加载银联在线配置文件
+        SDKConfig.getConfig().loadPropertiesFromSrc();// 从classpath加载acp_sdk.properties文件
     }
 
     @Schedule(minute = "59", hour = "23") //每天晚上11:59执行

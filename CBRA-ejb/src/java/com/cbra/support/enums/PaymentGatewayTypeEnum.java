@@ -14,6 +14,7 @@ public enum PaymentGatewayTypeEnum {
 
     ALIPAY,
     ALIPAY_BANK,
+    UNIONPAY,
     BANK_TRANSFER;
 
     public String getMean() {
@@ -24,6 +25,8 @@ public enum PaymentGatewayTypeEnum {
                 return "支付宝网银";
             case BANK_TRANSFER:
                 return "其他支付方式";
+            case UNIONPAY:
+                return "银联在线";
             default:
                 return null;
         }

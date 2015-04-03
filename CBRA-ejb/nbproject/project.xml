@@ -24,6 +24,7 @@
             <included-library dirs="200">file.reference.commons-httpclient-3.0.1.jar</included-library>
             <included-library dirs="200">file.reference.dom4j-1.6.1.jar</included-library>
             <included-library dirs="200">file.reference.jaxen-1.1-beta-6.jar</included-library>
+            <included-library dirs="200">file.reference.upacp_sdk-1.0.0.jar</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

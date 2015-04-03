@@ -236,6 +236,9 @@ public class OrderServlet extends BaseServlet {
             case ALIPAY:
                 forwardUrl = "/paygate/alipay/";
                 break;
+            case UNIONPAY:
+                forwardUrl = "/paygate/unionpay/";
+                break;
             default:
                 forwardWithError(bundle.getString("PAYMENT_SELECT_GATEWAY_INVALID_无效的选择"), "/public/error_page", request, response);
                 return FORWARD_TO_ANOTHER_URL;
