@@ -369,10 +369,10 @@ public class AccountServlet extends BaseServlet {
             setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_账户密码错误"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
-        if (Tools.isBlank(p) && user instanceof UserAccount) {
+        if (Tools.isNotBlank(p) && user instanceof UserAccount) {
             setErrorResult("账户类型不匹配", request);
             return KEEP_GOING_WITH_ORIG_URL;
-        } else if (Tools.isNotBlank(p) && (user instanceof SubCompanyAccount || user instanceof CompanyAccount)) {
+        } else if (Tools.isBlank(p) && (user instanceof SubCompanyAccount || user instanceof CompanyAccount)) {
             setErrorResult("账户类型不匹配", request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
