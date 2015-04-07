@@ -352,7 +352,8 @@ public class AccountServlet extends BaseServlet {
         String account = getRequestString(request, "account");
         String passwd = getRequestString(request, "passwd");
         request.setAttribute("account", account);
-        request.setAttribute("p", getRequestString(request, "p"));
+        String p = getRequestString(request, "p");
+        request.setAttribute("p", p);
         Account user;
         try {
             user = accountService.getAccountForLogin(account, passwd);
@@ -366,6 +367,13 @@ public class AccountServlet extends BaseServlet {
         }
         if (!(user instanceof SubCompanyAccount) && (user.getStatus().equals(AccountStatus.PENDING_FOR_APPROVAL) || user.getStatus().equals(AccountStatus.APPROVAL_REJECT))) {
             setErrorResult(bundle.getString("ACCOUNT_LOGIN_MSG_账户密码错误"), request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        }
+        if (Tools.isBlank(p) && user instanceof UserAccount) {
+            setErrorResult("账户类型不匹配", request);
+            return KEEP_GOING_WITH_ORIG_URL;
+        } else if (Tools.isNotBlank(p) && (user instanceof SubCompanyAccount || user instanceof CompanyAccount)) {
+            setErrorResult("账户类型不匹配", request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
         // 设置user到session里，跳转到相应的登录后页面。
