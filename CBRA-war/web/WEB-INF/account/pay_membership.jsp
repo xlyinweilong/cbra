@@ -53,8 +53,8 @@
                             </table>
                             <table id="platform_table"  width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                                 <tr>
-                                    <td width="190" height="50"><input type="radio" id="zhifubao_radio" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
-                                    <td width="190" height="50"></td>
+                                    <td width="190" height="50"><input type="radio" name="platform_zhifu" id="zhifubao_radio" value="ALIPAY" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
+                                    <td width="190" height="50"><input type="radio" name="platform_zhifu" id="unionpay_radio" value="UNIONPAY" class="xuanz"><img src="/images/yh/yinlianzaixian.png"  style="width: 145px;"></td>
                                     <td width="190" height="50"></td>
                                     <td width="190" height="50"></td>
                                 </tr>
@@ -77,7 +77,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <div class="xiayy"><input type="button" class="xiayy-an" value="确认选择支付方式" onclick="doPanyment()" style="margin-left: 600px;"></div>
+                            <div class="xiayy"><input type="button" class="xiayy-an" value="确认选择支付方式" onclick="doPanyment()" style="margin-left: 600px;width: 120px;"></div>
                         </td>
                     </tr>
                 </table>
@@ -88,40 +88,44 @@
         <jsp:include page="/WEB-INF/public/z_end.jsp"/>
         <script type="text/javascript">
             function hideAllTable() {
-                $("#xzyh-fs-b").removeAttr("id");
-                $("#bank_table").hide();
-                $("#bank_transfer_table").hide();
-                $("#platform_table").hide();
+            $("#xzyh-fs-b").removeAttr("id");
+            $("#bank_table").hide();
+            $("#bank_transfer_table").hide();
+            $("#platform_table").hide();
+        }
+        function changeTable(obj, type) {
+            hideAllTable();
+            $(obj).attr("id", "xzyh-fs-b");
+            if (type === 'bank_transfer') {
+                $("#bank_transfer_table").show();
+            } else if (type === 'platform') {
+                $("#platform_table").show();
+                $("#zhifubao_radio").attr("checked", "checked");
+            } else if (type === 'bank') {
+                $("#bank_table").show();
             }
-            function changeTable(obj, type) {
-                hideAllTable();
-                $(obj).attr("id", "xzyh-fs-b");
-                if (type === 'bank_transfer') {
-                    $("#bank_transfer_table").show();
-                } else if (type === 'platform') {
-                    $("#platform_table").show();
-                    $("#zhifubao_radio").attr("checked", "checked");
-                } else if (type === 'bank') {
-                    $("#bank_table").show();
+        }
+        function doPanyment() {
+            var data = $("#xzyh-fs-b").attr("data");
+            if (data == 'bank_transfer') {
+                $("#payment_type").val('BANK_TRANSFER');
+                $("#form1").submit();
+            } else if (data == 'platform') {
+                var val = $('input:radio[name="platform_zhifu"]:checked').val();
+                if (val == null) {
+                    val = "ALIPAY";
                 }
+                $("#payment_type").val(val);
+                showDialog();
+                $("#form1").attr("target", "_blank");
+                $("#form1").submit();
+            } else if (data == 'bank') {
+                $("#payment_type").val('ALIPAY_BANK');
+                showDialog();
+                $("#form1").attr("target", "_blank");
+                $("#form1").submit();
             }
-            function doPanyment() {
-                var data = $("#xzyh-fs-b").attr("data");
-                if (data == 'bank_transfer') {
-                    $("#payment_type").val('BANK_TRANSFER');
-                    $("#form1").submit();
-                } else if (data == 'platform') {
-                    $("#payment_type").val('ALIPAY');
-                    showDialog();
-                    $("#form1").attr("target", "_blank");
-                    $("#form1").submit();
-                } else if (data == 'bank') {
-                    $("#payment_type").val('ALIPAY_BANK');
-                    showDialog();
-                    $("#form1").attr("target", "_blank");
-                    $("#form1").submit();
-                }
-            }
+        }
             function showDialog() {
                 $("#dialog-confirm").dialog({
                     resizable: false,

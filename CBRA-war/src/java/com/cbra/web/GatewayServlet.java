@@ -42,10 +42,11 @@ import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import com.unionpay.acp.sdk.SDKConfig;
+import com.unionpay.acp.sdk.SDKUtil;
 import flexjson.JSONSerializer;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -59,6 +60,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileUploadException;
+import com.unionpay.acp.sdk.SDKConfig;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -148,7 +153,7 @@ public class GatewayServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        BANK_TRANSFER, ALIPAY, ALIPAY_BANK, ALIPAY_RETURN, ALIPAY_NOTIFY, UNIONPAY;
+        BANK_TRANSFER, ALIPAY, ALIPAY_BANK, ALIPAY_RETURN, ALIPAY_NOTIFY, UNIONPAY, UNIONPAY_RETURN, NIONPAY_NOTIFY;
     }
 
     @Override
@@ -167,6 +172,10 @@ public class GatewayServlet extends BaseServlet {
                 return doSetBankTransfer(request, response);
             case UNIONPAY:
                 return loadUnionPay(request, response);
+            case UNIONPAY_RETURN:
+                return loadloadUnionPayReturn(request, response);
+            case NIONPAY_NOTIFY:
+                return loadloadUnionPayNotify(request, response);
             default:
                 throw new BadPageException();
         }
@@ -388,52 +397,150 @@ public class GatewayServlet extends BaseServlet {
      * @throws IOException
      */
     private boolean loadUnionPay(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment gatewayPayment = this.getGatewayPayment(request);
+        if (gatewayPayment == null) {
+            forwardWithError("Param Invalid", "/public/error_page", request, response);
+            return FORWARD_TO_ANOTHER_URL;
+        }
         /**
          * 组装请求报文
          */
         Map<String, String> data = new HashMap<String, String>();
         // 版本号
-        data.put("version", "5.0.0");
+        data.put("version", UnionpayTools.version);
         // 字符集编码 默认"UTF-8"
-        data.put("encoding", "UTF-8");
+        String encoding = UnionpayTools.encoding;
+        data.put("encoding", encoding);
         // 签名方法 01 RSA
         data.put("signMethod", "01");
         // 交易类型 01-消费
         data.put("txnType", "01");
         // 交易子类型 01:自助消费 02:订购 03:分期付款
         data.put("txnSubType", "01");
-        // 业务类型
+        // 业务类型 000201 B2C网关支付
         data.put("bizType", "000201");
-        // 渠道类型，07-PC，08-手机
-        data.put("channelType", "08");
-        // 前台通知地址 ，控件接入方式无作用
-        data.put("frontUrl", "http://localhost:8080/ACPTest/acp_front_url.do");
-        // 后台通知地址
-        data.put("backUrl", "http://222.222.222.222:8080/ACPTest/acp_back_url.do");
-        // 接入类型，商户接入填0 0- 商户 ， 1： 收单， 2：平台商户
+        // 渠道类型 07-互联网渠道
+        data.put("channelType", "07");
+        // 商户/收单前台接收地址 选送
+        //后台服务对应的写法参照 com.unionpay.acp.sdksample.notice.FrontRcvResponse.java
+        data.put("frontUrl", UnionpayTools.frontUrl);
+        // 商户/收单后台接收地址 必送
+        //后台服务对应的写法参照 com.unionpay.acp.sdksample.notice.BackRcvResponse.java
+        data.put("backUrl", UnionpayTools.backUrl);
+        // 接入类型:商户接入填0 0- 商户 ， 1： 收单， 2：平台商户
         data.put("accessType", "0");
-        // 商户号码，请改成自己的商户号
-        data.put("merId", "888888888888888");
-        // 商户订单号，8-40位数字字母
-        data.put("orderId", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        // 订单发送时间，取系统时间
+        // 商户号码
+        data.put("merId", UnionpayTools.merId);
+        // 订单号 商户根据自己规则定义生成，每订单日期内不重复
+        data.put("orderId", "7777777" + gatewayPayment.getId().toString());
+        // 订单发送时间 格式： YYYYMMDDhhmmss 商户发送交易时间，根据自己系统或平台生成
         data.put("txnTime", new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        // 交易金额，单位分
-        data.put("txnAmt", "1");
+//        data.put("txnAmt", "1");
+        data.put("txnAmt", gatewayPayment.getGatewayAmount().multiply(new BigDecimal("100")).toBigInteger().toString());
         // 交易币种
         data.put("currencyCode", "156");
-        // 请求方保留域，透传字段，查询、通知、对账文件中均会原样出现
-        data.put("reqReserved", "透传信息");
-        // 订单描述，可不上送，上送时控件中会显示该信息
-        data.put("orderDesc", "订单描述");
-        Map<String, String> submitFromData = UnionpayTools.signData(data);
-        // 交易请求url 从配置文件读取
-        String requestFrontUrl = SDKConfig.getConfig().getFrontRequestUrl();
+        data.put("issInsCode", "ICBC");
+        data.put("orderDesc", gatewayPayment.getId().toString());
+        Map<String, String> requestMap = new HashMap<String, String>();
+        requestMap.putAll(data);
+        Set<String> set = data.keySet();
+        Iterator<String> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            if (null == data.get(key) || "".equals(data.get(key))) {
+                requestMap.remove(key);
+            }
+        }
+        /**
+         * 签名
+         */
+        SDKUtil.sign(requestMap, encoding);
         /**
          * 创建表单
          */
-        String html = createHtml(requestFrontUrl, submitFromData);
+        String requestFrontUrl = SDKConfig.getConfig().getFrontRequestUrl();
+        String html = UnionpayTools.createHtml(requestFrontUrl, requestMap);
         System.out.println(html);
+        response.getOutputStream().print(html);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 银联在线return
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadloadUnionPayReturn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment setPaymentResult = null;
+        request.setCharacterEncoding("ISO-8859-1");
+        String encoding = request.getParameter("encoding");
+        // 获取请求参数中所有的信息
+        Map<String, String> reqParam = UnionpayTools.getAllRequestParam(request);
+        Map<String, String> valideData = null;
+        if (null != reqParam && !reqParam.isEmpty()) {
+            Iterator<Entry<String, String>> it = reqParam.entrySet().iterator();
+            valideData = new HashMap<String, String>(reqParam.size());
+            while (it.hasNext()) {
+                Entry<String, String> e = it.next();
+                String key = (String) e.getKey();
+                String value = (String) e.getValue();
+                value = new String(value.getBytes("ISO-8859-1"), encoding);
+                valideData.put(key, value);
+            }
+        }
+        // 验证签名
+        if (!SDKUtil.validate(valideData, encoding)) {
+            String orderId = valideData.get("orderId");
+            orderId = orderId.substring(7);
+            setPaymentResult = gatewayService.setPaymentResult(orderId, false, "银联在线验证签名");
+        } else {
+            String orderId = valideData.get("orderId");
+            orderId = orderId.substring(7);
+            setPaymentResult = gatewayService.setPaymentResult(orderId, true, "银联在线支付成功");
+        }
+        redirectResult(setPaymentResult, request, response);
+        return FORWARD_TO_ANOTHER_URL;
+    }
+
+    /**
+     * 银联在线notify
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadloadUnionPayNotify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        GatewayPayment setPaymentResult = null;
+        request.setCharacterEncoding("ISO-8859-1");
+        String encoding = request.getParameter("encoding");
+        // 获取请求参数中所有的信息
+        Map<String, String> reqParam = UnionpayTools.getAllRequestParam(request);
+        Map<String, String> valideData = null;
+        if (null != reqParam && !reqParam.isEmpty()) {
+            Iterator<Entry<String, String>> it = reqParam.entrySet().iterator();
+            valideData = new HashMap<String, String>(reqParam.size());
+            while (it.hasNext()) {
+                Entry<String, String> e = it.next();
+                String key = (String) e.getKey();
+                String value = (String) e.getValue();
+                value = new String(value.getBytes("ISO-8859-1"), encoding);
+                valideData.put(key, value);
+            }
+        }
+        // 验证签名
+        String orderId = valideData.get("orderId");
+        orderId = orderId.substring(7);
+        if (!SDKUtil.validate(valideData, encoding)) {
+            setPaymentResult = gatewayService.setPaymentResult(orderId, false, "银联在线验证签名");
+        } else {
+            setPaymentResult = gatewayService.setPaymentResult(orderId, true, "银联在线支付成功");
+        }
         return FORWARD_TO_ANOTHER_URL;
     }
 
@@ -485,12 +592,6 @@ public class GatewayServlet extends BaseServlet {
             //刷新用户状态
             Account account = gatewayPayment.getOrderCbraService().getOwner();
             request.getSession().setAttribute(SESSION_ATTRIBUTE_USER_STATUS, account.getStatus());
-            redirect(url, request, response);
-        }
-        if (!gatewayType.equals(PaymentGatewayTypeEnum.ALIPAY)) {
-            //Output json
-            super.outputSuccessAjax("Redirect success result page...", url, response);
-        } else {
             redirect(url, request, response);
         }
     }

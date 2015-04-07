@@ -13,11 +13,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -26,6 +28,8 @@ import org.apache.commons.lang.StringUtils;
  * @author yin.weilong
  */
 public class UnionpayTools {
+
+    public static String merId = "103310073920349";
 
     public static String encoding = "UTF-8";
 
@@ -38,13 +42,13 @@ public class UnionpayTools {
      * http://localhost:8080/ACPTest/acp_front_url.do
      */
     //后台服务对应的写法参照 FrontRcvResponse.java
-    public static String frontUrl = "http://localhost:8080/ACPTest/acp_front_url.do";
+    public static String frontUrl = "http://www.cbra.com/paygate/unionpay_return";
 
     /**
      * http://localhost:8080/ACPTest/acp_back_url.do
      */
 //后台服务对应的写法参照 BackRcvResponse.java
-    public static String backUrl = "http://localhost:8080/ACPTest/acp_back_url.do";// 受理方和发卡方自选填写的域[O]--后台通知地址
+    public static String backUrl = "http://www.cbra.com/paygate/unionpay_notify";// 受理方和发卡方自选填写的域[O]--后台通知地址
 
     /**
      * 构造HTTP POST交易表单的方法示例
@@ -252,4 +256,29 @@ public class UnionpayTools {
         }
         return customerInfo;
     }
+
+    /**
+     * 获取请求参数中所有的信息
+     *
+     * @param request
+     * @return
+     */
+    public static Map<String, String> getAllRequestParam(HttpServletRequest request) {
+        Map<String, String> res = new HashMap<String, String>();
+        Enumeration<?> temp = request.getParameterNames();
+        if (null != temp) {
+            while (temp.hasMoreElements()) {
+                String en = (String) temp.nextElement();
+                String value = request.getParameter(en);
+                res.put(en, value);
+                //在报文上送时，如果字段的值为空，则不上送<下面的处理为在获取所有参数数据时，判断若值为空，则删除这个字段>
+                //System.out.println("ServletUtil类247行  temp数据的键=="+en+"     值==="+value);
+                if (null == res.get(en) || "".equals(res.get(en))) {
+                    res.remove(en);
+                }
+            }
+        }
+        return res;
+    }
+    
 }

@@ -48,7 +48,7 @@
                     <table id="platform_table"  width="740" border="0" cellspacing="0" cellpadding="0" class="yhimg">
                         <tr>
                             <td width="190" height="50"><input type="radio" name="platform_zhifu" id="zhifubao_radio" value="ALIPAY" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
-                            <td width="190" height="50"><input type="radio" name="platform_zhifu" id="unionpay_radio" value="UNIONPAY" class="xuanz"><img src="/images/yh/zhifubao.png"  style="width: 145px;"></td>
+                            <td width="190" height="50"><input type="radio" name="platform_zhifu" id="unionpay_radio" value="UNIONPAY" class="xuanz"><img src="/images/yh/yinlianzaixian.png"  style="width: 145px;"></td>
                             <td width="190" height="50"></td>
                             <td width="190" height="50"></td>
                         </tr>
@@ -71,7 +71,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="xiayy"><input type="button" class="xiayy-an" value="确认选择支付方式" onclick="doPanyment()" style="margin-left: 600px;"></div>
+                    <div class="xiayy"><input type="button" class="xiayy-an" value="确认选择支付方式" onclick="doPanyment()" style="margin-left: 600px;width: 120px;"></div>
             </div>
         </form>
         <div class="news-fr">
