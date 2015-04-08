@@ -104,7 +104,7 @@
                                         <td>${offer.email}</td>
                                     </tr>
                                     <tr>
-                                        <td width="100"><strong>从来年限：</strong></td>
+                                        <td width="100"><strong>从业年限：</strong></td>
                                         <td width="200">${offer.obtain}年</td>
                                         <td width="100"><strong>目前就职公司</strong></td>
                                         <td>${offer.company}</td>

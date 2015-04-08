@@ -994,11 +994,28 @@ public class AdminServlet extends BaseServlet {
             String company = fileUploadObj.getFormField("company");
             String address = fileUploadObj.getFormField("address");
             String zipCode = fileUploadObj.getFormField("zipCode");
-            if (position == null) {
-                setErrorResult("请填写内容！", request);
-                return KEEP_GOING_WITH_ORIG_URL;
+            String positionEnum = fileUploadObj.getFormField("positionEnum");
+            String others = fileUploadObj.getFormField("others");
+            String[] icPositions = fileUploadObj.getFormFieldArray("accountIcPosition");
+            String icPosition;
+            StringBuilder sb = new StringBuilder();
+            if (icPositions != null) {
+                for (String ic : icPositions) {
+                    sb.append(ic);
+                    sb.append("_");
+                }
             }
-            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode);
+            icPosition = sb.toString();
+            UserPosition up = null;
+            try {
+                up = UserPosition.valueOf(positionEnum);
+            } catch (Exception e) {
+                up = null;
+            }
+            if (up != null) {
+                others = null;
+            }
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode, up, others, icPosition);
             request.setAttribute("offer", offer);
             request.setAttribute("id", offer.getId());
             request.setAttribute("plateId", plateId);
@@ -1798,15 +1815,30 @@ public class AdminServlet extends BaseServlet {
             page = 1;
         }
         String searchName = super.getRequestString(request, "searchName");
+        String searchPositionEnum = super.getRequestString(request, "searchPositionEnum");
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", plateId);
         if (searchName != null) {
             map.put("searchName", searchName);
         }
+        if ("others".equals(searchPositionEnum)) {
+            request.setAttribute("searchPositionEnumOthers", "true");
+            map.put("searchPositionEnumOthers", "true");
+        } else {
+            UserPosition up = null;
+            try {
+                up = UserPosition.valueOf(searchPositionEnum);
+                request.setAttribute("searchPositionEnum", searchPositionEnum);
+                map.put("searchPositionEnum", up);
+            } catch (Exception e) {
+                up = null;
+            }
+        }
         ResultList<Offer> resultList = adminService.findOfferList(map, page, 15, null, true);
         request.setAttribute("searchName", searchName);
         request.setAttribute("resultList", resultList);
         request.setAttribute("plateId", plateId);
+        request.setAttribute("positions", UserPosition.values());
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -2090,6 +2122,13 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("offer", offer);
         request.setAttribute("plate", plate);
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
+        request.setAttribute("accountIcPositionList", Arrays.asList(AccountIcPosition.values()));
+        request.setAttribute("positions", UserPosition.values());
+        if (offer.getIcPosition() != null) {
+            request.setAttribute("positionList", Arrays.asList(offer.getIcPosition().split("_")));
+        } else {
+            request.setAttribute("positionList", new ArrayList());
+        }
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

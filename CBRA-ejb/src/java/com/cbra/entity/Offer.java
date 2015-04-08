@@ -6,10 +6,12 @@
 package com.cbra.entity;
 
 import com.cbra.support.Tools;
+import com.cbra.support.enums.AccountIcPosition;
 import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
+import com.cbra.support.enums.UserPosition;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,12 +140,44 @@ public class Offer implements Serializable {
     private Date pushDate = new Date();
     @Column(name = "deleted")
     private boolean deleted = false;
+    @Column(name = "ic_position", length = 255)
+    //产业链位置
+    private String icPosition;
+    //职务
+    @Column(name = "position_enum")
+    @Enumerated(EnumType.STRING)
+    private UserPosition positionEnum;
+    @Column(name = "position_others", length = 255)
+    //职务
+    private String positionOthers;
 
     public String getPositionIndexStr() {
         if (position.length() > 15) {
             return position.substring(0, 14) + "...";
         }
         return position;
+    }
+
+    public String getIcPositionString() {
+        if (Tools.isBlank(icPosition)) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        String[] ics = icPosition.split("_");
+        for (String ic : ics) {
+            if (Tools.isNotBlank(ic)) {
+                sb.append(AccountIcPosition.getName(ic));
+                sb.append(",");
+            }
+        }
+        return sb.substring(0, sb.length() - 1);
+    }
+
+    public String getPositionEnmuWithOthers() {
+        if (positionEnum != null) {
+            return positionEnum.getMean();
+        }
+        return positionOthers;
     }
 
     public boolean isNewPushDate() {
@@ -154,6 +188,30 @@ public class Offer implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public String getIcPosition() {
+        return icPosition;
+    }
+
+    public void setIcPosition(String icPosition) {
+        this.icPosition = icPosition;
+    }
+
+    public UserPosition getPositionEnum() {
+        return positionEnum;
+    }
+
+    public void setPositionEnum(UserPosition positionEnum) {
+        this.positionEnum = positionEnum;
+    }
+
+    public String getPositionOthers() {
+        return positionOthers;
+    }
+
+    public void setPositionOthers(String positionOthers) {
+        this.positionOthers = positionOthers;
     }
 
     public Long getId() {

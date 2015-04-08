@@ -34,6 +34,7 @@ import com.cbra.support.enums.PlateKeyEnum;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.support.enums.SysMenuPopedomEnum;
 import com.cbra.support.enums.SysUserTypeEnum;
+import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
 import com.cbra.support.exception.AccountNotExistException;
 import com.cbra.support.exception.EjbMessageException;
@@ -77,11 +78,11 @@ import org.apache.commons.lang.StringUtils;
 @Stateless
 @LocalBean
 public class AdminService {
-
+    
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AdminService.class.getName());
-
+    
     @EJB
     private EmailService emailService;
 
@@ -946,7 +947,7 @@ public class AdminService {
         }
         return resultList;
     }
-
+    
     public ResultList<PlateInformation> findPlateInformationList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<PlateInformation> resultList = new ResultList<>();
         String hql = "SELECT COUNT(c) FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false";
@@ -990,6 +991,12 @@ public class AdminService {
         if (map.containsKey("searchName")) {
             criteria.add(builder.like(root.get("name"), "%" + map.get("searchName").toString() + "%"));
         }
+        if (map.containsKey("searchPositionEnumOthers")) {
+            criteria.add(builder.isNotNull(root.get("positionOthers")));
+        }
+        if (map.containsKey("searchPositionEnum")) {
+            criteria.add(builder.equal(root.get("positionEnum"), map.get("searchPositionEnum")));
+        }
         try {
             if (list == null || !list) {
                 CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -1030,7 +1037,7 @@ public class AdminService {
         }
         return resultList;
     }
-
+    
     public ResultList<Offer> findOfferList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<Offer> resultList = new ResultList<>();
         String hql = "SELECT COUNT(c) FROM Offer c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
@@ -1466,13 +1473,16 @@ public class AdminService {
      */
     public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
             String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum,
-            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode) {
+            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode, UserPosition up, String others, String icPosition) {
         Offer offer = new Offer();
         boolean isCreare = true;
         if (id != null) {
             isCreare = false;
             offer = this.findOfferById(id);
         }
+        offer.setIcPosition(icPosition);
+        offer.setPositionEnum(up);
+        offer.setPositionOthers(others);
         offer.setName(name);
         offer.setEnName(enName);
         offer.setMobile(mobile);
@@ -1767,9 +1777,9 @@ public class AdminService {
         }
         return fileList;
     }
-
+    
     private class NameComparator implements Comparator {
-
+        
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1782,9 +1792,9 @@ public class AdminService {
             }
         }
     }
-
+    
     private class SizeComparator implements Comparator {
-
+        
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1803,9 +1813,9 @@ public class AdminService {
             }
         }
     }
-
+    
     private class TypeComparator implements Comparator {
-
+        
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1818,5 +1828,5 @@ public class AdminService {
             }
         }
     }
-
+    
 }

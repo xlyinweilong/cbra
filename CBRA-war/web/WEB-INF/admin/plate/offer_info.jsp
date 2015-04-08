@@ -41,6 +41,13 @@
             $("#gobackBtn").click(function () {
                 window.location.href = "/admin/plate/offer_list?plateId=${plate.id}";
             });
+            $("#position").change(function () {
+                if ($("#position").val() === 'others') {
+                    $("#others").show();
+                } else {
+                    $("#others").hide();
+                }
+            });
         });
     </script>
     <body>
@@ -106,7 +113,7 @@
                             <li><label>email</label>
                                 <input type="text" class="dfinput" style="width: 350px;" name="email" value="${offer.email}" maxlength="100" />
                             </li>
-                            <li><label>从来年限</label>
+                            <li><label>从业年限</label>
                                 <input type="text" class="dfinput" style="width: 350px;" name="obtain" value="${offer.obtain}" maxlength="100" />年
                             </li>
                             <li><label>目前就职公司</label>
@@ -118,8 +125,18 @@
                             <li><label>邮编</label>
                                 <input type="text" class="dfinput" style="width: 350px;" name="zipCode" value="${offer.zipCode}" maxlength="100" />
                             </li>
-                            <li><label>职务</label>
-                                <input type="text" class="dfinput" style="width: 350px;" name="position" value="${offer.position}" maxlength="100" />
+                            <li><label>职务</label><select id="position" name="positionEnum" class="dfinput">
+                                    <c:forEach var="position" items="${positions}">
+                                        <option <c:if test="${position == offer.positionEnum}">selected="selected"</c:if> value="${position.name()}">${position.mean}</option>
+                                    </c:forEach>
+                                    <option <c:if test="${not empty offer.positionOthers}">selected="selected"</c:if> value="others">其他</option>
+                                    </select>
+                                </li>
+                                <li id="others" style="<c:if test="${empty offer.positionOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="others" value="${offer.positionOthers}" /></li>
+                                <li><label>产业链位置</label>
+                                <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
+                                    <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                                </c:forEach>
                             </li>
                             <li><label>岗位职责</label>
                                 <textarea name="duty" class="dfinput"  style="width: 350px;height: 150px">${offer.duty}</textarea>

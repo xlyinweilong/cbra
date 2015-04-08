@@ -66,7 +66,13 @@
                     </ul>
                     <ul class="toolbar1">
                         <c:if test="${plateId == 31}">
-                            名称:<input type="text" class="dfinput" style="width: 350px;" name="searchName" value="${searchName}" maxlength="25" />
+                            职务：<select id="position" name="searchPositionEnum" class="dfinput" style="width: 130px;">
+                                <c:forEach var="position" items="${positions}">
+                                    <option <c:if test="${position == searchPositionEnum}">selected="selected"</c:if> value="${position.name()}">${position.mean}</option>
+                                </c:forEach>
+                                <option <c:if test="${not empty searchPositionEnumOthers}">selected="selected"</c:if> value="others">其他</option>
+                                </select>
+                                名称:<input type="text" class="dfinput" style="width: 250px;" name="searchName" value="${searchName}" maxlength="25" />
                             <input type="submit"  class="btn" value="搜索" />
                         </c:if>
                     </ul>
@@ -81,15 +87,29 @@
                                 <c:if test="${plateId == 30}">职位名称</c:if>
                                 <c:if test="${plateId == 31}">姓名</c:if>
                                 </th>
+                            <c:if test="${plateId == 31}">
                                 <th>
-                                    发布时间
+                                    从业时间(年)
                                 </th>
                                 <th>
-                                    操作
+                                    就职公司
                                 </th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                                <th>
+                                    职务
+                                </th>
+                                <th>
+                                    产业链位置
+                                </th>
+                            </c:if>
+                            <th>
+                                发布时间
+                            </th>
+                            <th>
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         <c:forEach var="offer" items="${resultList}">
                             <tr>
                                 <td>
@@ -99,7 +119,21 @@
                                     <c:if test="${plateId == 30}">${offer.position}</c:if>
                                     <c:if test="${plateId == 31}">${offer.name}</c:if>
                                     </td>
+                                <c:if test="${plateId == 31}">
                                     <td>
+                                        ${offer.obtain}
+                                    </td>
+                                    <td>
+                                        ${offer.company}
+                                    </td>
+                                    <td>
+                                        ${offer.positionEnmuWithOthers} 
+                                    </td>
+                                    <td>
+                                        ${offer.icPositionString} 
+                                    </td>
+                                </c:if>
+                                <td>
                                     <fmt:formatDate value="${offer.pushDate}" pattern="yyyy.MM.dd HH:mm:ss" type="date" dateStyle="long" />
                                 </td>
                                 <td>

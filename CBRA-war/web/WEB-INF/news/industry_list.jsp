@@ -12,7 +12,7 @@
         <jsp:include page="/WEB-INF/news/z_news_banner.jsp"><jsp:param name="page" value="2" /></jsp:include>
             <!-- 主体 -->
             <div class="two-main">
-                <form id="form1" action="/news/news_list" method="post">
+                <form id="form1" action="/news/industry_list" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                 <div class="news-list">
                     <div class="title"><span><a href="/news/news_list">筑誉新闻</a></span><span><a id="title-span" href="/news/industry_list">行业新闻</a></span></div>
