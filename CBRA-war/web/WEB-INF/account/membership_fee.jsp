@@ -42,6 +42,7 @@
                                                     <c:choose>
                                                         <c:when test="${order.lastGatewayPayment.gatewayType == 'ALIPAY'}">支付宝</c:when>
                                                         <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}">其他支付方式</c:when>
+                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'UNIONPAY'}">银联在线</c:when>
                                                     </c:choose>
                                                 </td>
                                                 <td bgcolor="#FFFFFF" class="biaog-bt">
