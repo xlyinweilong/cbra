@@ -86,6 +86,9 @@ public class CompanyAccount extends Account {
         if (CompanyNatureEnum.OTHERS.equals(nature)) {
             return natureOthers;
         } else {
+            if (nature == null) {
+                return null;
+            }
             return nature.getMean();
         }
     }
@@ -119,7 +122,10 @@ public class CompanyAccount extends Account {
     }
 
     public String getScaleString() {
-        return scale.getMean();
+        if (scale != null) {
+            return scale.getMean();
+        }
+        return null;
     }
 
     public void setScale(CompanyScaleEnum scale) {

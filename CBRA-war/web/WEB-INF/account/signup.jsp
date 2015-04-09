@@ -368,31 +368,32 @@
                 });
             });
             function checkImgType(this_) {
-                var filepath = $(this_).val();
-                var file_size = 0;
-                if ($.support.msie) {
-                    var img = new Image();
-                    img.src = filepath;
-                    if (img.fileSize > 0) {
-                        if (img.fileSize > 3 * 1024) {
-                            alert("图片不大于3MB。");
+                try {
+                    var filepath = $(this_).val();
+                    var file_size = 0;
+                    if ($.support.msie) {
+                        var img = new Image();
+                        img.src = filepath;
+                        if (img.fileSize > 0) {
+                            if (img.fileSize > 5 * 1024) {
+                                alert("图片不大于5MB。");
+                                $(this_).focus();
+                                this_.select();
+                                document.execCommand("delete");
+                                return false;
+                            }
+                        }
+                    } else {
+                        file_size = this_.files[0].size;
+                        var size = file_size / 1024 / 1024;
+                        if (size > 5) {
+                            alert("上传的文件大小不能超过5M！");
                             $(this_).focus();
-                            this_.select();
-                            document.execCommand("delete");
+                            $(this_).val("");
                             return false;
                         }
                     }
-                } else {
-                    file_size = this_.files[0].size;
-                    console.log(file_size / 1024 / 1024 + " MB");
-                    var size = file_size / 1024;
-                    alert(size);
-                    if (size > 3) {
-                        alert("上传的文件大小不能超过3M！");
-                        $(this_).focus();
-                        $(this_).val("");
-                        return false;
-                    }
+                } catch (e) {
                 }
                 return true;
             }

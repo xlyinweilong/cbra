@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -150,6 +151,17 @@ public class Offer implements Serializable {
     @Column(name = "position_others", length = 255)
     //职务
     private String positionOthers;
+    
+    @Transient
+    private String detailsUrl;
+
+    public String getDetailsUrl() {
+        return detailsUrl;
+    }
+
+    public void setDetailsUrl(String detailsUrl) {
+        this.detailsUrl = detailsUrl;
+    }
 
     public String getPositionIndexStr() {
         if (position.length() > 15) {

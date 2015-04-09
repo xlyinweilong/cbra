@@ -27,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -139,6 +140,16 @@ public class FundCollection implements Serializable {
     @Column(name = "introduction_image_url")
     //手机端简介图片
     private String introductionImageUrl;
+    @Transient
+    private String detailsUrl;
+
+    public String getDetailsUrl() {
+        return detailsUrl;
+    }
+
+    public void setDetailsUrl(String detailsUrl) {
+        this.detailsUrl = detailsUrl;
+    }
 
     public String getStatus() {
         Date now = new Date();
@@ -220,13 +231,14 @@ public class FundCollection implements Serializable {
     public String getTitle() {
         return title;
     }
+
     public String getTitleIndex() {
         if (title.length() > 15) {
             return title.substring(0, 14) + "...";
         }
         return title;
     }
-    
+
     public String getTitleIndexStr3() {
         if (title.length() > 15) {
             return title.substring(0, 14) + "...";
@@ -253,7 +265,7 @@ public class FundCollection implements Serializable {
     public String getEventBeginDateString() {
         return Tools.formatDate(eventBeginDate, "yyyy年MM月dd日");
     }
-    
+
     public String getEventBeginDateIndexString() {
         return Tools.formatDate(eventBeginDate, "MM-dd");
     }

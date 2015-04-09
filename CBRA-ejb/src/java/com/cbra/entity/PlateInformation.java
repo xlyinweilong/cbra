@@ -28,6 +28,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -97,6 +98,16 @@ public class PlateInformation implements Serializable {
     private Boolean deleted = false;
     @Column(name = "order_index")
     private Integer orderIndex = 0;
+    @Transient
+    private String detailsUrl;
+
+    public String getDetailsUrl() {
+        return detailsUrl;
+    }
+
+    public void setDetailsUrl(String detailsUrl) {
+        this.detailsUrl = detailsUrl;
+    }
 
     public Long getId() {
         return id;

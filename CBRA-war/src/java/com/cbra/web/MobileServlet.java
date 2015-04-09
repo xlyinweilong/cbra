@@ -154,7 +154,8 @@ public class MobileServlet extends BaseServlet {
 
     private enum PageEnum {
 
-        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS;
+        LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS,
+        PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAR_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER;
 
     }
 
@@ -187,9 +188,15 @@ public class MobileServlet extends BaseServlet {
             case EVENT_DETAILS:
                 return loadEventDetails(request, response);
             case OFFER_DETAILS:
-                loadOfferDetails(request, response);
+                return loadOfferDetails(request, response);
             case NEWS_DETAILS:
-                loadNewsDetails(request, response);
+                return loadNewsDetails(request, response);
+            case PANDING_PAYMENT_EVENT:
+            case SUCCESS_PAYMENT_EVENT:
+            case UPLOAD_HEAR_IMAGE:
+            case MEMBERSHIP_ORDER_LIST:
+            case CREATE_MEMBERSHIP_ORDER:
+            case CREATE_EVENT_ORDER:
             default:
                 throw new BadPageException();
         }
@@ -334,6 +341,7 @@ public class MobileServlet extends BaseServlet {
             }
         }
         for (FundCollection fc : list) {
+            fc.setDetailsUrl("event_details?id=" + fc.getId());
             fc.setDetailDescHtml(null);
         }
         list.setTotalCount(list.size());
@@ -366,6 +374,7 @@ public class MobileServlet extends BaseServlet {
             searchMap.put("mobile", true);
             ResultList<FundCollection> list = adminService.findCollectionList(searchMap, page, maxcount, null, true);
             for (FundCollection fc : list) {
+                fc.setDetailsUrl("event_details?id=" + fc.getId());
                 fc.setDetailDescHtml(null);
             }
             map.put("data", list);
@@ -379,6 +388,7 @@ public class MobileServlet extends BaseServlet {
             }
             ResultList<FundCollection> list = adminService.findCollectionList(searchMap, page, maxcount, null, true);
             for (FundCollection fc : list) {
+                fc.setDetailsUrl("event_details?id=" + fc.getId());
                 fc.setDetailDescHtml(null);
             }
             map.put("data", list);
@@ -415,6 +425,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         ResultList<PlateInformation> newsList = adminService.findPlateInformationList(searchMap, page, maxcount, null, true);
         for (PlateInformation pif : newsList) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
         }
         map.put("data", newsList);
@@ -430,6 +441,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         ResultList<PlateInformation> newsList = adminService.findPlateInformationList(searchMap, 1, 3, null, true);
         for (PlateInformation pif : newsList) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
         }
         submap.put("newsList", newsList);
@@ -438,6 +450,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         ResultList<PlateInformation> newsList2 = adminService.findPlateInformationList(searchMap, 1, 3, null, true);
         for (PlateInformation pif : newsList2) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
         }
         submap.put("industryList", newsList2);
@@ -468,6 +481,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         ResultList<Offer> offerList = adminService.findOfferList(searchMap, 1, 3, null, true);
         for (Offer offer : offerList) {
+            offer.setDetailsUrl("offer_details?id=" + offer.getId());
             offer.setCompetence(null);
             offer.setDescription(null);
             offer.setDuty(null);
@@ -482,6 +496,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("ids", ids);
         ResultList<PlateInformation> newsList2 = adminService.findPlateInformationList(searchMap, 1, 5);
         for (PlateInformation pif : newsList2) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
         }
         submap.put("frontList", newsList2);
@@ -510,6 +525,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         ResultList<PlateInformation> list = adminService.findPlateInformationList(searchMap, page, maxcount, null, true);
         for (PlateInformation pif : list) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
         }
         map.put("data", list);
@@ -532,6 +548,7 @@ public class MobileServlet extends BaseServlet {
             offer.setCompetence(null);
             offer.setDescription(null);
             offer.setDuty(null);
+            offer.setDetailsUrl("offer_details?id=" + offer.getId());
         }
         map.put("data", list);
         return super.outputObjectAjax(map, response);
@@ -564,6 +581,7 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("ids", ids);
         ResultList<PlateInformation> list = adminService.findPlateInformationList(searchMap, page, maxcount);
         for (PlateInformation pif : list) {
+            pif.setDetailsUrl("news_details?id=" + pif.getId());
             pif.setPlateInformationContent(null);
             pif.setIntroduction(null);
             pif.setPlate(null);
