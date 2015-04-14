@@ -18,9 +18,9 @@
 
             <!-- 右侧内容 -->
             <div class="fr-con">
-                <div class="title"><span><a href="/join/membership_application">会员守则</a></span><span><a href="/join/join_reg" id="title-span">个人会员申请</a></span><span><a href="/join/join_reg_c">企业会员申请</a></span></div>
+                <div class="title"><span><a href="/join/membership_application"><fmt:message key="JOIN_会员守则" bundle="${bundle}"/></a></span><span><a href="/join/join_reg" id="title-span"><fmt:message key="JOIN_申请个人会员" bundle="${bundle}"/></a></span><span><a href="/join/join_reg_c"><fmt:message key="JOIN_申请企业会员" bundle="${bundle}"/></a></span></div>
                 <div class="con-single">${plateInformation.plateInformationContent.content}</div>
-                <div style="text-align:center;"><input type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="申请个人会员" onclick="location.href = '/account/signup'"></div>
+                <div style="text-align:center;"><input type="button" style=" width:130px; height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="<fmt:message key='JOIN_申请个人会员' bundle='${bundle}'/>" onclick="location.href = '/account/signup'"></div>
             </div>
             <!-- 右侧内容 end -->
             <div style="clear:both;"></div>

@@ -45,6 +45,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.EmailValidator;
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -81,6 +82,37 @@ public class Tools {
             ex.printStackTrace();
         }
         return response;
+    }
+
+    /**
+     * 将字符串转为图片
+     *
+     * @param imgStr
+     * @return
+     */
+    public static boolean generateImage(String imgStr, String imgFile) throws Exception {// 对字节数组字符串进行Base64解码并生成图片
+        if (imgStr == null) {// 图像数据为空
+            return false;
+        }
+        BASE64Decoder decoder = new BASE64Decoder();
+        try {
+            // Base64解码
+            byte[] b = decoder.decodeBuffer(imgStr);
+            for (int i = 0; i < b.length; ++i) {
+                if (b[i] < 0) {// 调整异常数据
+                    b[i] += 256;
+                }
+            }
+            // 生成jpeg图片
+            String imgFilePath = imgFile;// 新生成的图片
+            OutputStream out = new FileOutputStream(imgFilePath);
+            out.write(b);
+            out.flush();
+            out.close();
+            return true;
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public static Map<String, Date> getAdminStartDate(Date startDate, Date endDate) {

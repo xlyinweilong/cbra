@@ -18,7 +18,7 @@
                 <!-- 右侧内容 -->
                 <div class="fm-list">
 
-                    <div class="title"><span><a id="title-span">海外工程合作</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_海外工程合作" bundle="${bundle}"/></a></span></div>
 
                     <form id="form1" action="/into/overseas" method="post">
                         <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />

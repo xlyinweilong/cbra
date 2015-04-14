@@ -64,6 +64,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.apache.commons.io.FileUtils;
@@ -78,11 +79,11 @@ import org.apache.commons.lang.StringUtils;
 @Stateless
 @LocalBean
 public class AdminService {
-    
+
     @PersistenceContext(unitName = "CBRA-ejbPU")
     private EntityManager em;
     private static final Logger logger = Logger.getLogger(AdminService.class.getName());
-    
+
     @EJB
     private EmailService emailService;
 
@@ -930,7 +931,10 @@ public class AdminService {
                 } else {
                     query.where(builder.and(criteria.toArray(new Predicate[0])));
                 }
-                query.orderBy(builder.desc(root.get("pushDate")));
+                List<Order> orderList = new ArrayList<>();
+                orderList.add(builder.desc(root.get("orderIndex")));
+                orderList.add(builder.desc(root.get("pushDate")));
+                query.orderBy(orderList);
                 TypedQuery<PlateInformation> typeQuery = em.createQuery(query);
                 if (page != null && page) {
                     int startIndex = (pageIndex - 1) * maxPerPage;
@@ -947,7 +951,7 @@ public class AdminService {
         }
         return resultList;
     }
-    
+
     public ResultList<PlateInformation> findPlateInformationList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<PlateInformation> resultList = new ResultList<>();
         String hql = "SELECT COUNT(c) FROM PlateInformation c WHERE c.plate.id IN :ids AND c.deleted = false";
@@ -1037,7 +1041,7 @@ public class AdminService {
         }
         return resultList;
     }
-    
+
     public ResultList<Offer> findOfferList(Map<String, Object> map, int pageIndex, int maxPerPage) {
         ResultList<Offer> resultList = new ResultList<>();
         String hql = "SELECT COUNT(c) FROM Offer c WHERE c.plate.id IN :ids AND c.deleted = false ORDER BY c.createDate DESC";
@@ -1777,9 +1781,9 @@ public class AdminService {
         }
         return fileList;
     }
-    
+
     private class NameComparator implements Comparator {
-        
+
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1792,9 +1796,9 @@ public class AdminService {
             }
         }
     }
-    
+
     private class SizeComparator implements Comparator {
-        
+
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1813,9 +1817,9 @@ public class AdminService {
             }
         }
     }
-    
+
     private class TypeComparator implements Comparator {
-        
+
         public int compare(Object a, Object b) {
             Hashtable hashA = (Hashtable) a;
             Hashtable hashB = (Hashtable) b;
@@ -1828,5 +1832,5 @@ public class AdminService {
             }
         }
     }
-    
+
 }

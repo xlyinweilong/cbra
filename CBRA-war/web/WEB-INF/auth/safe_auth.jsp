@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a href="/auth/quality_auth">品质认证</a></span><span><a href="/auth/safe_auth" id="title-span">安全认证</a></span></div>
+                    <div class="title"><span><a href="/auth/quality_auth"><fmt:message key="INDEX_品质认证" bundle="${bundle}"/></a></span><span><a href="/auth/safe_auth" id="title-span"><fmt:message key="INDEX_安全认证" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">${plateInformation.plateInformationContent.content}</div>
                 </div>
                 <!-- 右侧内容 end -->

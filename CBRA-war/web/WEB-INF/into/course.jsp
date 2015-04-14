@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">发展历程</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_发展历程" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">${plateInformation.plateInformationContent.content}</div>
                 </div>
                 <!-- 右侧内容 end -->

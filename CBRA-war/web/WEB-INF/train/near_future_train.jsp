@@ -19,7 +19,7 @@
                 <div class="fm-list">
                     <form id="form1" action="/train/near_future_train" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
-                    <div class="title"><span><a id="title-span">近期培训</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_近期培训" bundle="${bundle}"/></a></span></div>
                     <ul>
                     <c:forEach var="fundCollection" items="${resultList}">
                         <li>

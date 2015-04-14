@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">会长致辞</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_会长致辞" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">${plateInformation.plateInformationContent.content}</div>
                 </div>
                 <!-- 右侧内容 end -->

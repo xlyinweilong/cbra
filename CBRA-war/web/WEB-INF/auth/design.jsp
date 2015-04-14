@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a href="/auth/design" id="title-span">设　　计</a></span><span><a href="/auth/construction">施　　工</a></span><span><a href="/auth/quality">质　　量</a></span><span><a href="/auth/safe">安　　全</a></span></div>
+                    <div class="title"><span><a href="/auth/design" id="title-span"><fmt:message key="AUTH_设计" bundle="${bundle}"/></a></span><span><a href="/auth/construction"><fmt:message key="AUTH_施工" bundle="${bundle}"/></a></span><span><a href="/auth/quality"><fmt:message key="AUTH_质量" bundle="${bundle}"/></a></span><span><a href="/auth/safe"><fmt:message key="AUTH_安全" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">${plateInformation.plateInformationContent.content}</div>
                 </div>
                 <!-- 右侧内容 end -->

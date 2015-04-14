@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.Tools;
 import com.cbra.support.enums.MessageSecretLevelEnum;
 import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.OrderStatusEnum;
@@ -26,6 +27,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -82,6 +84,66 @@ public class OrderCollection implements Serializable {
     @JoinColumn(name = "gataway_id", referencedColumnName = "id")
     @ManyToOne
     private GatewayPayment gatewayPayment;
+    @Transient
+    private String fundCollectionId;
+    @Transient
+    private String fundCollectionUrl;
+    @Transient
+    private String statusCode;
+    @Transient
+    private String fundCollectionTitle;
+    @Transient
+    private String fundCollectionContent;
+    @Transient
+    private String fundCollectionDetailsUrl;
+
+    public String getFundCollectionId() {
+        return fundCollectionId;
+    }
+
+    public void setFundCollectionId(String fundCollectionId) {
+        this.fundCollectionId = fundCollectionId;
+    }
+
+    public String getFundCollectionUrl() {
+        return fundCollectionUrl;
+    }
+
+    public void setFundCollectionUrl(String fundCollectionUrl) {
+        this.fundCollectionUrl = fundCollectionUrl;
+    }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getFundCollectionTitle() {
+        return fundCollectionTitle;
+    }
+
+    public void setFundCollectionTitle(String fundCollectionTitle) {
+        this.fundCollectionTitle = fundCollectionTitle;
+    }
+
+    public String getFundCollectionContent() {
+        return fundCollectionContent;
+    }
+
+    public void setFundCollectionContent(String fundCollectionContent) {
+        this.fundCollectionContent = fundCollectionContent;
+    }
+
+    public String getFundCollectionDetailsUrl() {
+        return fundCollectionDetailsUrl;
+    }
+
+    public void setFundCollectionDetailsUrl(String fundCollectionDetailsUrl) {
+        this.fundCollectionDetailsUrl = fundCollectionDetailsUrl;
+    }
 
     public Long getId() {
         return id;
@@ -101,6 +163,10 @@ public class OrderCollection implements Serializable {
 
     public Date getCreateDate() {
         return createDate;
+    }
+
+    public String getCreateDateStr() {
+        return Tools.formatDate(createDate, "yyyy-MM-dd HH:mm");
     }
 
     public void setCreateDate(Date createDate) {

@@ -13,7 +13,7 @@
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
 
         <div class="two-loc">
-            <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 个人会员中心</div>
+            <div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > 个人会员中心</div>
         </div>
 
         <!-- 主体 -->

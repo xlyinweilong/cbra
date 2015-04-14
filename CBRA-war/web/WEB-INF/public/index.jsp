@@ -161,9 +161,9 @@
                 <!-- 关于筑誉 -->
                 <div class="One-Row-fl">
                     <div class="Title">
-                        <div class="Title-1">关于筑誉</div>
-                        <div class="Title-2"><a href="/account/signup">申请入会</a></div>
-                        <div class="Title-3"><a href="/into/idea">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_关于筑誉" bundle="${bundle}"/></div>
+                        <div class="Title-2"><a href="/account/signup"><fmt:message key="INDEX_申请入会" bundle="${bundle}"/></a></div>
+                        <div class="Title-3"><a href="/into/idea"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <div class="Content">
                         <div class="img"><img style="width: 250px; height: 142px;" src="<%=Config.homeAbout.getPicUrl()%>"></div>
@@ -173,8 +173,8 @@
                 <!-- 近期活动 -->
                 <div class="One-Row-fr">
                     <div class="Title">
-                        <div class="Title-1">近期活动</div>
-                        <div class="Title-3"><a href="/event/near_future">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_近期活动" bundle="${bundle}"/></div>
+                        <div class="Title-3"><a href="/event/near_future"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
                             <c:forEach var="event" items="<%=Config.eventListIndex%>">
@@ -195,15 +195,15 @@
 
                 <div class="Two-Row-fl">
                     <div class="Title">
-                        <div class="Title-1">前沿领域资讯</div>
-                        <div class="Title-3"><a href="/into/material">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_前沿领域资讯" bundle="${bundle}"/></div>
+                        <div class="Title-3"><a href="/into/material"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
 
                     <div class="Content">
                         <div class="Modules">
                             <div class="img"><img src="/ls/ls-3.jpg"></div>
                             <div class="xxys">
-                                <h1>新材料新技术</h1>
+                                <h1><fmt:message key="INDEX_新材料新技术" bundle="${bundle}"/></h1>
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.materialListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr2}</a></li>
@@ -214,7 +214,7 @@
                         <div class="Modules">
                             <div class="img"><img src="/ls/ls-4.jpg"></div>
                             <div class="xxys">
-                                <h1>建筑产业化</h1>
+                                <h1><fmt:message key="INDEX_建筑产业化" bundle="${bundle}"/></h1>
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.industrializationListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
@@ -225,7 +225,7 @@
                         <div class="Modules">
                             <div class="img"><img src="/ls/ls-5.jpg"></div>
                             <div class="xxys">
-                                <h1>绿色建筑</h1>
+                                <h1><fmt:message key="INDEX_绿色建筑" bundle="${bundle}"/></h1>
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.greenListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
@@ -236,7 +236,7 @@
                         <div class="Modules">
                             <div class="img"><img src="/ls/ls-6.jpg"></div>
                             <div class="xxys">
-                                <h1>BIM技术</h1>
+                                <h1><fmt:message key="INDEX_BIM技术" bundle="${bundle}"/></h1>
                                 <ul>
                                     <c:forEach var="info" items="<%=Config.bimListIndex%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
@@ -250,8 +250,8 @@
 
                 <div class="Two-Row-fr">
                     <div class="Title">
-                        <div class="Title-1">专家顾问</div>
-                        <div class="Title-3"><a href="/team/expert">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_专家顾问" bundle="${bundle}"/></div>
+                        <div class="Title-3"><a href="/team/expert"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
                         <%
@@ -274,8 +274,8 @@
                 <!-- 热点新闻 -->
                 <div class="One-Row-fl">
                     <div class="Title">
-                        <div class="Title-1">热点新闻</div>
-                        <div class="Title-3"><a href="/news/news_list">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_热点新闻" bundle="${bundle}"/></div>
+                        <div class="Title-3"><a href="/news/news_list"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <div class="Content">
                         <div class="img"><img src="<%=Config.homeNews.getPicUrl()%>"  style="width: 250px;"></div>
@@ -289,8 +289,8 @@
                 <!-- 企业人才需求 -->
                 <div class="One-Row-fr">
                     <div class="Title">
-                        <div class="Title-1">企业人才需求</div>
-                        <div class="Title-3"><a href="/into/three_party_offer">更多</a></div>
+                        <div class="Title-1"><fmt:message key="INDEX_企业人才需求" bundle="${bundle}"/></div>
+                        <div class="Title-3"><a href="/into/three_party_offer"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
                         <c:forEach var="offer" items="<%=Config.offerListIndex%>">
@@ -304,8 +304,8 @@
             <!-- 四 排 -->
             <div class="Four-Row">
                 <div class="Title">
-                    <div class="Title-1"> 活动风采</div>
-                    <div class="Title-3"><a href="/team/style">更多</a></div>
+                    <div class="Title-1"><fmt:message key="INDEX_活动风采" bundle="${bundle}"/></div>
+                    <div class="Title-3"><a href="/team/style"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                 </div>
 
                 <!-- 产品滚动 -->
@@ -331,17 +331,17 @@
             </div>
             <!-- 四 排 end -->
             <!-- 五 排 -->
-            <div class="Five-Row">
+            <div class="Five-Row" style="height: 174px;">
                 <div class="Title"><img src="/images/partner.jpg"></div>
                 <ul>
-                    <li><img src="/ls/ls-11.jpg"><p>英国伯明翰大学<br>土木工程学院</p></li>
-                    <li><img src="/ls/ls-12.jpg"><p>上海交大</p></li>
-                    <li><img src="/ls/ls-13.jpg"><p>北方交通大学</p></li>
-                    <li><img src="/ls/ls-14.jpg"><p>同济大学经管学院</p></li>
-                    <li><img src="/ls/ls-15.jpg"><p>重庆大学建规学院</p></li>
-                    <li><img src="/ls/ls-16.jpg"><p>东南大学</p></li>
-                    <li><img src="/ls/ls-17.jpg"><p>上海建科院</p></li>
-                    <li><img src="/ls/ls-18.jpg"><p>精尚慧</p></li>
+                    <li><img src="/ls/ls-11.jpg"><p><fmt:message key="INDEX_英国伯明翰大学土木工程学院" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-12.jpg"><p><fmt:message key="INDEX_上海交大" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-13.jpg"><p><fmt:message key="INDEX_北方交通大学" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-14.jpg"><p><fmt:message key="INDEX_同济大学经管学院" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-15.jpg"><p><fmt:message key="INDEX_重庆大学建规学院" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-16.jpg"><p><fmt:message key="INDEX_东南大学" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-17.jpg"><p><fmt:message key="INDEX_上海建科院" bundle="${bundle}"/></p></li>
+                    <li><img src="/ls/ls-18.jpg"><p><fmt:message key="INDEX_精尚慧" bundle="${bundle}"/></p></li>
                 </ul>
                 <div style=" clear:both;"></div>
             </div>

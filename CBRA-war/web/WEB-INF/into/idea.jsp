@@ -18,7 +18,7 @@
             <!-- 左侧导航 end -->
             <!-- 右侧内容 -->
             <div class="fr-con">
-                <div class="title"><span><a id="title-span">筑誉理念</a></span></div>
+                <div class="title"><span><a id="title-span"><fmt:message key="INDEX_筑誉理念" bundle="${bundle}"/></a></span></div>
                 <div class="con-single">${plateInformation.plateInformationContent.content}</div>
             </div>
             <!-- 右侧内容 end -->

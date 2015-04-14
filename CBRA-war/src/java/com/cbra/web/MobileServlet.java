@@ -34,6 +34,7 @@ import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
 import com.cbra.support.enums.GatewayPaymentSourceEnum;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.OrderStatusEnum;
 import com.cbra.support.enums.PaymentGatewayTypeEnum;
 import com.cbra.support.enums.UserPosition;
 import com.cbra.support.exception.AccountAlreadyExistException;
@@ -155,7 +156,7 @@ public class MobileServlet extends BaseServlet {
     private enum PageEnum {
 
         LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS,
-        PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAR_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER;
+        PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAD_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER;
 
     }
 
@@ -192,11 +193,17 @@ public class MobileServlet extends BaseServlet {
             case NEWS_DETAILS:
                 return loadNewsDetails(request, response);
             case PANDING_PAYMENT_EVENT:
+                return loadPandingPaymentEvent(request, response);
             case SUCCESS_PAYMENT_EVENT:
-            case UPLOAD_HEAR_IMAGE:
+                return loadSuccessPaymentEvent(request, response);
+            case UPLOAD_HEAD_IMAGE:
+                return uploadHearImage(request, response);
             case MEMBERSHIP_ORDER_LIST:
+                return loadMembershipOrderList(request, response);
             case CREATE_MEMBERSHIP_ORDER:
+                return createMembershipOrder(request, response);
             case CREATE_EVENT_ORDER:
+                return createEventOrder(request, response);
             default:
                 throw new BadPageException();
         }
@@ -614,4 +621,294 @@ public class MobileServlet extends BaseServlet {
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
+    /**
+     * 待支付报名活动列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadPandingPaymentEvent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        Integer maxPerPage = super.getRequestInteger(request, "maxcount");
+        if (maxPerPage == null) {
+            maxPerPage = 15;
+        }
+        searchMap.put("owner", user);
+        searchMap.put("status", OrderStatusEnum.PENDING_PAYMENT);
+        ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(searchMap, pageIndex, maxPerPage, null, true);
+        for (OrderCollection order : resultList) {
+            order.setFundCollectionContent(order.getFundCollection().getIntroduction());
+            order.setFundCollectionDetailsUrl("event_details?id=" + order.getFundCollection().getId());
+            order.setFundCollectionId(order.getFundCollection().getId().toString());
+            order.setFundCollectionTitle(order.getFundCollection().getTitle());
+            order.setFundCollectionUrl(order.getFundCollection().getIntroductionImageUrl());
+            Date now = new Date();
+            if (now.before(order.getFundCollection().getStatusBeginDate())) {
+                order.setStatusCode("0");
+            } else if (now.after(order.getFundCollection().getStatusEndDate())) {
+                order.setStatusCode("2");
+            } else {
+                order.setStatusCode("1");
+            }
+            order.setGatewayPayment(null);
+            order.setFundCollection(null);
+            order.setOwner(null);
+        }
+        map.put("data", resultList);
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 已支付活动列表
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadSuccessPaymentEvent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        Integer maxPerPage = super.getRequestInteger(request, "maxcount");
+        if (maxPerPage == null) {
+            maxPerPage = 15;
+        }
+        searchMap.put("owner", user);
+        searchMap.put("status", OrderStatusEnum.SUCCESS);
+        ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(searchMap, pageIndex, maxPerPage, null, true);
+        for (OrderCollection order : resultList) {
+            order.setFundCollectionContent(order.getFundCollection().getIntroduction());
+            order.setFundCollectionDetailsUrl("event_details?id=" + order.getFundCollection().getId());
+            order.setFundCollectionId(order.getFundCollection().getId().toString());
+            order.setFundCollectionTitle(order.getFundCollection().getTitle());
+            order.setFundCollectionUrl(order.getFundCollection().getIntroductionImageUrl());
+            Date now = new Date();
+            if (now.before(order.getFundCollection().getStatusBeginDate())) {
+                order.setStatusCode("0");
+            } else if (now.after(order.getFundCollection().getStatusEndDate())) {
+                order.setStatusCode("2");
+            } else {
+                order.setStatusCode("1");
+            }
+            order.setGatewayPayment(null);
+            order.setFundCollection(null);
+            order.setOwner(null);
+        }
+        map.put("data", resultList);
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean uploadHearImage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            map.put("msg", "子账户不能上传头像");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        String image = super.getRequestString(request, "headImage");
+        String suffix = super.getRequestString(request, "suffix");
+        accountService.uploadHearIamge(account.getId(), image, suffix);
+        map.put("msg", "上传成功");
+        map.put("data", account.getHeadImageUrlWithDefault());
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 会员费缴纳记录
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean loadMembershipOrderList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        Map<String, Object> searchMap = new HashMap<>();
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Integer pageIndex = super.getRequestInteger(request, "page");
+        if (pageIndex == null) {
+            pageIndex = 1;
+        }
+        Integer maxPerPage = super.getRequestInteger(request, "maxcount");
+        if (maxPerPage == null) {
+            maxPerPage = 15;
+        }
+        ResultList<OrderCbraService> resultList = orderService.findOrderCbraServiceList(user, pageIndex, maxPerPage);
+        for (OrderCbraService order : resultList) {
+            order.setLastGatewayPaymentStr(order.getLastGatewayPayment().getGatewayType().getMean());
+            order.setOwner(null);
+            order.setLastGatewayPayment(null);
+        }
+        map.put("data", resultList);
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 创建会费支付订单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean createMembershipOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        OrderCbraService orderCbraService = orderService.createOrderService(user);
+        map.put("data", orderCbraService.getSerialId());
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 创建活动订单
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean createEventOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        Long collectionId = super.getRequestLong(request, "eventId");
+        FundCollection fundCollection = adminService.findCollectionById(collectionId);
+        //查看用户权限
+        boolean isSignUpEvent = cbraService.getAccountCanSignUpEvent(fundCollection, user);
+        if (!isSignUpEvent) {
+            map.put("msg", "您没有操作权限");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Map<String, String[]> paramMap = request.getParameterMap();
+        Map<String, Object> attendeeeObjs = null;
+        Locale locale = super.getLanguage(request);
+        try {
+            attendeeeObjs = super.getFormFieldListMap(paramMap, "attendee", null, null, locale, false);
+        } catch (Exception ex) {
+        }
+        OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
+        map.put("msg", "创建成功");
+        map.put("data", oc.getSerialId());
+        return super.outputObjectAjax(map, response);
+    }
 }

@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fm-list">
-                    <div class="title"><span><a id="title-span">讲师团队</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_讲师团队" bundle="${bundle}"/></a></span></div>
                     <form id="form1" action="/train/lecturers" method="post">
                     <ul>
                         <c:forEach var="plateInformation" items="${resultList}">

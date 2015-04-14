@@ -15,7 +15,7 @@
                 <form id="form1" action="/event/near_future" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                 <div class="news-list">
-                    <div class="title"><span><a href="/event/near_future">近期活动</a></span><span><a href="/event/period" id="title-span">往期活动</a></span></div>
+                    <div class="title"><span><a href="/event/near_future"><fmt:message key="INDEX_近期活动" bundle="${bundle}"/></a></span><span><a href="/event/period" id="title-span"><fmt:message key="INDEX_往期活动" bundle="${bundle}"/></a></span></div>
                     <ul>
                         <c:forEach var="fundCollection" items="${resultList}">
                             <li>
@@ -41,7 +41,7 @@
             </form>
             <div class="news-fr">
                 <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
-                <h1>合作伙伴活动</h1>
+                <h1><fmt:message key="INDEX_合作伙伴活动" bundle="${bundle}"/></h1>
                 <div class="top-hits">
                     <ul>
                         <c:forEach var="event" items="${hotEventList}">

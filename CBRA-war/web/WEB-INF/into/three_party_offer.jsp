@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">企业人才需求</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_企业人才需求" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">
                         <div class="title-gw">
                             <span class="span-1">职位名称</span><span class="span-2">工作地点</span><span class="span-2">部门</span><span>发布时间</span>

@@ -11,14 +11,14 @@
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <jsp:include page="/WEB-INF/public/z_banner.jsp" />
         <div class="two-loc">
-            <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 搜索</div>
+            <div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="GLOBAL_搜索" bundle="${bundle}"/></div>
         </div>
 
         <!-- 主体 -->
         <div class="two-main">
             <!-- 左侧导航 -->
             <div class="fl-nav">
-                <h1>搜　索</h1>
+                <h1><fmt:message key="SEARCH_搜索" bundle="${bundle}"/></h1>
                 <ul>
                     <li><a href="/public/search" <c:if test="${empty p}">id="fl-nav-hover"</c:if>>全　站</a></li>
                     <li><a href="/public/search?p=news" <c:if test="${p == 'news'}">id="fl-nav-hover"</c:if>>新　闻</a></li>
@@ -35,7 +35,7 @@
                 <input type="hidden" id="searchTextHidden" name="search" value="${searchText}" />
                 <div class="fm-list">
                     <div class="title"><span><a href="javascript:void(0);" id="title-span">搜索结果</a></span>
-                        <div class="search"><input type="text" id="search_text_2" value="${searchText}" onkeypress="mykeypressSearchPage(event);" class="sousuok"><input type="button" onclick="form1Submit();" value="搜索" class="sousuoan"></div></div>
+                        <div class="search"><input type="text" id="search_text_2" value="${searchText}" onkeypress="mykeypressSearchPage(event);" class="sousuok"><input type="button" onclick="form1Submit();" value="<fmt:message key='GLOBAL_搜索' bundle='${bundle}'/>" class="sousuoan"></div></div>
                     <ul>
                         <c:forEach var="searchIndex" items="${resultList}">
                             <li>
@@ -75,4 +75,3 @@
         }
     </script>
 </html>
-

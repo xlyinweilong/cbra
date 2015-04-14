@@ -5,6 +5,7 @@
  */
 package com.cbra.entity;
 
+import com.cbra.support.Tools;
 import com.cbra.support.enums.OrderStatusEnum;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -22,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -77,6 +79,16 @@ public class OrderCbraService implements Serializable {
     @JoinColumn(name = "last_gateway_payment_id", referencedColumnName = "id")
     @ManyToOne(optional = true)
     private GatewayPayment lastGatewayPayment;
+    @Transient
+    private String lastGatewayPaymentStr;
+
+    public String getLastGatewayPaymentStr() {
+        return lastGatewayPaymentStr;
+    }
+
+    public void setLastGatewayPaymentStr(String lastGatewayPaymentStr) {
+        this.lastGatewayPaymentStr = lastGatewayPaymentStr;
+    }
 
     public Long getId() {
         return id;
@@ -104,6 +116,10 @@ public class OrderCbraService implements Serializable {
 
     public Date getEndDate() {
         return endDate;
+    }
+
+    public String getEndDateStr() {
+        return Tools.formatDate(endDate, "yyyy-MM-dd HH:mm");
     }
 
     public void setEndDate(Date endDate) {
@@ -157,7 +173,7 @@ public class OrderCbraService implements Serializable {
     public void setOwner(Account owner) {
         this.owner = owner;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;

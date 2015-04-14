@@ -15,7 +15,7 @@
                 <form id="form1" action="/news/news_list" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                 <div class="news-list">
-                    <div class="title"><span><a href="/news/news_list" id="title-span">筑誉新闻</a></span><span><a href="/news/industry_list">行业新闻</a></span></div>
+                    <div class="title"><span><a href="/news/news_list" id="title-span"><fmt:message key="INDEX_筑誉新闻" bundle="${bundle}"/></a></span><span><a href="/news/industry_list"><fmt:message key="INDEX_行业新闻" bundle="${bundle}"/></a></span></div>
                     <ul>
                         <c:forEach var="plateInformation" items="${resultList}">
                             <li>

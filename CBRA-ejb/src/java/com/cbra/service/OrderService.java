@@ -96,12 +96,12 @@ public class OrderService {
      */
     public ResultList<OrderCbraService> findOrderCbraServiceList(Account account, int pageIndex, int maxPerPage) {
         ResultList<OrderCbraService> resultList = new ResultList<>();
-        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(o) FROM OrderCbraService o WHERE o.owner =:owner AND o.deleted = false ORDER BY o.createDate DESC", Long.class);
-        countQuery.setParameter("owner", account);
+        TypedQuery<Long> countQuery = em.createQuery("SELECT COUNT(o) FROM OrderCbraService o WHERE o.owner =:owner AND o.status = :status AND o.deleted = false ORDER BY o.createDate DESC", Long.class);
+        countQuery.setParameter("owner", account).setParameter("status", OrderStatusEnum.SUCCESS);
         Long totalCount = countQuery.getSingleResult();
         resultList.setTotalCount(totalCount.intValue());
-        TypedQuery<OrderCbraService> query = em.createQuery("SELECT distinct(o) FROM OrderCbraService o WHERE o.owner =:owner AND o.deleted = false ORDER BY o.createDate DESC", OrderCbraService.class);
-        query.setParameter("owner", account);
+        TypedQuery<OrderCbraService> query = em.createQuery("SELECT distinct(o) FROM OrderCbraService o WHERE o.owner =:owner AND o.status = :status AND o.deleted = false ORDER BY o.createDate DESC", OrderCbraService.class);
+        query.setParameter("owner", account).setParameter("status", OrderStatusEnum.SUCCESS);
         int startIndex = (pageIndex - 1) * maxPerPage;
         query.setFirstResult(startIndex);
         query.setMaxResults(maxPerPage);
@@ -281,7 +281,7 @@ public class OrderService {
         }
         return resultList;
     }
-    
+
     public ResultList<OrderCbraService> findOrderCbraServiceList(Map<String, Object> map, int pageIndex, int maxPerPage, Boolean list, Boolean page) {
         ResultList<OrderCbraService> resultList = new ResultList<>();
         CriteriaBuilder builder = em.getCriteriaBuilder();

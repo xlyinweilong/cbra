@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -238,6 +239,32 @@ public class AccountService {
         }
         em.merge(user);
         return user;
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param uid
+     * @param iamge
+     * @param suffix
+     * @return
+     */
+    public Account uploadHearIamge(Long uid, String iamge, String suffix) {
+        Account uccount = em.find(Account.class, uid);
+        String savePath = Config.FILE_UPLOAD_DIR + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE;
+        File saveDirFile1 = new File(savePath);
+        if (!saveDirFile1.exists()) {
+            saveDirFile1.mkdirs();
+        }
+        String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5) + "." + suffix);
+        try {
+            Tools.generateImage(iamge, savePath + "/" + filename);
+        } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        uccount.setHeadImageUrl("/" + Config.FILE_UPLOAD_ACCOUNT_HEAD_IMAGE + "/" + filename);
+        em.merge(uccount);
+        return uccount;
     }
 
     /**

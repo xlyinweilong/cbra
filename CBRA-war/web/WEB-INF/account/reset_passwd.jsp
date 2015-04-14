@@ -60,7 +60,7 @@
                 <jsp:include page="/WEB-INF/public/z_top.jsp" />
                 <jsp:include page="/WEB-INF/account/z_account_banner.jsp" />
                 <div class="two-loc">
-                    <div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 重置密码</div>
+                    <div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > 重置密码</div>
                 </div>
                 <!-- 主体 -->
                 <div class="two-main">

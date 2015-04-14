@@ -12,7 +12,7 @@
             <!--微信/联系方式-->
             <div class="weix-lianx">
                 <a class="ico-weixin weixin" onmouseout="showWeixinMenu(this)" onmouseover="showWeixinMenu(this, true)" href="javascript:void(0);">官方微信</a>
-                <a class="ico-weixin lianx">联系我们</a>
+                <a class="ico-weixin lianx"><fmt:message key="INDEX_联系我们" bundle="${bundle}"/></a>
             </div>
             <!--微信下拉二维码-->
             <div id="WeixinMenu" class="weixin-menu" style="display: none;">
@@ -48,7 +48,7 @@
         <div class="LOGO-l"><a href="/public/index"><img src="/images/logo.png"></a></div>
         <div class="LOGO-r">
             <p>咨询热线：021-61550302</p>
-            <input type="text" id="search_text" value="${searchText}" onkeypress="mykeypress13(event);" class="Input-k"><input type="button" class="button-a" value="搜索" onclick="search($('#search_text').val())">
+            <input type="text" id="search_text" value="${searchText}" onkeypress="mykeypress13(event);" class="Input-k"><input type="button" class="button-a" value="<fmt:message key="GLOBAL_搜索" bundle="${bundle}"/>" onclick="search($('#search_text').val())">
         </div>
         <div style=" clear:both;"></div>
     </div>
@@ -203,7 +203,7 @@
             <li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this, 7)" href="/into/info_area"><fmt:message key="INDEX_资讯专区" bundle="${bundle}"/></a>
                 <div class="nav-menu clearfix" id="HJ_Menu_7" style="width:450px; left: -289px; display: none;">
                     <div class="fl" style="width:100px">
-                        <h4>人力资源信息</h4>
+                        <h4><fmt:message key="INDEX_人力资源信息" bundle="${bundle}"/></h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
                             <li><a href="/into/three_party_offer"><fmt:message key="INDEX_企业人才需求" bundle="${bundle}"/></a></li>
@@ -212,7 +212,7 @@
                     </div>
                     <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
                     <div class="fl" style="width:100px">
-                        <h4>资源信息</h4>
+                        <h4><fmt:message key="INDEX_资源信息" bundle="${bundle}"/></h4>
                         <span class="blank6"></span>
                         <ul class="nav-sub-channel">
                             <li><a href="/into/purchase"><fmt:message key="INDEX_采购供求信息" bundle="${bundle}"/></a></li>

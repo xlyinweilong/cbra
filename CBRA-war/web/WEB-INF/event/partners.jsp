@@ -15,7 +15,7 @@
                 <div class="news-list">
                     <form id="form1" action="/event/period" method="post">
                         <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
-                    <div class="title-1"><span>合作伙伴活动</span></div>
+                    <div class="title-1"><span><fmt:message key="INDEX_合作伙伴活动" bundle="${bundle}"/></span></div>
                     <ul>
                         <c:forEach var="fundCollection" items="${resultList}">
                             <li>
@@ -39,7 +39,7 @@
             </div>
             <div class="news-fr">
                 <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
-                <h1>合作伙伴活动</h1>
+                <h1><fmt:message key="INDEX_合作伙伴活动" bundle="${bundle}"/></h1>
                 <div class="top-hits">
                     <ul>
                         <c:forEach var="event" items="${hotEventList}">

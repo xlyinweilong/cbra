@@ -19,7 +19,7 @@
                 <form id="form1" action="/team/expert" method="post">
                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                 <div class="fm-list">
-                    <div class="title"><span><a id="title-span">团队风采</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_团队风采" bundle="${bundle}"/></a></span></div>
                     <ul>
                         <c:forEach var="plateInformation" items="${resultList}">
                             <li>

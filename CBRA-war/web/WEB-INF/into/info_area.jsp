@@ -17,8 +17,8 @@
                 <div class="info-a">
                     <div class="info-fl">
                         <div class="Title">
-                            <div class="Title-1">人力资源</div>
-                            <div class="Title-3"><a href="/into/three_party_offer">更多</a></div>
+                            <div class="Title-1"><fmt:message key="INDEX_人力资源" bundle="${bundle}"/></div>
+                            <div class="Title-3"><a href="/into/three_party_offer"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                         </div>
                         <ul>
                         <c:forEach var="offer" items="${offerList}">
@@ -39,8 +39,8 @@
             <!-- 资源信息 -->
             <div class="info-r">
                 <div class="Title">
-                    <div class="Title-1">资源信息</div>
-                    <div class="Title-3"><a href="/into/purchase">更多</a></div>
+                    <div class="Title-1"><fmt:message key="INTO_资源信息" bundle="${bundle}"/></div>
+                    <div class="Title-3"><a href="/into/purchase"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                 </div>
                 <div class="info" style="height: 120px;">
                     <div class="info-mk"><a href="/into/purchase" id="fl-nav-hover"><img src="/images/info-mk-1.jpg"></a></div>
@@ -54,8 +54,8 @@
             <!-- 前沿领域 -->
             <div class="info-area">
                 <div class="Title">
-                    <div class="Title-1">前沿领域</div>
-                    <div class="Title-3"><a href="/into/material">更多</a></div>
+                    <div class="Title-1"><fmt:message key="INTO_前沿领域" bundle="${bundle}"/></div>
+                    <div class="Title-3"><a href="/into/material"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                 </div>
                 <ul>
                     <c:forEach var="plateInfo" items="${plateInfoList}">

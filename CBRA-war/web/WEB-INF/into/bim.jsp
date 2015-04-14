@@ -17,7 +17,7 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fm-list">
-                    <div class="title"><span><a id="title-span">BIM技术</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="INDEX_BIM技术" bundle="${bundle}"/></a></span></div>
                     <form id="form1" action="/into/bim" method="post">
                         <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                     <ul>

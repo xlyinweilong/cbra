@@ -2,10 +2,10 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="two-loc">
-    <c:if test="${param.page == '1'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 会员守则</div></c:if>
-    <c:if test="${param.page == '2'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 申请个人会员</div></c:if>
-    <c:if test="${param.page == '3'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 申请企业会员</div></c:if>
-    <c:if test="${param.page == '4'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 筑誉岗位</div></c:if>
-    <c:if test="${param.page == '5'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 专家招募</div></c:if>
-    <c:if test="${param.page == '6'}"><div class="two-loc-c">当前位置：<a href="/public/index">筑誉首页</a> > 加入筑誉 > 合作伙伴招募</div></c:if>
+    <c:if test="${param.page == '1'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="JOIN_会员守则" bundle="${bundle}"/></div></c:if>
+    <c:if test="${param.page == '2'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="JOIN_申请个人会员" bundle="${bundle}"/></div></c:if>
+    <c:if test="${param.page == '3'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="JOIN_申请企业会员" bundle="${bundle}"/></div></c:if>
+    <c:if test="${param.page == '4'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="INDEX_筑誉岗位" bundle="${bundle}"/></div></c:if>
+    <c:if test="${param.page == '5'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="INDEX_专家招募" bundle="${bundle}"/></div></c:if>
+    <c:if test="${param.page == '6'}"><div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="INDEX_加入筑誉" bundle="${bundle}"/> > <fmt:message key="INDEX_合作伙伴招募" bundle="${bundle}"/></div></c:if>
 </div>
