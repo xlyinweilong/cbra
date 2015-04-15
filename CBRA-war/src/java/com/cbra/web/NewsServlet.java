@@ -167,7 +167,7 @@ public class NewsServlet extends BaseServlet {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 pagePlate = plate;
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }

@@ -66,7 +66,7 @@
             </form>
             <div class="news-fr">
                 <div class="ad-fr"><img src="/ls/ls-20.jpg"></div>
-                <h1>热门点击</h1>
+                <h1><fmt:message key="GLOBAL_热门点击" bundle="${bundle}"/></h1>
                 <div class="top-hits">
                     <ul>
                     <c:forEach var="event" items="${hotEventList}">

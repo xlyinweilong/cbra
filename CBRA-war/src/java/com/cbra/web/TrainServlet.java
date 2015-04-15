@@ -48,7 +48,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @WebServlet(name = "TrainServlet", urlPatterns = {"/train/*"})
 public class TrainServlet extends BaseServlet {
-
+    
     @EJB
     private AccountService accountService;
     @EJB
@@ -82,7 +82,7 @@ public class TrainServlet extends BaseServlet {
         request.setAttribute(REQUEST_ATTRIBUTE_PATHINFO_ARRAY, pathArray);
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     @Override
     public boolean processLoginControl(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -92,10 +92,10 @@ public class TrainServlet extends BaseServlet {
             default:
                 setLoginLogoutBothAllowed(request);
         }
-
+        
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
     @Override
     boolean processActionEnum(String actionString, HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException {
         ActionEnum action = null;
@@ -110,9 +110,9 @@ public class TrainServlet extends BaseServlet {
     }// </editor-fold>
 
     enum ActionEnum {
-
+        
     }
-
+    
     @Override
     boolean processAction(HttpServletRequest request, HttpServletResponse response) throws BadPostActionException, ServletException, IOException, NoSessionException, NotVerifiedException {
         ActionEnum action = (ActionEnum) request.getAttribute(REQUEST_ATTRIBUTE_ACTION_ENUM);
@@ -121,12 +121,12 @@ public class TrainServlet extends BaseServlet {
                 throw new BadPostActionException();
         }
     }
-
+    
     private enum PageEnum {
-
+        
         IDEA_TRAIN, NEAR_FUTURE_TRAIN, PERIOD_TRAIN, LECTURERS, TRAIN_DETAILS, LECTURERS_DETAILS;
     }
-
+    
     @Override
     boolean processPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSessionException, BadPageException, NoPermException {
         PageEnum page = (PageEnum) request.getAttribute(REQUEST_ATTRIBUTE_PAGE_ENUM);
@@ -170,7 +170,7 @@ public class TrainServlet extends BaseServlet {
         for (Plate plate : list) {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }
@@ -195,7 +195,7 @@ public class TrainServlet extends BaseServlet {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 pagePlate = plate;
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }
@@ -211,7 +211,7 @@ public class TrainServlet extends BaseServlet {
         request.setAttribute("resultList", resultList);
         //加载左侧点击高的
         map.put("plateId", pagePlate.getId());
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5,super.getLanguageType(request)));
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5, super.getLanguageType(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -234,7 +234,7 @@ public class TrainServlet extends BaseServlet {
         //set data
         request.setAttribute("plateInfo", plateInfo);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+        if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
@@ -242,7 +242,7 @@ public class TrainServlet extends BaseServlet {
         request.setAttribute("messageList", cbraService.findMessageList(plateInfo, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-    
+
     /**
      * 加载近期活动
      *
@@ -318,10 +318,10 @@ public class TrainServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         FundCollection fundCollection = adminService.findCollectionById(id);
         //set data
-        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10,super.getEventLanguageType(request)));
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10, super.getEventLanguageType(request)));
         request.setAttribute("fundCollection", fundCollection);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
-        if(PlateAuthEnum.NO_VIEW.equals(auth)){
+        if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
         }
@@ -330,5 +330,5 @@ public class TrainServlet extends BaseServlet {
         request.setAttribute("isSignUpEvent", cbraService.getAccountCanSignUpEvent(fundCollection, super.getUserFromSessionNoException(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
-
+    
 }

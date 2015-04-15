@@ -208,7 +208,7 @@ public class AboutServlet extends BaseServlet {
         for (Plate plate : list) {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(),super.getLanguageType(request)));
                 break;
             }
         }

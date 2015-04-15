@@ -909,7 +909,7 @@ public class AdminService {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
         }
         if (map.containsKey("languageType")) {
-            criteria.add(builder.equal(root.get("languageType"), map.get("languageType")));
+            criteria.add(builder.equal(root.get("language"), map.get("languageType")));
         }
         try {
             if (list == null || !list) {
