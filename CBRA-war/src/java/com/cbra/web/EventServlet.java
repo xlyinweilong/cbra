@@ -179,7 +179,7 @@ public class EventServlet extends BaseServlet {
                 platePage = plate;
             }
             if ("partners".equalsIgnoreCase(plate.getPage())) {
-                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10, super.getEventLanguageType(request)));
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -189,8 +189,8 @@ public class EventServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
         map.put("nearFutre", new Date());
+        map.put("eventLanguage", super.getEventLanguageType(request));
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
-
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -213,7 +213,7 @@ public class EventServlet extends BaseServlet {
                 platePage = plate;
             }
             if ("partners".equalsIgnoreCase(plate.getPage())) {
-                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10, super.getEventLanguageType(request)));
             }
         }
         Integer page = super.getRequestInteger(request, "page");
@@ -223,6 +223,7 @@ public class EventServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
         map.put("period", new Date());
+        map.put("eventLanguage", super.getEventLanguageType(request));
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -253,8 +254,9 @@ public class EventServlet extends BaseServlet {
         }
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
+        map.put("eventLanguage", super.getEventLanguageType(request));
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
-        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(platePage, 10));
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(platePage, 10, super.getEventLanguageType(request)));
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
     }
@@ -272,7 +274,7 @@ public class EventServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         FundCollection fundCollection = adminService.findCollectionById(id);
         //set data
-        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10, super.getEventLanguageType(request)));
         request.setAttribute("fundCollection", fundCollection);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
         if (PlateAuthEnum.NO_VIEW.equals(auth)) {

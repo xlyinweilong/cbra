@@ -1,3 +1,5 @@
+<%@page import="java.util.Locale"%>
+<%@page import="java.util.ResourceBundle"%>
 <%@page import="com.cbra.entity.PlateInformation"%>
 <%@page import="com.cbra.Config"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -142,7 +144,8 @@
                     <div class="new_banner">
                         <ul class="rslides f426x240">
                         <%
-                            for (PlateInformation info : Config.homeSAD) {
+                            Locale locale = (Locale) session.getAttribute("SESSION_ATTRIBUTE_LOCALE");
+                            for (PlateInformation info : !locale.equals(Locale.ENGLISH) ? Config.homeSAD : Config.homeSADEn) {
                         %>
                         <li><a href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="1423" height="320" /></a></li>
                                 <%
@@ -166,8 +169,8 @@
                         <div class="Title-3"><a href="/into/idea"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <div class="Content">
-                        <div class="img"><img style="width: 250px; height: 142px;" src="<%=Config.homeAbout.getPicUrl()%>"></div>
-                        <p><%=Config.homeAbout.getIntroduction()%></p>
+                        <div class="img"><img style="width: 250px; height: 142px;" src="<%=!locale.equals(Locale.ENGLISH) ? Config.homeAbout.getPicUrl() : Config.homeAboutEn.getPicUrl()%>"></div>
+                        <p><%=!locale.equals(Locale.ENGLISH) ? Config.homeAbout.getIntroduction() : Config.homeAboutEn.getIntroduction()%></p>
                     </div>
                 </div>
                 <!-- 近期活动 -->
@@ -177,7 +180,7 @@
                         <div class="Title-3"><a href="/event/near_future"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
-                            <c:forEach var="event" items="<%=Config.eventListIndex%>">
+                        <c:forEach var="event" items="<%=!locale.equals(Locale.ENGLISH) ? Config.eventListIndex : Config.eventListIndexEn%>">
                             <li><a href="/event/event_details?id=${event.id}">[${event.eventBeginDateIndexString}]${event.titleIndex}</a><c:if test="${event.statusBoolean}"><img src="/images/ico-bmz.png"></c:if></li>
                             </c:forEach>
                     </ul>
@@ -187,7 +190,7 @@
             <!-- 一 排 end -->
 
             <!-- 广告条 -->
-            <div class="ad-sx"><img  style="width: 1000px;" src="<%=Config.homeAd.getPicUrl()%>"></div>
+            <div class="ad-sx"><img  style="width: 1000px;" src="<%=!locale.equals(Locale.ENGLISH) ? Config.homeAd.getPicUrl() : Config.homeAdEn.getPicUrl()%>"></div>
             <!-- 广告条 end-->
 
             <!-- 二 排 -->
@@ -205,7 +208,7 @@
                             <div class="xxys">
                                 <h1><fmt:message key="INDEX_新材料新技术" bundle="${bundle}"/></h1>
                                 <ul>
-                                    <c:forEach var="info" items="<%=Config.materialListIndex%>">
+                                    <c:forEach var="info" items="<%=!locale.equals(Locale.ENGLISH) ? Config.materialListIndex : Config.materialListIndexEn%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr2}</a></li>
                                         </c:forEach>
                                 </ul>
@@ -216,7 +219,7 @@
                             <div class="xxys">
                                 <h1><fmt:message key="INDEX_建筑产业化" bundle="${bundle}"/></h1>
                                 <ul>
-                                    <c:forEach var="info" items="<%=Config.industrializationListIndex%>">
+                                    <c:forEach var="info" items="<%=!locale.equals(Locale.ENGLISH) ? Config.industrializationListIndex : Config.industrializationListIndexEn%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
                                         </c:forEach>
                                 </ul>
@@ -227,7 +230,7 @@
                             <div class="xxys">
                                 <h1><fmt:message key="INDEX_绿色建筑" bundle="${bundle}"/></h1>
                                 <ul>
-                                    <c:forEach var="info" items="<%=Config.greenListIndex%>">
+                                    <c:forEach var="info" items="<%=!locale.equals(Locale.ENGLISH) ? Config.greenListIndex : Config.greenListIndexEn%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
                                         </c:forEach>
                                 </ul>
@@ -238,7 +241,7 @@
                             <div class="xxys">
                                 <h1><fmt:message key="INDEX_BIM技术" bundle="${bundle}"/></h1>
                                 <ul>
-                                    <c:forEach var="info" items="<%=Config.bimListIndex%>">
+                                    <c:forEach var="info" items="<%=!locale.equals(Locale.ENGLISH) ? Config.bimListIndex : Config.bimListIndexEn%>">
                                         <li><a href="/into/details?id=${info.id}">${info.titleIndexStr}</a></li>
                                         </c:forEach>
                                 </ul>
@@ -256,7 +259,7 @@
                     <ul>
                         <%
                             int i = 0;
-                            for (PlateInformation info : Config.homeExpert) {
+                            for (PlateInformation info : !locale.equals(Locale.ENGLISH) ? Config.homeExpert : Config.homeExpertEn) {
                                 i++;
                         %>
                         <li <%if (i == 2 || i == 5) {%>class="m-lr"<%}%>><a  href="<%=info.getNavUrl()%>"><img src="<%=info.getPicUrl()%>" width="88" height="88" /></a></li>
@@ -278,9 +281,9 @@
                         <div class="Title-3"><a href="/news/news_list"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <div class="Content">
-                        <div class="img"><img src="<%=Config.homeNews.getPicUrl()%>"  style="width: 250px;"></div>
+                        <div class="img"><img src="<%=!locale.equals(Locale.ENGLISH) ? Config.homeNews.getPicUrl() : Config.homeNewsEn.getPicUrl()%>"  style="width: 250px;"></div>
                         <ul>
-                            <c:forEach var="news" items="<%=Config.newsList5%>">
+                            <c:forEach var="news" items="<%=!locale.equals(Locale.ENGLISH) ? Config.newsList5 : Config.newsList5En%>">
                                 <li><a href="/news/details?id=${news.id}" class="fl">[<fmt:formatDate value='${news.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${news.titleIndexStr}</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
                                 </c:forEach>
                         </ul>
@@ -293,7 +296,7 @@
                         <div class="Title-3"><a href="/into/three_party_offer"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
-                        <c:forEach var="offer" items="<%=Config.offerListIndex%>">
+                        <c:forEach var="offer" items="<%=!locale.equals(Locale.ENGLISH) ? Config.offerListIndex:Config.offerListIndexEn%>">
                             <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}[${offer.city}]</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
                             </c:forEach> 
                     </ul>
@@ -315,7 +318,7 @@
                             <div id="List1">
                                 <!-- 图片列表 begin -->
                                 <%
-                                    for (PlateInformation info : Config.homeStyle) {
+                                    for (PlateInformation info : !locale.equals(Locale.ENGLISH) ? Config.homeStyle : Config.homeStyleEn) {
                                 %>
                                 <div class="pic"><a href="<%=info.getNavUrl()%>" target="_blank"><img src="<%=info.getPicUrl()%>" width="220" height="150"  /></a></div> 
                                         <%

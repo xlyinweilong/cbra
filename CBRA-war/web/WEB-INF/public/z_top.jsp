@@ -12,7 +12,7 @@
             <!--微信/联系方式-->
             <div class="weix-lianx">
                 <a class="ico-weixin weixin" onmouseout="showWeixinMenu(this)" onmouseover="showWeixinMenu(this, true)" href="javascript:void(0);">官方微信</a>
-                <a class="ico-weixin lianx"><fmt:message key="INDEX_联系我们" bundle="${bundle}"/></a>
+                <a class="ico-weixin lianx" <c:if test="${bundle.locale.language == 'en'}">style="width:66px"</c:if>><fmt:message key="INDEX_联系我们" bundle="${bundle}"/></a>
             </div>
             <!--微信下拉二维码-->
             <div id="WeixinMenu" class="weixin-menu" style="display: none;">

@@ -16,6 +16,8 @@ import com.cbra.support.FileUploadItem;
 import com.cbra.support.FileUploadObj;
 import com.cbra.support.NoPermException;
 import com.cbra.support.Tools;
+import com.cbra.support.enums.FundCollectionLanaguageEnum;
+import com.cbra.support.enums.LanguageType;
 import com.cbra.support.enums.PlateTypeEnum;
 import com.cbra.web.support.BadPageException;
 import com.cbra.web.support.BadPostActionException;
@@ -461,6 +463,24 @@ public abstract class BaseServlet extends HttpServlet {
             locale = new Locale(DEFAULT_LANG);
         }
         return locale;
+    }
+
+    LanguageType getLanguageType(HttpServletRequest request) {
+        Locale locale = this.getLanguage(request);
+        if (locale.equals(Locale.ENGLISH)) {
+            return LanguageType.EN;
+        } else {
+            return LanguageType.ZH;
+        }
+    }
+
+    FundCollectionLanaguageEnum getEventLanguageType(HttpServletRequest request) {
+        Locale locale = this.getLanguage(request);
+        if (locale.equals(Locale.ENGLISH)) {
+            return FundCollectionLanaguageEnum.EN;
+        } else {
+            return FundCollectionLanaguageEnum.ZH;
+        }
     }
 
     /**

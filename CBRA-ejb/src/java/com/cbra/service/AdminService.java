@@ -908,6 +908,9 @@ public class AdminService {
         if (map.containsKey("plateId")) {
             criteria.add(builder.equal(root.get("plate").get("id"), (Long) map.get("plateId")));
         }
+        if (map.containsKey("languageType")) {
+            criteria.add(builder.equal(root.get("languageType"), map.get("languageType")));
+        }
         try {
             if (list == null || !list) {
                 CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
@@ -1000,6 +1003,9 @@ public class AdminService {
         }
         if (map.containsKey("searchPositionEnum")) {
             criteria.add(builder.equal(root.get("positionEnum"), map.get("searchPositionEnum")));
+        }
+        if (map.containsKey("languageType")) {
+            criteria.add(builder.equal(root.get("languageType"), map.get("languageType")));
         }
         try {
             if (list == null || !list) {
@@ -1097,6 +1103,9 @@ public class AdminService {
         }
         if (map.containsKey("weikaishi")) {
             criteria.add(builder.greaterThan(root.get("statusBeginDate"), (Date) map.get("weikaishi")));
+        }
+        if (map.containsKey("eventLanguage")) {
+            criteria.add(builder.equal(root.get("eventLanguage"), map.get("eventLanguage")));
         }
         try {
             if (list == null || !list) {

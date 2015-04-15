@@ -264,7 +264,7 @@ public class OrderServlet extends BaseServlet {
         List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
         for (Plate plate : list) {
             if ("pariners".equalsIgnoreCase(plate.getPage())) {
-                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10, super.getEventLanguageType(request)));
             }
         }
         Long id = super.getRequestLong(request, "id");
@@ -333,7 +333,7 @@ public class OrderServlet extends BaseServlet {
         List<Plate> list = (List<Plate>) application.getAttribute("menuPlates");
         for (Plate plate : list) {
             if ("pariners".equalsIgnoreCase(plate.getPage())) {
-                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10));
+                request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(plate, 10, super.getEventLanguageType(request)));
             }
         }
         request.setAttribute("order", order);

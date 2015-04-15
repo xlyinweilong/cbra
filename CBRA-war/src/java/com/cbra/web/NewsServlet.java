@@ -178,11 +178,12 @@ public class NewsServlet extends BaseServlet {
         int maxPerPage = 5;
         Map< String, Object> map = new HashMap<>();
         map.put("plateId", pagePlate.getId());
+        map.put("languageType", super.getLanguageType(request));
         ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, pageIndex, maxPerPage, null, true);
         request.setAttribute("resultList", resultList);
         //加载左侧点击高的
         map.put("plateId", pagePlate.getId());
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5));
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5,super.getLanguageType(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -204,7 +205,7 @@ public class NewsServlet extends BaseServlet {
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         //set data
         request.setAttribute("plateInfo", plateInfo);
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(plateInfo.getPlate(), 5));
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(plateInfo.getPlate(), 5,super.getLanguageType(request)));
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
         if(PlateAuthEnum.NO_VIEW.equals(auth)){
             super.forward("/public/no_authorization", request, response);

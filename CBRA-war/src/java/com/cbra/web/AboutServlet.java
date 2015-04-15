@@ -232,7 +232,7 @@ public class AboutServlet extends BaseServlet {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 pagePlate = plate;
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }
@@ -247,6 +247,7 @@ public class AboutServlet extends BaseServlet {
             map.put("searchName", searchName);
         }
         map.put("plateId", pagePlate.getId());
+        map.put("languageType", super.getLanguageType(request));
         ResultList<Offer> resultList = adminService.findOfferList(map, pageIndex, maxPerPage, null, true);
         request.setAttribute("resultList", resultList);
         request.setAttribute("searchName", searchName);
@@ -294,7 +295,7 @@ public class AboutServlet extends BaseServlet {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 pagePlate = plate;
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), LanguageType.ZH));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }
@@ -305,11 +306,12 @@ public class AboutServlet extends BaseServlet {
         int maxPerPage = 5;
         Map< String, Object> map = new HashMap<>();
         map.put("plateId", pagePlate.getId());
+        map.put("languageType", super.getLanguageType(request));
         ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, pageIndex, maxPerPage, null, true);
         request.setAttribute("resultList", resultList);
         //加载左侧点击高的
         map.put("plateId", pagePlate.getId());
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5));
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5, super.getLanguageType(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -382,8 +384,8 @@ public class AboutServlet extends BaseServlet {
                 request.setAttribute("isCompany", true);
             }
         }
-        request.setAttribute("offerList", cbraService.findOfferList4Hot(pagePlate, 5));
-        request.setAttribute("plateInfoList", cbraService.findPlateInformationList4Hot(plateIds, 5));
+        request.setAttribute("offerList", cbraService.findOfferList4Hot(pagePlate, 5, super.getLanguageType(request)));
+        request.setAttribute("plateInfoList", cbraService.findPlateInformationList4Hot(plateIds, 5, super.getLanguageType(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 

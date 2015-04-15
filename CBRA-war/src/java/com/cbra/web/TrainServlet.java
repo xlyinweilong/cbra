@@ -206,11 +206,12 @@ public class TrainServlet extends BaseServlet {
         int maxPerPage = 5;
         Map< String, Object> map = new HashMap<>();
         map.put("plateId", pagePlate.getId());
+        map.put("languageType", super.getLanguageType(request));
         ResultList<PlateInformation> resultList = adminService.findPlateInformationList(map, pageIndex, maxPerPage, null, true);
         request.setAttribute("resultList", resultList);
         //加载左侧点击高的
         map.put("plateId", pagePlate.getId());
-        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5));
+        request.setAttribute("plateInfoHots", cbraService.getPlateInformationList4Hot(pagePlate, 5,super.getLanguageType(request)));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -267,6 +268,7 @@ public class TrainServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
         map.put("nearFutre", new Date());
+        map.put("languageType", super.getEventLanguageType(request));
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -297,6 +299,7 @@ public class TrainServlet extends BaseServlet {
         Map<String, Object> map = new HashMap<>();
         map.put("plateId", platePage.getId());
         map.put("period", new Date());
+        map.put("languageType", super.getEventLanguageType(request));
         ResultList<FundCollection> resultList = adminService.findCollectionList(map, page, 15, null, true);
         request.setAttribute("resultList", resultList);
         return KEEP_GOING_WITH_ORIG_URL;
@@ -315,7 +318,7 @@ public class TrainServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         FundCollection fundCollection = adminService.findCollectionById(id);
         //set data
-        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10));
+        request.setAttribute("hotEventList", cbraService.getFundCollectionList4Web(fundCollection.getPlate(), 10,super.getEventLanguageType(request)));
         request.setAttribute("fundCollection", fundCollection);
         PlateAuthEnum auth = cbraService.getPlateAuthEnum(fundCollection, super.getUserFromSessionNoException(request));
         if(PlateAuthEnum.NO_VIEW.equals(auth)){
