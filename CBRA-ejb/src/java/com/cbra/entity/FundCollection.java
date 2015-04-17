@@ -162,6 +162,17 @@ public class FundCollection implements Serializable {
         }
     }
 
+    public String getStatusCode() {
+        Date now = new Date();
+        if (now.before(statusBeginDate)) {
+            return "0";
+        } else if (now.after(statusEndDate)) {
+            return "2";
+        } else {
+            return "1";
+        }
+    }
+
     public boolean getStatusBoolean() {
         Date now = new Date();
         if (now.before(statusBeginDate)) {

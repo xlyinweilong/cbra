@@ -256,7 +256,7 @@ public class AccountService {
         if (!saveDirFile1.exists()) {
             saveDirFile1.mkdirs();
         }
-        String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss" + "_" + Tools.generateRandomNumber(5) + "." + suffix);
+        String filename = Tools.formatDate(new Date(), "yyyyMMddHHmmss") + "_" + Tools.generateRandomNumber(5) + "." + suffix;
         try {
             Tools.generateImage(iamge, savePath + "/" + filename);
         } catch (Exception ex) {
