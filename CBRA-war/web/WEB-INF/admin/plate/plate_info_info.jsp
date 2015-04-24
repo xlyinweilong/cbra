@@ -35,28 +35,28 @@
                         "introduction": {required: true},
                         "content": {required: true},
         </c:if>
-                <c:if test="${plate.plateType == 'AD'}">
-                    "title": {required: true},
-                </c:if>
+        <c:if test="${plate.plateType == 'AD'}">
+                "title": {required: true},
+        </c:if>
                 "pushDate": {required: true}
                 };
                         var messages = {
-                         <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
-                            "title": {required: "必须填写！"},
-                            "introduction": {required: "简介必须填写！"},
-                             "content": {required: "内容必须填写！"},
-                        </c:if>
-                        <c:if test="${plate.plateType == 'AD'}">
-                            "title": {required: "必须填写！"},
-                        </c:if>
-                            "pushDate": {required: "发布时间必须填写！"}
+        <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
+                        "title": {required: "必须填写！"},
+                                "introduction": {required: "简介必须填写！"},
+                                "content": {required: "内容必须填写！"},
+        </c:if>
+        <c:if test="${plate.plateType == 'AD'}">
+                        "title": {required: "必须填写！"},
+        </c:if>
+                        "pushDate": {required: "发布时间必须填写！"}
                         };
                         //初始化验证框架
                         FormSave("form1", rules, messages);
                         $("#form1").attr("action", "/admin/plate/plate_info_info");
 //                Keditor.html('');
-                if(Keditor != null){
-                     Keditor.sync();
+                        if (Keditor != null){
+                Keditor.sync();
                 }
         <c:if test="${plate.plateKey == 'ABOUT' || plate.plateKey == 'CONTACT_US'}">
                 KeditorEn.sync();
@@ -66,8 +66,7 @@
                         $("#gobackBtn").click(function () {
                 window.location.href = "/admin/plate/plate_info_list?plateId=${plate.id}";
                 });
-                });
-    </script>
+                });</script>
     <body>
         <div class="formbody">
             <div class="formtitle"><span>${plate.name}</span></div>
@@ -77,8 +76,8 @@
                 <input type="hidden" name="plateId" value="${plate.id}" />
                 <ul class="forminfo">
                     <li><label>排序</label>
-                            <input type="text" class="dfinput" style="width: 350px;" name="orderIndex" value="${plateInfo.orderIndex}" maxlength="100" />
-                        </li>
+                        <input type="text" class="dfinput" style="width: 350px;" name="orderIndex" value="${plateInfo.orderIndex}" maxlength="100" />
+                    </li>
                     <c:if test="${plate.plateKey == 'NEWS'}">
                         <li><label>标题<b>*</b></label>
                             <input type="text" class="dfinput" style="width: 350px;" name="title" value="${plateInfo.title}" maxlength="100" />
@@ -97,10 +96,10 @@
                             <label>图片</label>
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
                             <c:if test="${not empty plateInfo.picUrl}"><a href="${plateInfo.picUrl}" target="_blank">查看</a></c:if>
-                        </li>
-                        <li>
-                            <label>链接</label>
-                            <input type="text" class="dfinput" style="width: 350px;" name="navUrl" value="${plateInfo.navUrl}" maxlength="100" />
+                            </li>
+                            <li>
+                                <label>链接</label>
+                                <input type="text" class="dfinput" style="width: 350px;" name="navUrl" value="${plateInfo.navUrl}" maxlength="100" />
                         </li> 
                     </c:if>
                     <c:if test="${plate.plateKey == 'NEWS' || plate.plateKey == 'COMMITTEE'}">
@@ -111,11 +110,38 @@
                             <label>介绍图片</label>
                             <input type="file" class="dfinput" style="width: 350px;" name="image" />
                             <c:if test="${not empty plateInfo.picUrl}"><a href="${plateInfo.picUrl}" target="_blank">查看</a></c:if>
-                        </li> 
-                        <li>
-                            <label>链接</label>
-                            <input type="text" class="dfinput" style="width: 350px;" name="navUrl" value="${plateInfo.navUrl}" maxlength="100" />
-                        </li> 
+                            </li> 
+                            <li>
+                                <label>链接</label>
+                                <input type="text" class="dfinput" style="width: 350px;" name="navUrl" value="${plateInfo.navUrl}" maxlength="100" />
+                        </li>
+                        <li><label>游客权限</label>
+                            <select name="touristAuth" class="dfinput" style="width: 354px;">
+                                <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                    <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == plateInfo.touristAuth}">selected="selected"</c:if>>
+                                        ${plateAuthEnum.authMean}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </li>
+                        <li><label>个人会员权限</label>
+                            <select name="userAuth" class="dfinput" style="width: 354px;">
+                                <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                    <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == plateInfo.userAuth}">selected="selected"</c:if>>
+                                        ${plateAuthEnum.authMean}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </li>
+                        <li><label>公司会员权限</label>
+                            <select name="companyAuth" class="dfinput" style="width: 354px;">
+                                <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                    <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == plateInfo.companyAuth}">selected="selected"</c:if>>
+                                        ${plateAuthEnum.authMean}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </li>
                     </c:if>
                     <c:if test="${plate.plateKey == 'HOME_ABOUT' || plate.plateKey == 'TOP_INTO' || plate.plateKey == 'TOP_EVENT' || plate.plateKey == 'TOP_TRAIN' || plate.plateKey == 'TOP_STYLE' || plate.plateKey == 'TOP_JOIN'}">
                         <li><label>简介<b>*</b></label>

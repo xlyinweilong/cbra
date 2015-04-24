@@ -208,7 +208,7 @@ public class AboutServlet extends BaseServlet {
         for (Plate plate : list) {
             if (page.name().equalsIgnoreCase(plate.getPage())) {
                 request.setAttribute("plate", plate);
-                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(),super.getLanguageType(request)));
+                request.setAttribute("plateInformation", adminService.findPlateInformationByPlateId(plate.getId(), super.getLanguageType(request)));
                 break;
             }
         }
@@ -267,7 +267,7 @@ public class AboutServlet extends BaseServlet {
         Long id = super.getRequestLong(request, "id");
         Offer offer = adminService.findOfferById(id);
         request.setAttribute("offer", offer);
-        PlateAuthEnum auth = cbraService.getPlateAuthEnum(offer.getPlate(), super.getUserFromSessionNoException(request));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(offer, super.getUserFromSessionNoException(request));
         if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;
@@ -333,7 +333,7 @@ public class AboutServlet extends BaseServlet {
         plateInfo.setVisitCount(plateInfo.getVisitCount() + 1L);
         //set data
         request.setAttribute("plateInfo", plateInfo);
-        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo.getPlate(), super.getUserFromSessionNoException(request));
+        PlateAuthEnum auth = cbraService.getPlateAuthEnum(plateInfo, super.getUserFromSessionNoException(request));
         if (PlateAuthEnum.NO_VIEW.equals(auth)) {
             super.forward("/public/no_authorization", request, response);
             return FORWARD_TO_ANOTHER_URL;

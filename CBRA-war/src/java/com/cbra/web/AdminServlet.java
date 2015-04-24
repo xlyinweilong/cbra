@@ -914,7 +914,28 @@ public class AdminServlet extends BaseServlet {
                     setErrorResult("保存失败，参数异常！", request);
                     return KEEP_GOING_WITH_ORIG_URL;
                 }
-                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem, orderIndex);
+                String touristAuth = fileUploadObj.getFormField("touristAuth");
+                String userAuth = fileUploadObj.getFormField("userAuth");
+                String companyAuth = fileUploadObj.getFormField("companyAuth");
+                PlateAuthEnum touristAuthEnum = null;
+                PlateAuthEnum userAuthEnum = null;
+                PlateAuthEnum companyAuthEnum = null;
+                try {
+                    touristAuthEnum = PlateAuthEnum.valueOf(touristAuth);
+                } catch (Exception e) {
+                    touristAuthEnum = PlateAuthEnum.ONLY_VIEW;
+                }
+                try {
+                    userAuthEnum = PlateAuthEnum.valueOf(userAuth);
+                } catch (Exception e) {
+                    userAuthEnum = PlateAuthEnum.ONLY_VIEW;
+                }
+                try {
+                    companyAuthEnum = PlateAuthEnum.valueOf(companyAuth);
+                } catch (Exception e) {
+                    companyAuthEnum = PlateAuthEnum.ONLY_VIEW;
+                }
+                PlateInformation plateInfo = adminService.createOrUpdatePlateInformation(id, plateId, title, introduction, content, pushDate, languageTypeEnum, navUrl, fileUploadItem, orderIndex, touristAuthEnum, userAuthEnum, companyAuthEnum);
                 request.setAttribute("plateInfo", plateInfo);
                 request.setAttribute("id", plateInfo.getId());
             } else if (PlateKeyEnum.HOME_ABOUT.equals(plate.getPlateKey()) || PlateKeyEnum.HOME_AD_MENU.equals(plate.getPlateKey())
@@ -1015,7 +1036,28 @@ public class AdminServlet extends BaseServlet {
             if (up != null) {
                 others = null;
             }
-            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode, up, others, icPosition);
+            String touristAuth = fileUploadObj.getFormField("touristAuth");
+            String userAuth = fileUploadObj.getFormField("userAuth");
+            String companyAuth = fileUploadObj.getFormField("companyAuth");
+            PlateAuthEnum touristAuthEnum = null;
+            PlateAuthEnum userAuthEnum = null;
+            PlateAuthEnum companyAuthEnum = null;
+            try {
+                touristAuthEnum = PlateAuthEnum.valueOf(touristAuth);
+            } catch (Exception e) {
+                touristAuthEnum = PlateAuthEnum.ONLY_VIEW;
+            }
+            try {
+                userAuthEnum = PlateAuthEnum.valueOf(userAuth);
+            } catch (Exception e) {
+                userAuthEnum = PlateAuthEnum.ONLY_VIEW;
+            }
+            try {
+                companyAuthEnum = PlateAuthEnum.valueOf(companyAuth);
+            } catch (Exception e) {
+                companyAuthEnum = PlateAuthEnum.ONLY_VIEW;
+            }
+            Offer offer = adminService.createOrUpdateOffer(id, plateId, pushDate, position, depart, city, station, count, monthly, description, duty, competence, age, gender, englishLevel, education, languageTypeEnum, name, enName, mobile, email, obtain, company, address, zipCode, up, others, icPosition, touristAuthEnum, userAuthEnum, companyAuthEnum);
             request.setAttribute("offer", offer);
             request.setAttribute("id", offer.getId());
             request.setAttribute("plateId", plateId);
@@ -1087,17 +1129,17 @@ public class AdminServlet extends BaseServlet {
             try {
                 touristAuthEnum = PlateAuthEnum.valueOf(touristAuth);
             } catch (Exception e) {
-                touristAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                touristAuthEnum = PlateAuthEnum.ONLY_VIEW;
             }
             try {
                 userAuthEnum = PlateAuthEnum.valueOf(userAuth);
             } catch (Exception e) {
-                userAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                userAuthEnum = PlateAuthEnum.ONLY_VIEW;
             }
             try {
                 companyAuthEnum = PlateAuthEnum.valueOf(companyAuth);
             } catch (Exception e) {
-                companyAuthEnum = PlateAuthEnum.VIEW_AND_REPAY;
+                companyAuthEnum = PlateAuthEnum.ONLY_VIEW;
             }
             try {
                 allowAttendeeEnum = FundCollectionAllowAttendeeEnum.valueOf(allowAttendee);
@@ -2092,6 +2134,7 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("plateInfo", plateInfo);
         request.setAttribute("plate", plate);
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
+        request.setAttribute("plateAuthEnumList", Arrays.asList(PlateAuthEnum.values()));
         return KEEP_GOING_WITH_ORIG_URL;
     }
 
@@ -2124,6 +2167,7 @@ public class AdminServlet extends BaseServlet {
         request.setAttribute("languageTypeList", Arrays.asList(LanguageType.values()));
         request.setAttribute("accountIcPositionList", Arrays.asList(AccountIcPosition.values()));
         request.setAttribute("positions", UserPosition.values());
+        request.setAttribute("plateAuthEnumList", Arrays.asList(PlateAuthEnum.values()));
         if (offer.getIcPosition() != null) {
             request.setAttribute("positionList", Arrays.asList(offer.getIcPosition().split("_")));
         } else {

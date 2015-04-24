@@ -22,7 +22,7 @@
                         </div>
                         <ul>
                         <c:forEach var="offer" items="${offerList}">
-                            <li><a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city} ${offer.education}</span><span class="span-3">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]</span></a></li>
+                            <li><a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.positionIndexStr2}</span><span class="span-2">${offer.city} ${offer.education}</span><span class="span-3">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]</span></a></li>
                                     </c:forEach> 
                     </ul>
                 </div>

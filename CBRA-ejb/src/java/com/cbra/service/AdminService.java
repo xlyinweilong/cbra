@@ -1365,7 +1365,7 @@ public class AdminService {
      * @param item
      * @return
      */
-    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, String navUrl, FileUploadItem item, Integer orderIndex) {
+    public PlateInformation createOrUpdatePlateInformation(Long id, Long plateId, String title, String introduction, String content, Date pushDate, LanguageType languageTypeEnum, String navUrl, FileUploadItem item, Integer orderIndex, PlateAuthEnum touristAuth, PlateAuthEnum userAuth, PlateAuthEnum companyAuth) {
         PlateInformation plateInfo = new PlateInformation();
         boolean isCreare = true;
         if (id != null) {
@@ -1376,6 +1376,9 @@ public class AdminService {
         if (orderIndex == null) {
             orderIndex = 0;
         }
+        plateInfo.setCompanyAuth(companyAuth);
+        plateInfo.setTouristAuth(touristAuth);
+        plateInfo.setUserAuth(userAuth);
         plateInfo.setOrderIndex(orderIndex);
         plateInfo.setPushDate(pushDate);
         plateInfo.setTitle(title);
@@ -1486,13 +1489,16 @@ public class AdminService {
      */
     public Offer createOrUpdateOffer(Long id, Long plateId, Date pushDate, String position, String depart, String city,
             String station, String count, String monthly, String description, String duty, String competence, String age, String gender, String englishLevel, String education, LanguageType languageTypeEnum,
-            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode, UserPosition up, String others, String icPosition) {
+            String name, String enName, String mobile, String email, String obtain, String company, String address, String zipCode, UserPosition up, String others, String icPosition, PlateAuthEnum touristAuth, PlateAuthEnum userAuth, PlateAuthEnum companyAuth) {
         Offer offer = new Offer();
         boolean isCreare = true;
         if (id != null) {
             isCreare = false;
             offer = this.findOfferById(id);
         }
+        offer.setCompanyAuth(companyAuth);
+        offer.setTouristAuth(touristAuth);
+        offer.setUserAuth(userAuth);
         offer.setIcPosition(icPosition);
         offer.setPositionEnum(up);
         offer.setPositionOthers(others);

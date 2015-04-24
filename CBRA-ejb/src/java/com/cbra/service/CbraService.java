@@ -272,6 +272,42 @@ public class CbraService {
         }
     }
 
+    public PlateAuthEnum getPlateAuthEnum(PlateInformation plateInformation, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        if (user == null) {
+            return plateInformation.getTouristAuth();
+        } else if (!AccountStatus.MEMBER.equals(user.getStatus())) {
+            return plateInformation.getTouristAuth();
+        } else if (user instanceof CompanyAccount) {
+            return plateInformation.getCompanyAuth();
+        } else if (user instanceof UserAccount) {
+            return plateInformation.getUserAuth();
+        } else {
+            return plateInformation.getTouristAuth();
+        }
+    }
+
+    public PlateAuthEnum getPlateAuthEnum(Offer offer, Account account) {
+        Account user = account;
+        if (user != null && user instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        if (user == null) {
+            return offer.getTouristAuth();
+        } else if (!AccountStatus.MEMBER.equals(user.getStatus())) {
+            return offer.getTouristAuth();
+        } else if (user instanceof CompanyAccount) {
+            return offer.getCompanyAuth();
+        } else if (user instanceof UserAccount) {
+            return offer.getUserAuth();
+        } else {
+            return offer.getTouristAuth();
+        }
+    }
+
     /**
      * 获取账户能否报名活动
      *

@@ -151,7 +151,15 @@ public class Offer implements Serializable {
     @Column(name = "position_others", length = 255)
     //职务
     private String positionOthers;
-    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tourist_auth", length = 255)
+    private PlateAuthEnum touristAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_auth", length = 255)
+    private PlateAuthEnum userAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "company_auth", length = 255)
+    private PlateAuthEnum companyAuth;
     @Transient
     private String detailsUrl;
 
@@ -168,6 +176,37 @@ public class Offer implements Serializable {
             return position.substring(0, 14) + "...";
         }
         return position;
+    }
+    
+    public String getPositionIndexStr2() {
+        if (position.length() > 10) {
+            return position.substring(0, 9) + "...";
+        }
+        return position;
+    }
+
+    public PlateAuthEnum getTouristAuth() {
+        return touristAuth;
+    }
+
+    public void setTouristAuth(PlateAuthEnum touristAuth) {
+        this.touristAuth = touristAuth;
+    }
+
+    public PlateAuthEnum getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(PlateAuthEnum userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    public PlateAuthEnum getCompanyAuth() {
+        return companyAuth;
+    }
+
+    public void setCompanyAuth(PlateAuthEnum companyAuth) {
+        this.companyAuth = companyAuth;
     }
 
     public String getIcPositionString() {

@@ -149,6 +149,33 @@
                             </li>
                         </c:if>
                     </c:if>
+                    <li><label>游客权限</label>
+                        <select name="touristAuth" class="dfinput" style="width: 354px;">
+                            <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == offer.touristAuth}">selected="selected"</c:if>>
+                                    ${plateAuthEnum.authMean}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </li>
+                    <li><label>个人会员权限</label>
+                        <select name="userAuth" class="dfinput" style="width: 354px;">
+                            <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == offer.userAuth}">selected="selected"</c:if>>
+                                    ${plateAuthEnum.authMean}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </li>
+                    <li><label>公司会员权限</label>
+                        <select name="companyAuth" class="dfinput" style="width: 354px;">
+                            <c:forEach var="plateAuthEnum" items="${plateAuthEnumList}">
+                                <option value="${plateAuthEnum.name()}" <c:if test="${plateAuthEnum == offer.companyAuth}">selected="selected"</c:if>>
+                                    ${plateAuthEnum.authMean}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </li>
                     <li><label>语言类型<b>*</b></label>
                         <select name="languageType" class="dfinput" style="width: 354px;">
                             <c:forEach var="languageType" items="${languageTypeList}">

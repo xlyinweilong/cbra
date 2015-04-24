@@ -7,6 +7,7 @@ package com.cbra.entity;
 
 import com.cbra.support.Tools;
 import com.cbra.support.enums.LanguageType;
+import com.cbra.support.enums.PlateAuthEnum;
 import com.cbra.support.enums.PlateKeyEnum;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -98,6 +99,15 @@ public class PlateInformation implements Serializable {
     private Boolean deleted = false;
     @Column(name = "order_index")
     private Integer orderIndex = 0;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tourist_auth", length = 255)
+    private PlateAuthEnum touristAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_auth", length = 255)
+    private PlateAuthEnum userAuth;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "company_auth", length = 255)
+    private PlateAuthEnum companyAuth;
     @Transient
     private String detailsUrl;
 
@@ -131,6 +141,30 @@ public class PlateInformation implements Serializable {
 
     public void setVisitCount(long visitCount) {
         this.visitCount = visitCount;
+    }
+
+    public PlateAuthEnum getTouristAuth() {
+        return touristAuth;
+    }
+
+    public void setTouristAuth(PlateAuthEnum touristAuth) {
+        this.touristAuth = touristAuth;
+    }
+
+    public PlateAuthEnum getUserAuth() {
+        return userAuth;
+    }
+
+    public void setUserAuth(PlateAuthEnum userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    public PlateAuthEnum getCompanyAuth() {
+        return companyAuth;
+    }
+
+    public void setCompanyAuth(PlateAuthEnum companyAuth) {
+        this.companyAuth = companyAuth;
     }
 
     public String getLinkUrl() {
