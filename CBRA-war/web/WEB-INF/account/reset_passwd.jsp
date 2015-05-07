@@ -11,23 +11,23 @@
         <c:when test="${empty success}">
             <body style="background:url(/images/Reg-bac.jpg) no-repeat top center">
                 <div class="xgmm">
-                    <div class="tit">重置密码</div>
+                    <div class="tit"><fmt:message key="GLOBAL_重置密码" bundle="${bundle}"/></div>
                     <form action="/account/reset_passwd/" method="post" id="reset_passwd_form">
                         <input type="hidden" name="a" value="RESET_PASSWD" />
                         <input type="hidden" name="key" value="${key}">
                         <table width="400" border="0" cellspacing="0" cellpadding="0">
                             <div id="wrongMessage" class="wrongMessage"><c:if test="${not empty postResult.singleErrorMsg}">${postResult.singleErrorMsg}</c:if></div>
                                 <tr>
-                                    <td width="100" height="44" align="right">新密码：</td>
+                                    <td width="100" height="44" align="right"><fmt:message key="GLOBAL_新密码" bundle="${bundle}"/>：</td>
                                     <td><input id="passwd" name="passwd" type="password" class="shuru" /></td>
                                 </tr>
                                 <tr>
-                                    <td height="44" align="right">重复密码：</td>
+                                    <td height="44" align="right"><fmt:message key="GLOBAL_确认密码" bundle="${bundle}"/>：</td>
                                     <td><input id="repasswd" name="repasswd" type="password" class="shuru" /></td>
                                 </tr>
                                 <tr>
                                     <td height="44" align="right"></td>
-                                    <td><input id="reset_passwd" type="button" class="rev-an" value="确定"></td>
+                                    <td><input id="reset_passwd" type="button" class="rev-an" value="<fmt:message key="GLOBAL_确定" bundle="${bundle}"/>"></td>
                                 </tr>
                             </table>
                         </form>
@@ -36,19 +36,19 @@
                         $(document).ready(function () {
                             $("#reset_passwd").click(function () {
                                 if (CBRAValid.checkFormValueNull($("#passwd"))) {
-                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入密码", $("#passwd"));
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_请输入密码" bundle="${bundle}"/>", $("#passwd"));
                                     return;
                                 }
                                 if ($("#passwd").val().length < 6) {
-                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "密码必须至少6位", $("#passwd"));
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_密码必须至少6位" bundle="${bundle}"/>", $("#passwd"));
                                     return;
                                 }
                                 if (CBRAValid.checkFormValueNull($("#repasswd"))) {
-                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入重复密码", $("#repasswd"));
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_请输入确认密码" bundle="${bundle}"/>", $("#repasswd"));
                                     return;
                                 }
                                 if ($("#passwd").val() != $("#repasswd").val()) {
-                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "两次密码不一致", $("#repasswd"));
+                                    CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_两次密码输入不一致" bundle="${bundle}"/>", $("#repasswd"));
                                     return;
                                 }
                                 $("#reset_passwd_form").submit();
@@ -66,8 +66,8 @@
                 <div class="two-main">
                     <!-- 详细信息 -->
                     <div class="zfcg">
-                        <p class="czcg">密码已经重置成功！</p>
-                        <p class="czcg"><a href="/account/login">去登录</a></p>
+                        <p class="czcg"><fmt:message key="GLOBAL_密码已经重置成功" bundle="${bundle}"/></p>
+                        <p class="czcg"><a href="/account/login"><fmt:message key="GLOBAL_去登录" bundle="${bundle}"/></a></p>
                     </div>
                     <div style="clear:both;"></div>
                 </div>

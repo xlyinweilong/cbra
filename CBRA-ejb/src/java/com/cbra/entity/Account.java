@@ -7,6 +7,7 @@ import com.cbra.support.enums.LanguageType;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -127,7 +128,7 @@ public abstract class Account implements Serializable {
     @Column(name = "login_code")
     private String loginCode;
 
-    public String getIcPositionString() {
+    public String getIcPositionString(ResourceBundle bundle) {
         if (Tools.isBlank(icPosition)) {
             return null;
         }
@@ -135,7 +136,7 @@ public abstract class Account implements Serializable {
         String[] ics = icPosition.split("_");
         for (String ic : ics) {
             if (Tools.isNotBlank(ic)) {
-                sb.append(AccountIcPosition.getName(ic));
+                sb.append(AccountIcPosition.getName(ic, bundle));
                 sb.append(",");
             }
         }

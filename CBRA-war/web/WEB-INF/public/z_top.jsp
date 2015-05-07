@@ -11,28 +11,28 @@
 
             <!--微信/联系方式-->
             <div class="weix-lianx">
-                <a class="ico-weixin weixin" onmouseout="showWeixinMenu(this)" onmouseover="showWeixinMenu(this, true)" href="javascript:void(0);">官方微信</a>
+                <a class="ico-weixin weixin" onmouseout="showWeixinMenu(this)" onmouseover="showWeixinMenu(this, true)" href="javascript:void(0);"><fmt:message key="PAGE_官方微信" bundle="${bundle}"/></a>
                 <a class="ico-weixin lianx" <c:if test="${bundle.locale.language == 'en'}">style="width:66px"</c:if>><fmt:message key="INDEX_联系我们" bundle="${bundle}"/></a>
             </div>
             <!--微信下拉二维码-->
             <div id="WeixinMenu" class="weixin-menu" style="display: none;">
                 <div class="weixin-bd">
-                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> 关注<span style="color:#e53333;">筑誉建筑联合会</span>官方微信，第一时间分享精彩活动与行业资讯。</span></p>
+                    <p><img src="/images/weixin.jpg"><span style="font-size:12px;"> <fmt:message key="PAGE_官方微信内容" bundle="${bundle}"/></span></p>
                 </div>
             </div>
             <!--登录/注册/会员中心/中英文-->
             <div class="right-gn">
-                <c:if test="${empty sessionScope.user}"><a href="/account/login">会员登录</a>  |  <a href="/account/signup">快速注册</a></c:if>
+                <c:if test="${empty sessionScope.user}"><a href="/account/login"><fmt:message key="PAGE_会员登录" bundle="${bundle}"/></a>  |  <a href="/account/signup"><fmt:message key="PAGE_快速注册" bundle="${bundle}"/></a></c:if>
             　　<c:if test="${not empty sessionScope.user}">
                   <c:if test="${sessionScope.user.type == 'USER'}">
-                      <a href="/account/overview" >个人会员中心</a>
+                      <a href="/account/overview" ><fmt:message key="GLOBAL_个人会员中心" bundle="${bundle}"/></a>
                   </c:if>
                   <c:if test="${sessionScope.user.type == 'COMPANY' || sessionScope.user.type == 'SUB_COMPANY'}">
                   <a href="/account/overview_c" >企业会员中心</a>
                   </c:if>
                   <c:choose>
-                      <c:when test="${sessionScope.userStatus == 'ASSOCIATE_MEMBER'}">(级别：<a href="/account/membership_fee">准会员</a>)</c:when>
-                      <c:when test="${sessionScope.userStatus == 'MEMBER'}">(级别：会员)</c:when>
+                      <c:when test="${sessionScope.userStatus == 'ASSOCIATE_MEMBER'}">(<fmt:message key="GLOBAL_级别" bundle="${bundle}"/>：<a href="/account/membership_fee"><fmt:message key="GLOBAL_准会员" bundle="${bundle}"/></a>)</c:when>
+                      <c:when test="${sessionScope.userStatus == 'MEMBER'}">(<fmt:message key="GLOBAL_级别" bundle="${bundle}"/>：会员)</c:when>
                   </c:choose>
                 </c:if>
                   &nbsp;&nbsp;<a href="javascript:language.doSetEnglish()">English</a>   |   <a href="javascript:language.doSetChinese()">中文</a>   
@@ -47,7 +47,7 @@
     <div class="LOGO">
         <div class="LOGO-l"><a href="/public/index"><img src="/images/logo.png"></a></div>
         <div class="LOGO-r">
-            <p>咨询热线：021-61550302</p>
+            <p><fmt:message key="PAGE_咨询热线" bundle="${bundle}"/>：021-61550302</p>
             <input type="text" id="search_text" value="${searchText}" onkeypress="mykeypress13(event);" class="Input-k"><input type="button" class="button-a" value="<fmt:message key="GLOBAL_搜索" bundle="${bundle}"/>" onclick="search($('#search_text').val())">
         </div>
         <div style=" clear:both;"></div>

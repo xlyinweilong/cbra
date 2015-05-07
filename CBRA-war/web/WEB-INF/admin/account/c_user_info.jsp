@@ -96,7 +96,7 @@
                     <li><label>安全生产许可证有效期</label><input type="text" class="dfinput" style="width: 350px;" name="productionLicenseValidDate" onclick="WdatePicker({dateFmt: 'yyyy-MM-dd HH:mm:ss'})" value="<fmt:formatDate value='${companyAccount.productionLicenseValidDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />" /></li>
                     <li><label>产业链位置</label>
                         <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
-                            <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                            <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.nameString}&nbsp;&nbsp;
                         </c:forEach>
                     </li>
                     <li><label>企业性质</label><select id="nature" name="nature" class="dfinput">

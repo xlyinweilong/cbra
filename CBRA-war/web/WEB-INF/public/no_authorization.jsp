@@ -13,7 +13,7 @@
             <!-- 详细信息 -->
             <div class="zfcg">
                 <p class="czcg">您没有权限访问此页！</p>
-                <p class="czcg"><a href="/public/index">返回首页</a></p>
+                <p class="czcg"><a href="/public/index"><fmt:message key="GLOBAL_返回首页" bundle="${bundle}"/></a></p>
             </div>
             <div style="clear:both;"></div>
         </div>

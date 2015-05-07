@@ -25,7 +25,7 @@
                                         <p class="p2">${plateInformation.introduction}</p></a>
                                     <p class="p2"><%--<span class="span1"><a href="#">[筑誉动态]</a></span>--%><span>
                                             <fmt:formatDate value='${plateInformation.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />
-                                        </span><span class="span2"><a href="/news/details?id=${plateInformation.id}" target="_blank" >[阅读全文]</a></span></p>
+                                        </span><span class="span2"><a href="/news/details?id=${plateInformation.id}" target="_blank" >[<fmt:message key="GLOBAL_阅读全文" bundle="${bundle}"/>]</a></span></p>
                                 </div>
                                 <div style="clear:both;"></div>
                             </li>

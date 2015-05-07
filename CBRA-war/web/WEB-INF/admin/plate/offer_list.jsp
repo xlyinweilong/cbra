@@ -127,10 +127,10 @@
                                         ${offer.company}
                                     </td>
                                     <td>
-                                        ${offer.positionEnmuWithOthers} 
+                                        ${offer.getPositionEnmuWithOthers(bundle)} 
                                     </td>
                                     <td>
-                                        ${offer.icPositionString} 
+                                        ${offer.getIcPositionString(bundle)} 
                                     </td>
                                 </c:if>
                                 <td>

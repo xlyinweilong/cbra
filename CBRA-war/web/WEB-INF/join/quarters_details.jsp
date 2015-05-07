@@ -17,22 +17,22 @@
                 <!-- 左侧导航 end -->
                 <!-- 右侧内容 -->
                 <div class="fr-con">
-                    <div class="title"><span><a id="title-span">职位详细信息</a></span></div>
+                    <div class="title"><span><a id="title-span"><fmt:message key="GLOBAL_职位详细信息" bundle="${bundle}"/></a></span></div>
                     <div class="con-single">
                         <div style="padding-left:40px;">
-                            <strong>职位名称：</strong>&nbsp;&nbsp;${offer.position}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>职位编码：</strong>&nbsp;&nbsp;${offer.code}<br>	
-                        <strong>部门：</strong>&nbsp;&nbsp;${offer.depart}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>发布日期：</strong>&nbsp;&nbsp;<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /><br>	
-                        <strong>工作地区：</strong>&nbsp;&nbsp;${offer.city}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>岗位类别：</strong>&nbsp;&nbsp;${offer.station} <br>
-                        <strong>招聘人数：</strong>&nbsp;&nbsp;${offer.count}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>月薪：</strong>&nbsp;&nbsp;${offer.monthly}<br>
-                        <strong>职位描述：</strong><br>
+                            <strong><fmt:message key="GLOBAL_职位名称" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.position}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_职位编码" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.code}<br>	
+                        <strong><fmt:message key="GLOBAL_部门" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.depart}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_发布日期" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /><br>	
+                        <strong><fmt:message key="GLOBAL_工作地区" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.city}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_岗位类别" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.station} <br>
+                        <strong><fmt:message key="GLOBAL_招聘人数" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.count}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_月薪" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.monthly}<br>
+                        <strong><fmt:message key="GLOBAL_职位描述" bundle="${bundle}"/>：</strong><br>
                         ${offer.descriptionHtml}<br>
-                        <strong>岗位职责：</strong><br>
+                        <strong><fmt:message key="GLOBAL_岗位职责" bundle="${bundle}"/>：</strong><br>
                         ${offer.dutyHtml}<br>
-                        <strong>任职资格：</strong><br>
+                        <strong><fmt:message key="GLOBAL_任职资格" bundle="${bundle}"/>：</strong><br>
                         ${offer.competenceHtml}<br>
-                        <strong>职位要求：</strong><br>
-                        <strong>年龄：</strong>&nbsp;&nbsp;${offer.age}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>性别：</strong>&nbsp;&nbsp;${offer.gender}<br>
-                        <strong>英语等级：</strong>&nbsp;&nbsp;${offer.englishLevel}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>学历：</strong>&nbsp;&nbsp;${offer.education}
+                        <strong><fmt:message key="GLOBAL_职位要求" bundle="${bundle}"/>：</strong><br>
+                        <strong><fmt:message key="GLOBAL_年龄" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.age}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_性别" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.gender}<br>
+                        <strong><fmt:message key="GLOBAL_英语等级" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.englishLevel}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><fmt:message key="GLOBAL_学历" bundle="${bundle}"/>：</strong>&nbsp;&nbsp;${offer.education}
                         <div class="fenxiang">
                             <div class="bshare-custom "><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div>
                         </div>

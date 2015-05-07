@@ -18,36 +18,36 @@
                     <input type="hidden" name="collection_id" value="${fundCollection.id}" />
                     <div class="hfcz" id="hysf_div">
                         <div class="hysf">
-                            <span>会员身份：</span>
+                            <span><fmt:message key="GLOBAL_会员身份" bundle="${bundle}"/>：</span>
                             <span>
                                 <input checked="checked" type="radio" id="danx">
                                 <c:choose>
-                                    <c:when test="${userType == 0}">非会员(准会员)</c:when>
-                                    <c:when test="${userType == 1}">个人会员</c:when>
-                                    <c:when test="${userType == 2}">企业会员</c:when>
+                                    <c:when test="${userType == 0}"><fmt:message key="GLOBAL_非会员" bundle="${bundle}"/>(<fmt:message key="GLOBAL_准会员" bundle="${bundle}"/>)</c:when>
+                                    <c:when test="${userType == 1}"><fmt:message key="GLOBAL_个人会员" bundle="${bundle}"/></c:when>
+                                    <c:when test="${userType == 2}"><fmt:message key="GLOBAL_企业会员" bundle="${bundle}"/></c:when>
                                 </c:choose>
                             </span>
                             <div style="clear:both;"></div></div>
                             <c:choose>
                                 <c:when test="${userType == 0}">
                                 <div class="hysf">
-                                    <span>姓　　名：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
-                                    <span>所在企业：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
-                                    <span>职　　务：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
-                                    <span>手机号码：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
-                                    <span>电子邮箱：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_姓名" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_所在企业" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_职务" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_手机号" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
+                                    <span>email：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
                                 </div>
                             </c:when>
                             <c:when test="${userType == 1}">
                             </c:when>
                             <c:when test="${userType == 2}">
-                                <div class="hysf"><span>参会人数：</span><input type="text" id="rens" value="1">人（提示：选择企业会员时显示该选项）</div>
+                                <div class="hysf"><span><fmt:message key="GLOBAL_参会人数" bundle="${bundle}"/>：</span><input type="text" id="rens" value="1"><fmt:message key="GLOBAL_人" bundle="${bundle}"/></div>
                                 <div class="hysf">
-                                    <span>姓　　名：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
-                                    <span>所在企业：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
-                                    <span>职　　务：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
-                                    <span>手机号码：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
-                                    <span>电子邮箱：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_姓名" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_所在企业" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_职务" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
+                                    <span><fmt:message key="GLOBAL_手机号" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
+                                    <span>email：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
                                 </div>
                                 <div id="containerDiv"></div>
                             </c:when>
@@ -55,13 +55,13 @@
                         <div style="clear:both;"></div>
                     </div>
                     <div class="hfcz">
-                        <h1>支付金额：<span id="amount_span">
-                                <c:choose><c:when test="${userType == 0}">¥${fundCollection.touristPrice}</c:when><c:when test="${userType == 1}">¥${fundCollection.userPrice}</c:when><c:when test="${userType == 2}"><c:choose><c:when test="${fundCollection.eachCompanyFreeCount > 0}">免费</c:when><c:otherwise>¥${fundCollection.companyPrice}</c:otherwise></c:choose></c:when></c:choose>
+                        <h1><fmt:message key="GLOBAL_支付金额" bundle="${bundle}"/>：<span id="amount_span">
+                                <c:choose><c:when test="${userType == 0}">¥${fundCollection.touristPrice}</c:when><c:when test="${userType == 1}">¥${fundCollection.userPrice}</c:when><c:when test="${userType == 2}"><c:choose><c:when test="${fundCollection.eachCompanyFreeCount > 0}"><fmt:message key="GLOBAL_免费" bundle="${bundle}"/></c:when><c:otherwise>¥${fundCollection.companyPrice}</c:otherwise></c:choose></c:when></c:choose>
                                     </span>
                                 </h1>
-                                                    <p><strong>费用说明：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
+                                                    <p><strong><fmt:message key="GLOBAL_费用说明" bundle="${bundle}"/>：</strong><fmt:message key="GLOBAL_企业会员" bundle="${bundle}"/>：<c:if test="${fundCollection.eachCompanyFreeCount > 0}"><fmt:message key="GLOBAL_免费" bundle="${bundle}"/>${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/>　　<fmt:message key="GLOBAL_个人会员" bundle="${bundle}"/>：<fmt:message key="GLOBAL_每人" bundle="${bundle}"/>${fundCollection.userPrice}<fmt:message key="GLOBAL_免费" bundle="${bundle}"/>元/人　　<fmt:message key="GLOBAL_免费" bundle="${bundle}"/><fmt:message key="GLOBAL_非会员" bundle="${bundle}"/>：${fundCollection.touristPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/></p>
                         </div>
-                        <div class="xiayy"><input type="button" id="next_button" class="xiayy-an" value="提交申请" style="margin-left: 600px;"></div>
+                        <div class="xiayy"><input type="button" id="next_button" class="xiayy-an" value="<fmt:message key="GLOBAL_提交" bundle="${bundle}"/>" style="margin-left: 600px;"></div>
                 </div>
             </form>
             <div class="news-fr">
@@ -79,11 +79,11 @@
     </div>
     <hr id="hiddenHr" style="display: none"/>
     <div id="hiddenDiv" class="hysf" style="display: none">
-        <span>姓　　名：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
-        <span>所在企业：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
-        <span>职　　务：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
-        <span>手机号码：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
-        <span>电子邮箱：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
+        <span><fmt:message key="GLOBAL_姓名" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].name" id="baom"><a></a><br>
+        <span><fmt:message key="GLOBAL_所在企业" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].company" id="baom"><a></a><br>
+        <span><fmt:message key="GLOBAL_职务" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].position" id="baom"><a></a><br>
+        <span><fmt:message key="GLOBAL_手机号" bundle="${bundle}"/>：</span><input type="text" name="attendee[0].mobilePhone" id="baom"><a></a><br>
+        <span>email：</span><input type="text" name="attendee[0].email" id="baom"><a></a><br>
     </div>
     <!-- 主体 end -->
     <jsp:include page="/WEB-INF/public/z_end.jsp"/>
@@ -148,7 +148,7 @@
                 $("#containerDiv").html("");
                 //初始化价钱
                 if (freeCount > 0) {
-                    $("#amount_span").html("免费");
+                    $("#amount_span").html("<fmt:message key="GLOBAL_免费" bundle="${bundle}"/>");
                 } else {
                     $("#amount_span").html("¥" + companyPrice);
                 }
@@ -177,7 +177,7 @@
                     var price = companyPrice * (count - freeCount);
                     $("#amount_span").html("¥" + price);
                 } else {
-                    $("#amount_span").html("免费");
+                    $("#amount_span").html("<fmt:message key="GLOBAL_免费" bundle="${bundle}"/>");
                     ;
                 }
             });

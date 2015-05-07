@@ -94,7 +94,7 @@
                     <li><label>目前就职公司</label><input type="text" class="dfinput" style="width: 350px;" name="userAccount.company" value="${userAccount.company}" /></li>
                     <li><label>产业链位置</label>
                         <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
-                            <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                            <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.nameString}&nbsp;&nbsp;
                         </c:forEach>
                     </li>
                     <li><label>职务</label><select id="position" name="userAccount.position" class="dfinput">

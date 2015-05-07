@@ -370,10 +370,10 @@ public class AccountServlet extends BaseServlet {
             return KEEP_GOING_WITH_ORIG_URL;
         }
         if (Tools.isNotBlank(p) && user instanceof UserAccount) {
-            setErrorResult("账户类型不匹配", request);
+            setErrorResult(bundle.getString("ACCOUNT_账户类型不匹配"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         } else if (Tools.isBlank(p) && (user instanceof SubCompanyAccount || user instanceof CompanyAccount)) {
-            setErrorResult("账户类型不匹配", request);
+            setErrorResult(bundle.getString("ACCOUNT_账户类型不匹配"), request);
             return KEEP_GOING_WITH_ORIG_URL;
         }
         // 设置user到session里，跳转到相应的登录后页面。

@@ -5,6 +5,8 @@
  */
 package com.cbra.support.enums;
 
+import java.util.ResourceBundle;
+
 /**
  * 公司性质
  *
@@ -20,24 +22,24 @@ public enum CompanyNatureEnum {
     LISTED_COMPANY,
     OTHERS;
 
-    public String getMean() {
+    public String getMean(ResourceBundle bundle) {
         switch (this) {
             case SOLELY_STATE_OWNED:
-                return "国有独资";
+                return bundle.getString("GLOBAL_国有独资");
             case STATE_OWNED_HOLDING:
-                return "国有控股";
+                return  bundle.getString("GLOBAL_国有控股");
             case SINO_FOREIGN_JOINT_VENTURE:
-                return "中外合资/合作";
+                return bundle.getString("GLOBAL_中外合资/合作");
             case PRIVATE_ENTERPRISE:
-                return "私营/民营企业";
+                return bundle.getString("GLOBAL_私营/民营企业");
             case NON_PROFIT_ORGANIZATION:
-                return "非营利机构";
+                return bundle.getString("GLOBAL_非营利机构");
             case LISTED_COMPANY:
-                return "上市公司";
+                return bundle.getString("GLOBAL_上市公司");
             case OTHERS:
-                return "其他";
+                return bundle.getString("GLOBAL_其他");
             default:
-                return "其他";
+                return bundle.getString("GLOBAL_其他");
         }
     }
 

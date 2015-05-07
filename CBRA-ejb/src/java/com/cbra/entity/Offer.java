@@ -15,6 +15,7 @@ import com.cbra.support.enums.UserPosition;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -209,7 +210,7 @@ public class Offer implements Serializable {
         this.companyAuth = companyAuth;
     }
 
-    public String getIcPositionString() {
+    public String getIcPositionString(ResourceBundle bundle) {
         if (Tools.isBlank(icPosition)) {
             return null;
         }
@@ -217,16 +218,16 @@ public class Offer implements Serializable {
         String[] ics = icPosition.split("_");
         for (String ic : ics) {
             if (Tools.isNotBlank(ic)) {
-                sb.append(AccountIcPosition.getName(ic));
+                sb.append(AccountIcPosition.getName(ic,bundle));
                 sb.append(",");
             }
         }
         return sb.substring(0, sb.length() - 1);
     }
 
-    public String getPositionEnmuWithOthers() {
+    public String getPositionEnmuWithOthers(ResourceBundle bundle) {
         if (positionEnum != null) {
-            return positionEnum.getMean();
+            return positionEnum.getMean(bundle);
         }
         return positionOthers;
     }

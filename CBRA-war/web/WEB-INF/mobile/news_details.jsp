@@ -68,6 +68,7 @@
             #scroller .content .status { width:100%; height:24px; line-height:24px; margin-bottom:2%;}
             #scroller .content .status .sta-l { float:left; color:#6a6a6a;}
             #scroller .content .status .sta-r { float:right; color:#ff6000;}
+            img{width: 100%;height: 100%}
         </style>
     </head>
     <body>
@@ -75,7 +76,7 @@
             <div id="scroller">
                 <div class="content">
                     <h1>${new.title}</h1>
-                    <div class="status"><span class="sta-l"><fmt:formatDate value='${new.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /><span>${new.visitCount}</span>人次浏览</span><span class="sta-r"><c:if test="${plateInfo.navUrl != null}">原文出处：${plateInfo.navUrl}</c:if></span></div>
+                    <div class="status"><span class="sta-l"><fmt:formatDate value='${new.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /><span>&nbsp;&nbsp;{new.visitCount}</span>人次浏览</span><span class="sta-r"><c:if test="${plateInfo.navUrl != null}">原文出处：${plateInfo.navUrl}</c:if></span></div>
                     ${new.plateInformationContent.content}
                 </div>
             </div>

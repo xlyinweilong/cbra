@@ -18,7 +18,7 @@
                         </td>
                         <td valign="top" class="fr-c-1">
                             <div class="tit-cz">
-                                修改密码<c:if test="${sessionScope.user.type == 'COMPANY'}">(此处修改的密码为营业执照注册号主账户密码)</c:if>
+                                <fmt:message key="GLOBAL_修改密码" bundle="${bundle}"/><c:if test="${sessionScope.user.type == 'COMPANY'}">(<fmt:message key="GLOBAL_此处修改的密码为营业执照注册号主账户密码" bundle="${bundle}"/>)</c:if>
                             </div>
                             <div class="noticeMessage">
                                 <div id="successMessage" class="successMessage"><c:if test="${not empty postResult.singleSuccessMsg}">${postResult.singleSuccessMsg}</c:if></div>
@@ -28,21 +28,21 @@
                                 <input type="hidden" name="a" value="MODIFY_PASSWD" />
                                 <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">
                                     <tr>
-                                        <td width="120" height="40">原密码</td>
+                                        <td width="120" height="40"><fmt:message key="GLOBAL_原密码" bundle="${bundle}"/></td>
                                         <td><input id="oldpasswd" name="oldpasswd" type="password" class="mmmmm"/></td>
                                     </tr>
                                     <tr>
-                                        <td width="120" height="40">新密码</td>
+                                        <td width="120" height="40"><fmt:message key="GLOBAL_新密码" bundle="${bundle}"/></td>
                                         <td><input id="newpasswd" name="newpasswd" type="password" class="mmmmm"/></td>
                                     </tr>
                                     <tr>
-                                        <td width="120" height="40">确认密码</td>
+                                        <td width="120" height="40"><fmt:message key="GLOBAL_确认密码" bundle="${bundle}"/></td>
                                         <td><input id="repasswd" name="repasswd" type="password" class="mmmmm"/></td>
                                     </tr>
                                 </table>
                             </form>
                             <div class="xiayy">
-                                <input type="button" id="modify_passwd_button" class="mmmmm-an"  style="margin-left: 50px;" value="提交修改">
+                                <input type="button" id="modify_passwd_button" class="mmmmm-an"  style="margin-left: 50px;" value="<fmt:message key="GLOBAL_提交" bundle="${bundle}"/>">
                             </div>
                         </td>
                     </tr>
@@ -55,23 +55,23 @@
             $(document).ready(function () {
                 $("#modify_passwd_button").click(function () {
                     if (CBRAValid.checkFormValueNull($("#oldpasswd"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入原密码", $("#oldpasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_请输入原密码" bundle="${bundle}"/>", $("#oldpasswd"));
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#newpasswd"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入新密码", $("#newpasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_请输入新密码" bundle="${bundle}"/>", $("#newpasswd"));
                         return;
                     }
                     if ($("#oldpasswd").val().length < 6) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "新密码长度必须大于6位", $("#newpasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_新密码长度必须大于6位" bundle="${bundle}"/>", $("#newpasswd"));
                         return;
                     }
                     if (CBRAValid.checkFormValueNull($("#repasswd"))) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "请输入确认密码", $("#repasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_请输入确认密码" bundle="${bundle}"/>", $("#repasswd"));
                         return;
                     }
                     if ($("#repasswd").val() !== $("#newpasswd").val()) {
-                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "两次密码输入不一致", $("#repasswd"));
+                        CBRAMessage.showWrongMessageAndBorderEle($("#wrongMessage"), "<fmt:message key="GLOBAL_两次密码输入不一致" bundle="${bundle}"/>", $("#repasswd"));
                         return;
                     }
                     //submit

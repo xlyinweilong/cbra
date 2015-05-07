@@ -17,8 +17,8 @@
                     <!-- 标题 -->
                     <div class="title">
                         <h1>${plateInfo.title}</h1>
-                    <p><fmt:formatDate value='${plateInfo.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /><span>${plateInfo.visitCount}</span>人次浏览</p>
-                    <c:if test="${plateInfo.navUrl != null}"><p>原文出处：${plateInfo.navUrl}</p></c:if>
+                    <p><fmt:formatDate value='${plateInfo.pushDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' /><span>${plateInfo.visitCount}</span><fmt:message key="GLOBAL_人次浏览" bundle="${bundle}"/></p>
+                    <c:if test="${plateInfo.navUrl != null}"><p><fmt:message key="GLOBAL_原文出处" bundle="${bundle}"/>：${plateInfo.navUrl}</p></c:if>
                 </div>
                 <!-- 信息 -->
                 <div class="con-single">${plateInfo.plateInformationContent.content}</div>

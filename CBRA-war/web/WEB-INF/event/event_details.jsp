@@ -15,16 +15,16 @@
                 <div class="hd-detailed">
                     <!-- 标题 -->
                     <h1>${fundCollection.title}</h1>
-                    <p id="juhong"><strong>活动状态：</strong>${fundCollection.status}</p>
-                    <p><strong>活动时间：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
-                    <p><strong>签到时间：</strong><fmt:formatDate value='${fundCollection.checkinDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
-                    <p><strong>活动地点：</strong>${fundCollection.eventLocation}</p>
-                    <p><strong>活动人员：</strong>${fundCollection.allowAttendee.mean}</p>
-                    <p><strong>活动费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
+                    <p id="juhong"><strong><fmt:message key="GLOBAL_活动状态" bundle="${bundle}"/>：</strong>${fundCollection.status}</p>
+                    <p><strong><fmt:message key="GLOBAL_活动时间" bundle="${bundle}"/>：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
+                    <p><strong><fmt:message key="GLOBAL_签到时间" bundle="${bundle}"/>：</strong><fmt:formatDate value='${fundCollection.checkinDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
+                    <p><strong><fmt:message key="GLOBAL_活动地点" bundle="${bundle}"/>：</strong>${fundCollection.eventLocation}</p>
+                    <p><strong><fmt:message key="GLOBAL_活动人员" bundle="${bundle}"/>：</strong>${fundCollection.allowAttendee.mean}</p>
+                    <p><strong><fmt:message key="GLOBAL_活动费用" bundle="${bundle}"/>：</strong><fmt:message key="GLOBAL_企业会员" bundle="${bundle}"/>：<c:if test="${fundCollection.eachCompanyFreeCount > 0}"><fmt:message key="GLOBAL_免费" bundle="${bundle}"/>${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/>　　<fmt:message key="GLOBAL_个人会员" bundle="${bundle}"/>：<fmt:message key="GLOBAL_每人" bundle="${bundle}"/>${fundCollection.userPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/>　　<fmt:message key="GLOBAL_非会员" bundle="${bundle}"/>：${fundCollection.touristPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/></p>
                     <c:if test="${isSignUpEvent  && fundCollection.status=='报名中'}">
-                    <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
+                    <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="<fmt:message key="GLOBAL_报名" bundle="${bundle}"/>" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
                     </c:if>
-                    <p><strong>活动内容介绍：</strong></p>
+                    <p><strong><fmt:message key="GLOBAL_活动内容介绍" bundle="${bundle}"/>：</strong></p>
                     <p style=" line-height:32px; color:#666;">
                         ${fundCollection.detailDescHtml}
                     </p>
@@ -33,7 +33,7 @@
                     <!-- 评论 -->
                 <c:if test="${plateAuth == 'ONLY_VIEW' || plateAuth == 'VIEW_AND_REPAY'}">
                     <div class="review">
-                        <p class="p1">最新评论 (共${messageList.size()}条)</p>
+                        <p class="p1"><fmt:message key="GLOBAL_最新评论" bundle="${bundle}"/> (<fmt:message key="GLOBAL_共条" bundle="${bundle}"><fmt:param value="${messageList.size()}"/></fmt:message>)</p>
                         <!-- 评论内容 -->
                         <c:forEach var="message" items="${messageList}">
                             <div class="review-xx">
@@ -95,7 +95,7 @@
             $(document).ready(function () {
                 $("#message_button").click(function () {
                     if (CBRAValid.checkFormValueNull($("#content"))) {
-                        alert("请输入评论内容");
+                        alert("<fmt:message key="GLOBAL_请输入评论内容" bundle="${bundle}"/>");
                         return;
                     }
                     $("#message_form").submit();

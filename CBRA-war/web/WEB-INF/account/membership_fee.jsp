@@ -17,12 +17,12 @@
                         <jsp:include page="/WEB-INF/account/z_left.jsp"><jsp:param name="page" value="2" /></jsp:include>
                         </td>
                         <td valign="top" class="fr-c-1">
-                            <div class="tit-cz">会　费<input type="button" class="anniu" value="缴纳会费" onclick="location.href = '/account/pay_membership'" ></div>
+                            <div class="tit-cz"><fmt:message key="GLOBAL_会费" bundle="${bundle}"/><input type="button" class="anniu" value="缴纳会费" onclick="location.href = '/account/pay_membership'" ></div>
                             <c:choose>
                                 <c:when test="${empty resultList}">
                                 <table width="760" border="0" cellspacing="0" cellpadding="0" style=" margin:20px auto;">
                                     <tr>
-                                        <td width="120" height="40"><h3 class="nolist">暂无信息</h3></td>
+                                        <td width="120" height="40"><h3 class="nolist"><fmt:message key="GLOBAL_暂无信息" bundle="${bundle}"/></h3></td>
                                     </tr>
                                 </table>
                             </c:when>
@@ -31,26 +31,26 @@
                                     <input type="hidden" id="page_num" name="page" value="${resultList.getPageIndex()}" />
                                     <table width="760" border="0" cellspacing="1" cellpadding="0" class="biaog" >
                                         <tr>
-                                            <td width="120" height="42" bgcolor="efefef" class="biaog-bt"><strong>日期</strong></td>
-                                            <td bgcolor="efefef" class="biaog-bt"><strong>缴纳方式</strong></td>
-                                            <td width="200" bgcolor="efefef" class="biaog-bt"><strong>筑誉确认</strong></td>
+                                            <td width="120" height="42" bgcolor="efefef" class="biaog-bt"><strong><fmt:message key="GLOBAL_日期" bundle="${bundle}"/></strong></td>
+                                            <td bgcolor="efefef" class="biaog-bt"><strong><fmt:message key="GLOBAL_缴纳方式" bundle="${bundle}"/></strong></td>
+                                            <td width="200" bgcolor="efefef" class="biaog-bt"><strong><fmt:message key="GLOBAL_筑誉确认" bundle="${bundle}"/></strong></td>
                                         </tr>
                                         <c:forEach var="order" items="${resultList}" varStatus="varStatus">
                                             <tr>
                                                 <td height="30" bgcolor="#FFFFFF" class="biaog-bt"><fmt:formatDate value='${order.createDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></td>
                                                 <td bgcolor="#FFFFFF" class="biaog-bt">
                                                     <c:choose>
-                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'ALIPAY'}">支付宝</c:when>
-                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}">其他支付方式</c:when>
-                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'UNIONPAY'}">银联在线</c:when>
+                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'ALIPAY'}"><fmt:message key="GLOBAL_支付宝" bundle="${bundle}"/></c:when>
+                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'BANK_TRANSFER'}"><fmt:message key="GLOBAL_其他支付方式" bundle="${bundle}"/></c:when>
+                                                        <c:when test="${order.lastGatewayPayment.gatewayType == 'UNIONPAY'}"><fmt:message key="GLOBAL_银联在线" bundle="${bundle}"/></c:when>
                                                     </c:choose>
                                                 </td>
                                                 <td bgcolor="#FFFFFF" class="biaog-bt">
                                                     <c:choose>
-                                                        <c:when test="${order.status == 'PENDING_PAYMENT'}"><span class="luz">待支付</span></c:when>
-                                                        <c:when test="${order.status == 'SUCCESS'}"><span class="luz">已到帐</span></c:when>
-                                                        <c:when test="${order.status == 'FAILURE' || order.status == 'INVALID'}"><span class="hongz">失败</span></c:when>
-                                                        <c:otherwise><span class="chengz">确认中</span></c:otherwise>
+                                                        <c:when test="${order.status == 'PENDING_PAYMENT'}"><span class="luz"><fmt:message key="GLOBAL_待支付" bundle="${bundle}"/></span></c:when>
+                                                        <c:when test="${order.status == 'SUCCESS'}"><span class="luz"><fmt:message key="GLOBAL_已到帐" bundle="${bundle}"/></span></c:when>
+                                                        <c:when test="${order.status == 'FAILURE' || order.status == 'INVALID'}"><span class="hongz"><fmt:message key="GLOBAL_失败" bundle="${bundle}"/></span></c:when>
+                                                        <c:otherwise><span class="chengz"><fmt:message key="GLOBAL_确认中" bundle="${bundle}"/></span></c:otherwise>
                                                     </c:choose>
                                                 </td>
                                             </tr>

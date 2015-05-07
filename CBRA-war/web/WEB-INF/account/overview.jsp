@@ -25,53 +25,53 @@
                                 </c:choose>
                                 </div>
                                 <div class="hyxx">
-                                    <div class="hy-tit">欢迎回来<span>${user.name}</span></div>
-                                    <div class="hy-titxx">入会时间：<span><fmt:formatDate value="${user.createDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></span>　　　入会年限：<span>${user.createYear}</span> 年　　　已报名活动：<span>${user.enrolledCount}</span>　　　已参加活动：<span>${user.joinedCount}</span></div>
+                                    <div class="hy-tit"><fmt:message key="GLOBAL_欢迎回来" bundle="${bundle}"/><span>${user.name}</span></div>
+                                    <div class="hy-titxx"><fmt:message key="GLOBAL_入会时间" bundle="${bundle}"/>：<span><fmt:formatDate value="${user.createDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></span>　　　<fmt:message key="GLOBAL_入会年限" bundle="${bundle}"/>：<span>${user.createYear}</span> <fmt:message key="GLOBAL_年" bundle="${bundle}"/>　　　<fmt:message key="GLOBAL_已报名活动" bundle="${bundle}"/>：<span>${user.enrolledCount}</span>　　　<fmt:message key="GLOBAL_已参加活动" bundle="${bundle}"/>：<span>${user.joinedCount}</span></div>
                                     <%--
                                     <div class="hy-titrz"><span class="rzimg-1">实名认证</span><span class="rzimg-2">营业执照认证</span><span class="rzimg-3">手机认证</span><span class="rzimg-4">邮箱认证</span></div>--%>
                                 </div>
                             </div>
                             <table width="760" border="0" cellpadding="0" cellspacing="1" style="background:#ebebeb; margin-top:20px;">
                                 <tr>
-                                    <td class="hyzl-1">中文姓名</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_中文姓名" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.name}</td>
-                                    <td class="hyzl-1">英文姓名</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_英文姓名" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.enName}</td>
                                 </tr>
                                 <tr>
-                                    <td class="hyzl-1">手机</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_手机" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.account}</td>
                                     <td class="hyzl-1">EMAIL</td>
                                     <td class="hyzl-2">${user.email}</td>
                                 </tr>
                                 <tr>
-                                    <td class="hyzl-1">行业从业时间</td>
-                                    <td class="hyzl-2">${user.workingYear}年</td>
-                                    <td class="hyzl-1">目前就职公司</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_行业从业时间" bundle="${bundle}"/></td>
+                                    <td class="hyzl-2">${user.workingYear}<fmt:message key="GLOBAL_年" bundle="${bundle}"/></td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_目前就职公司" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.company}</td>
                                 </tr>
                                 <tr>
-                                    <td class="hyzl-1">产业链位置</td>
-                                    <td class="hyzl-2">${user.icPositionString}</td>
-                                    <td class="hyzl-1">职务</td>
-                                    <td class="hyzl-2">${user.positionString}</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_产业链位置" bundle="${bundle}"/></td>
+                                    <td class="hyzl-2">${user.getIcPositionString(bundle)}</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_职务" bundle="${bundle}"/></td>
+                                    <td class="hyzl-2">${user.getPositionString(bundle)}</td>
                                 </tr>
                                 <tr>
-                                    <td class="hyzl-1">邮寄地址</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_邮寄地址" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.address}</td>
-                                    <td class="hyzl-1">邮编</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_邮编" bundle="${bundle}"/></td>
                                     <td class="hyzl-2">${user.zipCode}</td>
                                 </tr>
                             </table>
                             <table width="760" border="0" cellpadding="0" cellspacing="1" style="background:#ebebeb; margin-top:20px;">
                                 <tr>
-                                    <td class="hyzl-1">工作履历</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_工作履历" bundle="${bundle}"/></td>
                                     <td class="hyzl-3">${user.workExperience}</td>
                                 </tr>
                             </table>
                             <table width="760" border="0" cellpadding="0" cellspacing="1" style="background:#ebebeb; margin-top:20px;">
                                 <tr>
-                                    <td class="hyzl-1">项目经验</td>
+                                    <td class="hyzl-1"><fmt:message key="GLOBAL_项目经验" bundle="${bundle}"/></td>
                                     <td class="hyzl-3">${user.projectExperience}</td>
                                 </tr>
                             </table>

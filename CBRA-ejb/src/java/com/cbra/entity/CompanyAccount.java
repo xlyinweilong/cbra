@@ -3,6 +3,7 @@ package com.cbra.entity;
 import com.cbra.support.enums.CompanyNatureEnum;
 import com.cbra.support.enums.CompanyScaleEnum;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -82,14 +83,14 @@ public class CompanyAccount extends Account {
     //资质证书编号
     private String qalityCode;
 
-    public String getNatureString() {
+    public String getNatureString(ResourceBundle bundle) {
         if (CompanyNatureEnum.OTHERS.equals(nature)) {
             return natureOthers;
         } else {
             if (nature == null) {
                 return null;
             }
-            return nature.getMean();
+            return nature.getMean(bundle);
         }
     }
 
@@ -121,9 +122,9 @@ public class CompanyAccount extends Account {
         return scale;
     }
 
-    public String getScaleString() {
+    public String getScaleString(ResourceBundle bundle) {
         if (scale != null) {
-            return scale.getMean();
+            return scale.getMean(bundle);
         }
         return null;
     }

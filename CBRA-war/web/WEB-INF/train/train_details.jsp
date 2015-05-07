@@ -15,16 +15,16 @@
                 <div class="hd-detailed">
                     <!-- 标题 -->
                     <h1>${fundCollection.title}</h1>
-                    <p id="juhong"><strong>培训状态：</strong>${fundCollection.status}</p>
-                    <p><strong>培训时间：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
-                    <p><strong>签到时间：</strong><fmt:formatDate value='${fundCollection.checkinDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
-                    <p><strong>培训地点：</strong>${fundCollection.eventLocation}</p>
-                    <p><strong>培训人员：</strong>${fundCollection.allowAttendee.mean}</p>
-                    <p><strong>培训费用：</strong>企业会员：<c:if test="${fundCollection.eachCompanyFreeCount > 0}">免费${fundCollection.eachCompanyFreeCount}人 , </c:if>${fundCollection.companyPrice}元/人　　个人会员：每人${fundCollection.userPrice}元/人　　非会员：${fundCollection.touristPrice}元/人</p>
+                    <p id="juhong"><strong><fmt:message key="GLOBAL_培训状态" bundle="${bundle}"/>：</strong>${fundCollection.status}</p>
+                    <p><strong><fmt:message key="GLOBAL_培训时间" bundle="${bundle}"/>：</strong><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
+                    <p><strong><fmt:message key="GLOBAL_签到时间" bundle="${bundle}"/>：</strong><fmt:formatDate value='${fundCollection.checkinDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></p>
+                    <p><strong><fmt:message key="GLOBAL_培训地点" bundle="${bundle}"/>：</strong>${fundCollection.eventLocation}</p>
+                    <p><strong><fmt:message key="GLOBAL_培训人员" bundle="${bundle}"/>：</strong>${fundCollection.allowAttendee.mean}</p>
+                    <p><strong><fmt:message key="GLOBAL_培训费用" bundle="${bundle}"/>：</strong><fmt:message key="GLOBAL_企业会员" bundle="${bundle}"/>：<c:if test="${fundCollection.eachCompanyFreeCount > 0}"><fmt:message key="GLOBAL_免费" bundle="${bundle}"/>${fundCollection.eachCompanyFreeCount}<fmt:message key="GLOBAL_人" bundle="${bundle}"/> , </c:if>${fundCollection.companyPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/>　　<fmt:message key="GLOBAL_个人会员" bundle="${bundle}"/>：<fmt:message key="GLOBAL_介绍" bundle="${bundle}"/>每人${fundCollection.userPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/>　　<fmt:message key="GLOBAL_非会员" bundle="${bundle}"/>：${fundCollection.touristPrice}<fmt:message key="GLOBAL_元/人" bundle="${bundle}"/></p>
                     <c:if test="${isSignUpEvent && fundCollection.status=='报名中'}">
-                    <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="报名" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
+                    <p><input style="margin-left: 550px;" type="button" class="rev-an" id="sign_up_button" value="<fmt:message key="GLOBAL_报名" bundle="${bundle}"/>" onclick="location.href = '/order/sign_up_event?id=${fundCollection.id}'"></p>
                     </c:if>
-                    <p><strong>培训内容介绍：</strong></p>
+                    <p><strong><fmt:message key="GLOBAL_培训内容介绍" bundle="${bundle}"/>：</strong></p>
                     <p style=" line-height:32px; color:#666;">
                         ${fundCollection.detailDescHtml}
                     </p>

@@ -7,6 +7,7 @@ package com.cbra.entity;
 
 import com.cbra.support.enums.UserPosition;
 import java.util.Date;
+import java.util.ResourceBundle;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -144,11 +145,11 @@ public class UserAccount extends Account {
         this.positionOthers = positionOthers;
     }
 
-    public String getPositionString() {
+    public String getPositionString(ResourceBundle bundle) {
         if (position == null) {
             return positionOthers;
         } else {
-            return position.getMean();
+            return position.getMean(bundle);
         }
     }
 

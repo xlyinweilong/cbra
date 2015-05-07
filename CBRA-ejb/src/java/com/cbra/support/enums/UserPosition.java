@@ -5,6 +5,9 @@
  */
 package com.cbra.support.enums;
 
+import java.util.ResourceBundle;
+import javax.servlet.jsp.jstl.fmt.LocalizationContext;
+
 /**
  * 用户岗位
  *
@@ -21,6 +24,31 @@ public enum UserPosition {
     DESIGNER,//设计师
     ENGINEER,
     NO;//工程师
+
+    public String getMean(ResourceBundle bundle) {
+        switch (this) {
+            case CHAIRMAN:
+                return bundle.getString("GLOBAL_董事长");
+            case GENERAL:
+                return bundle.getString("GLOBAL_总经理");
+            case PROJECT:
+                return bundle.getString("GLOBAL_项目经理");
+            case CONSTRUCTION:
+                return bundle.getString("GLOBAL_施工经理");
+            case MARKETING:
+                return bundle.getString("GLOBAL_营销经理");
+            case DB:
+                return bundle.getString("GLOBAL_市场开拓经理");
+            case DESIGNER:
+                return bundle.getString("GLOBAL_设计师");
+            case ENGINEER:
+                return bundle.getString("GLOBAL_工程师");
+            case NO:
+                return bundle.getString("GLOBAL_暂无职务");
+            default:
+                return bundle.getString("GLOBAL_其他");
+        }
+    }
 
     public String getMean() {
         switch (this) {
@@ -46,5 +74,4 @@ public enum UserPosition {
                 return "其他";
         }
     }
-
 }

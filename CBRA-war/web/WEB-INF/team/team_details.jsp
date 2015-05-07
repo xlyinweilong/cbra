@@ -17,7 +17,7 @@
             <!-- 左侧导航 end -->
             <!-- 右侧内容 -->
             <div class="fm-list">
-                <div class="title"><span><a id="title-span">介绍</a></span></div>
+                <div class="title"><span><a id="title-span"><fmt:message key="GLOBAL_介绍" bundle="${bundle}"/></a></span></div>
                 <div class="jsjs">
                     <div class="img">
                         <img style="width: 140px; margin-left: 35px;" src="<c:if test="${not empty plateInfo.picUrl}">${plateInfo.picUrl}</c:if><c:if test="${empty plateInfo.picUrl}">/ls/ls-123.jpg</c:if>">

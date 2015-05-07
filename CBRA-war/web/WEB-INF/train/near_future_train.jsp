@@ -26,10 +26,10 @@
                                 <div class="img"><a href="/train/train_details?id=${fundCollection.id}" target="_blank"><img style="width: 140px; height: 100px;" src="<c:if test="${not empty fundCollection.imageUrl}">${fundCollection.imageUrl}</c:if><c:if test="${empty fundCollection.imageUrl}">/ls/ls-19.jpg</c:if>"></a></div>
                                 <div class="con"><a href="/train/train_details?id=${fundCollection.id}" target="_blank">
                                         <p class="p1">${fundCollection.title}</p>
-                                        <p class="p2">地点：${fundCollection.eventLocation}</p></a>
+                                        <p class="p2"><fmt:message key="GLOBAL_地点" bundle="${bundle}"/>：${fundCollection.eventLocation}</p></a>
                                     <p class="p2"><%--<span class="span1"><a href="#">[筑誉动态]</a></span>--%><span>
                                             <fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm:ss' type='date' dateStyle='long' />
-                                        </span><span class="span2"><a href="/train/train_details?id=${fundCollection.id}" target="_blank" >[阅读全文]</a></span></p>
+                                        </span><span class="span2"><a href="/train/train_details?id=${fundCollection.id}" target="_blank" >[<fmt:message key="GLOBAL_阅读全文" bundle="${bundle}"/>]</a></span></p>
                                 </div>
                                 <div style="clear:both;"></div>
                             </li>

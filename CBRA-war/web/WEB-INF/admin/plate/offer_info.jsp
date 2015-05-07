@@ -135,7 +135,7 @@
                                 <li id="others" style="<c:if test="${empty offer.positionOthers}">display: none</c:if>"><label>其他</label><input type="text" class="dfinput" style="width: 350px;" name="others" value="${offer.positionOthers}" /></li>
                                 <li><label>产业链位置</label>
                                 <c:forEach var="accountIcPosition" items="${accountIcPositionList}">
-                                    <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.name}&nbsp;&nbsp;
+                                    <input <c:if test="${positionList.contains(accountIcPosition.key)}">checked="checked"</c:if> type="checkbox" name="accountIcPosition" value="${accountIcPosition.key}" />${accountIcPosition.nameString}&nbsp;&nbsp;
                                 </c:forEach>
                             </li>
                             <li><label>岗位职责</label>

@@ -1,4 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
 	response.addHeader( "Cache-Control", "no-store,no-cache,must-revalidate" );
 	response.addHeader( "Cache-Control", "post-check=0,pre-check=0" );
@@ -41,7 +43,7 @@
     
     <h2>非常遗憾，您访问的页面不存在！</h2>
     <p>这个页面我们可能正在开发中哟!</p>
-    <div class="reindex"><a href="./logonRightAction.action" target="rightFrame">返回首页</a></div>
+    <div class="reindex"><a href="./logonRightAction.action" target="rightFrame"><fmt:message key="GLOBAL_返回首页" bundle="${bundle}"/></a></div>
     </div>
 
 </body>

@@ -17,7 +17,7 @@
             <!-- 左侧导航 end -->
             <!-- 右侧内容 -->
             <div class="fr-con">
-                <div class="title"><span><a id="title-span">合作伙伴招募</a></span></div>
+                <div class="title"><span><a id="title-span"><fmt:message key="INDEX_合作伙伴招募" bundle="${bundle}"/></a></span></div>
                 <div class="con-single">${plateInformation.plateInformationContent.content}</div>
             </div>
             <!-- 右侧内容 end -->

@@ -9,15 +9,15 @@
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp" />
         <div class="two-loc">
-            <div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > 用户注册</div>
+            <div class="two-loc-c"><fmt:message key="BANNER_当前位置" bundle="${bundle}"/>：<a href="/public/index"><fmt:message key="BANNER_筑誉首页" bundle="${bundle}"/></a> > <fmt:message key="GLOBAL_用户注册" bundle="${bundle}"/></div>
         </div>
         <!-- 主体 -->
         <div class="two-main">
             <!-- 详细信息 -->
             <div class="zfcg">
                 <p class="czcg"><img src="/images/zccg.png"></p>
-                <p class="czcg">您已成功提交入会申请，审核结果将在3-5个工作日内<br/>以邮件的形式通知您，请注意查收邮件。</p>
-                <p class="czcg"><a href="/public/index">返回首页</a></p>
+                <p class="czcg"><fmt:message key="GLOBAL_您已成功提交入会申请，审核结果将在3-5个工作日内以邮件形式通知您，请注意查收邮件" bundle="${bundle}"/></p>
+                <p class="czcg"><a href="/public/index"><fmt:message key="GLOBAL_返回首页" bundle="${bundle}"/></a></p>
             </div>
             <div style="clear:both;"></div>
         </div>

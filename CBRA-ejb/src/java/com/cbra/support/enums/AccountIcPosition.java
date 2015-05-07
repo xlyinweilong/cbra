@@ -5,6 +5,8 @@
  */
 package com.cbra.support.enums;
 
+import java.util.ResourceBundle;
+
 /**
  * 产业链环节
  *
@@ -12,18 +14,18 @@ package com.cbra.support.enums;
  */
 public enum AccountIcPosition {
 
-    A("A", "业主"),
-    B("B", "咨询公司"),
-    C("C", "设计院"),
-    D("D", "EPC总包商"),
-    E("E", "施工承包商（施工总包）"),
-    F("F", "施工承包商（专业分包总）"),
-    G("G", "设备供应商"),
-    H("H", "材料供应商（只供材料）"),
-    I("I", "材料加服务"),
-    J("J", "信息化企业"),
-    K("K", "运营商"),
-    Z("Z", "其他");
+    A("A", "GLOBAL_业主"),
+    B("B", "GLOBAL_咨询公司"),
+    C("C", "GLOBAL_设计院"),
+    D("D", "GLOBAL_EPC总包商"),
+    E("E", "GLOBAL_施工承包商(施工总包)"),
+    F("F", "GLOBAL_施工承包商(施工分包)"),
+    G("G", "GLOBAL_设备供应商"),
+    H("H", "GLOBAL_材料供应商(只供材料)"),
+    I("I", "GLOBAL_材料加服务"),
+    J("J", "GLOBAL_信息化企业"),
+    K("K", "GLOBAL_运营商"),
+    Z("Z", "GLOBAL_其他");
 
     private String key;
     private String name;
@@ -33,8 +35,8 @@ public enum AccountIcPosition {
         this.name = name;
     }
 
-    public static String getName(String key) {
-        return AccountIcPosition.valueOf(key).getName();
+    public static String getName(String key, ResourceBundle bundle) {
+        return bundle.getString(AccountIcPosition.valueOf(key).getName());
     }
 
     public String getKey() {
@@ -51,6 +53,10 @@ public enum AccountIcPosition {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public String getNameString() {
+        return name.replaceAll("GLOBAL_", "");
     }
 
 }

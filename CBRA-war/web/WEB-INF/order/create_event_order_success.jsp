@@ -14,8 +14,8 @@
         <div class="two-main">
             <!-- 详细信息 -->
             <div class="zfcg">
-                <p class="czcg">您已成功提交报名申请，等待管理员审核通知，请留意您的邮箱或登录查看您的订单。订单号：${serialId}</p>
-                <p class="czcg"><a href="/public/index">返回首页</a></p>
+                <p class="czcg"><fmt:message key="GLOBAL_您已成功提交报名申请，等待管理员审核通知，请留意您的邮箱或登录查看您的订单。订单号" bundle="${bundle}"/>：${serialId}</p>
+                <p class="czcg"><a href="/public/index"><fmt:message key="GLOBAL_返回首页" bundle="${bundle}"/></a></p>
             </div>
             <div style="clear:both;"></div>
         </div>
