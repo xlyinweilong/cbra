@@ -68,6 +68,7 @@
             #scroller .content .status { width:100%; height:24px; line-height:24px; margin-bottom:2%;}
             #scroller .content .status .sta-l { float:left; color:#6a6a6a;}
             #scroller .content .status .sta-r { float:right; color:#ff6000;}
+            #scroller .content .status-b { width:100%; height:24px; line-height:24px; margin-bottom:2%;color:#ff6000;}
             img{width: 100%;height: 100%;}
         </style>
     </head>
@@ -76,7 +77,8 @@
             <div id="scroller">
                 <div class="content">
                     <h1>${fundCollection.title}</h1>
-                    <div class="status"><span class="sta-l"><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></span><br/><span class="sta-r">活动状态：${fundCollection.status}</span></div>
+                    <div class="status"><span class="sta-l"><fmt:formatDate value='${fundCollection.eventBeginDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /> -- <fmt:formatDate value='${fundCollection.eventEndDate}' pattern='yyyy-MM-dd HH:mm' type='date' dateStyle='long' /></span></div>
+                    <div  class="status-b">活动状态：${fundCollection.status}</div>
                     ${fundCollection.detailDescHtml}
                 </div>
             </div>

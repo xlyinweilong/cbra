@@ -25,7 +25,7 @@
                             </div>
                         <c:forEach items="${resultList}" var="offer">
                             <div class="title-rcxx">
-                                <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.name}</span><span class="span-2">${offer.company}</span><span class="span-1">${offer.obtain}<fmt:message key="GLOBAL_年" bundle="${bundle}"/></span><span class="span-1">${offer.position}</span><span class="span-1">${offer.mobile}</span><span class="span-1"><fmt:formatDate value="${offer.createDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></span></a>
+                                <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.name}</span><span class="span-2">${offer.company}</span><span class="span-1">${offer.obtain}<fmt:message key="GLOBAL_年" bundle="${bundle}"/></span><span class="span-1">${offer.getPositionEnmuWithOthers(bundle.resourceBundle)}</span><span class="span-1">${offer.mobile}</span><span class="span-1"><fmt:formatDate value="${offer.createDate}" pattern="yyyy-MM-dd" type="date" dateStyle="long" /></span></a>
                             </div>
                         </c:forEach>
                     </div>

@@ -24,7 +24,7 @@
                         </div>
                     <c:forEach items="${resultList}" var="offer">
                         <div class="title-zw">
-                            <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city}</span><span class="span-2">${offer.depart}</span><span><fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></span></a>
+                            <a href="/into/offer_details?id=${offer.id}"><span class="span-1">${offer.position}</span><span class="span-2">${offer.city}</span><span class="span-2">${offer.departString}</span><span><fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' /></span></a>
                         </div>
                     </c:forEach>
                     <form id="form1" action="/into/three_party_offer" method="post">

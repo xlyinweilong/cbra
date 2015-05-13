@@ -34,7 +34,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -173,13 +172,19 @@ public class Offer implements Serializable {
     }
 
     public String getPositionIndexStr() {
+        if (position == null) {
+            return null;
+        }
         if (position.length() > 15) {
             return position.substring(0, 14) + "...";
         }
         return position;
     }
-    
+
     public String getPositionIndexStr2() {
+        if (position == null) {
+            return null;
+        }
         if (position.length() > 10) {
             return position.substring(0, 9) + "...";
         }
@@ -218,7 +223,7 @@ public class Offer implements Serializable {
         String[] ics = icPosition.split("_");
         for (String ic : ics) {
             if (Tools.isNotBlank(ic)) {
-                sb.append(AccountIcPosition.getName(ic,bundle));
+                sb.append(AccountIcPosition.getName(ic, bundle));
                 sb.append(",");
             }
         }
@@ -315,6 +320,16 @@ public class Offer implements Serializable {
     }
 
     public String getDepart() {
+        return depart;
+    }
+
+    public String getDepartString() {
+        if (depart == null) {
+            return null;
+        }
+        if (depart.length() > 13) {
+            return depart.substring(0, 12) + "...";
+        }
         return depart;
     }
 
