@@ -13,5 +13,6 @@ package com.cbra.support.enums;
 public enum GatewayPaymentSourceEnum {
 
     WEB,//
+    APP
 
 }

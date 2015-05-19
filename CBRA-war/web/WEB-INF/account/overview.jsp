@@ -52,9 +52,9 @@
                                 </tr>
                                 <tr>
                                     <td class="hyzl-1"><fmt:message key="GLOBAL_产业链位置" bundle="${bundle}"/></td>
-                                    <td class="hyzl-2">${user.getIcPositionString(bundle)}</td>
+                                    <td class="hyzl-2">${user.getIcPositionString(bundle.resourceBundle)}</td>
                                     <td class="hyzl-1"><fmt:message key="GLOBAL_职务" bundle="${bundle}"/></td>
-                                    <td class="hyzl-2">${user.getPositionString(bundle)}</td>
+                                    <td class="hyzl-2">${user.getPositionString(bundle.resourceBundle)}</td>
                                 </tr>
                                 <tr>
                                     <td class="hyzl-1"><fmt:message key="GLOBAL_邮寄地址" bundle="${bundle}"/></td>
@@ -75,7 +75,7 @@
                                     <td class="hyzl-3">${user.projectExperience}</td>
                                 </tr>
                             </table>
-                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="修改资料" onclick="location.href = '/account/reset_user_info'" ></div>
+                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="<fmt:message key="GLOBAL_修改" bundle="${bundle}"/>" onclick="location.href = '/account/reset_user_info'" ></div>
                         </td>
                     </tr>
                 </table>

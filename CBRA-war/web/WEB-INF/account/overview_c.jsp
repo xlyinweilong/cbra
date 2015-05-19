@@ -60,9 +60,9 @@
                             </tr>
                             <tr>
                                 <td class="hyzl-1"><fmt:message key="GLOBAL_企业人数" bundle="${bundle}"/></td>
-                                <td class="hyzl-2">${company.getScaleString(bundle)}</td>
+                                <td class="hyzl-2">${company.getScaleString(bundle.resourceBundle)}</td>
                                 <td class="hyzl-1"><fmt:message key="GLOBAL_产业链位置" bundle="${bundle}"/></td>
-                                <td class="hyzl-2">${company.getIcPositionString(bundle)}</td>
+                                <td class="hyzl-2">${company.getIcPositionString(bundle.resourceBundle)}</td>
                             </tr>
                             <tr>
                                 <td class="hyzl-1"><fmt:message key="GLOBAL_企业地址" bundle="${bundle}"/></td>
@@ -82,7 +82,7 @@
                             </table>
                         </c:if>
                         <c:if test="${sessionScope.user.type == 'COMPANY'}">
-                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="<fmt:message key="GLOBAL_提交" bundle="${bundle}"/>" onclick="location.href = '/account/reset_user_info'" ></div>
+                            <div style="text-align:center; margin:10px auto;"><input type="button" style=" width:130px; height:42px; line-height:42px; background:#52853d; color:#FFF; border:0; border-radius:5px; font-size:14px; cursor:pointer;" value="<fmt:message key="GLOBAL_修改" bundle="${bundle}"/>" onclick="location.href = '/account/reset_user_info'" ></div>
                             </c:if>
                     </td>
 

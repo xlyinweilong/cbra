@@ -156,7 +156,8 @@ public class MobileServlet extends BaseServlet {
     private enum PageEnum {
 
         LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS,
-        PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAD_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER;
+        PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAD_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER,
+        CREATE_MEMBERSHIP_GATEWAY, MEMBERSHIP_ORDER_STATUS;
 
     }
 
@@ -202,6 +203,10 @@ public class MobileServlet extends BaseServlet {
                 return loadMembershipOrderList(request, response);
             case CREATE_MEMBERSHIP_ORDER:
                 return createMembershipOrder(request, response);
+            case CREATE_MEMBERSHIP_GATEWAY:
+                return createMembershipGateway(request, response);
+            case MEMBERSHIP_ORDER_STATUS:
+                return membershipGOrderStatus(request, response);
             case CREATE_EVENT_ORDER:
                 return createEventOrder(request, response);
             default:
@@ -517,6 +522,12 @@ public class MobileServlet extends BaseServlet {
         int page = super.getRequestInteger(request, "page");
         int maxcount = super.getRequestInteger(request, "maxcount");
         Map map = new HashMap();
+        Account user = mobileService.findByLoginCode(logincode);
+        if (user == null) {
+            map.put("responsecode", 1);
+            map.put("msg", "登录失效 ,重新登录");
+            return super.outputObjectAjax(map, response);
+        }
         Map<String, Object> searchMap = new HashMap<>();
         map.put("responsecode", 0);
         Plate plate = null;
@@ -858,7 +869,64 @@ public class MobileServlet extends BaseServlet {
             user = ((SubCompanyAccount) account).getCompanyAccount();
         }
         OrderCbraService orderCbraService = orderService.createOrderService(user);
-        map.put("data", orderCbraService.getSerialId());
+        Map submap = new HashMap();
+        submap.put("serialId", orderCbraService.getSerialId());
+        submap.put("amount", orderCbraService.getAmount());
+        map.put("data", submap);
+        map.put("msg", "ok");
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 创建会费支付网关
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean createMembershipGateway(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        String paymentType = super.getRequestString(request, "paymentType");
+        PaymentGatewayTypeEnum gateway = null;
+        try {
+            gateway = PaymentGatewayTypeEnum.valueOf(paymentType);
+        } catch (Exception e) {
+            map.put("msg", "支付方式异常");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        String serialId = super.getRequestString(request, "serialId");
+        OrderCbraService orderCbraService = orderService.findOrderCbraServiceSerialId(serialId);
+        if (orderCbraService == null || !user.equals(orderCbraService.getOwner())) {
+            map.put("msg", "订单不存在，或者你不是订单拥有者");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        GatewayPayment gatewayPayment = gatewayService.createGatewayPayment(orderCbraService, GatewayPaymentSourceEnum.APP, gateway);
+        Map submap = new HashMap();
+        submap.put("gatewayId", gatewayPayment.getId());
+        submap.put("amount", gatewayPayment.getGatewayAmount());
+        map.put("data", submap);
+        map.put("msg", "ok");
         return super.outputObjectAjax(map, response);
     }
 
@@ -911,4 +979,47 @@ public class MobileServlet extends BaseServlet {
         map.put("data", oc.getSerialId());
         return super.outputObjectAjax(map, response);
     }
+
+    /**
+     * 查看订单状态
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean membershipGOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        if (logincode == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account account = mobileService.findByLoginCode(logincode);
+        if (account == null) {
+            map.put("msg", "请先登录");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        String serialId = super.getRequestString(request, "serialId");
+        OrderCbraService orderCbraService = orderService.findOrderCbraServiceSerialId(serialId);
+        if (orderCbraService == null || !user.equals(orderCbraService.getOwner())) {
+            map.put("msg", "订单不存在，或者你不是订单拥有者");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Map subMap = new HashMap();
+        subMap.put("status", orderCbraService.getStatus().name());
+        map.put("msg", "ok");
+        map.put("data", subMap);
+        return super.outputObjectAjax(map, response);
+    }
+
 }
