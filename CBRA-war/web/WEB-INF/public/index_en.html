@@ -1,0 +1,588 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>筑誉建筑联合会</title>
+<link href="css/master.css" rel="stylesheet" type="text/css"><!--top-->
+<script type="text/javascript" src="js/base.js"></script><!--导航 -->
+<script type="text/javascript" src="js/jquery.js"></script><!--导航 -->
+
+<script type="text/javascript" src="js/jquery.min.js"></script><!--banner -->
+<script>
+(function(d,D,v){d.fn.responsiveSlides=function(h){var b=d.extend({auto:!0,speed:1E3,timeout:7E3,pager:!1,nav:!1,random:!1,pause:!1,pauseControls:!1,prevText:" ",nextText:" ",maxwidth:"",controls:"",namespace:"rslides",before:function(){},after:function(){}},h);return this.each(function(){v++;var e=d(this),n,p,i,k,l,m=0,f=e.children(),w=f.size(),q=parseFloat(b.speed),x=parseFloat(b.timeout),r=parseFloat(b.maxwidth),c=b.namespace,g=c+v,y=c+"_nav "+g+"_nav",s=c+"_here",j=g+"_on",z=g+"_s",
+o=d("<ul class='"+c+"_tabs "+g+"_tabs' />"),A={"float":"left",position:"relative"},E={"float":"none",position:"absolute"},t=function(a){b.before();f.stop().fadeOut(q,function(){d(this).removeClass(j).css(E)}).eq(a).fadeIn(q,function(){d(this).addClass(j).css(A);b.after();m=a})};b.random&&(f.sort(function(){return Math.round(Math.random())-0.5}),e.empty().append(f));f.each(function(a){this.id=z+a});e.addClass(c+" "+g);h&&h.maxwidth&&e.css("max-width",r);f.hide().eq(0).addClass(j).css(A).show();if(1<
+f.size()){if(x<q+100)return;if(b.pager){var u=[];f.each(function(a){a=a+1;u=u+("<li><a href='#' class='"+z+a+"'>"+a+"</a></li>")});o.append(u);l=o.find("a");h.controls?d(b.controls).append(o):e.after(o);n=function(a){l.closest("li").removeClass(s).eq(a).addClass(s)}}b.auto&&(p=function(){k=setInterval(function(){var a=m+1<w?m+1:0;b.pager&&n(a);t(a)},x)},p());i=function(){if(b.auto){clearInterval(k);p()}};b.pause&&e.hover(function(){clearInterval(k)},function(){i()});b.pager&&(l.bind("click",function(a){a.preventDefault();
+b.pauseControls||i();a=l.index(this);if(!(m===a||d("."+j+":animated").length)){n(a);t(a)}}).eq(0).closest("li").addClass(s),b.pauseControls&&l.hover(function(){clearInterval(k)},function(){i()}));if(b.nav){c="<a href='javascript:' class='"+y+" prev'>"+b.prevText+"</a><a href='javascript:' class='"+y+" next'>"+b.nextText+"</a>";h.controls?d(b.controls).append(c):e.after(c);var c=d("."+g+"_nav"),B=d("."+g+"_nav.prev");c.bind("click",function(a){a.preventDefault();if(!d("."+j+":animated").length){var c=f.index(d("."+j)),
+a=c-1,c=c+1<w?m+1:0;t(d(this)[0]===B[0]?a:c);b.pager&&n(d(this)[0]===B[0]?a:c);b.pauseControls||i()}});b.pauseControls&&c.hover(function(){clearInterval(k)},function(){i()})}}if("undefined"===typeof document.body.style.maxWidth&&h.maxwidth){var C=function(){e.css("width","100%");e.width()>r&&e.css("width",r)};C();d(D).bind("resize",function(){C()})}})}})(jQuery,this,0);
+$(function() {
+    $(".f426x240").responsiveSlides({
+        auto: true,
+        pager: true,
+        nav: true,
+        speed: 700
+    });
+    $(".f160x160").responsiveSlides({
+        auto: true,
+        pager: true,
+        speed: 700
+    });
+});
+</script><!--banner -->
+
+</head>
+
+<body>
+<!--top-->
+<div class="top-top">
+	<!--页眉-->
+    <div class="Header">
+    
+        <div class="top-main">
+        
+            <!--微信/联系方式-->
+            <div class="weix-lianx">
+                <a class="ico-weixin weixin" onmouseout="showWeixinMenu(this)" onmouseover="showWeixinMenu(this,true)" href="javascript:;">官方微信</a>
+                <a class="ico-weixin lianx">联系我们</a>
+            </div>
+            <!--微信下拉二维码-->
+            <div id="WeixinMenu" class="weixin-menu" style="display: none;">
+                <div class="weixin-bd">
+                     <p><img src="images/weixin.jpg"><span style="font-size:12px;"> 扫一扫，关注<span style="color:#e53333;">筑誉微信</span>，共同分享有建设性价值的商业思索、见闻和感悟</span></p>
+                </div>
+            </div>
+            <!--登录/注册/会员中心/中英文-->
+            <div class="right-gn">
+                <a href="#">会员登录</a>  |  <a href="#">快速注册</a>　　<a href="#">会员中心</a>  |  <a href="#">English</a>   |   <a href="#">中文</a>
+            </div>
+                
+        </div>
+        
+    </div>
+    <!--页眉 end-->
+    <!--logo-->
+    <div class="LOGO">
+    	<div class="LOGO-l"><img src="images/logo.png"></div>
+    	<div class="LOGO-r">
+        	<p>咨询热线：021-61550302</p>
+            <input type="text" class="Input-k"><input type="button" class="button-a" value="搜索">
+        </div>
+        <div style=" clear:both;"></div>
+    </div>
+    <!--logo end-->
+    
+    <!--导航-->
+	<div class="nav-wrap">
+		<ul id="HJ_Nav" class="nav">
+			<!--首页-->
+            <li id="nav_item_1" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,1)"  href="#">筑誉首页</a></li>
+			<!--首页 end-->
+            
+            <!--走进筑誉-->
+			<li id="nav_item_2" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,2)" href="#">走进筑誉</a>
+				<div class="nav-menu clearfix" id="HJ_Menu_2" style="width: 730px; display: none;">
+                    <ul class="fl nav-channel">
+                        <li><a href="#">筑誉理念筑誉理念筑誉理念</a></li>
+                        <li><a href="#">业务格局</a></li>
+                        <li><a href="#">发展历程</a></li>
+                        <li><a href="#">会长致辞</a></li>
+                        <li><a href="#">理事宣言</a></li>
+                        <li><a href="#">联系我们</a></li>
+                    </ul>
+                    <span class="nav-menu-line" style="height:292px;margin-right:30px">&nbsp;</span>
+                    <div class="fr hui" style="width:410px">
+                    <p><img src="ls/3591G05OQF_m.jpg" width="410" height="247" alt=""><br> 和君集团的基本业务格局为：和君咨询+和君资本+和君商学，即以管理咨询为主体，以资本和商学教育为两翼的“一体两翼”模式。</p></div>
+                </div>
+			</li>
+			<!--走进筑誉 end-->
+            <!--新闻中心-->
+            <li id="nav_item_3" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,3)" href="javascript:void(0);">新闻中心</a>
+				<div class="nav-menu clearfix" id="HJ_Menu_3" style="width: 710px; display: none;">
+                    <ul class="fl nav-channel" id="menu-news-switch" onmouseover="inittab(&#39;menu-news-switch&#39;,&#39;li&#39;,&#39;div&#39;)">
+                        <li><a href="#">筑誉新闻筑誉新闻筑誉新闻</a></li>
+                        <li><a href="#">行业新闻</a></li>
+                    </ul>
+					<span class="nav-menu-line" style="height:202px"></span>
+                    <div class="fr" id="menu-news-switch-body" style="width:380px">
+                        <span class="blank10"></span>
+                        <div>
+                            <h4><a href="#" target="_blank">筑誉动态</a></h4>
+                            <span class="blank10"></span>
+                            <ul class="list list-f12-autoheight">
+                                <li><a href="#" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
+                                <li><a href="#" target="_blank">和君集团党的群众路线教育实践活动总结大会圆满结束</a></li>
+                                <li><a href="#" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
+                            </ul>
+                            <h4><a href="#" target="_blank">媒体报道</a></h4>
+                            <span class="blank10"></span>
+                            <ul class="list list-f12-autoheight">
+                                <li><a href="#" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团</a></li>
+                                <li><a href="#" target="_blank">和君集团党的群众路线教育实践活动总结大会圆满结束</a></li>
+                                <li><a href="#" target="_blank">资源互动，价值共享 ——和君集团幸福养老咨询团队精彩亮相</a></li>
+                            </ul>
+                            <span class="blank10"></span>
+                            <span class="more fr"><a href="#" target="_blank">更多</a></span>
+                        </div>
+                        <div style="display:none">
+                            <h4><a href="#" target="_blank">行业新闻</a></h4>
+                            <span class="blank10"></span>
+                            <ul class="list list-f12-autoheight">
+                                <li><a href="#" target="_blank">和君咨询发起中国首个人才经纪人联盟</a></li>
+                                <li><a href="#" target="_blank">“中国在线教育之都”发布暨首届在线教育投融资峰会</a></li>
+                                <li><a href="#" target="_blank">和君资本合伙人李文明：上市公司主导医药行业并购整合将成潮</a></li>
+                                <li><a href="#" target="_blank">团中央官网报道和君"幸福茶农"启动仪式</a></li>
+                                <li><a href="#" target="_blank">五粮液再次携手和君咨询展开白酒并购</a></li>
+                            </ul>
+                            <span class="blank10"></span>
+                            <span class="more fr"><a href="#" target="_blank">更多</a></span>
+                        </div>
+                    </div>
+				</div>
+            </li>
+			<!--新闻中心 end-->
+
+
+			<!--活动讲座-->
+            <li id="nav_item_4" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,4)" href="#">活动讲座</a>
+                <div class="nav-menu clearfix" id="HJ_Menu_4" style="min-height: inherit; width: 800px; left: -195px; display: none;">
+                    <ul class="fl nav-channel">
+                        <li><a href="#">近期活动近期活动近期活动</a></li>
+                        <li><a href="#">往期活动</a></li>
+                        <li><a href="#">合作伙伴活动</a></li>
+                    </ul>
+        			<span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden">
+                        <p><a target="_blank" href="#"><img src="ls/S765GG2KOC_m.jpg" ></a></p>
+                        <p>&nbsp;</p><p>封面专题：建设幸福企业</p>
+                        <p>对于企业家和管理来说，如何营造让员工感到幸福的工作环境，将企业做好，为国家做贡献，给社会带来帮助，这些才是最重要的。</p>
+                    </div>
+                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fl hui" style="width:200px;padding-top:10px;overflow:hidden;" >
+                        <p><a href="#" target="_blank"><img src="ls/201406112030yyfp.jpg"></a></p>
+                        <p>&nbsp;</p>
+                        <p>你需要的不是向日葵和马，你真正需要的是凡高的向日葵和徐悲鸿的马！<br>你需要的不是平庸的咨询服务，你真正需要的是高手做出来的咨询服务！</p>
+                    </div>
+        		</div>
+            </li>
+			<!--活动讲座 end-->
+            
+            <!--专题培训-->
+            <li id="nav_item_5" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,5)" href="javascript:void(0);">专题培训</a>
+                <div class="nav-menu clearfix" id="HJ_Menu_5" style="left:-306px; width: 800px; display: none;">
+                    <ul class="fl nav-channel">
+                        <li><a href="#">培训理培训理念培训理</a></li>
+                        <li><a href="#">近期培训</a></li>
+                        <li><a href="#">往期培训</a></li>
+                        <li><a href="#">讲师团队</a></li>
+                    </ul>
+                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
+                        <p><a href="http://www.hejun.com/channel.php?channelid=748" target="_blank"><img src="ls/201406191736qfmb.jpg"></a></p>
+                        <p>&nbsp;</p>
+                        <p><strong>成长在和君&nbsp;<br>
+                        </strong>有目标、沉住气、踏实干。拒绝喧嚷、拒绝浮躁、拒绝摆秀、拒绝浮名、拒绝速成，慢慢地蓄深养厚，最终把事业搞辉煌，把自己搞平淡。</p>
+                    </div>
+                    <span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
+                    <p><a href="http://www.hejun.com/channel.php?channelid=749" target="_blank"><img src="ls/201406191739ozeg.jpg"></a></p>
+                    <p>&nbsp;</p>
+                    <p><strong>我们的生活&nbsp;<br>
+                    </strong>经历各种行业、各个地域、各种人生、各类故事，吃百家饭，阅人无数，踏遍千山万水，览尽世间万象，看透人生百态。</p>
+                    </div>
+                </div>
+            </li>
+			<!--专题培训 end-->
+
+			<!--团队风采-->
+			<li id="nav_item_6" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,6)" href="javascript:void(0);">团队风采</a>
+            	<div class="nav-menu clearfix" id="HJ_Menu_6" style="left: auto;  width: 510px; left: -127px;  display: none;">
+                    <ul class="fl nav-channel">
+                        <li><a href="#">理事成员</a></li>
+                        <li><a href="#">委员会</a></li>
+                        <li><a href="#">各地分会</a></li>
+                        <li><a href="#">领域专家</a></li>
+                        <li><a href="#">部分会员风采</a></li>
+                    </ul>
+					<span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fr hui" style="width:220px;padding-top:10px;overflow:hidden">
+                    	<p><a href="#" target="_blank"><img style="height:131px;width:206px;" src="ls/201409121234mjj8.jpg"></a></p>
+                    	<p>实现党建工作与企业经营管理的互动，努力为集团各项工作的健康发展提供坚强的组织保证<br></p>
+                    </div>
+				</div>
+			</li>
+            <!--团队风采 end-->
+            
+            <!--资讯专区-->
+			<li id="nav_item_7" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,7)" href="http://www.hejun.com/sandu/">资讯专区</a>
+            	<div class="nav-menu clearfix" id="HJ_Menu_7" style="width:550px; left: -278px; display: none;">
+                    <div class="fl" style="width:100px">
+                        <h4>人力资源信息</h4>
+                        <span class="blank6"></span>
+                        <ul class="nav-sub-channel">
+                            <li><a href="#">企业人才需求</a></li>
+                            <li><a href="#">筑誉人才库</a></li>
+                        </ul>
+                    </div>
+                    <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
+                    <div class="fl" style="width:100px">
+                        <h4>资源信息</h4>
+                        <span class="blank6"></span>
+                        <ul class="nav-sub-channel">
+                            <li><a href="#">采购供求信息</a></li>
+                            <li><a href="#">海外工程合作</a></li>
+                            <li><a href="#">建筑产业化合作</a></li>
+                            <li><a href="#">养老地产合作</a></li>
+                        </ul>
+                    </div>
+                    <span class="nav-menu-line" style="margin-right:35px;margin-left:25px"></span>
+                    <div class="fl" style="width:100px">
+                        <h4>前沿领域信息</h4>
+                        <span class="blank6"></span>
+                        <ul class="nav-sub-channel">
+                            <li><a href="#" target="_blank">新材料新技术</a></li>
+                            <li><a href="#" target="_blank">建筑产业化</a></li>
+                            <li><a href="#" target="_blank">绿色建筑</a></li>
+                            <li><a href="#" target="_blank">BIM技术</a></li>
+                        </ul>
+                    </div>
+    			</div>
+            </li>
+            <!--资讯专区 end-->
+            
+            <!--加入筑誉-->
+			<li id="nav_item_8" class="nav-item"><a class="nav-txt" target="_blank" onmouseover="M(this,8)" href="#">加入筑誉</a>
+            	<div class="nav-menu clearfix" id="HJ_Menu_8" style="left: -639px; width: 800px; display: none;">
+                    <ul class="fl nav-channel">
+                        <li><a href="#">岗位需岗位需求岗位需求</a></li>
+                        <li><a href="#">社会招聘</a></li>
+                        <li><a href="#">校园招聘</a></li>
+                        <li><a href="#">合作伙伴</a></li>
+                    </ul>
+					<span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+					<div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
+						<p><a href="#" target="_blank"><img src="ls/201406191736qfmb.jpg"></a></p>
+						<p><strong>成长在和君&nbsp;<br></strong>有目标、沉住气、踏实干。拒绝喧嚷、拒绝浮躁、拒绝摆秀、拒绝浮名、拒绝速成，慢慢地蓄深养厚，最终把事业搞辉煌，把自己搞平淡。</p>
+					</div>
+					<span class="nav-menu-line" style="height:240px;margin-right:40px"></span>
+                    <div class="fl hui" style="width:220px;padding-top:10px;overflow:hidden">
+                    	<p><a href="#" target="_blank"><img src="ls/201406191739ozeg.jpg"></a></p>
+                    	<p><strong>我们的生活&nbsp;<br></strong>经历各种行业、各个地域、各种人生、各类故事，吃百家饭，阅人无数，踏遍千山万水，览尽世间万象，看透人生百态。</p>
+                    </div>
+				</div>
+            </li>
+            <!--加入筑誉 end-->
+            
+            <!--认证体系-->
+			<li id="nav_item_9" class="nav-item"><a class="nav-txt" target="" onmouseover="M(this,9)" href="#">认证体系</a></li>
+            <!--认证体系 end-->
+            
+		</ul>
+	</div>
+    <!--导航 end-->
+</div>
+
+<!-- banner -->
+<div class="ly_bac">
+	<div class="content-ba">
+		<div class="new_banner">
+			<ul class="rslides f426x240">
+				<li><a href="javascript:"><img src="pic/banner-1.jpg" width="1423" height="320" /></a></li>
+				<li><a><img src="pic/banner-2.jpg" width="1423" height="320" /></a></li>
+        		<li><a><img src="pic/banner-3.jpg" width="1423" height="320" /></a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- bannerend -->
+
+<!-- 主体 -->
+<div class="main">
+	<!-- 一 排 -->
+	<div class="One-Row">
+    	<!-- 关于筑誉 -->
+    	<div class="One-Row-fl">
+        	<div class="Title">
+            	<div class="Title-1">关于筑誉</div>
+                <div class="Title-2"><a href="#">申请入会</a></div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            <div class="Content">
+            	<div class="img"><img src="ls/ls-1.jpg"></div>
+                <p>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会愿景以及为了体现诚实守信，平等互助和透明规范的协会价值，在21世纪全球聚焦中国迅速发展的今天成立我们的专业行业协会，任重而道远回顾过去的建筑发展历程， 中国建筑无论从设计理念的创新，建筑设计的优化，施工工艺的改良，新材料的应用以及建筑质量的维护都有了重大的突破！</p>
+            </div>
+        </div>
+        <!-- 近期活动 -->
+        <div class="One-Row-fr">
+        	<div class="Title">
+            	<div class="Title-1">近期活动</div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            <ul>
+            	<li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴圆...</a><span>[报名中]</span></li>
+                <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a><span>[报名中]</span></li>
+                <li><a href="#">[01-02]筑誉建筑联合会第二届理事会...</a><span>[报名中]</span></li>
+                <li><a href="#">[01-02]筑誉联合会成立大会在陆家嘴圆...</a></li>
+                <li><a href="#">[01-02]筑誉建筑联合会成立大会...</a></li>
+            </ul>
+        </div>
+    <div style=" clear:both;"></div>
+    </div>
+    <!-- 一 排 end -->
+    
+    <!-- 广告条 -->
+    <div class="ad-sx"><img src="ls/ls-2.jpg"></div>
+    <!-- 广告条 end-->
+    
+    <!-- 二 排 -->
+    <div class="Two-Row">
+    
+    	<div class="Two-Row-fl">
+        	<div class="Title">
+            	<div class="Title-1">前沿领域资讯</div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            
+            <div class="Content">
+                <div class="Modules">
+                    <div class="img"><img src="ls/ls-3.jpg"></div>
+                    <div class="xxys"><h1>新材料新技术</h1>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会...</div>
+                </div>
+                <div class="Modules">
+                    <div class="img"><img src="ls/ls-4.jpg"></div>
+                    <div class="xxys"><h1>建筑产业化</h1>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会...</div>
+                </div>
+                <div class="Modules">
+                    <div class="img"><img src="ls/ls-5.jpg"></div>
+                    <div class="xxys"><h1>绿色建筑</h1>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会...</div>
+                </div>
+                <div class="Modules">
+                    <div class="img"><img src="ls/ls-6.jpg"></div>
+                    <div class="xxys"><h1>BIM技术</h1>我们本着构筑行业信誉，推动中国建筑行业进步的使命，怀着成为建筑业最具公信力专业平台的协会...</div>
+                </div>
+                <div style=" clear:both;"></div>
+        	</div>
+        </div>
+        
+        <div class="Two-Row-fr">
+        	<div class="Title">
+            	<div class="Title-1">专家顾问</div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            <ul>
+            	<li><img src="ls/ls-7.jpg"></li>
+                <li class="m-lr"><img src="ls/ls-7.jpg"></li>
+                <li><img src="ls/ls-7.jpg"></li>
+                <li><img src="ls/ls-7.jpg"></li>
+                <li class="m-lr"><img src="ls/ls-7.jpg"></li>
+                <li><img src="ls/ls-7.jpg"></li>
+            </ul>
+        </div>
+        <div style=" clear:both;"></div>
+    </div>
+    <!-- 二 排 end -->
+    
+    <!-- 三 排 -->
+	<div class="One-Row">
+    	<!-- 热点新闻 -->
+    	<div class="One-Row-fl">
+        	<div class="Title">
+            	<div class="Title-1">热点新闻</div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            <div class="Content">
+            	<div class="img"><img src="ls/ls-1.jpg"></div>
+                <ul>
+                	<li><a href="#" class="fl">[01-02]我们本着构筑行业信誉，推动中国建筑行业进步的使命</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
+                    <li><a href="#" class="fl">[01-02]怀着成为建筑业最具公信力专业平台的协会愿景以及为了体现</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
+                    <li><a href="#" class="fl">[01-02]平等互助和透明规范的协会价值</a></li>
+                    <li><a href="#" class="fl">[01-02]在21世纪全球聚焦中国迅速发展的今天成立我们的专业行业协会</a></li>
+                    <li><a href="#" class="fl">[01-02]任重而道远回顾过去的建筑发展历程</a></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 企业人才需求 -->
+        <div class="One-Row-fr">
+        	<div class="Title">
+            	<div class="Title-1">企业人才需求</div>
+                <div class="Title-3"><a href="#">更多</a></div>
+            </div>
+            <ul>
+            	<li><a href="#" class="fl">[01-02]筑誉联合会成立大会在陆家嘴圆...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
+                <li><a href="#" class="fl">[01-02]筑誉建筑联合会成立大会...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
+                <li><a href="#" class="fl">[01-02]筑誉建筑联合会第二届理事会...</a><img style="float:left; margin-top:8px;" src="images/ico-new.jpg"></li>
+                <li><a href="#" class="fl">[01-02]筑誉联合会成立大会在陆家嘴圆...</a></li>
+                <li><a href="#" class="fl">[01-02]筑誉建筑联合会成立大会...</a></li>
+            </ul>
+        </div>
+    	<div style=" clear:both;"></div>
+    </div>
+    <!-- 三 排 end -->
+    <!-- 四 排 -->
+    <div class="Four-Row">
+    	<div class="Title">
+			<div class="Title-1">热点新闻</div>
+			<div class="Title-3"><a href="#">更多</a></div>
+		</div>
+        
+        <!-- 产品滚动 -->
+        <div class="rollBox">
+    		<div class="Cont" id="ISL_Cont">
+        		<div class="ScrCont">
+            		<div id="List1">
+                		<!-- 图片列表 begin -->
+                		<div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-8.jpg" /></a></div> 
+                        <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-9.jpg" /></a></div> 
+                        <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-10.jpg" /></a></div> 
+                        <div class="pic"><a href="ppcp-ny.asp" target="_blank"><img src="ls/ls-8.jpg" /></a></div>
+                		<!-- 图片列表 end -->
+            		</div>
+            		<div id="List2"></div>
+        		</div>
+    		</div>
+		</div>
+        <!-- 产品滚动 结束 -->        
+    </div>
+    <!-- 四 排 end -->
+    <!-- 五 排 -->
+    <div class="Five-Row">
+    	<div class="Title"><img src="images/partner.jpg"></div>
+        <ul>
+        	<li><img src="ls/ls-11.jpg"><p>英国伯明翰大学<br>土木工程学院</p></li>
+            <li><img src="ls/ls-12.jpg"><p>上海交大</p></li>
+            <li><img src="ls/ls-13.jpg"><p>北方交通大学</p></li>
+            <li><img src="ls/ls-14.jpg"><p>同济大学经管学院</p></li>
+            <li><img src="ls/ls-15.jpg"><p>重庆大学建规学院</p></li>
+            <li><img src="ls/ls-16.jpg"><p>东南大学</p></li>
+            <li><img src="ls/ls-17.jpg"><p>上海建科院</p></li>
+            <li><img src="ls/ls-18.jpg"><p>精尚慧</p></li>
+        </ul>
+        <div style=" clear:both;"></div>
+    </div>
+</div>
+<!-- 主体 end -->
+
+<!-- 底部 -->
+<div class="Bottom-nav">
+	<div class="Bottom-nav-c">
+    	<ul>
+        	<li class="fl-Line"><h4>走进筑誉</h4><a href="#">筑誉理念</a><br><a href="#">业务格局</a><br><a href="#">发展历程</a><br><a href="#">会长致辞</a><br><a href="#">理事宣言</a><br><a href="#">联系我们</a></li>
+            <li><h4>新闻中心</h4><a href="#">筑誉新闻</a><br><a href="#">行业新闻</a></li>
+            <li><h4>活动讲座</h4><a href="#">近期活动</a><br><a href="#">往期活动</a><br><a href="#">合作伙伴活动</a></li>
+            <li><h4>专题培训</h4><a href="#">理事成员</a><br><a href="#">委员会</a><a href="#">各地分会</a><br><a href="#">领域专家</a><br><a href="#">部分会员风采</a></li>
+            <li><h4>资讯专区</h4><a href="#">人力资源信息</a><br><a href="#">资源信息</a><br><a href="#">前沿领域信息</a></li>
+            <li><h4>加入筑誉</h4><a href="#">会员申请</a><br><a href="#">筑誉岗位</a><br><a href="#">专家招募</a><br><a href="#">合作伙伴招募</a></li>
+        </ul>
+        <div style=" clear:both;"></div>
+    </div>
+    <div class="Bottom-bq">
+    	<div class="Bottom-bq-c">
+        	<div class="fl">Copyright © www.cbra.com All Rights Reserved<br>筑誉建筑联合会 版权所有<br>地址：上海市普陀区真光路1219号新长征中环大厦23层　电话：021-61550302　邮编：200333</div>
+            <div class="fr">沪ICP备14043363号-1</div>
+            <div style=" clear:both;"></div>
+        </div>
+    </div>
+    
+</div>
+<!-- 底部 end -->
+
+<script type="text/javascript">
+	var contents = document.getElementsByClassName('content');
+	var toggles = document.getElementsByClassName('title');
+	
+	var myAccordion = new fx.Accordion(
+		toggles, contents, {opacity: true, duration: 400}
+	);
+	myAccordion.showThisHideOpen(contents[0]);
+</script>
+
+<script language="javascript" type="text/javascript">
+<!--//--><![CDATA[//><!--
+//图片滚动列表 5icool.org
+var Speed = 5; //速度(毫秒)
+var Space = 5; //每次移动(px)
+var PageWidth = 1040; //翻页宽度
+var fill = 0; //整体移位
+var MoveLock = false;
+var MoveTimeObj;
+var Comp = 0;
+var AutoPlayObj = null;
+GetObj("List2").innerHTML = GetObj("List1").innerHTML;
+GetObj('ISL_Cont').scrollLeft = fill;
+GetObj("ISL_Cont").onmouseover = function(){clearInterval(AutoPlayObj);}
+GetObj("ISL_Cont").onmouseout = function(){AutoPlay();}
+AutoPlay();
+function GetObj(objName){if(document.getElementById){return eval('document.getElementById("'+objName+'")')}else{return eval('document.all.'+objName)}}
+function AutoPlay(){ //自动滚动
+ clearInterval(AutoPlayObj);
+ AutoPlayObj = setInterval('ISL_GoDown();ISL_StopDown();',3000); //间隔时间
+}
+function ISL_GoUp(){ //上翻开始
+ if(MoveLock) return;
+ clearInterval(AutoPlayObj);
+ MoveLock = true;
+ MoveTimeObj = setInterval('ISL_ScrUp();',Speed);
+}
+function ISL_StopUp(){ //上翻停止
+ clearInterval(MoveTimeObj);
+ if(GetObj('ISL_Cont').scrollLeft % PageWidth - fill != 0){
+  Comp = fill - (GetObj('ISL_Cont').scrollLeft % PageWidth);
+  CompScr();
+ }else{
+  MoveLock = false;
+ }
+ AutoPlay();
+}
+function ISL_ScrUp(){ //上翻动作
+ if(GetObj('ISL_Cont').scrollLeft <= 0){GetObj('ISL_Cont').scrollLeft = GetObj('ISL_Cont').scrollLeft + GetObj('List1').offsetWidth}
+ GetObj('ISL_Cont').scrollLeft -= Space ;
+}
+function ISL_GoDown(){ //下翻
+ clearInterval(MoveTimeObj);
+ if(MoveLock) return;
+ clearInterval(AutoPlayObj);
+ MoveLock = true;
+ ISL_ScrDown();
+ MoveTimeObj = setInterval('ISL_ScrDown()',Speed);
+}
+function ISL_StopDown(){ //下翻停止
+ clearInterval(MoveTimeObj);
+ if(GetObj('ISL_Cont').scrollLeft % PageWidth - fill != 0 ){
+  Comp = PageWidth - GetObj('ISL_Cont').scrollLeft % PageWidth + fill;
+  CompScr();
+ }else{
+  MoveLock = false;
+ }
+ AutoPlay();
+}
+function ISL_ScrDown(){ //下翻动作
+ if(GetObj('ISL_Cont').scrollLeft >= GetObj('List1').scrollWidth){GetObj('ISL_Cont').scrollLeft = GetObj('ISL_Cont').scrollLeft - GetObj('List1').scrollWidth;}
+ GetObj('ISL_Cont').scrollLeft += Space ;
+}
+function CompScr(){
+ var num;
+ if(Comp == 0){MoveLock = false;return;}
+ if(Comp < 0){ //上翻
+  if(Comp < -Space){
+   Comp += Space;
+   num = Space;
+  }else{
+   num = -Comp;
+   Comp = 0;
+  }
+  GetObj('ISL_Cont').scrollLeft -= num;
+  setTimeout('CompScr()',Speed);
+ }else{ //下翻
+  if(Comp > Space){
+   Comp -= Space;
+   num = Space;
+  }else{
+   num = Comp;
+   Comp = 0;
+  }
+  GetObj('ISL_Cont').scrollLeft += num;
+  setTimeout('CompScr()',Speed);
+ }
+}
+//--><!]]>
+</script>
+</body>
+</html>

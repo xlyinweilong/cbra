@@ -157,7 +157,7 @@ public class MobileServlet extends BaseServlet {
 
         LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS,
         PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAD_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER,
-        CREATE_MEMBERSHIP_GATEWAY, MEMBERSHIP_ORDER_STATUS;
+        CREATE_MEMBERSHIP_GATEWAY, MEMBERSHIP_ORDER_STATUS, CREATE_EVENT_GATEWAY, EVENT_ORDER_STATUS;
 
     }
 
@@ -209,6 +209,10 @@ public class MobileServlet extends BaseServlet {
                 return membershipGOrderStatus(request, response);
             case CREATE_EVENT_ORDER:
                 return createEventOrder(request, response);
+            case CREATE_EVENT_GATEWAY:
+                return createEventGateway(request, response);
+            case EVENT_ORDER_STATUS:
+                return eventOrderStatus(request, response);
             default:
                 throw new BadPageException();
         }
@@ -382,8 +386,6 @@ public class MobileServlet extends BaseServlet {
         searchMap.put("plateId", plate.getId());
         searchMap.put("mobile", true);
         if (type == 1) {
-            searchMap.put("plateId", plate.getId());
-            searchMap.put("mobile", true);
             ResultList<FundCollection> list = adminService.findCollectionList(searchMap, page, maxcount, null, true);
             for (FundCollection fc : list) {
                 fc.setDetailsUrl("event_details?id=" + fc.getId());
@@ -942,20 +944,18 @@ public class MobileServlet extends BaseServlet {
     private boolean createEventOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map map = new HashMap();
         String logincode = super.getRequestString(request, "logincode");
-        if (logincode == null) {
-            map.put("msg", "请先登录");
-            map.put("responsecode", 1);
-            return super.outputObjectAjax(map, response);
-        }
-        Account account = mobileService.findByLoginCode(logincode);
-        if (account == null) {
-            map.put("msg", "请先登录");
-            map.put("responsecode", 1);
-            return super.outputObjectAjax(map, response);
+        Account account = null;
+        if (Tools.isNotBlank(logincode)) {
+            account = mobileService.findByLoginCode(logincode);
+            if (account == null) {
+                map.put("msg", "请先登录");
+                map.put("responsecode", 1);
+                return super.outputObjectAjax(map, response);
+            }
         }
         Account user = account;
         map.put("responsecode", 0);
-        if (account instanceof SubCompanyAccount) {
+        if (account != null && account instanceof SubCompanyAccount) {
             user = ((SubCompanyAccount) account).getCompanyAccount();
         }
         Long collectionId = super.getRequestLong(request, "eventId");
@@ -976,7 +976,10 @@ public class MobileServlet extends BaseServlet {
         }
         OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
         map.put("msg", "创建成功");
-        map.put("data", oc.getSerialId());
+        Map submap = new HashMap();
+        submap.put("serialId", oc.getSerialId());
+        submap.put("amount", oc.getAmount());
+        map.put("data", submap);
         return super.outputObjectAjax(map, response);
     }
 
@@ -1022,4 +1025,94 @@ public class MobileServlet extends BaseServlet {
         return super.outputObjectAjax(map, response);
     }
 
+    /**
+     * 创建会费支付网关
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean createEventGateway(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        Account account = null;
+        if (Tools.isNotBlank(logincode)) {
+            account = mobileService.findByLoginCode(logincode);
+            if (account == null) {
+                map.put("msg", "请先登录");
+                map.put("responsecode", 1);
+                return super.outputObjectAjax(map, response);
+            }
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        String paymentType = super.getRequestString(request, "paymentType");
+        PaymentGatewayTypeEnum gateway = null;
+        try {
+            gateway = PaymentGatewayTypeEnum.valueOf(paymentType);
+        } catch (Exception e) {
+            map.put("msg", "支付方式异常");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        String serialId = super.getRequestString(request, "serialId");
+        OrderCollection order = orderService.findOrderCollectionSerialId(serialId);
+        if (order == null || (order.getOwner() != null && !order.getOwner().equals(user))) {
+            map.put("msg", "订单不存在，或者你不是订单拥有者");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        GatewayPayment gatewayPayment = gatewayService.createGatewayPayment(order, GatewayPaymentSourceEnum.APP, gateway);
+        Map submap = new HashMap();
+        submap.put("gatewayId", gatewayPayment.getId());
+        submap.put("amount", gatewayPayment.getGatewayAmount());
+        map.put("data", submap);
+        map.put("msg", "ok");
+        return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 查看订单状态
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean eventOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map map = new HashMap();
+        String logincode = super.getRequestString(request, "logincode");
+        Account account = null;
+        if (Tools.isNotBlank(logincode)) {
+            account = mobileService.findByLoginCode(logincode);
+            if (account == null) {
+                map.put("msg", "请先登录");
+                map.put("responsecode", 1);
+                return super.outputObjectAjax(map, response);
+            }
+        }
+        Account user = account;
+        map.put("responsecode", 0);
+        if (account instanceof SubCompanyAccount) {
+            user = ((SubCompanyAccount) account).getCompanyAccount();
+        }
+        String serialId = super.getRequestString(request, "serialId");
+        OrderCollection order = orderService.findOrderCollectionSerialId(serialId);
+        if (order == null || (order.getOwner() != null && !order.getOwner().equals(user))) {
+            map.put("msg", "订单不存在，或者你不是订单拥有者");
+            map.put("responsecode", 1);
+            return super.outputObjectAjax(map, response);
+        }
+        Map subMap = new HashMap();
+        subMap.put("status", order.getStatus().name());
+        map.put("msg", "ok");
+        map.put("data", subMap);
+        return super.outputObjectAjax(map, response);
+    }
 }
