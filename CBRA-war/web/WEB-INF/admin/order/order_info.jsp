@@ -117,8 +117,8 @@
                     </c:if>
                     <li><label>&nbsp;</label>
                         <c:if test="${orderCollection.status == 'PENDING_FOR_APPROVAL'}">
-                            <input id="passBtn" name="passBtn" type="button" class="btn" value="审批通过" onclick="$.fn.approval('PENDING_PAYMENT');"/>
-                            <input id="noPassBtn" name="noPassBtn" type="button" class="btn" value="审批不通过" onclick="$.fn.approval('APPROVAL_REJECT');"/>
+                            <!--<input id="passBtn" name="passBtn" type="button" class="btn" value="审批通过" onclick="$.fn.approval('PENDING_PAYMENT');"/>-->
+                            <!--<input id="noPassBtn" name="noPassBtn" type="button" class="btn" value="审批不通过" onclick="$.fn.approval('APPROVAL_REJECT');"/>-->
                         </c:if>
                     </li>
                 </ul>

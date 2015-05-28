@@ -38,6 +38,7 @@ import com.cbra.web.support.BadPostActionException;
 import com.cbra.web.support.NoSessionException;
 import flexjson.JSONSerializer;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -194,8 +195,13 @@ public class OrderServlet extends BaseServlet {
         } catch (Exception ex) {
         }
         OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
-        super.forward("/order/create_event_order_success?serialId=" + oc.getSerialId(), request, response);
-        return FORWARD_TO_ANOTHER_URL;
+        accountService.approvalOrder(oc.getId(), OrderStatusEnum.PENDING_PAYMENT, "自动审批");
+        if (oc.getAmount().compareTo(BigDecimal.ZERO) == 0) {
+            super.redirect("/order/payment_order/" + oc.getSerialId(), request, response);
+        } else {
+            super.redirect("/order/result/" + oc.getSerialId(), request, response);
+        }
+        return REDIRECT_TO_ANOTHER_URL;
     }
 
     /**
