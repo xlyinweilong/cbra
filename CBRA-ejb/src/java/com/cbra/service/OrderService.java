@@ -193,7 +193,6 @@ public class OrderService {
             throw new RuntimeException();
         }
         em.persist(oc);
-        em.flush();
         return oc;
     }
 

@@ -739,7 +739,7 @@ public class AccountService {
         order.setStatus(status);
         if (OrderStatusEnum.APPROVAL_REJECT.equals(status)) {
             //发送拒绝邮件
-//            this.sendOrderApprovalFail(order, message);
+            this.sendOrderApprovalFail(order, message);
         } else if (OrderStatusEnum.PENDING_PAYMENT.equals(status)) {
             if (order.getAmount().compareTo(BigDecimal.ZERO) == 0) {
                 order.setEndDate(new Date());
@@ -750,7 +750,7 @@ public class AccountService {
                 orderService.sendOrderSuccessEmail(order);
             } else {
                 //发送审批成功邮件
-//                this.sendOrderApprovalSuccess(order);
+                this.sendOrderApprovalSuccess(order);
             }
         }
         em.merge(order);

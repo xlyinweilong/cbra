@@ -63,7 +63,7 @@
                 background-color:#fafafa;
                 font-size:14px;
             }
-            #scroller .content { width:96%; height:auto; margin:2.5% auto; line-height:32px; font-size:16px; color:#6a6a6a;}
+            #scroller .content { width:90%; height:auto; margin:2.5% auto; line-height:32px; font-size:16px; color:#6a6a6a;}
             #scroller .content h1 { width:100%; height: auto; line-height:72px; font-size:24px; color:#444444; font-family:"微软雅黑";}
             #scroller .content .status { width:100%; height:24px; line-height:24px; margin-bottom:2%;}
             #scroller .content .status .sta-l { float:left; color:#6a6a6a;}

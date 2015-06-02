@@ -975,7 +975,6 @@ public class MobileServlet extends BaseServlet {
         } catch (Exception ex) {
         }
         OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
-        accountService.approvalOrder(oc.getId(), OrderStatusEnum.PENDING_PAYMENT, "自动审批");
         map.put("msg", "创建成功");
         Map submap = new HashMap();
         submap.put("serialId", oc.getSerialId());
