@@ -11,7 +11,9 @@ import com.cbra.support.enums.MessageTypeEnum;
 import com.cbra.support.enums.OrderStatusEnum;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -96,9 +98,29 @@ public class OrderCollection implements Serializable {
     private String fundCollectionContent;
     @Transient
     private String fundCollectionDetailsUrl;
+    @Transient
+    private List<Attendee> attendeeList = new ArrayList();
+    @Transient
+    private String attendeeCount = "1";
 
     public String getFundCollectionId() {
         return fundCollectionId;
+    }
+
+    public String getAttendeeCount() {
+        return attendeeCount;
+    }
+
+    public void setAttendeeCount(String attendeeCount) {
+        this.attendeeCount = attendeeCount;
+    }
+
+    public List<Attendee> getAttendeeList() {
+        return attendeeList;
+    }
+
+    public void setAttendeeList(List<Attendee> attendeeList) {
+        this.attendeeList = attendeeList;
     }
 
     public void setFundCollectionId(String fundCollectionId) {

@@ -21,7 +21,7 @@ public class Config {
 
     private Config() {
     }
-    public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("800");
+    public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("0.01");
 
     public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("10000");
 

@@ -14,6 +14,7 @@ import org.apache.commons.httpclient.methods.multipart.PartSource;
 
 import com.alipay.config.AlipayConfig;
 
+
 /* *
  *类名：AlipayFunction
  *功能：支付宝接口公用函数类

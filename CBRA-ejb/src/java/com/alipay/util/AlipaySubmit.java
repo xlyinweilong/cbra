@@ -30,30 +30,31 @@ import com.alipay.sign.MD5;
  *以下代码只是为了方便商户测试而提供的样例代码，商户可以根据自己网站的需要，按照技术文档编写,并非一定要使用该代码。
  *该代码仅供学习和研究支付宝接口使用，只是提供一个参考。
  */
-
 public class AlipaySubmit {
-    
+
     /**
      * 支付宝提供给商户的服务接入网关URL(新)
      */
     private static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
-	
+
     /**
      * 生成签名结果
+     *
      * @param sPara 要签名的数组
      * @return 签名结果字符串
      */
-	public static String buildRequestMysign(Map<String, String> sPara) {
-    	String prestr = AlipayCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
+    public static String buildRequestMysign(Map<String, String> sPara) {
+        String prestr = AlipayCore.createLinkString(sPara); //把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         String mysign = "";
-        if(AlipayConfig.sign_type.equals("MD5") ) {
-        	mysign = MD5.sign(prestr, AlipayConfig.key, AlipayConfig.input_charset);
+        if (AlipayConfig.sign_type.equals("MD5")) {
+            mysign = MD5.sign(prestr, AlipayConfig.key, AlipayConfig.input_charset);
         }
         return mysign;
     }
-	
+
     /**
      * 生成要请求给支付宝的参数数组
+     *
      * @param sParaTemp 请求前的参数数组
      * @return 要请求的参数数组
      */
@@ -72,6 +73,7 @@ public class AlipaySubmit {
 
     /**
      * 建立请求，以表单HTML形式构造（默认）
+     *
      * @param sParaTemp 请求参数数组
      * @param strMethod 提交方式。两个值可选：post、get
      * @param strButtonName 确认按钮显示文字
@@ -85,8 +87,8 @@ public class AlipaySubmit {
         StringBuffer sbHtml = new StringBuffer();
 
         sbHtml.append("<form id=\"alipaysubmit\" name=\"alipaysubmit\" action=\"" + ALIPAY_GATEWAY_NEW
-                      + "_input_charset=" + AlipayConfig.input_charset + "\" method=\"" + strMethod
-                      + "\">");
+                + "_input_charset=" + AlipayConfig.input_charset + "\" method=\"" + strMethod
+                + "\">");
 
         for (int i = 0; i < keys.size(); i++) {
             String name = (String) keys.get(i);
@@ -101,9 +103,10 @@ public class AlipaySubmit {
 
         return sbHtml.toString();
     }
-    
+
     /**
      * 建立请求，以表单HTML形式构造，带文件上传功能
+     *
      * @param sParaTemp 请求参数数组
      * @param strMethod 提交方式。两个值可选：post、get
      * @param strButtonName 确认按钮显示文字
@@ -118,8 +121,8 @@ public class AlipaySubmit {
         StringBuffer sbHtml = new StringBuffer();
 
         sbHtml.append("<form id=\"alipaysubmit\" name=\"alipaysubmit\"  enctype=\"multipart/form-data\" action=\"" + ALIPAY_GATEWAY_NEW
-                      + "_input_charset=" + AlipayConfig.input_charset + "\" method=\"" + strMethod
-                      + "\">");
+                + "_input_charset=" + AlipayConfig.input_charset + "\" method=\"" + strMethod
+                + "\">");
 
         for (int i = 0; i < keys.size(); i++) {
             String name = (String) keys.get(i);
@@ -127,7 +130,7 @@ public class AlipaySubmit {
 
             sbHtml.append("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\"/>");
         }
-        
+
         sbHtml.append("<input type=\"file\" name=\"" + strParaFileName + "\" />");
 
         //submit按钮控件请不要含有name属性
@@ -135,18 +138,19 @@ public class AlipaySubmit {
 
         return sbHtml.toString();
     }
-    
+
     /**
      * 建立请求，以模拟远程HTTP的POST请求方式构造并获取支付宝的处理结果
-     * 如果接口中没有上传文件参数，那么strParaFileName与strFilePath设置为空值
-     * 如：buildRequest("", "",sParaTemp)
+     * 如果接口中没有上传文件参数，那么strParaFileName与strFilePath设置为空值 如：buildRequest("",
+     * "",sParaTemp)
+     *
      * @param strParaFileName 文件类型的参数名
      * @param strFilePath 文件路径
      * @param sParaTemp 请求参数数组
      * @return 支付宝处理结果
      * @throws Exception
      */
-    public static String buildRequest(String strParaFileName, String strFilePath,Map<String, String> sParaTemp) throws Exception {
+    public static String buildRequest(String strParaFileName, String strFilePath, Map<String, String> sParaTemp) throws Exception {
         //待请求参数数组
         Map<String, String> sPara = buildRequestPara(sParaTemp);
 
@@ -157,13 +161,13 @@ public class AlipaySubmit {
         request.setCharset(AlipayConfig.input_charset);
 
         request.setParameters(generatNameValuePair(sPara));
-        request.setUrl(ALIPAY_GATEWAY_NEW+"_input_charset="+AlipayConfig.input_charset);
+        request.setUrl(ALIPAY_GATEWAY_NEW + "_input_charset=" + AlipayConfig.input_charset);
 
-        HttpResponse response = httpProtocolHandler.execute(request,strParaFileName,strFilePath);
+        HttpResponse response = httpProtocolHandler.execute(request, strParaFileName, strFilePath);
         if (response == null) {
             return null;
         }
-        
+
         String strResult = response.getStringResult();
 
         return strResult;
@@ -171,7 +175,8 @@ public class AlipaySubmit {
 
     /**
      * MAP类型数组转换成NameValuePair类型
-     * @param properties  MAP类型数组
+     *
+     * @param properties MAP类型数组
      * @return NameValuePair类型数组
      */
     private static NameValuePair[] generatNameValuePair(Map<String, String> properties) {
@@ -183,20 +188,20 @@ public class AlipaySubmit {
 
         return nameValuePair;
     }
-    
+
     /**
-     * 用于防钓鱼，调用接口query_timestamp来获取时间戳的处理函数
-     * 注意：远程解析XML出错，与服务器是否支持SSL等配置有关
+     * 用于防钓鱼，调用接口query_timestamp来获取时间戳的处理函数 注意：远程解析XML出错，与服务器是否支持SSL等配置有关
+     *
      * @return 时间戳字符串
      * @throws IOException
      * @throws DocumentException
      * @throws MalformedURLException
      */
-	public static String query_timestamp() throws MalformedURLException,
-                                                        DocumentException, IOException {
+    public static String query_timestamp() throws MalformedURLException,
+            DocumentException, IOException {
 
         //构造访问query_timestamp接口的URL串
-        String strUrl = ALIPAY_GATEWAY_NEW + "service=query_timestamp&partner=" + AlipayConfig.partner + "&_input_charset" +AlipayConfig.input_charset;
+        String strUrl = ALIPAY_GATEWAY_NEW + "service=query_timestamp&partner=" + AlipayConfig.partner + "&_input_charset" + AlipayConfig.input_charset;
         StringBuffer result = new StringBuffer();
 
         SAXReader reader = new SAXReader();

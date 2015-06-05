@@ -194,7 +194,12 @@ public class OrderServlet extends BaseServlet {
         } catch (Exception ex) {
         }
         OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
-        super.forward("/order/create_event_order_success?serialId=" + oc.getSerialId(), request, response);
+        OrderCollection order = accountService.approvalOrder(oc.getId(), OrderStatusEnum.PENDING_PAYMENT, "自动审批");
+        if (OrderStatusEnum.SUCCESS.equals(order.getStatus())) {
+            super.forward("/order/result?serialId=" + oc.getSerialId(), request, response);
+        } else {
+            super.forward("/order/payment_order?serialId=" + oc.getSerialId(), request, response);
+        }
         return FORWARD_TO_ANOTHER_URL;
     }
 

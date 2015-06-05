@@ -20,28 +20,28 @@ package com.alipay.config;
  *1、检查浏览器配置，不让浏览器做弹框屏蔽设置
  *2、更换浏览器或电脑，重新登录查询。
  */
-
 public class AlipayConfig {
-	
-	//↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-	// 合作身份者ID，以2088开头由16位纯数字组成的字符串
-	public static String partner = "2088811440887034";
-	
-	// 收款支付宝账号
-	public static String seller_email = "cbra@cbra.com";
-	// 商户的私钥
-	public static String key = "t54lamfhxjvqz4wivf9uqh8b4vy6k0rq";
 
-	//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-	
+    //↓↓↓↓↓↓↓↓↓↓请在这里配置您的基本信息↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    // 合作身份者ID，以2088开头由16位纯数字组成的字符串
+    public static String partner = "2088811440887034";
 
-	// 调试用，创建TXT日志文件夹路径
-	public static String log_path = "D:\\";
+    // 收款支付宝账号
+    public static String seller_email = "cbra@cbra.com";
+    // 商户的私钥
+    public static String key = "t54lamfhxjvqz4wivf9uqh8b4vy6k0rq";
 
-	// 字符编码格式 目前支持 gbk 或 utf-8
-	public static String input_charset = "utf-8";
-	
-	// 签名方式 不需修改
-	public static String sign_type = "MD5";
+    public static String sra_public_key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB";
+    
+    
+    //↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    // 调试用，创建TXT日志文件夹路径
+    public static String log_path = "D:\\";
+
+    // 字符编码格式 目前支持 gbk 或 utf-8
+    public static String input_charset = "utf-8";
+
+    // 签名方式 不需修改
+    public static String sign_type = "MD5";
 
 }

@@ -7,6 +7,7 @@ package com.cbra.web;
 import cn.yoopay.support.exception.ImageConvertException;
 import cn.yoopay.support.exception.NotVerifiedException;
 import com.cbra.entity.Account;
+import com.cbra.entity.Attendee;
 import com.cbra.entity.CompanyAccount;
 import com.cbra.entity.FundCollection;
 import com.cbra.entity.GatewayPayment;
@@ -676,6 +677,16 @@ public class MobileServlet extends BaseServlet {
         ResultList<OrderCollection> resultList = orderService.findOrderCollectionList(searchMap, pageIndex, maxPerPage, null, true);
         for (OrderCollection order : resultList) {
             order.setFundCollectionContent(order.getFundCollection().getIntroduction());
+            List<Attendee> attendeeList = orderService.findAttendeeByOrder(order.getId());
+            for (Attendee attendee : attendeeList) {
+                attendee.setFundCollection(null);
+                attendee.setFundCollectionTicket(null);
+                attendee.setOrderCollection(null);
+                attendee.setOrderCollectionItem(null);
+                attendee.setUserAccount(null);
+            }
+            order.setAttendeeCount(attendeeList.size() + "");
+            order.setAttendeeList(attendeeList);
             order.setFundCollectionDetailsUrl("event_details?id=" + order.getFundCollection().getId());
             order.setFundCollectionId(order.getFundCollection().getId().toString());
             order.setFundCollectionTitle(order.getFundCollection().getTitle());
@@ -742,6 +753,16 @@ public class MobileServlet extends BaseServlet {
             order.setFundCollectionId(order.getFundCollection().getId().toString());
             order.setFundCollectionTitle(order.getFundCollection().getTitle());
             order.setFundCollectionUrl(order.getFundCollection().getIntroductionImageUrl());
+            List<Attendee> attendeeList = orderService.findAttendeeByOrder(order.getId());
+            for (Attendee attendee : attendeeList) {
+                attendee.setFundCollection(null);
+                attendee.setFundCollectionTicket(null);
+                attendee.setOrderCollection(null);
+                attendee.setOrderCollectionItem(null);
+                attendee.setUserAccount(null);
+            }
+            order.setAttendeeCount(attendeeList.size() + "");
+            order.setAttendeeList(attendeeList);
             Date now = new Date();
             if (now.before(order.getFundCollection().getStatusBeginDate())) {
                 order.setStatusCode("0");
@@ -975,6 +996,7 @@ public class MobileServlet extends BaseServlet {
         } catch (Exception ex) {
         }
         OrderCollection oc = orderService.createOrderCollection(user, fundCollection, attendeeeObjs);
+        OrderCollection order = accountService.approvalOrder(oc.getId(), OrderStatusEnum.PENDING_PAYMENT, "自动审批");
         map.put("msg", "创建成功");
         Map submap = new HashMap();
         submap.put("serialId", oc.getSerialId());

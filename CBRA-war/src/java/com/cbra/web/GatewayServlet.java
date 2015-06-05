@@ -318,6 +318,7 @@ public class GatewayServlet extends BaseServlet {
     }
 
     private boolean loadAlipayNotify(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("***************alipay_notify*************");
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         GatewayPayment setPaymentResult = null;
@@ -342,13 +343,13 @@ public class GatewayServlet extends BaseServlet {
             //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
             //商户订单号
             String out_trade_no = request.getParameter("out_trade_no");
-
+            System.out.println("out_trade_no=" + out_trade_no);
             //支付宝交易号
             String trade_no = request.getParameter("trade_no");
 
             //交易状态
             String trade_status = request.getParameter("trade_status");
-
+            System.out.println("trade_status=" + trade_status);
             //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
             if (AlipayNotify.verify(params)) {//验证成功
                 //////////////////////////////////////////////////////////////////////////////////////////
@@ -377,6 +378,7 @@ public class GatewayServlet extends BaseServlet {
 
                 //////////////////////////////////////////////////////////////////////////////////////////
             } else {//验证失败
+                System.out.println("*********sign_fail*************");
                 out.println("fail");
             }
         } catch (Exception x) {

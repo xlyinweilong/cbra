@@ -124,7 +124,7 @@ public class OrderService {
     public OrderCollection createOrderCollection(Account account, FundCollection fundCollection, Map<String, Object> attendeeeObjs) {
         OrderCollection oc = new OrderCollection();
         oc.setSerialId(this.getUniqueSerialId());
-        oc.setStatus(OrderStatusEnum.PENDING_FOR_APPROVAL);
+        oc.setStatus(OrderStatusEnum.PENDING_PAYMENT);
         oc.setFundCollection(fundCollection);
         oc.setOwner(account);
         if (account == null) {
@@ -193,6 +193,7 @@ public class OrderService {
             throw new RuntimeException();
         }
         em.persist(oc);
+        em.flush();
         return oc;
     }
 
@@ -210,7 +211,7 @@ public class OrderService {
             oc.setAmount(Config.MEMBERSHIP_FEE_COMPANY);
         }
         oc.setSerialId(this.getUniqueServiceSerialId());
-        oc.setStatus(OrderStatusEnum.PENDING_FOR_APPROVAL);
+        oc.setStatus(OrderStatusEnum.PENDING_PAYMENT);
         oc.setOwner(account);
         em.persist(oc);
         return oc;
