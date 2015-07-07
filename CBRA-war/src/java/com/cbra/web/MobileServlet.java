@@ -51,6 +51,8 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -158,7 +160,7 @@ public class MobileServlet extends BaseServlet {
 
         LOGIN, USER_INFO, INDEX, EVENT_LIST, PARTNERS_LIST, NEWS_LIST, NEWS_INDEX, INFO_INDEX, INFO_LIST, RESOURCE, OFFER, FRONT, EVENT_DETAILS, OFFER_DETAILS, NEWS_DETAILS,
         PANDING_PAYMENT_EVENT, SUCCESS_PAYMENT_EVENT, UPLOAD_HEAD_IMAGE, MEMBERSHIP_ORDER_LIST, CREATE_MEMBERSHIP_ORDER, CREATE_EVENT_ORDER,
-        CREATE_MEMBERSHIP_GATEWAY, MEMBERSHIP_ORDER_STATUS, CREATE_EVENT_GATEWAY, EVENT_ORDER_STATUS;
+        CREATE_MEMBERSHIP_GATEWAY, MEMBERSHIP_ORDER_STATUS, CREATE_EVENT_GATEWAY, EVENT_ORDER_STATUS, DOWN_LOAD;
 
     }
 
@@ -214,6 +216,8 @@ public class MobileServlet extends BaseServlet {
                 return createEventGateway(request, response);
             case EVENT_ORDER_STATUS:
                 return eventOrderStatus(request, response);
+            case DOWN_LOAD:
+                return downLoadApp(request, response);
             default:
                 throw new BadPageException();
         }
@@ -1136,5 +1140,26 @@ public class MobileServlet extends BaseServlet {
         map.put("msg", "ok");
         map.put("data", subMap);
         return super.outputObjectAjax(map, response);
+    }
+
+    /**
+     * 下载APP
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws ServletException
+     * @throws IOException
+     */
+    private boolean downLoadApp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String userAgent = request.getHeader("User-Agent");
+        if (Tools.isBlank(userAgent)) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile(".*(iPad|iPhone|Android).*");
+        Matcher matcher = pattern.matcher(userAgent);
+        if (matcher.matches()) {
+        }
+        return KEEP_GOING_WITH_ORIG_URL;
     }
 }

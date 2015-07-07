@@ -9,6 +9,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <title>筑誉建筑联合会</title>
+        <script type="application/javascript" src="/js/jquery.min.js"></script>
         <script type="application/javascript" src="/js/iscroll-lite.js?v4"></script>
         <script type="text/javascript">
             var myScroll;
@@ -82,5 +83,10 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            $("#wrapper").find("img").each(function () {
+                $(this).css("width", "100%");
+            });
+        </script>
     </body>
 </html>

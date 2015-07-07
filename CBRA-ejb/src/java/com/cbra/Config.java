@@ -21,7 +21,12 @@ public class Config {
 
     private Config() {
     }
-    public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("0.01");
+
+    public static final String IOS_DOWNLOAD = "https://itunes.apple.com/cn/app/zhu-yu-lian-he-hui/id1003824879?mt=8";
+
+    public static final String ANZ_DOWNLOAD = "http://www.cbra.com/download_app/cbra.apk";
+
+    public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("800");
 
     public static final BigDecimal MEMBERSHIP_FEE_COMPANY = new BigDecimal("10000");
 
@@ -36,7 +41,7 @@ public class Config {
     public static final String FILE_UPLOAD_TEMP = "temp";
 
     public static final String FILE_UPLOAD_PLATE = "plate";
-    
+
     public static final String FROM_EMAIL = "cbra@cbra.com";
 
     public static final String FILE_UPLOAD_ACCOUNT = "account_ic";
@@ -79,7 +84,7 @@ public class Config {
     public static List<PlateInformation> homeExpert = null;
 
     public static PlateInformation homeNews = null;
-    
+
     public static PlateInformation topInto = null;
 
     public static PlateInformation topStyle = null;
@@ -89,7 +94,7 @@ public class Config {
     public static List<PlateInformation> topTrain = null;
 
     public static List<PlateInformation> topJoin = null;
-    
+
     public static List<FundCollection> eventListIndexEn = null;
 
     public static List<PlateInformation> newsListEn = null;
@@ -119,7 +124,7 @@ public class Config {
     public static List<PlateInformation> homeExpertEn = null;
 
     public static PlateInformation homeNewsEn = null;
-    
+
     public static PlateInformation topIntoEn = null;
 
     public static PlateInformation topStyleEn = null;
