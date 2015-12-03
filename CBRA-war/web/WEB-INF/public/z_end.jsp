@@ -15,7 +15,8 @@
     </div>
     <div class="Bottom-bq">
         <div class="Bottom-bq-c">
-            <div class="fl">Copyright © www.cbra.com All Rights Reserved<br>筑誉建筑联合会 版权所有<br>地址：上海市普陀区真光路1219号新长征中环大厦23层　电话：021-61550302　邮编：200333</div>
+            <div class="fl">China Builder Ratings Association 筑誉建筑联合会<br>Suite 2108, 205 Maoming South Road, Ruijin Mansion,
+                Huangpu District, Shanghai, 200020, P.R. China<br/>上海市黄浦区茂名南路205号瑞金大厦2108室</br>www.cbra.com wechat:cbra_cbra &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Cell:+86 177 01601027 Tel/Direct:(0086)-021-6155 6066</div>
             <div class="fr">沪ICP备14043363号-1</div>
             <div style=" clear:both;"></div>
         </div>
@@ -23,12 +24,12 @@
 </div>
 <input type="hidden" value="${page}"  id="searchPage" />
 <script type="text/javascript">
-    function search(st){
+    function search(st) {
         var searchPage = $.trim($("#searchPage").val());
-        if(searchPage != null){
-            location.href = "/public/search?page=" + searchPage +"&search=" + st;
-        }else{
-            location.href = "/public/search?search="+st;
+        if (searchPage != null) {
+            location.href = "/public/search?page=" + searchPage + "&search=" + st;
+        } else {
+            location.href = "/public/search?search=" + st;
         }
     }
 </script>

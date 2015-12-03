@@ -18,7 +18,7 @@
                     return this.each(function () {
                         v++;
                         var e = d(this), n, p, i, k, l, m = 0, f = e.children(), w = f.size(), q = parseFloat(b.speed), x = parseFloat(b.timeout), r = parseFloat(b.maxwidth), c = b.namespace, g = c + v, y = c + "_nav " + g + "_nav", s = c + "_here", j = g + "_on", z = g + "_s",
-                                o = d("<ul class='" + c + "_tabs " + g + "_tabs' />"), A = {"float": "left", position: "relative"}, E = {"float": "none", position: "absolute"}, t = function (a) {
+                            o = d("<ul class='" + c + "_tabs " + g + "_tabs' />"), A = {"float": "left", position: "relative"}, E = {"float": "none", position: "absolute"}, t = function (a) {
                             b.before();
                             f.stop().fadeOut(q, function () {
                                 d(this).removeClass(j).css(E)
@@ -38,7 +38,7 @@
                         h && h.maxwidth && e.css("max-width", r);
                         f.hide().eq(0).addClass(j).css(A).show();
                         if (1 <
-                                f.size()) {
+                            f.size()) {
                             if (x < q + 100)
                                 return;
                             if (b.pager) {
@@ -93,7 +93,7 @@
                                     a.preventDefault();
                                     if (!d("." + j + ":animated").length) {
                                         var c = f.index(d("." + j)),
-                                                a = c - 1, c = c + 1 < w ? m + 1 : 0;
+                                            a = c - 1, c = c + 1 < w ? m + 1 : 0;
                                         t(d(this)[0] === B[0] ? a : c);
                                         b.pager && n(d(this)[0] === B[0] ? a : c);
                                         b.pauseControls || i()
@@ -133,11 +133,99 @@
                 });
             });
         </script><!--banner -->
-
+        <style>
+            div, ul, li, dl, dt, dd, table, td, input {
+                font-size: 12px;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            div {
+                margin: 0 auto;
+            }
+            .mod_qr {
+                display: inline;
+                float:right;
+                position: relative;
+                margin-right: 20px;
+                margin-top:20px;
+            }
+            .mod_qr .mod_qr_bd {
+                position: relative;
+                cursor: pointer;
+                display: block;
+                text-align: center;
+                width: 194px;
+                height: 232px;
+                color: #6c6c6c;
+                border: 1px solid #e8e8e8;
+                overflow: hidden;
+                text-decoration: none;
+            }
+            .mod_qr .mod_qr_bd span {
+                display: block;
+                height: 20px;
+                line-height: 20px;
+                overflow: hidden;
+                margin: 4px auto 0;
+                width: 148px;
+                color: #333!important;
+                cursor: pointer;
+                text-align: center;
+            }
+            .mod_qr .mod_qr_bd img {
+                display: block;
+                margin-left: 8px;
+                width: 180px;
+                height: 180px;
+                vertical-align: bottom;
+            }
+            .mod_qr .fixed_qr_close {
+                position: absolute;
+                top: 0;
+                left: -19px;
+                display: block;
+                width: 18px;
+                height: 18px;
+                border: 1px solid #e8e8e8;
+            }
+            .mod_qr .fixed_qr_close s {
+                width: 11px;
+                height: 11px;
+                margin-left: 4px;
+                margin-top: 4px;
+            }
+            .qricon {
+                display: -moz-inline-stack;
+                display: inline-block;
+                vertical-align: middle;
+                zoom: 1;
+                text-indent: -3000px;
+                _text-indent: 0;
+                _font-size: 0;
+            }
+            .s_s_close {
+                background: url(/images/TB1FEpXGXXXXXa4XXXXyTkXLpXX-500-444.png);
+                background-position: -154px -364px;
+            }
+            *html .mod_qr {
+                _top:expression(eval(document.documentElement.scrollTop+document.documentElement.clientHeight-this.offsetHeight-(parseInt(this.currentStyle.marginTop,10)||0)-(parseInt(this.currentStyle.marginBottom,100)||0)-40));
+                _bottom:auto;
+                _position:absolute;
+            }
+        </style>
     </head>
 
     <body>
         <jsp:include page="/WEB-INF/public/z_top.jsp"></jsp:include>
+        <div class="mod_qr" style="position:fixed;top:500px;right:0px;z-index: 99999;background-color: white">
+                <a href="#" class="mod_qr_bd">
+                    <span style="font-size: 18px">扫描下载APP</span>
+                    <img src="/images/app.png" alt="筑誉建筑联合会">
+                    <span style="font-size: 18px">筑誉联合会客户端</span>
+                </a><a href="javascript:void(0);" id="close" class="fixed_qr_close"><s class="qricon s_s_close"></s></a>
+            </div>
             <!-- banner -->
             <div class="ly_bac">
                 <div class="content-ba">
@@ -156,7 +244,6 @@
             </div>
         </div>
         <!-- bannerend -->
-
         <!-- 主体 -->
         <div class="main">
             <!-- 一 排 -->
@@ -296,7 +383,7 @@
                         <div class="Title-3"><a href="/into/three_party_offer"><fmt:message key="INDEX_更多" bundle="${bundle}"/></a></div>
                     </div>
                     <ul>
-                        <c:forEach var="offer" items="<%=!locale.equals(Locale.ENGLISH) ? Config.offerListIndex:Config.offerListIndexEn%>">
+                        <c:forEach var="offer" items="<%=!locale.equals(Locale.ENGLISH) ? Config.offerListIndex : Config.offerListIndexEn%>">
                             <li><a href="/into/offer_details?id=${offer.id}" class="fl">[<fmt:formatDate value='${offer.pushDate}' pattern='yyyy-MM-dd' type='date' dateStyle='long' />]${offer.positionIndexStr}[${offer.city}]</a><c:if test="${news.isNewPushDate()}"><img style="float:left; margin-top:8px;" src="/images/ico-new.jpg"></c:if></li>
                             </c:forEach> 
                     </ul>
@@ -357,7 +444,7 @@
             var toggles = document.getElementsByClassName('title');
 
             var myAccordion = new fx.Accordion(
-                    toggles, contents, {opacity: true, duration: 400}
+                toggles, contents, {opacity: true, duration: 400}
             );
             myAccordion.showThisHideOpen(contents[0]);
         </script>
@@ -470,6 +557,13 @@
                 }
             }
             //--><!]]>
+        </script>
+        <script>
+            $(function () {
+                $(".fixed_qr_close").click(function () {
+                    $(".mod_qr").hide();
+                })
+            })
         </script>
     </body>
 </html>

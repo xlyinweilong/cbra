@@ -15,4 +15,5 @@
     <property name="alternatedocroot_3" value="from=/account_head_image/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
     <property name="alternatedocroot_4" value="from=/account_ic/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
     <property name="alternatedocroot_5" value="from=/plate/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
+    <property name="alternatedocroot_6" value="from=/app/* dir=/home/cbra/glassfish4/glassfish/domains/domain1/cbra/data/"/>
 </glassfish-web-app>

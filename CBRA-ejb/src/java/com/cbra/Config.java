@@ -23,8 +23,8 @@ public class Config {
     }
 
     public static final String IOS_DOWNLOAD = "https://itunes.apple.com/cn/app/zhu-yu-lian-he-hui/id1003824879?mt=8";
-
-    public static final String ANZ_DOWNLOAD = "http://www.cbra.com/download_app/cbra.apk";
+        
+    public static final String ANZ_DOWNLOAD = "http://www.cbra.com/app/cbra.apk";
 
     public static final BigDecimal MEMBERSHIP_FEE = new BigDecimal("800");
 

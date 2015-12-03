@@ -1156,10 +1156,20 @@ public class MobileServlet extends BaseServlet {
         if (Tools.isBlank(userAgent)) {
             return false;
         }
-        Pattern pattern = Pattern.compile(".*(iPad|iPhone|Android).*");
-        Matcher matcher = pattern.matcher(userAgent);
-        if (matcher.matches()) {
+        Pattern weixinPattern = Pattern.compile(".*MicroMessenger.*");
+        Pattern pattern = Pattern.compile(".*(iPad|iPhone).*");
+        if (weixinPattern.matcher(userAgent).matches()) {
+            return KEEP_GOING_WITH_ORIG_URL;
+        } else {
+            Matcher matcher = pattern.matcher(userAgent);
+            if (matcher.matches()) {
+                super.redirect(com.cbra.Config.IOS_DOWNLOAD, request, response);
+                return REDIRECT_TO_ANOTHER_URL;
+            } else {
+                //Android
+                super.redirect(com.cbra.Config.ANZ_DOWNLOAD, request, response);
+                return REDIRECT_TO_ANOTHER_URL;
+            }
         }
-        return KEEP_GOING_WITH_ORIG_URL;
     }
 }
